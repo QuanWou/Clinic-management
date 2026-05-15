@@ -1,0 +1,281 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: clinic-postgres
+    environment:
+      POSTGRES_DB: clinic_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d clinic_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  identity-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: identity-service
+    container_name: clinic-identity-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=identity
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+    ports:
+      - "8083:8083"
+
+  patient-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: patient-service
+    container_name: clinic-patient-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=patient
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+    ports:
+      - "8084:8084"
+
+  doctor-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: doctor-service
+    container_name: clinic-doctor-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=doctor
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+    ports:
+      - "8085:8085"
+
+  appointment-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: appointment-service
+    container_name: clinic-appointment-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      patient-service:
+        condition: service_started
+      doctor-service:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=appointment
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SERVICES_PATIENT_URL: http://patient-service:8084
+      SERVICES_DOCTOR_URL: http://doctor-service:8085
+      APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+    ports:
+      - "8086:8086"
+
+  medical-record-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: medical-record-service
+    container_name: clinic-medical-record-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      appointment-service:
+        condition: service_started
+      patient-service:
+        condition: service_started
+      doctor-service:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=medical_record
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SERVICES_APPOINTMENT_URL: http://appointment-service:8086
+      SERVICES_PATIENT_URL: http://patient-service:8084
+      SERVICES_DOCTOR_URL: http://doctor-service:8085
+      APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+    ports:
+      - "8087:8087"
+
+  billing-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: billing-service
+    container_name: clinic-billing-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      appointment-service:
+        condition: service_started
+      patient-service:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=billing
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SERVICES_APPOINTMENT_URL: http://appointment-service:8086
+      SERVICES_PATIENT_URL: http://patient-service:8084
+      APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+    ports:
+      - "8088:8088"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: clinic-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mailpit:
+    image: axllent/mailpit:v1.21
+    container_name: clinic-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  notification-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: notification-service
+    container_name: clinic-notification-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=notification
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      SPRING_MAIL_HOST: mailpit
+      SPRING_MAIL_PORT: 1025
+      SPRING_MAIL_USERNAME: ""
+      SPRING_MAIL_PASSWORD: ""
+      SPRING_MAIL_SMTP_AUTH: false
+      SPRING_MAIL_SMTP_STARTTLS_ENABLE: false
+      APP_NOTIFICATION_SMS_ENDPOINT: http://sms-provider:9091/messages
+      APP_NOTIFICATION_SMS_API_KEY: local-dev-token
+      APP_NOTIFICATION_SMS_SENDER: Clinic
+      APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+    ports:
+      - "8089:8089"
+
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: api-gateway
+    container_name: clinic-api-gateway
+    depends_on:
+      identity-service:
+        condition: service_started
+      patient-service:
+        condition: service_started
+      doctor-service:
+        condition: service_started
+      appointment-service:
+        condition: service_started
+      medical-record-service:
+        condition: service_started
+      billing-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+    environment:
+      SERVICES_IDENTITY_URL: http://identity-service:8083
+      SERVICES_PATIENT_URL: http://patient-service:8084
+      SERVICES_DOCTOR_URL: http://doctor-service:8085
+      SERVICES_APPOINTMENT_URL: http://appointment-service:8086
+      SERVICES_MEDICAL_RECORD_URL: http://medical-record-service:8087
+      SERVICES_BILLING_URL: http://billing-service:8088
+      SERVICES_NOTIFICATION_URL: http://notification-service:8089
+    ports:
+      - "8090:8080"
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: clinic-prometheus
+    depends_on:
+      api-gateway:
+        condition: service_started
+      identity-service:
+        condition: service_started
+      patient-service:
+        condition: service_started
+      doctor-service:
+        condition: service_started
+      appointment-service:
+        condition: service_started
+      medical-record-service:
+        condition: service_started
+      billing-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: clinic-grafana
+    depends_on:
+      prometheus:
+        condition: service_started
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
+  grafana_data:

@@ -1,0 +1,54 @@
+package com.clinic.medicalrecord.client;
+
+import com.clinic.common.constants.ErrorCode;
+import com.clinic.common.dto.ApiResponse;
+import com.clinic.common.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
+
+@Component
+public class DoctorClient {
+
+    private final RestClient restClient;
+
+    public DoctorClient(RestClient.Builder restClientBuilder, @Value("${services.doctor.url}") String doctorServiceUrl) {
+        this.restClient = restClientBuilder.baseUrl(doctorServiceUrl).build();
+    }
+
+    public DoctorProfileResponse getCurrentDoctorProfile(String authorizationHeader) {
+        try {
+            ApiResponse<DoctorProfileResponse> response = restClient.get()
+                    .uri("/api/doctors/profile")
+                    .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+            if (response == null || response.data() == null) {
+                throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Doctor profile not found");
+            }
+
+            return response.data();
+        } catch (BusinessException ex) {
+            throw ex;
+        } catch (RestClientResponseException ex) {
+            throw mapRemoteError(ex);
+        } catch (RestClientException ex) {
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Unable to resolve doctor profile");
+        }
+    }
+
+    private BusinessException mapRemoteError(RestClientResponseException ex) {
+        return switch (ex.getStatusCode().value()) {
+            case 401 -> new BusinessException(ErrorCode.UNAUTHORIZED, "Unauthorized when resolving doctor profile");
+            case 403 -> new BusinessException(ErrorCode.FORBIDDEN, "Forbidden when resolving doctor profile");
+            case 404 -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Doctor profile not found");
+            default -> new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Unable to resolve doctor profile");
+        };
+    }
+}
