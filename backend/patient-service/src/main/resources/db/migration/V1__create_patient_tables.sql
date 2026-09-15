@@ -1,0 +1,10 @@
+CREATE TABLE patients (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL UNIQUE,
+    dob DATE,
+    gender VARCHAR(10),
+    address VARCHAR(255),
+    blood_type VARCHAR(5),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
