@@ -1,0 +1,65 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowed-origins:
+              - ${APP_CORS_ALLOWED_ORIGIN:http://localhost:5173}
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowed-headers:
+              - "*"
+            allow-credentials: true
+      routes:
+        - id: identity-service
+          uri: ${SERVICES_IDENTITY_URL:http://identity-service:8083}
+          predicates:
+            - Path=/api/auth/**,/api/users/**
+        - id: patient-service
+          uri: ${SERVICES_PATIENT_URL:http://patient-service:8084}
+          predicates:
+            - Path=/api/patients/**
+        - id: doctor-service
+          uri: ${SERVICES_DOCTOR_URL:http://doctor-service:8085}
+          predicates:
+            - Path=/api/doctors/**,/api/specialties/**
+        - id: appointment-service
+          uri: ${SERVICES_APPOINTMENT_URL:http://appointment-service:8086}
+          predicates:
+            - Path=/api/appointments/**
+        - id: medical-record-service
+          uri: ${SERVICES_MEDICAL_RECORD_URL:http://medical-record-service:8087}
+          predicates:
+            - Path=/api/medical-records/**,/api/prescriptions/**
+        - id: billing-service
+          uri: ${SERVICES_BILLING_URL:http://billing-service:8088}
+          predicates:
+            - Path=/api/invoices/**
+        - id: notification-service
+          uri: ${SERVICES_NOTIFICATION_URL:http://notification-service:8089}
+          predicates:
+            - Path=/api/notifications/**
+
+services:
+  identity-url: ${SERVICES_IDENTITY_URL:http://identity-service:8083}
+  appointment-url: ${SERVICES_APPOINTMENT_URL:http://appointment-service:8086}
+  medical-record-url: ${SERVICES_MEDICAL_RECORD_URL:http://medical-record-service:8087}
+  billing-url: ${SERVICES_BILLING_URL:http://billing-service:8088}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus

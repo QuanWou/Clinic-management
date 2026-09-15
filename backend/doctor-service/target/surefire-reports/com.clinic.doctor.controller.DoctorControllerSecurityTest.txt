@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.clinic.doctor.controller.DoctorControllerSecurityTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.465 s -- in com.clinic.doctor.controller.DoctorControllerSecurityTest

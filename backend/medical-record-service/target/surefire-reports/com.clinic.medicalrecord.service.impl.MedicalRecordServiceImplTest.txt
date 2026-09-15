@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.clinic.medicalrecord.service.impl.MedicalRecordServiceImplTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.606 s -- in com.clinic.medicalrecord.service.impl.MedicalRecordServiceImplTest

@@ -1,0 +1,41 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: medical-record-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clinic_db?currentSchema=medical_record
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: medical_record
+  flyway:
+    enabled: true
+    schemas: medical_record
+    locations: classpath:db/migration
+
+services:
+  appointment:
+    url: http://localhost:8086
+  doctor:
+    url: http://localhost:8085
+  patient:
+    url: http://localhost:8084
+
+app:
+  security:
+    jwt:
+      secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+      access-token-expiration-minutes: 60
+      refresh-token-expiration-days: 7
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
