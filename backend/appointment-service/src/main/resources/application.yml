@@ -22,6 +22,10 @@ spring:
     schemas: appointment
     locations: classpath:db/migration
 
+services:
+  patient:
+    url: http://localhost:8084
+
 management:
   endpoints:
     web:
