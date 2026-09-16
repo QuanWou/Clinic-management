@@ -25,6 +25,8 @@ spring:
 services:
   patient:
     url: http://localhost:8084
+  doctor:
+    url: http://localhost:8085
 
 management:
   endpoints:
