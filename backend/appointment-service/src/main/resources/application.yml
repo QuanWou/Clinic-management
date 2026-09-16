@@ -27,7 +27,12 @@ services:
     url: http://localhost:8084
   doctor:
     url: http://localhost:8085
-
+app:
+  security:
+    jwt:
+      secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+      access-token-expiration-minutes: 60
+      refresh-token-expiration-days: 7
 management:
   endpoints:
     web:
