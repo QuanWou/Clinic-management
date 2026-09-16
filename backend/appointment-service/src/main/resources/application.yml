@@ -5,6 +5,23 @@ spring:
   application:
     name: appointment-service
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clinic_db?currentSchema=appointment
+    username: postgres
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: appointment
+
+  flyway:
+    enabled: true
+    schemas: appointment
+    locations: classpath:db/migration
+
 management:
   endpoints:
     web:
