@@ -1,0 +1,12 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: appointment-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
