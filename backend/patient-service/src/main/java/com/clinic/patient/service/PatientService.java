@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class PatientService {
@@ -19,6 +20,11 @@ public class PatientService {
 
     public PatientService(PatientRepository patientRepository) {
         this.patientRepository = patientRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<PatientProfileResponse> listPatients() {
+        return patientRepository.findAll().stream().map(this::toResponse).toList();
     }
 
     @Transactional(readOnly = true)

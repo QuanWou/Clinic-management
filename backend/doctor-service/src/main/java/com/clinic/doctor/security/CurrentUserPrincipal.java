@@ -10,6 +10,6 @@ public record CurrentUserPrincipal(
         Set<String> roles
 ) {
     public boolean hasRole(String role) {
-        return roles != null && roles.contains(role);
+        return roles != null && (roles.contains(role) || roles.contains("ROLE_" + role));
     }
 }

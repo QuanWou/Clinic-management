@@ -9,6 +9,7 @@ export const apiEndpoints = {
     me: '/api/users/me'
   },
   patients: {
+    collection: '/api/patients',
     profile: '/api/patients/profile'
   },
   doctors: {

@@ -1,214 +1,108 @@
-import type { ReactNode } from 'react';
-import { CalendarDays, HeartPulse, TrendingDown, TrendingUp, UsersRound } from 'lucide-react';
+import { CalendarDays, FileText, ReceiptText, Stethoscope, UsersRound } from 'lucide-react';
 import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
-import DonutChart from '../components/charts/DonutChart';
-import MiniBars from '../components/charts/MiniBars';
-import Sparkline from '../components/charts/Sparkline';
 import PageHeader from '../components/PageHeader';
-import { chartSeries, demoDoctors, demoPatients } from '../data/demoClinicData';
-import type { DashboardResponse } from '../types/domain';
-import { formatDate, formatMoney, formatTime } from '../utils/format';
+import type { CurrentUser, DashboardResponse, DoctorProfileResponse, PatientProfileResponse } from '../types/domain';
+import { formatDate, formatMoney, formatTime, shortId } from '../utils/format';
 import { getUiAppointments } from '../utils/uiData';
 
 export type DashboardPageProps = {
   dashboard: DashboardResponse | null;
-  error: string | null;
+  doctors: DoctorProfileResponse[] | null;
+  patients: PatientProfileResponse[] | null;
+  user: CurrentUser;
+  error?: string;
+  loading: boolean;
 };
 
-export default function DashboardPage({ dashboard, error }: DashboardPageProps) {
-  const appointments = getUiAppointments(dashboard?.appointments);
-  const patientCount = demoPatients.length + (dashboard?.medicalRecords.length ?? 0);
-  const invoiceTotal = (dashboard?.invoices ?? []).reduce((total, invoice) => total + Number(invoice.totalAmount ?? 0), 0);
+export default function DashboardPage({ dashboard, doctors, patients, user, error, loading }: DashboardPageProps) {
+  const appointments = getUiAppointments(dashboard?.appointments, { user, patients, doctors });
+  const invoiceTotal = dashboard?.invoices.reduce((total, invoice) => total + Number(invoice.totalAmount ?? 0), 0);
+  const today = new Date();
+  const localDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const todayAppointments = appointments.filter((appointment) => appointment.appointmentDate === localDate);
 
   return (
     <>
-      {error && <Alert tone="error">{error}</Alert>}
-
+      {error && <Alert tone="error">Some live data could not be loaded: {error}</Alert>}
       <PageHeader
-        title="Good morning, Olivia"
-        subtitle="Here's what's happening with your clinic today."
-        actions={(
-          <>
-            <button className="soft-button" type="button"><CalendarDays size={17} />8-12 December</button>
-            <button type="button">Export Report</button>
-          </>
-        )}
+        title={`Welcome, ${user.fullName ?? user.email}`}
+        subtitle="Live information available to your account. Counts are not clinic-wide unless stated."
       />
-
+      {!dashboard && !loading && <Alert>Personal appointments, medical records and billing are currently available only through the patient APIs. Other roles can use the doctor and patient directories permitted to them.</Alert>}
       <section className="dashboard-layout">
         <div className="dashboard-main">
           <section className="metric-grid">
-            <MetricCard
-              icon={<UsersRound />}
-              label="Overall Visitors"
-              value="748,839"
-              trend="24.8%"
-              direction="up"
-              tone="green"
-              chart={<MiniBars values={chartSeries.visitors} />}
-            />
-            <MetricCard
-              icon={<UsersRound />}
-              label="Total Patients"
-              value={patientCount.toLocaleString()}
-              trend="18.2%"
-              direction="down"
-              tone="purple"
-              chart={<Sparkline values={chartSeries.patients} tone="purple" />}
-            />
-            <MetricCard
-              icon={<CalendarDays />}
-              label="Appointments"
-              value={appointments.length.toLocaleString()}
-              trend="40.3%"
-              direction="up"
-              tone="blue"
-              chart={<Sparkline values={chartSeries.appointments} tone="blue" />}
-            />
-            <MetricCard
-              icon={<HeartPulse />}
-              label="Revenue"
-              value={formatMoney(invoiceTotal || 48258)}
-              trend="28.4%"
-              direction="up"
-              tone="orange"
-              chart={<MiniBars values={[10, 15, 8, 11, 18, 20, 13, 9, 16, 21, 15, 26]} tone="orange" />}
-            />
+            <article className="metric-card metric-green">
+              <div className="metric-icon"><UsersRound /></div>
+              <div><strong>{patients === null ? '—' : patients.length.toLocaleString()}</strong><span>Visible patient profiles</span></div>
+              <p>Based on access rights</p>
+            </article>
+            <article className="metric-card metric-purple">
+              <div className="metric-icon"><Stethoscope /></div>
+              <div><strong>{doctors === null ? '—' : doctors.length.toLocaleString()}</strong><span>Doctors in directory</span></div>
+              <p>From doctor service</p>
+            </article>
+            <article className="metric-card metric-blue">
+              <div className="metric-icon"><CalendarDays /></div>
+              <div><strong>{dashboard ? appointments.length.toLocaleString() : '—'}</strong><span>My appointments</span></div>
+              <p>From appointment service</p>
+            </article>
+            <article className="metric-card metric-orange">
+              <div className="metric-icon"><ReceiptText /></div>
+              <div><strong>{invoiceTotal === undefined ? '—' : formatMoney(invoiceTotal)}</strong><span>My invoice total</span></div>
+              <p>All statuses, not revenue</p>
+            </article>
           </section>
-
           <section className="analytics-grid">
-            <article className="panel patient-status">
-              <div className="panel-heading">
-                <div>
-                  <h3>Patient Status</h3>
-                  <strong>421,748 <span>+6.45%</span></strong>
+            <article className="panel">
+              <div className="panel-heading"><h3>My medical records</h3><FileText size={20} /></div>
+              <strong>{dashboard ? dashboard.medicalRecords.length.toLocaleString() : 'Not available'}</strong>
+              <p className="muted">Records returned for your account.</p>
+            </article>
+            <article className="panel">
+              <div className="panel-heading"><h3>Appointment status</h3><CalendarDays size={20} /></div>
+              {dashboard ? (
+                <div className="treatment-list">
+                  {(['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'] as const).map((status) => (
+                    <div key={status}><div><strong>{status}</strong><span>{appointments.filter((appointment) => appointment.status === status).length}</span></div></div>
+                  ))}
                 </div>
-                <span>Monthly</span>
-              </div>
-              <div className="stacked-chart">
-                {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
-                  <div key={month}>
-                    <span style={{ height: `${38 + chartSeries.patients[index]}px` }} />
-                    <i style={{ height: `${10 + index * 2}px` }} />
-                    <b style={{ height: `${5 + (index % 4) * 5}px` }} />
-                    <small>{month}</small>
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            <article className="panel">
-              <div className="panel-heading">
-                <h3>Top Treatment</h3>
-                <span>Monthly</span>
-              </div>
-              <div className="treatment-list">
-                {[
-                  ['Cardiology Patients', 92, 'green'],
-                  ['Neurology Patients', 32, 'yellow'],
-                  ['Oncology Patients', 24, 'orange']
-                ].map(([label, value, tone]) => (
-                  <div key={label}>
-                    <div><strong>{label}</strong><span>{value}%</span></div>
-                    <progress value={Number(value)} max="100" className={`progress-${tone}`} />
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            <article className="panel">
-              <div className="panel-heading">
-                <h3>Total Visitors</h3>
-                <span>Monthly</span>
-              </div>
-              <DonutChart value={83842} label="Total Visitors" />
-              <div className="legend-list">
-                <span><i className="dot-green" />Total Male <b>56%</b></span>
-                <span><i className="dot-yellow" />Total Female <b>44%</b></span>
-                <span><i className="dot-gray" />Total Children <b>24%</b></span>
-              </div>
+              ) : <p className="muted">Not available for this account.</p>}
             </article>
           </section>
         </div>
-
         <aside className="dashboard-side">
           <article className="panel schedule-panel">
-            <div className="panel-heading">
-              <h3>Doctor's Schedule</h3>
-              <span>See all ({demoDoctors.length})</span>
-            </div>
-            {demoDoctors.map((doctor) => (
+            <div className="panel-heading"><h3>Doctor directory</h3><span>{doctors === null ? 'Unavailable' : `${doctors.length} profiles`}</span></div>
+            {doctors?.slice(0, 5).map((doctor) => (
               <div className="person-row" key={doctor.id}>
-                <Avatar label={doctor.avatar} />
+                <Avatar label={doctor.userId === user.id ? user.fullName ?? user.email : 'DR'} />
                 <div>
-                  <strong>{doctor.name}</strong>
-                  <span>{doctor.specialtyName}</span>
+                  <strong>{doctor.userId === user.id ? user.fullName ?? user.email : `Doctor ${shortId(doctor.id)}`}</strong>
+                  <span>{doctor.specialtyName ?? 'Specialty not provided'}</span>
                 </div>
-                <Badge tone={doctor.status}>{doctor.status}</Badge>
               </div>
             ))}
+            {doctors?.length === 0 && <p className="muted">No doctor profiles found.</p>}
           </article>
-
           <article className="panel today-panel">
-            <div className="panel-heading">
-              <h3>Today Patient's</h3>
-              <span>See all ({appointments.length})</span>
-            </div>
+            <div className="panel-heading"><h3>My appointments today</h3><span>{dashboard ? todayAppointments.length : 'Unavailable'}</span></div>
+            {dashboard && todayAppointments.length === 0 && <p className="muted">No appointments today.</p>}
             <div className="today-grid">
-              {appointments.slice(0, 4).map((appointment) => (
+              {todayAppointments.slice(0, 4).map((appointment) => (
                 <div className="today-card" key={appointment.id}>
                   <strong>{formatTime(appointment.startTime)}</strong>
                   <span>{formatDate(appointment.appointmentDate)}</span>
-                  <div>
-                    <Avatar label={appointment.patientAvatar} size="sm" />
-                    <p>{appointment.patientName}</p>
-                  </div>
+                  <div><Avatar label={appointment.patientAvatar} size="sm" /><p>{appointment.patientName}</p></div>
+                  <Badge tone={appointment.status}>{appointment.status}</Badge>
                 </div>
               ))}
             </div>
           </article>
-
-          <article className="premium-panel">
-            <div>
-              <strong>Upgrade your plan</strong>
-              <button type="button">Go Premium</button>
-            </div>
-            <span>UP</span>
-          </article>
         </aside>
       </section>
     </>
-  );
-}
-
-type MetricCardProps = {
-  icon: ReactNode;
-  label: string;
-  value: string;
-  trend: string;
-  direction: 'up' | 'down';
-  tone: 'green' | 'purple' | 'blue' | 'orange';
-  chart: ReactNode;
-};
-
-function MetricCard({ icon, label, value, trend, direction, tone, chart }: MetricCardProps) {
-  const TrendIcon = direction === 'up' ? TrendingUp : TrendingDown;
-
-  return (
-    <article className={`metric-card metric-${tone}`}>
-      <div className="metric-icon">{icon}</div>
-      <div>
-        <strong>{value}</strong>
-        <span>{label}</span>
-      </div>
-      <p className={direction}>
-        <TrendIcon size={15} />
-        {trend}
-        <small>vs last month</small>
-      </p>
-      {chart}
-    </article>
   );
 }

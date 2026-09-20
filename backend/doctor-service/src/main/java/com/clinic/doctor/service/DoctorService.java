@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class DoctorService {
@@ -39,6 +40,11 @@ public class DoctorService {
         this.doctorRepository = doctorRepository;
         this.specialtyRepository = specialtyRepository;
         this.scheduleRepository = scheduleRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<DoctorProfileResponse> listDoctors() {
+        return doctorRepository.findAll().stream().map(this::toResponse).toList();
     }
 
     @Transactional(readOnly = true)

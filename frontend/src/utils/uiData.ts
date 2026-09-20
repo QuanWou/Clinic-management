@@ -1,67 +1,52 @@
-import { demoAppointments, demoDoctors, demoInvoices, demoMedicalRecords, demoPatients } from '../data/demoClinicData';
-import type { AppointmentResponse, InvoiceResponse, MedicalRecordResponse } from '../types/domain';
+import type { AppointmentResponse, CurrentUser, DoctorProfileResponse, InvoiceResponse, MedicalRecordResponse, PatientProfileResponse } from '../types/domain';
 import type { UiAppointment, UiInvoice, UiMedicalRecord } from '../types/view';
 import { shortId } from './format';
 
-export function getUiAppointments(appointments?: AppointmentResponse[] | null): UiAppointment[] {
-  if (!appointments?.length) {
-    return demoAppointments;
-  }
+export type Lookup = {
+  user?: CurrentUser | null;
+  patients?: PatientProfileResponse[] | null;
+  doctors?: DoctorProfileResponse[] | null;
+};
 
-  return appointments.map((appointment) => {
-    const patient = demoPatients.find((item) => item.id === appointment.patientId);
-    const doctor = demoDoctors.find((item) => item.id === appointment.doctorId);
+function patientName(patientId: string, lookup: Lookup): string {
+  const profile = lookup.patients?.find((patient) => patient.id === patientId);
+  return profile && lookup.user?.id === profile.userId
+    ? lookup.user.fullName ?? lookup.user.email
+    : `Patient ${shortId(patientId)}`;
+}
 
-    return {
+function doctorName(doctorId: string, lookup: Lookup): string {
+  const profile = lookup.doctors?.find((doctor) => doctor.id === doctorId);
+  return profile && lookup.user?.id === profile.userId
+    ? lookup.user.fullName ?? lookup.user.email
+    : `Doctor ${shortId(doctorId)}`;
+}
+
+export function getUiAppointments(appointments?: AppointmentResponse[] | null, lookup: Lookup = {}): UiAppointment[] {
+  return (appointments ?? []).map((appointment) => ({
       ...appointment,
-      patientName: patient?.name ?? `Patient ${shortId(appointment.patientId)}`,
-      doctorName: doctor?.name ?? `Doctor ${shortId(appointment.doctorId)}`,
-      department: doctor?.specialtyName ?? 'General Care',
-      patientAvatar: patient?.avatar ?? 'PT',
-      doctorAvatar: doctor?.avatar ?? 'DR'
-    };
-  });
+      patientName: patientName(appointment.patientId, lookup),
+      doctorName: doctorName(appointment.doctorId, lookup),
+      department: lookup.doctors?.find((doctor) => doctor.id === appointment.doctorId)?.specialtyName ?? 'Not available',
+      patientAvatar: 'PT',
+      doctorAvatar: 'DR'
+    }));
 }
 
-export function getUiMedicalRecords(records?: MedicalRecordResponse[] | null): UiMedicalRecord[] {
-  if (!records?.length) {
-    return demoMedicalRecords;
-  }
-
-  return records.map((record) => {
-    const patient = demoPatients.find((item) => item.id === record.patientId);
-    const doctor = demoDoctors.find((item) => item.id === record.doctorId);
-
-    return {
+export function getUiMedicalRecords(records?: MedicalRecordResponse[] | null, lookup: Lookup = {}): UiMedicalRecord[] {
+  return (records ?? []).map((record) => ({
       ...record,
-      patientName: patient?.name ?? `Patient ${shortId(record.patientId)}`,
-      doctorName: doctor?.name ?? `Doctor ${shortId(record.doctorId)}`,
-      recordType: 'Consultation',
+      patientName: patientName(record.patientId, lookup),
+      doctorName: doctorName(record.doctorId, lookup),
+      recordType: 'Medical record',
       status: 'Completed'
-    };
-  });
+    }));
 }
 
-export function getUiInvoices(invoices?: InvoiceResponse[] | null): UiInvoice[] {
-  if (!invoices?.length) {
-    return demoInvoices;
-  }
-
-  return invoices.map((invoice) => {
-    const patient = demoPatients.find((item) => item.id === invoice.patientId);
-
-    return {
+export function getUiInvoices(invoices?: InvoiceResponse[] | null, lookup: Lookup = {}): UiInvoice[] {
+  return (invoices ?? []).map((invoice) => ({
       ...invoice,
-      patientName: patient?.name ?? `Patient ${shortId(invoice.patientId)}`,
-      patientAvatar: patient?.avatar ?? 'PT'
-    };
-  });
-}
-
-export function findDemoPatient(id?: string) {
-  return demoPatients.find((patient) => patient.id === id) ?? demoPatients[0];
-}
-
-export function findDemoDoctor(id?: string) {
-  return demoDoctors.find((doctor) => doctor.id === id) ?? demoDoctors[0];
+      patientName: patientName(invoice.patientId, lookup),
+      patientAvatar: 'PT'
+    }));
 }
