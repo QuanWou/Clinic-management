@@ -33,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class MedicalRecordServiceImplTest {
@@ -51,6 +53,9 @@ class MedicalRecordServiceImplTest {
     @Mock
     private PatientClient patientClient;
 
+    @Mock
+    private MedicalAuditService auditService;
+
     @InjectMocks
     private MedicalRecordServiceImpl medicalRecordService;
 
@@ -66,7 +71,7 @@ class MedicalRecordServiceImplTest {
         appointmentId = UUID.randomUUID();
         patientId = UUID.randomUUID();
         doctorId = UUID.randomUUID();
-        doctorPrincipal = new CurrentUserPrincipal(currentUserId, "doctor@test.com", "Doctor", Set.of("DOCTOR"));
+        doctorPrincipal = new CurrentUserPrincipal(currentUserId, "doctor@test.com", "Doctor", Set.of("ROLE_DOCTOR"));
     }
 
     @Test
@@ -100,6 +105,8 @@ class MedicalRecordServiceImplTest {
 
     @Test
     void createShouldThrowWhenMedicalRecordAlreadyExistsForAppointment() {
+        when(appointmentClient.getById(AUTHORIZATION, appointmentId)).thenReturn(appointment("COMPLETED"));
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
         when(medicalRecordRepository.existsByAppointmentId(appointmentId)).thenReturn(true);
 
         BusinessException exception = assertThrows(
@@ -112,8 +119,8 @@ class MedicalRecordServiceImplTest {
 
     @Test
     void createShouldThrowWhenAppointmentIsNotCompleted() {
-        when(medicalRecordRepository.existsByAppointmentId(appointmentId)).thenReturn(false);
         when(appointmentClient.getById(AUTHORIZATION, appointmentId)).thenReturn(appointment("CONFIRMED"));
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
 
         BusinessException exception = assertThrows(
                 BusinessException.class,
@@ -127,7 +134,7 @@ class MedicalRecordServiceImplTest {
     void getByIdShouldAllowPatientWhoOwnsRecord() {
         UUID medicalRecordId = UUID.randomUUID();
         UUID patientUserId = UUID.randomUUID();
-        CurrentUserPrincipal patientPrincipal = new CurrentUserPrincipal(patientUserId, "patient@test.com", "Patient", Set.of("PATIENT"));
+        CurrentUserPrincipal patientPrincipal = new CurrentUserPrincipal(patientUserId, "patient@test.com", "Patient", Set.of("ROLE_PATIENT"));
         MedicalRecord medicalRecord = medicalRecord();
 
         when(medicalRecordRepository.findById(medicalRecordId)).thenReturn(Optional.of(medicalRecord));
@@ -137,6 +144,101 @@ class MedicalRecordServiceImplTest {
 
         assertEquals(medicalRecord.getId(), response.id());
         assertEquals(patientId, response.patientId());
+    }
+
+    @Test
+    void getByIdShouldRejectAdminWithoutClinicalRelationship() {
+        UUID recordId = UUID.randomUUID();
+        CurrentUserPrincipal admin = new CurrentUserPrincipal(currentUserId, "admin@test.com", "Admin", Set.of("ROLE_ADMIN"));
+        when(medicalRecordRepository.findById(recordId)).thenReturn(Optional.of(medicalRecord()));
+
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> medicalRecordService.getById(currentUserId, AUTHORIZATION, admin, recordId));
+        assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
+    }
+
+    @Test
+    void createShouldRejectAdminEvenWhenAppointmentExists() {
+        CurrentUserPrincipal admin = new CurrentUserPrincipal(currentUserId, "admin@test.com", "Admin", Set.of("ROLE_ADMIN"));
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> medicalRecordService.create(currentUserId, AUTHORIZATION, admin, createRequest()));
+        assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
+    }
+
+    @Test
+    void getByIdShouldRejectAnotherPatient() {
+        UUID recordId = UUID.randomUUID();
+        UUID patientUserId = UUID.randomUUID();
+        CurrentUserPrincipal patient = new CurrentUserPrincipal(patientUserId, "patient@test.com", "Patient", Set.of("ROLE_PATIENT"));
+        when(medicalRecordRepository.findById(recordId)).thenReturn(Optional.of(medicalRecord()));
+        when(patientClient.getCurrentPatientProfile(AUTHORIZATION)).thenReturn(
+                new PatientProfileResponse(UUID.randomUUID(), patientUserId, null, null, null, null, LocalDateTime.now()));
+
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> medicalRecordService.getById(patientUserId, AUTHORIZATION, patient, recordId));
+        assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
+    }
+
+    @Test
+    void createShouldHideDuplicateRecordFromUnrelatedDoctor() {
+        when(appointmentClient.getById(AUTHORIZATION, appointmentId)).thenReturn(appointment("COMPLETED"));
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(UUID.randomUUID()));
+
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> medicalRecordService.create(currentUserId, AUTHORIZATION, doctorPrincipal, createRequest()));
+        assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
+        org.mockito.Mockito.verify(medicalRecordRepository, org.mockito.Mockito.never()).existsByAppointmentId(appointmentId);
+    }
+
+    @Test
+    void patientHistoryRejectsUnrelatedDoctor() {
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
+        when(medicalRecordRepository.findByPatientIdAndDoctorIdOrderByCreatedAtDesc(patientId, doctorId))
+                .thenReturn(List.of());
+
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> medicalRecordService.getByPatientId(currentUserId, AUTHORIZATION, doctorPrincipal, patientId));
+        assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
+    }
+
+    @Test
+    void receptionistCannotReadMedicalRecordOrPatientHistory() {
+        UUID recordId = UUID.randomUUID();
+        CurrentUserPrincipal receptionist = new CurrentUserPrincipal(currentUserId, "frontdesk@test.com",
+                "Front desk", Set.of("ROLE_RECEPTIONIST"));
+        when(medicalRecordRepository.findById(recordId)).thenReturn(Optional.of(medicalRecord()));
+
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> medicalRecordService.getById(currentUserId, AUTHORIZATION, receptionist, recordId)).getErrorCode());
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> medicalRecordService.getByPatientId(currentUserId, AUTHORIZATION, receptionist, patientId)).getErrorCode());
+        verify(auditService, never()).recordRead(any(), any(), any());
+    }
+
+    @Test
+    void doctorCannotReadAnotherDoctorsMedicalRecord() {
+        UUID recordId = UUID.randomUUID();
+        when(medicalRecordRepository.findById(recordId)).thenReturn(Optional.of(medicalRecord()));
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(UUID.randomUUID()));
+
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> medicalRecordService.getById(currentUserId, AUTHORIZATION, doctorPrincipal, recordId)).getErrorCode());
+        verify(auditService, never()).recordRead(any(), any(), any());
+    }
+
+    @Test
+    void missingAuditWriteBlocksClinicalRecordRead() {
+        UUID recordId = UUID.randomUUID();
+        UUID patientUserId = UUID.randomUUID();
+        CurrentUserPrincipal patient = new CurrentUserPrincipal(patientUserId, "patient@test.com",
+                "Patient", Set.of("ROLE_PATIENT"));
+        when(medicalRecordRepository.findById(recordId)).thenReturn(Optional.of(medicalRecord()));
+        when(patientClient.getCurrentPatientProfile(AUTHORIZATION)).thenReturn(patientProfile(patientUserId));
+        org.mockito.Mockito.doThrow(new org.springframework.dao.DataIntegrityViolationException("audit unavailable"))
+                .when(auditService).recordRead(patientUserId, "MEDICAL_RECORD_READ", recordId);
+
+        assertThrows(org.springframework.dao.DataIntegrityViolationException.class,
+                () -> medicalRecordService.getById(patientUserId, AUTHORIZATION, patient, recordId));
     }
 
     private CreateMedicalRecordRequest createRequest() {

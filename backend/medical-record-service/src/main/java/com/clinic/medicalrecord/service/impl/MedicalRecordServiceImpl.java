@@ -38,30 +38,28 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     private final AppointmentClient appointmentClient;
     private final DoctorClient doctorClient;
     private final PatientClient patientClient;
+    private final MedicalAuditService auditService;
 
     @Override
     @Transactional
     public MedicalRecordResponse create(UUID currentUserId, String authorizationHeader, CurrentUserPrincipal principal, CreateMedicalRecordRequest request) {
         log.info("User {} is creating medical record for appointment {}", currentUserId, request.appointmentId());
 
-        if (!principal.hasRole("DOCTOR") && !principal.hasRole("ADMIN")) {
-            throw new BusinessException(ErrorCode.FORBIDDEN, "Only doctors or admins can create medical records");
-        }
-
-        if (medicalRecordRepository.existsByAppointmentId(request.appointmentId())) {
-            throw new BusinessException(ErrorCode.CONFLICT, "Medical record already exists for this appointment");
+        if (!principal.hasRole("DOCTOR")) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Only doctors can create medical records");
         }
 
         AppointmentResponse appointment = appointmentClient.getById(authorizationHeader, request.appointmentId());
+        DoctorProfileResponse doctorProfile = doctorClient.getCurrentDoctorProfile(authorizationHeader);
+        if (!appointment.doctorId().equals(doctorProfile.id())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Not authorized to create medical record for this appointment");
+        }
+        // Authorize before disclosing the existence or lifecycle of a clinical record.
+        if (medicalRecordRepository.existsByAppointmentId(request.appointmentId())) {
+            throw new BusinessException(ErrorCode.CONFLICT, "Medical record already exists for this appointment");
+        }
         if (!COMPLETED_STATUS.equals(appointment.status())) {
             throw new BusinessException(ErrorCode.VALIDATION_ERROR, "Medical record can only be created for completed appointments");
-        }
-
-        if (principal.hasRole("DOCTOR") && !principal.hasRole("ADMIN")) {
-            DoctorProfileResponse doctorProfile = doctorClient.getCurrentDoctorProfile(authorizationHeader);
-            if (!appointment.doctorId().equals(doctorProfile.id())) {
-                throw new BusinessException(ErrorCode.FORBIDDEN, "Not authorized to create medical record for this appointment");
-            }
         }
 
         MedicalRecord medicalRecord = MedicalRecord.builder()
@@ -82,7 +80,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
             medicalRecord.addPrescription(prescription);
         }
 
-        return toResponse(medicalRecordRepository.save(medicalRecord));
+        MedicalRecord saved = medicalRecordRepository.save(medicalRecord);
+        auditService.recordMutation(currentUserId, "MEDICAL_RECORD_CREATED", saved.getId());
+        return toResponse(saved);
     }
 
     @Override
@@ -91,6 +91,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         log.info("Fetching medical record {} for user {}", medicalRecordId, currentUserId);
         MedicalRecord medicalRecord = getMedicalRecordById(medicalRecordId);
         authorizeRead(authorizationHeader, principal, medicalRecord);
+        auditService.recordRead(currentUserId, "MEDICAL_RECORD_READ", medicalRecordId);
         return toResponse(medicalRecord);
     }
 
@@ -103,8 +104,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         }
 
         PatientProfileResponse patientProfile = patientClient.getCurrentPatientProfile(authorizationHeader);
-        return medicalRecordRepository.findByPatientIdOrderByCreatedAtDesc(patientProfile.id())
-                .stream()
+        List<MedicalRecord> records = medicalRecordRepository.findByPatientIdOrderByCreatedAtDesc(patientProfile.id());
+        records.forEach(record -> auditService.recordRead(currentUserId, "MEDICAL_RECORD_READ", record.getId()));
+        return records.stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -114,19 +116,17 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     public List<MedicalRecordResponse> getByPatientId(UUID currentUserId, String authorizationHeader, CurrentUserPrincipal principal, UUID patientId) {
         log.info("Fetching medical records for patient {} by user {}", patientId, currentUserId);
 
-        if (principal.hasRole("ADMIN") || principal.hasRole("RECEPTIONIST")) {
-            return medicalRecordRepository.findByPatientIdOrderByCreatedAtDesc(patientId)
-                    .stream()
-                    .map(this::toResponse)
-                    .toList();
-        }
-
         if (principal.hasRole("DOCTOR")) {
             UUID doctorId = doctorClient.getCurrentDoctorProfile(authorizationHeader).id();
-            return medicalRecordRepository.findByPatientIdOrderByCreatedAtDesc(patientId)
-                    .stream()
-                    .filter(record -> record.getDoctorId().equals(doctorId))
-                    .map(this::toResponse)
+            List<MedicalRecord> records = medicalRecordRepository.findByPatientIdAndDoctorIdOrderByCreatedAtDesc(patientId, doctorId);
+            if (records.isEmpty()) {
+                throw new BusinessException(ErrorCode.FORBIDDEN, "Not authorized to view patient medical records");
+            }
+            return records.stream()
+                    .map(record -> {
+                        auditService.recordRead(currentUserId, "MEDICAL_RECORD_READ", record.getId());
+                        return toResponse(record);
+                    })
                     .toList();
         }
 
@@ -139,10 +139,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
 
     private void authorizeRead(String authorizationHeader, CurrentUserPrincipal principal, MedicalRecord medicalRecord) {
-        if (principal.hasRole("ADMIN") || principal.hasRole("RECEPTIONIST")) {
-            return;
-        }
-
         if (principal.hasRole("DOCTOR")) {
             UUID doctorId = doctorClient.getCurrentDoctorProfile(authorizationHeader).id();
             if (medicalRecord.getDoctorId().equals(doctorId)) {

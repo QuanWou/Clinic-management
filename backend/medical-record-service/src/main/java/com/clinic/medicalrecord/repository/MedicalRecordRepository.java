@@ -16,4 +16,6 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, UU
     Optional<MedicalRecord> findByAppointmentId(UUID appointmentId);
 
     List<MedicalRecord> findByPatientIdOrderByCreatedAtDesc(UUID patientId);
+
+    List<MedicalRecord> findByPatientIdAndDoctorIdOrderByCreatedAtDesc(UUID patientId, UUID doctorId);
 }
