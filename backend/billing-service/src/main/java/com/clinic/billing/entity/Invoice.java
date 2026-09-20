@@ -42,6 +42,18 @@ public class Invoice {
     @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
+    @Column(name = "catalog_revision", length = 100)
+    private String catalogRevision;
+
+    @Column(name = "performed_revision", length = 100)
+    private String performedRevision;
+
+    @Column(name = "lab_revision", length = 100)
+    private String labRevision;
+
+    @Column(name = "currency", length = 3)
+    private String currency;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     private InvoiceStatus status;
@@ -52,6 +64,21 @@ public class Invoice {
 
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
+
+    @Column(name = "paid_by")
+    private UUID paidBy;
+
+    @Column(name = "refunded_at")
+    private LocalDateTime refundedAt;
+
+    @Column(name = "refunded_by")
+    private UUID refundedBy;
+
+    @Column(name = "cancelled_at")
+    private LocalDateTime cancelledAt;
+
+    @Column(name = "cancelled_by")
+    private UUID cancelledBy;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -1,8 +1,10 @@
 package com.clinic.billing.controller;
 
 import com.clinic.billing.dto.CreateInvoiceRequest;
+import com.clinic.billing.dto.CashPaymentRequest;
+import com.clinic.billing.dto.CashRefundRequest;
 import com.clinic.billing.dto.InvoiceResponse;
-import com.clinic.billing.dto.PayInvoiceRequest;
+import com.clinic.billing.dto.PaymentTransactionResponse;
 import com.clinic.billing.security.CurrentUserPrincipal;
 import com.clinic.billing.service.BillingService;
 import com.clinic.common.dto.ApiResponse;
@@ -87,16 +89,40 @@ public class BillingController {
         );
     }
 
-    @PatchMapping("/{id}/pay")
-    public ApiResponse<InvoiceResponse> pay(
+    @PostMapping("/{id}/cash-payment")
+    public ApiResponse<InvoiceResponse> confirmCashPayment(
             @AuthenticationPrincipal CurrentUserPrincipal principal,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @PathVariable("id") UUID id,
-            @Valid @RequestBody PayInvoiceRequest request
+            @Valid @RequestBody CashPaymentRequest request
     ) {
         return ApiResponse.success(
-                "Invoice paid successfully",
-                billingService.pay(principal.id(), authorizationHeader, principal, id, request)
+                "Cash receipt confirmed by cashier",
+                billingService.confirmCashPayment(principal, id, request)
         );
+    }
+
+    @PostMapping("/{id}/cash-refund")
+    public ApiResponse<InvoiceResponse> confirmCashRefund(
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @PathVariable("id") UUID id,
+            @Valid @RequestBody CashRefundRequest request
+    ) {
+        return ApiResponse.success("Cash refund confirmed", billingService.confirmCashRefund(principal, id, request));
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public ApiResponse<InvoiceResponse> cancel(
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @PathVariable("id") UUID id
+    ) {
+        return ApiResponse.success("Unpaid invoice cancelled", billingService.cancel(principal, id));
+    }
+
+    @GetMapping("/{id}/transactions")
+    public ApiResponse<List<PaymentTransactionResponse>> getTransactions(
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @PathVariable("id") UUID id
+    ) {
+        return ApiResponse.success("Payment transactions fetched", billingService.getTransactions(principal, id));
     }
 }

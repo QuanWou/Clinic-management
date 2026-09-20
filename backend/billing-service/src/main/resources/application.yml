@@ -24,6 +24,12 @@ services:
     url: http://localhost:8086
   patient:
     url: http://localhost:8084
+  catalog:
+    # Task 02 catalog API: /api/catalog/services/{id}/price?on=YYYY-MM-DD
+    url: ${CATALOG_SERVICE_URL:http://localhost:8091}
+  medical:
+    # Task 04 billable-items endpoint; must be deployed before invoicing.
+    url: ${MEDICAL_SERVICE_URL:http://localhost:8087}
 
 app:
   security:
