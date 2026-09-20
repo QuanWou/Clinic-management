@@ -4,10 +4,12 @@ import com.clinic.appointment.client.DoctorAvailabilityResponse;
 import com.clinic.appointment.client.DoctorClient;
 import com.clinic.appointment.client.PatientClient;
 import com.clinic.appointment.client.PatientProfileResponse;
+import com.clinic.appointment.client.RecipientDirectoryClient;
 import com.clinic.appointment.dto.CreateAppointmentRequest;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
 import com.clinic.appointment.repository.AppointmentRepository;
+import com.clinic.appointment.repository.AppointmentNotificationOutboxRepository;
 import com.clinic.appointment.repository.ReceptionVisitRepository;
 import com.clinic.appointment.service.ReceptionQueueService;
 import com.clinic.common.constants.ErrorCode;
@@ -54,6 +56,12 @@ class AppointmentServiceImplTest {
 
     @Mock
     private ReceptionQueueService receptionQueueService;
+
+    @Mock
+    private AppointmentNotificationOutboxRepository notificationOutbox;
+
+    @Mock
+    private RecipientDirectoryClient recipients;
 
     @InjectMocks
     private AppointmentServiceImpl appointmentService;

@@ -21,20 +21,33 @@ class JwtServiceTest {
         String token = Jwts.builder().subject(userId.toString())
                 .claim("email", "user@example.com")
                 .claim("roles", List.of("ROLE_PATIENT", "ROLE_DOCTOR"))
+                .claim("token_type", "access")
                 .expiration(Date.from(Instant.now().plusSeconds(600)))
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8))).compact();
         assertThat(service.extractUserId(token)).isEqualTo(userId);
         assertThat(service.extractEmail(token)).isEqualTo("user@example.com");
         assertThat(service.extractAuthorities(token)).extracting("authority")
                 .containsExactly("ROLE_PATIENT", "ROLE_DOCTOR");
+        assertThat(service.isAccessTokenValid(token)).isTrue();
     }
 
     @Test
     void expiredTokenIsRejected() {
         String token = Jwts.builder().subject(UUID.randomUUID().toString())
                 .claim("email", "user@example.com").claim("roles", List.of("ROLE_PATIENT"))
+                .claim("token_type", "access")
                 .expiration(Date.from(Instant.now().minusSeconds(60)))
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8))).compact();
         assertThatThrownBy(() -> service.extractUserId(token)).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void refreshTokenCannotAuthenticateAsAccessToken() {
+        String token = Jwts.builder().subject(UUID.randomUUID().toString())
+                .claim("email", "user@example.com").claim("roles", List.of("ROLE_PATIENT"))
+                .claim("token_type", "refresh")
+                .expiration(Date.from(Instant.now().plusSeconds(600)))
+                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8))).compact();
+        assertThat(service.isAccessTokenValid(token)).isFalse();
     }
 }

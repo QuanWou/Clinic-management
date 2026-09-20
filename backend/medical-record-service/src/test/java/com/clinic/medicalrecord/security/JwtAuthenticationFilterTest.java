@@ -55,6 +55,8 @@ class JwtAuthenticationFilterTest {
     @Test
     void refreshTokenWithoutEmailAndRolesCannotAuthenticateMedicalService() throws Exception {
         String refresh = Jwts.builder().subject(UUID.randomUUID().toString())
+                .claim("email", "patient@test.com").claim("roles", Set.of("ROLE_PATIENT"))
+                .claim("token_type", "refresh")
                 .issuedAt(new Date()).expiration(Date.from(Instant.now().plusSeconds(3600)))
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8))).compact();
         assertNull(authenticate(refresh));

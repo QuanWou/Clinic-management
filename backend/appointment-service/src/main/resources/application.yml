@@ -18,6 +18,9 @@ spring:
     enabled: true
     schemas: appointment
     locations: classpath:db/migration
+  rabbitmq:
+    publisher-confirm-type: correlated
+    publisher-returns: true
 
 services:
   patient:
@@ -26,6 +29,13 @@ services:
     url: http://localhost:8085
 
 app:
+  internal:
+    service-key: ${APP_INTERNAL_SERVICE_KEY:local-dev-internal-service-key}
+  notification:
+    relay-interval-ms: ${NOTIFICATION_RELAY_INTERVAL_MS:5000}
+    rabbitmq:
+      exchange: ${NOTIFICATION_EXCHANGE:notification.exchange}
+      event-routing-key: ${NOTIFICATION_EVENT_ROUTING_KEY:notification.business}
   security:
     jwt:
       secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF

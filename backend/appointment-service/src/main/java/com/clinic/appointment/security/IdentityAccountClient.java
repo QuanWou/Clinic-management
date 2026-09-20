@@ -2,6 +2,7 @@ package com.clinic.appointment.security;
 
 import com.clinic.common.dto.ApiResponse;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class IdentityAccountClient {
     private final RestClient restClient;
 
+    @Autowired
     public IdentityAccountClient(RestClient.Builder builder,
                                  @Value("${services.identity.url:${SERVICES_IDENTITY_URL:http://identity-service:8083}}") String identityUrl) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();

@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,5 +40,21 @@ public class JwtService {
             throw new IllegalArgumentException("Invalid roles claim");
         }
         return roleList.stream().map(role -> new SimpleGrantedAuthority((String) role)).toList();
+    }
+
+    public boolean isAccessTokenValid(String token) {
+        try {
+            Claims claims = claims(token);
+            UUID.fromString(claims.getSubject());
+            Object roles = claims.get("roles");
+            return claims.getExpiration().after(new Date())
+                    && "access".equals(claims.get("token_type", String.class))
+                    && claims.get("email", String.class) != null
+                    && roles instanceof List<?> roleList && !roleList.isEmpty()
+                    && roleList.stream().allMatch(role -> role instanceof String name
+                    && name.matches("ROLE_(ADMIN|RECEPTIONIST|DOCTOR|PATIENT)"));
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }

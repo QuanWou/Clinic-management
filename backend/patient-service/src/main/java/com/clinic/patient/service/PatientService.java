@@ -3,6 +3,7 @@ package com.clinic.patient.service;
 import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
 import com.clinic.patient.dto.PatientProfileResponse;
+import com.clinic.patient.dto.PatientRecipientResponse;
 import com.clinic.patient.dto.UpdatePatientRequest;
 import com.clinic.patient.entity.Patient;
 import com.clinic.patient.repository.PatientRepository;
@@ -32,6 +33,16 @@ public class PatientService {
         Patient patient = patientRepository.findByUserId(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Patient profile not found"));
         return toResponse(patient);
+    }
+
+    @Transactional(readOnly = true)
+    public PatientRecipientResponse getRecipient(UUID patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Patient profile not found"));
+        if (patient.getUserId() == null) {
+            throw new BusinessException(ErrorCode.CONFLICT, "Patient has no linked identity account");
+        }
+        return new PatientRecipientResponse(patient.getId(), patient.getUserId());
     }
 
     @Transactional

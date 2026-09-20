@@ -18,6 +18,9 @@ spring:
     enabled: true
     schemas: billing
     locations: classpath:db/migration
+  rabbitmq:
+    publisher-confirm-type: correlated
+    publisher-returns: true
 
 services:
   appointment:
@@ -32,6 +35,13 @@ services:
     url: ${MEDICAL_SERVICE_URL:http://localhost:8087}
 
 app:
+  internal:
+    service-key: ${APP_INTERNAL_SERVICE_KEY:local-dev-internal-service-key}
+  notification:
+    relay-interval-ms: ${APP_NOTIFICATION_RELAY_INTERVAL_MS:10000}
+    rabbitmq:
+      exchange: ${APP_NOTIFICATION_RABBITMQ_EXCHANGE:notification.exchange}
+      event-routing-key: ${APP_NOTIFICATION_RABBITMQ_EVENT_ROUTING_KEY:notification.business}
   security:
     jwt:
       secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF

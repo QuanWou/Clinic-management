@@ -26,6 +26,9 @@ public class Appointment {
     @Column(name = "patient_id", nullable = false)
     private UUID patientId;
 
+    @Column(name = "patient_user_id")
+    private UUID patientUserId;
+
     @Column(name = "doctor_id", nullable = false)
     private UUID doctorId;
 

@@ -122,6 +122,23 @@ class DoctorServiceTest {
     }
 
     @Test
+    void inactiveDoctorIsHiddenAndNeverAvailableEvenWithSchedule() {
+        Doctor inactive = doctor(UUID.randomUUID(), specialty(UUID.randomUUID(), "Oncology"));
+        inactive.setActive(false);
+        Schedule schedule = Schedule.builder().doctor(inactive).dayOfWeek(5)
+                .startTime(LocalTime.of(8, 0)).endTime(LocalTime.of(17, 0)).build();
+        when(doctorRepository.findAll()).thenReturn(List.of(inactive));
+        when(doctorRepository.findById(inactive.getId())).thenReturn(Optional.of(inactive));
+
+        assertThat(doctorService.getDoctors(null)).isEmpty();
+        DoctorAvailabilityResponse availability = doctorService.getAvailability(
+                inactive.getId(), 5, LocalTime.of(9, 0), LocalTime.of(9, 30));
+
+        assertThat(availability.available()).isFalse();
+        verify(scheduleRepository, never()).findByDoctorIdOrderByDayOfWeekAscStartTimeAsc(inactive.getId());
+    }
+
+    @Test
     void rejectsInvalidAvailabilityRangeBeforeReadingDoctor() {
         UUID doctorId = UUID.randomUUID();
 

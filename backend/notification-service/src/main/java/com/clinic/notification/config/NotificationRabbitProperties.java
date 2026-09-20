@@ -9,8 +9,4 @@ public record NotificationRabbitProperties(
         String routingKey,
         String eventQueue,
         String eventRoutingKey
-) {
-    public NotificationRabbitProperties(String exchange, String queue, String routingKey) {
-        this(exchange, queue, routingKey, "notification.events.v2.queue", "notification.business");
-    }
-}
+) {}

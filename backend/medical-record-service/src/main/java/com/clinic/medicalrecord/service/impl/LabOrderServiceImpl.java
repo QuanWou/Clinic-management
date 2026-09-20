@@ -3,6 +3,8 @@ package com.clinic.medicalrecord.service.impl;
 import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
 import com.clinic.medicalrecord.client.DoctorClient;
+import com.clinic.medicalrecord.client.CatalogClient;
+import com.clinic.medicalrecord.client.RecipientDirectoryClient;
 import com.clinic.medicalrecord.client.PatientClient;
 import com.clinic.medicalrecord.dto.CollectLabSampleRequest;
 import com.clinic.medicalrecord.dto.CreateLabOrderRequest;
@@ -41,6 +43,8 @@ public class LabOrderServiceImpl implements LabOrderService {
     private final MedicalAuditService audit;
     private final LabEventOutboxRepository outbox;
     private final LabBillingClosureRepository billingClosures;
+    private final CatalogClient catalog;
+    private final RecipientDirectoryClient recipients;
 
     @Override
     @Transactional
@@ -52,12 +56,14 @@ public class LabOrderServiceImpl implements LabOrderService {
             throw new BusinessException(ErrorCode.VALIDATION_ERROR,
                     "Lab order requires a catalog service and a non-future performed date");
         }
+        CatalogClient.CatalogService catalogService = catalog.requireActiveService(
+                authorization, request.serviceId(), request.testCode().trim());
         ensureBillingOpen(record.getAppointmentId());
         LabOrder order = LabOrder.builder()
                 .medicalRecord(record)
-                .testCode(request.testCode().trim())
-                .testName(request.testName().trim())
-                .serviceId(request.serviceId())
+                .testCode(catalogService.code())
+                .testName(catalogService.name())
+                .serviceId(catalogService.id())
                 .performedOn(request.performedOn())
                 .status(LabOrderStatus.ORDERED)
                 .build();
@@ -145,7 +151,9 @@ public class LabOrderServiceImpl implements LabOrderService {
         MedicalRecord record = order.getMedicalRecord();
         // This write and the order/audit writes share the transaction: a rollback emits nothing.
         // A publisher/consumer must be agreed with Task 06 before any external delivery.
-        outbox.save(new LabEventOutbox(order.getId(), record.getAppointmentId(), order.getReleasedAt()));
+        UUID recipientUserId = recipients.resolve(record.getPatientId());
+        outbox.save(new LabEventOutbox(order.getId(), record.getAppointmentId(),
+                recipientUserId, order.getReleasedAt()));
         return released;
     }
 

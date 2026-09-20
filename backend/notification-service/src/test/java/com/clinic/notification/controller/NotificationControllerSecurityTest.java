@@ -45,6 +45,7 @@ class NotificationControllerSecurityTest {
     private String token(UUID userId, String role) {
         return "Bearer " + Jwts.builder().subject(userId.toString())
                 .claim("email", "user@example.com").claim("roles", List.of(role))
+                .claim("token_type", "access")
                 .expiration(Date.from(Instant.now().plusSeconds(600)))
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8))).compact();
     }
@@ -53,6 +54,8 @@ class NotificationControllerSecurityTest {
     void unauthenticatedAndRefreshTokensAreRejected() throws Exception {
         mvc.perform(get("/api/notifications/my")).andExpect(status().isUnauthorized());
         String refresh = "Bearer " + Jwts.builder().subject(UUID.randomUUID().toString())
+                .claim("email", "user@example.com").claim("roles", List.of("ROLE_PATIENT"))
+                .claim("token_type", "refresh")
                 .expiration(Date.from(Instant.now().plusSeconds(600)))
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8))).compact();
         mvc.perform(get("/api/notifications/my").header("Authorization", refresh))

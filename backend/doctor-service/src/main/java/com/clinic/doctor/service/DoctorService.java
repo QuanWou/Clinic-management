@@ -37,7 +37,10 @@ public class DoctorService {
 
     @Transactional(readOnly = true)
     public List<DoctorProfileResponse> listDoctors() {
-        return doctorRepository.findAll().stream().map(this::toResponse).toList();
+        return doctorRepository.findAll().stream()
+                .filter(Doctor::isActive)
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -54,6 +57,7 @@ public class DoctorService {
                 : doctorRepository.findBySpecialtyId(specialtyId);
 
         return doctors.stream()
+                .filter(Doctor::isActive)
                 .sorted(Comparator
                         .comparing((Doctor doctor) -> doctor.getSpecialty().getName(), String.CASE_INSENSITIVE_ORDER)
                         .thenComparing(Doctor::getId))
@@ -118,6 +122,9 @@ public class DoctorService {
     public DoctorAvailabilityResponse getAvailability(UUID doctorId, Integer dayOfWeek, LocalTime startTime, LocalTime endTime) {
         validateTimeRange(dayOfWeek, startTime, endTime);
         Doctor doctor = findDoctor(doctorId);
+        if (!doctor.isActive()) {
+            return new DoctorAvailabilityResponse(doctor.getId(), false, dayOfWeek, startTime, endTime);
+        }
 
         Schedule matchingSchedule = scheduleRepository.findByDoctorIdOrderByDayOfWeekAscStartTimeAsc(doctor.getId())
                 .stream()

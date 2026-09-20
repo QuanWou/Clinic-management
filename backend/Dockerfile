@@ -17,8 +17,8 @@ COPY notification-service/pom.xml notification-service/pom.xml
 ARG MODULE
 
 COPY . .
-RUN mvn -pl ${MODULE} -am install -DskipTests
-RUN mvn -pl ${MODULE} package spring-boot:repackage -DskipTests
+RUN --mount=type=cache,target=/root/.m2,sharing=locked mvn -pl ${MODULE} -am clean install -DskipTests
+RUN --mount=type=cache,target=/root/.m2,sharing=locked mvn -pl ${MODULE} package org.springframework.boot:spring-boot-maven-plugin:3.3.5:repackage -DskipTests
 
 FROM eclipse-temurin:21-jre
 

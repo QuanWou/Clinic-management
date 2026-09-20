@@ -24,6 +24,8 @@ spring:
     schemas: patient
 
 app:
+  internal:
+    service-key: ${APP_INTERNAL_SERVICE_KEY:local-dev-internal-service-key}
   security:
     jwt:
       secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF

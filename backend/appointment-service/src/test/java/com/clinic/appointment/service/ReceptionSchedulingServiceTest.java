@@ -4,12 +4,14 @@ import com.clinic.appointment.client.DoctorAvailabilityResponse;
 import com.clinic.appointment.client.DoctorClient;
 import com.clinic.appointment.client.PatientClient;
 import com.clinic.appointment.client.ReceptionPatientLookupResponse;
+import com.clinic.appointment.client.RecipientDirectoryClient;
 import com.clinic.appointment.dto.CreateReceptionAppointmentRequest;
 import com.clinic.appointment.dto.RescheduleReceptionAppointmentRequest;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
 import com.clinic.appointment.entity.ReceptionVisit;
 import com.clinic.appointment.repository.AppointmentRepository;
+import com.clinic.appointment.repository.AppointmentNotificationOutboxRepository;
 import com.clinic.appointment.repository.ReceptionAppointmentRepository;
 import com.clinic.appointment.repository.ReceptionVisitRepository;
 import com.clinic.common.constants.ErrorCode;
@@ -41,6 +43,8 @@ class ReceptionSchedulingServiceTest {
     @Mock PatientClient patientClient;
     @Mock DoctorClient doctorClient;
     @Mock BookingDayLock bookingLock;
+    @Mock AppointmentNotificationOutboxRepository notificationOutbox;
+    @Mock RecipientDirectoryClient recipients;
     @InjectMocks ReceptionSchedulingService service;
 
     private UUID patientId;
@@ -59,7 +63,7 @@ class ReceptionSchedulingServiceTest {
         var request = new CreateReceptionAppointmentRequest(patientId, doctorId, date,
                 LocalTime.of(9, 0), LocalTime.of(10, 0), "Consultation");
         when(patientClient.getPatientForReception("Bearer token", patientId))
-                .thenReturn(new ReceptionPatientLookupResponse(patientId));
+                .thenReturn(new ReceptionPatientLookupResponse(patientId, UUID.randomUUID()));
         when(doctorClient.getAvailability(eq("Bearer token"), eq(doctorId), eq(date.getDayOfWeek().getValue()),
                 any(), any())).thenReturn(new DoctorAvailabilityResponse(doctorId, true,
                 date.getDayOfWeek().getValue(), request.startTime(), request.endTime()));
@@ -83,7 +87,7 @@ class ReceptionSchedulingServiceTest {
         var request = new CreateReceptionAppointmentRequest(patientId, doctorId, date,
                 LocalTime.of(9, 0), LocalTime.of(10, 0), "Consultation");
         when(patientClient.getPatientForReception(any(), eq(patientId)))
-                .thenReturn(new ReceptionPatientLookupResponse(patientId));
+                .thenReturn(new ReceptionPatientLookupResponse(patientId, UUID.randomUUID()));
         when(doctorClient.getAvailability(any(), any(), any(), any(), any()))
                 .thenReturn(new DoctorAvailabilityResponse(doctorId, true, 1, request.startTime(), request.endTime()));
         when(receptionAppointments.hasOverlap(eq(doctorId), eq(date), any(), any(), any()))
@@ -154,7 +158,7 @@ class ReceptionSchedulingServiceTest {
         var request = new CreateReceptionAppointmentRequest(patientId, doctorId, date,
                 LocalTime.of(9, 0), LocalTime.of(10, 0), "Consultation");
         when(patientClient.getPatientForReception("Bearer token", patientId))
-                .thenReturn(new ReceptionPatientLookupResponse(patientId));
+                .thenReturn(new ReceptionPatientLookupResponse(patientId, UUID.randomUUID()));
         when(doctorClient.getAvailability(any(), any(), any(), any(), any()))
                 .thenReturn(new DoctorAvailabilityResponse(doctorId, true, 1, request.startTime(), request.endTime()));
         when(appointments.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException(

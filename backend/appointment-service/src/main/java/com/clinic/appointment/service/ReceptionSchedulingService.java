@@ -3,12 +3,15 @@ package com.clinic.appointment.service;
 import com.clinic.appointment.client.DoctorAvailabilityResponse;
 import com.clinic.appointment.client.DoctorClient;
 import com.clinic.appointment.client.PatientClient;
+import com.clinic.appointment.client.RecipientDirectoryClient;
 import com.clinic.appointment.dto.AppointmentResponse;
 import com.clinic.appointment.dto.CreateReceptionAppointmentRequest;
 import com.clinic.appointment.dto.RescheduleReceptionAppointmentRequest;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
+import com.clinic.appointment.entity.AppointmentNotificationOutbox;
 import com.clinic.appointment.repository.AppointmentRepository;
+import com.clinic.appointment.repository.AppointmentNotificationOutboxRepository;
 import com.clinic.appointment.repository.ReceptionAppointmentRepository;
 import com.clinic.appointment.repository.ReceptionVisitRepository;
 import com.clinic.common.constants.ErrorCode;
@@ -39,11 +42,13 @@ public class ReceptionSchedulingService {
     private final PatientClient patientClient;
     private final DoctorClient doctorClient;
     private final BookingDayLock bookingLock;
+    private final AppointmentNotificationOutboxRepository notificationOutbox;
+    private final RecipientDirectoryClient recipients;
 
     @Transactional
     public AppointmentResponse book(String authorization, CreateReceptionAppointmentRequest request) {
         validateSlot(request.appointmentDate(), request.startTime(), request.endTime());
-        patientClient.getPatientForReception(authorization, request.patientId());
+        var patient = patientClient.getPatientForReception(authorization, request.patientId());
         ensureDoctorAvailable(authorization, request.doctorId(), request.appointmentDate(),
                 request.startTime(), request.endTime());
         bookingLock.lock(request.doctorId(), request.appointmentDate());
@@ -51,6 +56,7 @@ public class ReceptionSchedulingService {
         ensureNoOverlap(request.doctorId(), request.appointmentDate(), request.startTime(), request.endTime(), null);
         Appointment created = saveWithOverlapMapping(Appointment.builder()
                 .patientId(request.patientId())
+                .patientUserId(patient.userId())
                 .doctorId(request.doctorId())
                 .appointmentDate(request.appointmentDate())
                 .startTime(request.startTime())
@@ -58,6 +64,7 @@ public class ReceptionSchedulingService {
                 .reason(request.reason().trim())
                 .status(AppointmentStatus.PENDING)
                 .build());
+        recordNotification("APPOINTMENT_CREATED", created);
         log.info("Reception booked appointment {} for patient {}", created.getId(), created.getPatientId());
         return toResponse(created);
     }
@@ -79,6 +86,7 @@ public class ReceptionSchedulingService {
         appointment.setEndTime(request.endTime());
         appointment.setStatus(AppointmentStatus.PENDING);
         Appointment updated = saveWithOverlapMapping(appointment);
+        recordNotification("APPOINTMENT_RESCHEDULED", updated);
         log.info("Reception rescheduled appointment {}", appointmentId);
         return toResponse(updated);
     }
@@ -89,6 +97,7 @@ public class ReceptionSchedulingService {
         validateMutable(appointment);
         appointment.setStatus(AppointmentStatus.CANCELLED);
         Appointment updated = appointments.saveAndFlush(appointment);
+        recordNotification("APPOINTMENT_CANCELLED", updated);
         log.info("Reception cancelled appointment {}", appointmentId);
         return toResponse(updated);
     }
@@ -157,5 +166,19 @@ public class ReceptionSchedulingService {
     private AppointmentResponse toResponse(Appointment a) {
         return new AppointmentResponse(a.getId(), a.getPatientId(), a.getDoctorId(), a.getAppointmentDate(),
                 a.getStartTime(), a.getEndTime(), a.getStatus(), a.getReason(), a.getCreatedAt(), a.getUpdatedAt());
+    }
+
+    private void recordNotification(String eventType, Appointment appointment) {
+        UUID recipient = appointment.getPatientUserId();
+        if (recipient == null) {
+            try {
+                recipient = recipients.resolve(appointment.getPatientId());
+                appointment.setPatientUserId(recipient);
+            } catch (BusinessException ex) {
+                log.warn("Skipping {} notification for appointment {} without linked identity", eventType, appointment.getId());
+                return;
+            }
+        }
+        notificationOutbox.save(new AppointmentNotificationOutbox(eventType, appointment.getId(), recipient));
     }
 }

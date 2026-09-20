@@ -22,7 +22,8 @@ class NotificationOutboxPublisherTest {
     private final NotificationRepository repository = mock(NotificationRepository.class);
     private final RabbitTemplate rabbit = mock(RabbitTemplate.class);
     private final NotificationOutboxPublisher publisher = new NotificationOutboxPublisher(repository, rabbit,
-            new NotificationRabbitProperties("notification.exchange", "notification.delivery.queue", "notification.delivery"));
+            new NotificationRabbitProperties("notification.exchange", "notification.delivery.queue", "notification.delivery",
+                    "notification.events.v2.queue", "notification.business"));
 
     @Test
     void publishesOnlyIdAndRecordsBrokerConfirmation() {

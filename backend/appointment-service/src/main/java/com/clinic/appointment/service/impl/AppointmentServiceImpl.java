@@ -4,11 +4,14 @@ import com.clinic.appointment.client.DoctorAvailabilityResponse;
 import com.clinic.appointment.client.DoctorClient;
 import com.clinic.appointment.client.PatientClient;
 import com.clinic.appointment.client.PatientProfileResponse;
+import com.clinic.appointment.client.RecipientDirectoryClient;
 import com.clinic.appointment.dto.AppointmentResponse;
 import com.clinic.appointment.dto.AppointmentAvailabilityResponse;
 import com.clinic.appointment.dto.CreateAppointmentRequest;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
+import com.clinic.appointment.entity.AppointmentNotificationOutbox;
+import com.clinic.appointment.repository.AppointmentNotificationOutboxRepository;
 import com.clinic.appointment.repository.AppointmentRepository;
 import com.clinic.appointment.repository.ReceptionVisitRepository;
 import com.clinic.appointment.security.CurrentUserPrincipal;
@@ -39,6 +42,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final DoctorClient doctorClient;
     private final ReceptionVisitRepository receptionVisitRepository;
     private final ReceptionQueueService receptionQueueService;
+    private final AppointmentNotificationOutboxRepository notificationOutbox;
+    private final RecipientDirectoryClient recipients;
 
     @Override
     @Transactional
@@ -77,6 +82,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = Appointment.builder()
                 .patientId(patientId)
+                .patientUserId(currentUserId)
                 .doctorId(request.doctorId())
                 .appointmentDate(request.appointmentDate())
                 .startTime(request.startTime())
@@ -94,6 +100,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             }
             throw ex;
         }
+
+        recordNotification("APPOINTMENT_CREATED", appointment, currentUserId);
 
         return mapToResponse(appointment);
     }
@@ -180,6 +188,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointment.setStatus(AppointmentStatus.CANCELLED);
         appointment = appointmentRepository.save(appointment);
+        recordNotification("APPOINTMENT_CANCELLED", appointment,
+                principal.hasRole("PATIENT") ? currentUserId : null);
 
         return mapToResponse(appointment);
     }
@@ -204,6 +214,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointment.setStatus(AppointmentStatus.CONFIRMED);
         appointment = appointmentRepository.save(appointment);
+        recordNotification("APPOINTMENT_CONFIRMED", appointment, null);
 
         return mapToResponse(appointment);
     }
@@ -279,6 +290,20 @@ public class AppointmentServiceImpl implements AppointmentService {
             ex = ex.getCause();
         }
         return false;
+    }
+
+    private void recordNotification(String eventType, Appointment appointment, UUID knownRecipient) {
+        UUID recipient = knownRecipient != null ? knownRecipient : appointment.getPatientUserId();
+        if (recipient == null) {
+            try {
+                recipient = recipients.resolve(appointment.getPatientId());
+                appointment.setPatientUserId(recipient);
+            } catch (BusinessException ex) {
+                log.warn("Skipping {} notification for appointment {} without linked identity", eventType, appointment.getId());
+                return;
+            }
+        }
+        notificationOutbox.save(new AppointmentNotificationOutbox(eventType, appointment.getId(), recipient));
     }
 
     private void validateTimeRange(LocalDate date, LocalTime startTime, LocalTime endTime) {

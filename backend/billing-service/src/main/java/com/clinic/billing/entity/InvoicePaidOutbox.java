@@ -22,6 +22,30 @@ public class InvoicePaidOutbox {
     private String eventType;
     @Column(name = "status", nullable = false, length = 40)
     private String status;
+    @Column(name = "recipient_user_id")
+    private UUID recipientUserId;
+    @Column(name = "publish_attempts", nullable = false)
+    @Builder.Default
+    private int publishAttempts = 0;
+    @Column(name = "next_attempt_at", nullable = false)
+    private LocalDateTime nextAttemptAt;
+    @Column(name = "published_at")
+    private LocalDateTime publishedAt;
+    @Column(name = "last_error", length = 255)
+    private String lastError;
     @CreationTimestamp @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    public void published() {
+        status = "PUBLISHED";
+        publishedAt = LocalDateTime.now();
+        lastError = null;
+    }
+
+    public void failed(String error) {
+        publishAttempts++;
+        lastError = error == null ? "Publish failed" : error.substring(0, Math.min(255, error.length()));
+        if (publishAttempts >= 5) status = "FAILED";
+        else nextAttemptAt = LocalDateTime.now().plusSeconds(15L * (1L << (publishAttempts - 1)));
+    }
 }

@@ -4,10 +4,12 @@ import com.clinic.appointment.client.DoctorClient;
 import com.clinic.appointment.client.DoctorProfileResponse;
 import com.clinic.appointment.client.PatientClient;
 import com.clinic.appointment.client.PatientProfileResponse;
+import com.clinic.appointment.client.RecipientDirectoryClient;
 import com.clinic.appointment.dto.CreateAppointmentRequest;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
 import com.clinic.appointment.repository.AppointmentRepository;
+import com.clinic.appointment.repository.AppointmentNotificationOutboxRepository;
 import com.clinic.appointment.repository.ReceptionVisitRepository;
 import com.clinic.appointment.security.CurrentUserPrincipal;
 import com.clinic.appointment.service.ReceptionQueueService;
@@ -43,6 +45,8 @@ class AppointmentAuthorizationTest {
     @Mock DoctorClient doctors;
     @Mock ReceptionVisitRepository visits;
     @Mock ReceptionQueueService receptionQueue;
+    @Mock AppointmentNotificationOutboxRepository notificationOutbox;
+    @Mock RecipientDirectoryClient recipients;
     @InjectMocks AppointmentServiceImpl service;
 
     private UUID userId;
@@ -56,7 +60,7 @@ class AppointmentAuthorizationTest {
         doctorId = UUID.randomUUID();
         patientId = UUID.randomUUID();
         appointment = Appointment.builder()
-                .id(UUID.randomUUID()).doctorId(doctorId).patientId(patientId)
+                .id(UUID.randomUUID()).doctorId(doctorId).patientId(patientId).patientUserId(userId)
                 .appointmentDate(LocalDate.now().plusDays(3))
                 .startTime(LocalTime.of(9, 0)).endTime(LocalTime.of(10, 0))
                 .status(AppointmentStatus.PENDING).build();
