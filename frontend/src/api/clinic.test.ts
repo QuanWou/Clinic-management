@@ -6,7 +6,7 @@ import {
   cancelReceptionAppointment, checkInReceptionAppointment, getReceptionQueue, updateReceptionQueue,
   confirmCashPayment, getInvoiceTransactions, getNotifications, markNotificationRead,
   getNotificationPreferences, updateNotificationPreference, getAdminDoctors, getSpecialties,
-  getCatalogServices, getCatalogMedicines, getServicePrice
+  getCatalogServices, getCatalogMedicines, getServicePrice, getDoctors
 } from './clinic';
 import { apiEndpoints } from './endpoints';
 import { logout } from './auth';
@@ -28,6 +28,11 @@ beforeEach(() => {
 });
 
 describe('verified business API routes', () => {
+  it('uses the authenticated public active-doctor list rather than the administrator endpoint for receptionist and patient directories', async () => {
+    await getDoctors();
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).toMatch(/\/api\/doctors$/);
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).not.toContain('/admin');
+  });
   it('posts booking payload to the actual appointment controller', async () => {
     const request = { doctorId: 'doctor-id', appointmentDate: '2026-09-30', startTime: '09:00', endTime: '09:30', reason: 'Consultation' };
     await createAppointment(request);

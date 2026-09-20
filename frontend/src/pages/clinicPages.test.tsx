@@ -30,9 +30,11 @@ describe('role-aware pages and empty states', () => {
     const html = renderToStaticMarkup(<Sidebar activeItemId="dashboard" user={doctor} onNavigate={noop} onLogout={noop} />);
     expect(html).not.toContain('Invoices');
     expect(html).toContain('Doctor Profile');
-    const dashboard = renderToStaticMarkup(<DashboardPage dashboard={null} user={doctor} role="DOCTOR" error={null} loading={false} onRefresh={noop} />);
-    expect(dashboard).toContain('role-scoped dashboard');
+    const dashboard = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={{ scope: 'DOCTOR', date: '2026-09-20', queue: [] }} user={doctor} role="DOCTOR" error={null} loading={false} onRefresh={noop} />);
+    expect(dashboard).toContain('My queue today');
     expect(dashboard).not.toContain('Revenue');
+    expect(dashboard).not.toContain('Appointments today');
+    expect(dashboard).not.toContain('My medical records');
   });
 
   it('shows genuine empty patient dashboard instead of fake figures', () => {
@@ -86,12 +88,35 @@ describe('role-aware pages and empty states', () => {
     const reception = renderToStaticMarkup(<ReceptionAppointmentsPage role="RECEPTIONIST" />);
     const patients = renderToStaticMarkup(<ReceptionPatientsPage role="RECEPTIONIST" />);
     const doctors = renderToStaticMarkup(<DoctorsPage role="ADMIN" />);
-    expect(catalog).toContain('unavailable');
+    expect(catalog).toContain('not enabled');
     expect(notifications).toContain('unavailable');
     expect(reception).toContain('unavailable');
     expect(patients).toContain('unavailable');
-    expect(doctors).toContain('requires');
+    expect(doctors).toContain('not enabled');
     expect([catalog, notifications, reception, patients, doctors].join(' ')).not.toContain('Loading catalog');
+  });
+
+  it('shows only today’s actual reception appointments and queue figures for clinic staff', () => {
+    const html = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={{
+      scope: 'RECEPTION', date: '2026-09-20',
+      appointments: [{ id: 'actual-appointment', patientId: 'patient-id', doctorId: 'doctor-id', appointmentDate: '2026-09-20', startTime: '09:30', endTime: '10:00', status: 'CONFIRMED' }],
+      queue: [{ id: 'visit', appointmentId: 'actual-appointment', patientId: 'patient-id', doctorId: 'doctor-id', visitDate: '2026-09-20', queueNumber: 7, status: 'WAITING', checkedInAt: '2026-09-20T09:00:00', startedAt: null, completedAt: null }]
+    }} user={receptionist} role="RECEPTIONIST" error={null} loading={false} onRefresh={noop} />);
+    expect(html).toContain('Appointments today');
+    expect(html).toContain('actual-appointment');
+    expect(html).toContain('Ticket #7');
+    expect(html).toContain('Waiting or called');
+    expect(html).not.toContain('My medical records');
+    expect(html).not.toContain('Revenue');
+  });
+
+  it('rejects stale or mismatched dashboard data across role switches', () => {
+    const receptionData = { scope: 'RECEPTION' as const, date: '2026-09-20', appointments: [{ id: 'private-staff-appointment', patientId: 'p', doctorId: 'd', appointmentDate: '2026-09-20', startTime: '10:00', endTime: '10:30', status: 'PENDING' as const }], queue: [] };
+    const html = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={receptionData} user={doctor} role="DOCTOR" error={null} loading={false} onRefresh={noop} />);
+    expect(html).toContain('Dashboard scope does not match');
+    expect(html).not.toContain('private-staff-appointment');
+    const patientHtml = renderToStaticMarkup(<DashboardPage dashboard={emptyDashboard} staffDashboard={receptionData} user={patient} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
+    expect(patientHtml).not.toContain('private-staff-appointment');
   });
 
   it('does not show cash/online payment controls to a patient or record a fake payment', () => {

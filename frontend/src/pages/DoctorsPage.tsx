@@ -1,22 +1,51 @@
 import { useEffect, useState } from 'react';
-import { getAdminDoctors } from '../api/clinic';
+import { getAdminDoctors, getDoctors } from '../api/clinic';
 import Alert from '../components/Alert';
 import PageHeader from '../components/PageHeader';
 import { integrations } from '../config/integrations.config';
-import type { AdminDoctorResponse } from '../types/domain';
+import type { AdminDoctorResponse, DoctorProfileResponse } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
 import { formatMoney } from '../utils/format';
 
 export default function DoctorsPage({ role }: { role: ClinicRole }) {
-  if (role !== 'ADMIN') return <>
-    <PageHeader title="Doctors" subtitle="Clinic doctor directory" />
-    <Alert tone="info">Task 02's current doctor directory is administrator-only. A role-authorized directory for patients and receptionists is not yet available.</Alert>
-  </>;
+  if (role === 'RECEPTIONIST' || role === 'PATIENT') return <PublicDoctorsPage />;
+  if (role !== 'ADMIN') return <Alert tone="error">Doctor directory is not available for this role.</Alert>;
   if (!integrations.adminCatalog) return <>
     <PageHeader title="Doctors" subtitle="Administrator doctor directory" />
-    <Alert tone="info">Doctor management requires the unmerged Task 02 backend and its gateway routes.</Alert>
+    <Alert tone="info">Administrator doctor management is not enabled in this deployment.</Alert>
   </>;
   return <AdminDoctorsPage />;
+}
+
+function PublicDoctorsPage() {
+  const [doctors, setDoctors] = useState<DoctorProfileResponse[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [revision, setRevision] = useState(0);
+  useEffect(() => {
+    let active = true;
+    setLoading(true); setError(null); setDoctors(null);
+    void getDoctors().then((result) => {
+      if (!active) return;
+      if (!Array.isArray(result)) throw new Error('Invalid doctor directory response');
+      setDoctors(result);
+    }).catch((cause: unknown) => { if (active) setError(cause instanceof Error ? cause.message : 'Unable to load doctors'); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [revision]);
+  return <>
+    <PageHeader title="Doctors" subtitle="Available clinic doctors"
+      actions={<button type="button" className="soft-button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Refresh</button>} />
+    <article className="panel table-panel">
+      {loading && <p role="status">Loading doctors...</p>}
+      {error && <Alert tone="error">{error} <button type="button" onClick={() => setRevision((value) => value + 1)}>Retry</button></Alert>}
+      {!loading && doctors?.length === 0 && <p>No active doctors available.</p>}
+      {doctors?.map((doctor) => <div key={doctor.id} className="person-row">
+        <strong>{doctor.specialtyName || 'Doctor'}</strong> — {doctor.id}
+        <span>Consultation fee: {formatMoney(doctor.consultationFee)} (currency unspecified)</span>
+      </div>)}
+    </article>
+  </>;
 }
 
 function AdminDoctorsPage() {

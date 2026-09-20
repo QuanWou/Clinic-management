@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import {
   bookReceptionAppointment, cancelReceptionAppointment, checkInReceptionAppointment,
-  confirmAppointment, getAdminDoctors, getReceptionAppointments, getReceptionQueue,
+  confirmAppointment, getAdminDoctors, getDoctors, getReceptionAppointments, getReceptionQueue,
   rescheduleReceptionAppointment, searchReceptionPatients, updateReceptionQueue
 } from '../api/clinic';
 import Alert from '../components/Alert';
@@ -9,7 +9,7 @@ import Badge from '../components/Badge';
 import PageHeader from '../components/PageHeader';
 import { integrations } from '../config/integrations.config';
 import type {
-  AdminDoctorResponse, AppointmentResponse, QueueStatus, ReceptionPatientResponse,
+  DoctorProfileResponse, AppointmentResponse, QueueStatus, ReceptionPatientResponse,
   ReceptionRescheduleRequest, ReceptionVisitResponse
 } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
@@ -44,7 +44,7 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
   const [appointments, setAppointments] = useState<AppointmentResponse[] | null>(null);
   const [queue, setQueue] = useState<ReceptionVisitResponse[] | null>(null);
   const [patients, setPatients] = useState<ReceptionPatientResponse[] | null>(null);
-  const [doctors, setDoctors] = useState<AdminDoctorResponse[] | null>(null);
+  const [doctors, setDoctors] = useState<DoctorProfileResponse[] | null>(null);
   const [patientSearch, setPatientSearch] = useState('');
   const [booking, setBooking] = useState(blankBooking);
   const [selectedId, setSelectedId] = useState('');
@@ -60,16 +60,21 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
   useEffect(() => {
     let active = true;
     setLoading(true); setError(null);
-    // Doctor directory is ADMIN-only; never call this route as a receptionist.
-    const directory = role === 'ADMIN' && integrations.adminCatalog ? getAdminDoctors() : Promise.resolve(null);
+    // Only administrators call the privileged directory; receptionists use the
+    // authenticated, active-doctors-only /api/doctors endpoint.
+    const directory = role === 'ADMIN' && integrations.adminCatalog
+      ? getAdminDoctors().then((page) => {
+        if (!Array.isArray(page.content)) throw new Error('Invalid administrator doctor directory');
+        return page.content.filter((doctor) => doctor.active);
+      }) : getDoctors();
     void Promise.all([getReceptionAppointments({ date }), getReceptionQueue({ date }), directory])
-      .then(([bookings, visits, doctorPage]) => {
+      .then(([bookings, visits, doctorList]) => {
         if (!active) return;
-        if (!Array.isArray(bookings) || !Array.isArray(visits) || (doctorPage && !Array.isArray(doctorPage.content))) {
+        if (!Array.isArray(bookings) || !Array.isArray(visits) || !Array.isArray(doctorList)) {
           throw new Error('Invalid receptionist API response');
         }
         setAppointments(bookings); setQueue(visits);
-        setDoctors(doctorPage ? doctorPage.content.filter((item) => item.active) : null);
+        setDoctors(doctorList);
       }).catch((cause: unknown) => { if (active) { setAppointments(null); setQueue(null); setError(message(cause)); } })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getCurrentUser, logout } from '../api/auth';
 import { getDashboard } from '../api/dashboard';
+import { loadStaffDashboard, type StaffDashboard } from '../api/staffDashboard';
 import { getAccessToken } from '../api/token';
 import Alert from '../components/Alert';
 import AppShell from '../layouts/AppShell';
@@ -22,6 +23,7 @@ import { canAccess, getPrimaryRole, normalizeRoles, type ClinicRole } from '../u
 export default function App() {
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
+  const [staffDashboard, setStaffDashboard] = useState<StaffDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<AppView>('dashboard');
@@ -32,6 +34,7 @@ export default function App() {
     if (!getAccessToken()) {
       setUser(null);
       setDashboard(null);
+      setStaffDashboard(null);
       setLoading(false);
       return;
     }
@@ -42,13 +45,22 @@ export default function App() {
       if (currentRequest !== requestId.current) return;
       setUser(currentUser);
       setDashboard(null);
+      setStaffDashboard(null);
       const roles = normalizeRoles(currentUser.roles);
-      // The current gateway dashboard aggregates patient-only /my endpoints.
-      // Never invoke it for staff until a role-aware aggregation endpoint exists.
-      if (getPrimaryRole(roles) === 'PATIENT') {
+      const role = getPrimaryRole(roles);
+      // The gateway /dashboard/me aggregates patient-only endpoints. Staff use
+      // their own role-authorized appointment and queue controllers instead.
+      if (role === 'PATIENT') {
         try {
           const result = await getDashboard();
           if (currentRequest === requestId.current) setDashboard(result);
+        } catch (cause) {
+          if (currentRequest === requestId.current) setError(errorMessage(cause));
+        }
+      } else if (role) {
+        try {
+          const result = await loadStaffDashboard(role);
+          if (currentRequest === requestId.current) setStaffDashboard(result);
         } catch (cause) {
           if (currentRequest === requestId.current) setError(errorMessage(cause));
         }
@@ -57,6 +69,7 @@ export default function App() {
       if (currentRequest === requestId.current) {
         setUser(null);
         setDashboard(null);
+        setStaffDashboard(null);
         setError(errorMessage(cause));
       }
     } finally {
@@ -68,6 +81,7 @@ export default function App() {
     ++requestId.current;
     setUser(null);
     setDashboard(null);
+    setStaffDashboard(null);
     setActiveView('dashboard');
     setError(null);
     try {
@@ -82,6 +96,7 @@ export default function App() {
       ++requestId.current;
       setUser(null);
       setDashboard(null);
+      setStaffDashboard(null);
       setError('Your session expired. Please sign in again.');
       setLoading(false);
     };
@@ -114,7 +129,7 @@ export default function App() {
   return (
     <AppShell activeItemId={allowedView} user={user} loading={loading} primaryRole={primaryRole}
       onNavigate={navigate} onRefresh={() => void loadSession()} onLogout={() => void handleLogout()}>
-      {renderView(allowedView, user, dashboard, error, loading, primaryRole, () => void loadSession())}
+      {renderView(allowedView, user, dashboard, staffDashboard, error, loading, primaryRole, () => void loadSession())}
     </AppShell>
   );
 }
@@ -127,6 +142,7 @@ function renderView(
   activeView: AppView,
   user: CurrentUser,
   dashboard: DashboardResponse | null,
+  staffDashboard: StaffDashboard | null,
   error: string | null,
   loading: boolean,
   role: ClinicRole,
@@ -156,6 +172,6 @@ function renderView(
       return <SettingsPage user={user} role={role} />;
     case 'dashboard':
     default:
-      return <DashboardPage dashboard={dashboard} user={user} role={role} error={error} loading={loading} onRefresh={refresh} />;
+      return <DashboardPage dashboard={dashboard} staffDashboard={staffDashboard} user={user} role={role} error={error} loading={loading} onRefresh={refresh} />;
   }
 }

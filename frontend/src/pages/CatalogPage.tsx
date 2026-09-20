@@ -10,7 +10,7 @@ import { formatMoney } from '../utils/format';
 export default function CatalogPage({ role }: { role: ClinicRole }) {
   if (!['ADMIN', 'DOCTOR'].includes(role)) return <Alert tone="error">Catalog access is not available for this role.</Alert>;
   if (!integrations.adminCatalog) return <><PageHeader title="Catalog" subtitle="Doctor and service directories" />
-    <Alert tone="info">The Task 02 catalog API is present only in an unmerged worktree. Directory data is unavailable until the matching backend is merged, running and routed.</Alert></>;
+    <Alert tone="info">Catalog is not enabled in this deployment. Contact the clinic administrator.</Alert></>;
   return <ActiveCatalogPage role={role} />;
 }
 

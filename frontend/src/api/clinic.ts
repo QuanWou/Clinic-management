@@ -21,6 +21,11 @@ export function getDoctorProfile(): Promise<DoctorProfileResponse> {
   return apiRequest<DoctorProfileResponse>(apiEndpoints.doctors.profile);
 }
 
+/** Active public directory: available to authenticated patients and receptionists. */
+export function getDoctors(): Promise<DoctorProfileResponse[]> {
+  return apiRequest<DoctorProfileResponse[]>(apiEndpoints.doctors.collection);
+}
+
 export function updateDoctorProfile(request: { biography: string }): Promise<DoctorProfileResponse> {
   return apiRequest<DoctorProfileResponse>(apiEndpoints.doctors.profile, { method: 'PUT', body: JSON.stringify(request) });
 }

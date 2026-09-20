@@ -14,6 +14,7 @@ export const apiEndpoints = {
     receptionById: (id: string) => `/api/patients/reception/${encodeURIComponent(id)}`
   },
   doctors: {
+    collection: '/api/doctors',
     profile: '/api/doctors/profile',
     schedules: (doctorId: string) => `/api/doctors/${encodeURIComponent(doctorId)}/schedules`,
     availability: (doctorId: string) => `/api/doctors/${encodeURIComponent(doctorId)}/availability`,

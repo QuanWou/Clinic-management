@@ -5,12 +5,14 @@ import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
 import PageHeader from '../components/PageHeader';
 import type { CurrentUser, DashboardResponse } from '../types/domain';
+import type { StaffDashboard } from '../api/staffDashboard';
 import type { ClinicRole } from '../utils/roles';
 import { formatDate, formatTime } from '../utils/format';
 import { getUiAppointments } from '../utils/uiData';
 
 export type DashboardPageProps = {
   dashboard: DashboardResponse | null;
+  staffDashboard?: StaffDashboard | null;
   user: CurrentUser;
   role: ClinicRole;
   error: string | null;
@@ -18,7 +20,7 @@ export type DashboardPageProps = {
   onRefresh: () => void;
 };
 
-export default function DashboardPage({ dashboard, user, role, error, loading, onRefresh }: DashboardPageProps) {
+export default function DashboardPage({ dashboard, staffDashboard, user, role, error, loading, onRefresh }: DashboardPageProps) {
   const isPatient = role === 'PATIENT';
   const appointments = isPatient && dashboard ? getUiAppointments(dashboard.appointments) : [];
   const today = new Date();
@@ -34,7 +36,8 @@ export default function DashboardPage({ dashboard, user, role, error, loading, o
         actions={<button className="soft-button" type="button" onClick={onRefresh} disabled={loading}><CalendarDays size={17} />Refresh</button>} />
       {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Retry</button></Alert>}
       {loading && <p role="status">Loading dashboard...</p>}
-      {!isPatient && <Alert tone="info">The backend does not yet expose a role-scoped dashboard or staff appointment list. No clinic-wide statistics are available for this role. Patient-only endpoints are not called.</Alert>}
+      {!isPatient && staffDashboard && !loading && !error && <StaffOverview data={staffDashboard} role={role} />}
+      {!isPatient && !staffDashboard && !loading && !error && <Alert tone="info">No schedule data loaded. Refresh to try again.</Alert>}
       {isPatient && !dashboard && !loading && !error && <Alert tone="info">No dashboard data has been loaded. Refresh to try again.</Alert>}
       {isPatient && dashboard && (
         <section className="dashboard-layout">
@@ -75,6 +78,42 @@ export default function DashboardPage({ dashboard, user, role, error, loading, o
       )}
     </>
   );
+}
+
+function StaffOverview({ data, role }: { data: StaffDashboard; role: ClinicRole }) {
+  const queue = data.queue;
+  const waiting = queue.filter((visit) => visit.status === 'WAITING' || visit.status === 'CALLED').length;
+  const inProgress = queue.filter((visit) => visit.status === 'IN_PROGRESS').length;
+  const completed = queue.filter((visit) => visit.status === 'COMPLETED').length;
+  const isDoctor = role === 'DOCTOR';
+  // Defense in depth: an unexpected staff scope must never be rendered under
+  // a different role, even if a previous session's state survived a refresh.
+  if ((isDoctor && data.scope !== 'DOCTOR') || (!isDoctor && data.scope !== 'RECEPTION') || role === 'PATIENT') {
+    return <Alert tone="error">Dashboard scope does not match your account. Refresh to reload.</Alert>;
+  }
+  return <section className="dashboard-layout">
+    <div className="dashboard-main">
+      <p>Clinic date: {formatDate(data.date)} · {isDoctor ? 'Your assigned queue' : 'Reception scheduling and check-in'}.</p>
+      <section className="metric-grid">
+        {data.scope === 'RECEPTION' && <MetricCard icon={<CalendarDays />} label="Appointments today" value={data.appointments.length} tone="green" />}
+        <MetricCard icon={<UsersRound />} label="Waiting or called" value={waiting} tone="purple" />
+        <MetricCard icon={<CalendarDays />} label="In progress" value={inProgress} tone="blue" />
+        <MetricCard icon={<FileText />} label="Completed visits" value={completed} tone="orange" />
+      </section>
+      <article className="panel">
+        <div className="panel-heading"><h3>{isDoctor ? 'My queue today' : 'Queue today'}</h3><span>{queue.length}</span></div>
+        {queue.length === 0 ? <p>No checked-in visits today.</p> : <ul>{queue.map((visit) =>
+          <li key={visit.id}>Ticket #{visit.queueNumber} · {visit.status}</li>
+        )}</ul>}
+      </article>
+      {data.scope === 'RECEPTION' && <article className="panel">
+        <div className="panel-heading"><h3>Appointments today</h3><span>{data.appointments.length}</span></div>
+        {data.appointments.length === 0 ? <p>No appointments scheduled today.</p> : <ul>{data.appointments.map((appointment) =>
+          <li key={appointment.id}>{formatTime(appointment.startTime)} · {appointment.status} · Appointment {appointment.id}</li>
+        )}</ul>}
+      </article>}
+    </div>
+  </section>;
 }
 
 function MetricCard({ icon, label, value, tone }: { icon: ReactNode; label: string; value: number; tone: string }) {
