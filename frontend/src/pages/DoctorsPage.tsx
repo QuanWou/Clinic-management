@@ -1,129 +1,52 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
-import { getDoctors, getSpecialties } from '../api/clinic';
+import { useEffect, useState } from 'react';
+import { getAdminDoctors } from '../api/clinic';
 import Alert from '../components/Alert';
-import Avatar from '../components/Avatar';
-import Badge from '../components/Badge';
 import PageHeader from '../components/PageHeader';
-import type { DoctorProfileResponse, SpecialtyResponse } from '../types/domain';
-import { formatMoney, shortId } from '../utils/format';
+import { integrations } from '../config/integrations.config';
+import type { AdminDoctorResponse } from '../types/domain';
+import type { ClinicRole } from '../utils/roles';
+import { formatMoney } from '../utils/format';
 
-export default function DoctorsPage() {
-  const [doctors, setDoctors] = useState<DoctorProfileResponse[]>([]);
-  const [specialties, setSpecialties] = useState<SpecialtyResponse[]>([]);
-  const [specialtyId, setSpecialtyId] = useState('');
-  const [search, setSearch] = useState('');
+export default function DoctorsPage({ role }: { role: ClinicRole }) {
+  if (role !== 'ADMIN') return <>
+    <PageHeader title="Doctors" subtitle="Clinic doctor directory" />
+    <Alert tone="info">Task 02's current doctor directory is administrator-only. A role-authorized directory for patients and receptionists is not yet available.</Alert>
+  </>;
+  if (!integrations.adminCatalog) return <>
+    <PageHeader title="Doctors" subtitle="Administrator doctor directory" />
+    <Alert tone="info">Doctor management requires the unmerged Task 02 backend and its gateway routes.</Alert>
+  </>;
+  return <AdminDoctorsPage />;
+}
+
+function AdminDoctorsPage() {
+  const [doctors, setDoctors] = useState<AdminDoctorResponse[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [revision, setRevision] = useState(0);
   useEffect(() => {
     let active = true;
-
-    async function loadSpecialties() {
-      try {
-        const result = await getSpecialties();
-        if (active) setSpecialties(result);
-      } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : 'Unable to load specialties');
-      }
-    }
-
-    void loadSpecialties();
+    setLoading(true); setError(null); setDoctors(null);
+    void getAdminDoctors().then((page) => {
+      if (!active) return;
+      if (!Array.isArray(page.content)) throw new Error('Invalid doctor directory response');
+      setDoctors(page.content);
+    }).catch((cause: unknown) => { if (active) setError(cause instanceof Error ? cause.message : 'Unable to load doctors'); })
+      .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    setError(null);
-
-    getDoctors(specialtyId || undefined)
-      .then((result) => {
-        if (active) setDoctors(result);
-      })
-      .catch((err) => {
-        if (active) setError(err instanceof Error ? err.message : 'Unable to load doctors');
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-
-    return () => { active = false; };
-  }, [specialtyId]);
-
-  const visibleDoctors = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    if (!query) return doctors;
-    return doctors.filter((doctor) => [
-      doctor.specialtyName,
-      doctor.biography,
-      doctor.id,
-      doctor.userId
-    ].some((value) => value?.toLowerCase().includes(query)));
-  }, [doctors, search]);
-
-  return (
-    <>
-      <PageHeader
-        title="Doctors"
-        subtitle="Browse configured doctor profiles by specialty."
-        actions={(
-          <>
-            <div className="inline-search">
-              <Search size={16} />
-              <input
-                aria-label="Search doctors"
-                placeholder="Search specialty or profile..."
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-              />
-            </div>
-            <select
-              className="filter-select"
-              aria-label="Filter by specialty"
-              value={specialtyId}
-              onChange={(event) => setSpecialtyId(event.target.value)}
-            >
-              <option value="">All specialties</option>
-              {specialties.map((specialty) => (
-                <option key={specialty.id} value={specialty.id}>{specialty.name}</option>
-              ))}
-            </select>
-          </>
-        )}
-      />
-
-      {error && <Alert tone="error">{error}</Alert>}
-
-      <article className="panel table-panel">
-        {loading ? (
-          <p className="empty-state">Loading doctor directory...</p>
-        ) : visibleDoctors.length === 0 ? (
-          <p className="empty-state">No configured doctors match this filter.</p>
-        ) : (
-          <div className="data-table">
-            <div className="table-row table-head doctors-grid">
-              <span>Profile</span>
-              <span>Specialty</span>
-              <span>About</span>
-              <span>Fee</span>
-              <span>Identifier</span>
-            </div>
-            {visibleDoctors.map((doctor) => (
-              <div className="table-row doctors-grid" key={doctor.id}>
-                <span className="person-cell">
-                  <Avatar label={doctor.specialtyName ?? 'DR'} size="sm" />
-                  <span><strong>Doctor profile</strong><small>User {shortId(doctor.userId)}</small></span>
-                </span>
-                <span>{doctor.specialtyName ?? 'Not assigned'}</span>
-                <span className="truncate-cell">{doctor.biography ?? 'Biography not provided'}</span>
-                <span>{formatMoney(doctor.consultationFee)}</span>
-                <span><Badge tone="Active">{`DR-${shortId(doctor.id)}`}</Badge></span>
-              </div>
-            ))}
-          </div>
-        )}
-      </article>
-    </>
-  );
+  }, [revision]);
+  return <>
+    <PageHeader title="Doctors" subtitle="Administrator-only doctor directory"
+      actions={<button type="button" className="soft-button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Refresh</button>} />
+    <article className="panel table-panel">
+      {loading && <p role="status">Loading doctors...</p>}
+      {error && <Alert tone="error">{error} <button type="button" onClick={() => setRevision((value) => value + 1)}>Retry</button></Alert>}
+      {!loading && doctors?.length === 0 && <p>No doctors found.</p>}
+      {doctors?.map((doctor) => <div key={doctor.id} className="person-row">
+        <strong>{doctor.id}</strong> — {doctor.specialtyName || 'No specialty'} — {doctor.active ? 'Active' : 'Inactive'}
+        <span>Fee: {formatMoney(doctor.consultationFee)} (currency unspecified)</span>
+      </div>)}
+      <p>The API returns a paginated directory; this screen requests the first page only. Doctor edits belong to administrator workflows.</p>
+    </article>
+  </>;
 }

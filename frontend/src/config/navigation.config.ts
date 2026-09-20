@@ -3,6 +3,8 @@ import {
   FileText,
   LayoutDashboard,
   ReceiptText,
+  Bell,
+  ClipboardList,
   Settings,
   Stethoscope,
   UserRound,
@@ -18,5 +20,7 @@ export const mainNavigation: NavigationItem[] = [
   { id: 'doctor-profile', label: 'Doctor Profile', icon: UserRound, roles: ['ROLE_DOCTOR'] },
   { id: 'medical-records', label: 'Medical Records', icon: FileText },
   { id: 'invoices', label: 'Invoices', icon: ReceiptText },
+  { id: 'catalog', label: 'Catalog', icon: ClipboardList },
+  { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'settings', label: 'Settings', icon: Settings }
 ];

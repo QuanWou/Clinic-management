@@ -1,55 +1,43 @@
 import type { ApiResponse } from '../types/api';
 import { appConfig } from '../config/app.config';
-import { getAccessToken } from './token';
+import { clearTokens, getAccessToken } from './token';
 
-type RequestOptions = RequestInit & {
-  auth?: boolean;
-};
+type RequestOptions = RequestInit & { auth?: boolean };
 
-type ApiErrorBody = {
-  errorCode?: string;
-  message?: string;
-};
-
-export class ApiError extends Error {
-  readonly status: number;
-  readonly errorCode?: string;
-
-  constructor(message: string, status: number, errorCode?: string) {
+export class HttpApiError extends Error {
+  constructor(public readonly status: number, message: string) {
     super(message);
-    this.name = 'ApiError';
-    this.status = status;
-    this.errorCode = errorCode;
+    this.name = 'HttpApiError';
   }
 }
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const headers = new Headers(options.headers);
-  headers.set('Content-Type', 'application/json');
-
-  if (options.auth !== false) {
-    const token = getAccessToken();
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
-    }
+  const { auth = true, ...requestOptions } = options;
+  const headers = new Headers(requestOptions.headers);
+  if (requestOptions.body != null && !(requestOptions.body instanceof FormData)) {
+    headers.set('Content-Type', 'application/json');
   }
+  const token = auth ? getAccessToken() : null;
+  if (auth && token) headers.set('Authorization', `Bearer ${token}`);
 
-  const response = await fetch(`${appConfig.apiBaseUrl}${path}`, {
-    ...options,
-    headers
-  });
-
-  const body = await response.json().catch(() => null) as ApiResponse<T> | ApiErrorBody | null;
-
+  const response = await fetch(`${appConfig.apiBaseUrl}${path}`, { ...requestOptions, headers });
+  const body: unknown = await response.json().catch(() => null);
   if (!response.ok) {
-    const message = body && 'message' in body && body.message ? body.message : 'Request failed';
-    const errorCode = body && 'errorCode' in body ? body.errorCode : undefined;
-    throw new ApiError(message, response.status, errorCode);
+    if (response.status === 401 && auth && token && getAccessToken() === token) {
+      clearTokens();
+      window.dispatchEvent(new Event('clinic:unauthorized'));
+    }
+    const message = isObject(body) && typeof body.message === 'string' && body.message
+      ? body.message
+      : `Request failed (${response.status})`;
+    throw new HttpApiError(response.status, message);
   }
-
-  if (!body || !('data' in body)) {
+  if (!isObject(body) || body.success !== true || !('data' in body)) {
     throw new Error('Invalid API response');
   }
+  return (body as ApiResponse<T>).data;
+}
 
-  return body.data;
+function isObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 }

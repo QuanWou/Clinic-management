@@ -15,6 +15,8 @@ export type AppView =
   | 'doctor-profile'
   | 'medical-records'
   | 'invoices'
+  | 'catalog'
+  | 'notifications'
   | 'settings';
 
 export type NavigationItem = {
@@ -73,7 +75,7 @@ export type UiMedicalRecord = MedicalRecordResponse & {
   patientName: string;
   doctorName: string;
   recordType: string;
-  status: 'Completed' | 'Pending';
+  status: 'Recorded';
 };
 
 export type UiInvoice = InvoiceResponse & {

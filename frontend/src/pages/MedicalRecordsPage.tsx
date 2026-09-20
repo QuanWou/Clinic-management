@@ -1,75 +1,100 @@
+import { type FormEvent, useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import { useState } from 'react';
+import { getPatientMedicalRecords } from '../api/clinic';
 import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
 import PageHeader from '../components/PageHeader';
 import type { MedicalRecordResponse } from '../types/domain';
+import type { ClinicRole } from '../utils/roles';
 import { formatDate, shortId } from '../utils/format';
-import { getUiMedicalRecords, type Lookup } from '../utils/uiData';
+import { getUiMedicalRecords } from '../utils/uiData';
+import { integrations } from '../config/integrations.config';
 
 type MedicalRecordsPageProps = {
   records: MedicalRecordResponse[] | null | undefined;
-  lookup: Lookup;
-  error?: string;
-  supported: boolean;
+  role: ClinicRole;
+  error: string | null;
   loading: boolean;
+  onRefresh: () => void;
 };
 
-export default function MedicalRecordsPage({ records, lookup, error, supported, loading }: MedicalRecordsPageProps) {
-  const [query, setQuery] = useState('');
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const rows = getUiMedicalRecords(records, lookup).filter((record) =>
-    `${record.patientName} ${record.doctorName} ${record.diagnosis} ${record.id}`.toLowerCase().includes(query.toLowerCase())
-  );
-  const selected = rows.find((record) => record.id === selectedId) ?? rows[0];
+export default function MedicalRecordsPage({ records, role, error, loading, onRefresh }: MedicalRecordsPageProps) {
+  // Defense in depth: the view must never expose records to administrative staff.
+  // Task 04 authorizes only the patient and their treating doctor.
+  if (role !== 'PATIENT' && role !== 'DOCTOR') {
+    return <Alert tone="error">Medical records are restricted to patients and their authorized treating doctors.</Alert>;
+  }
+  if (role === 'DOCTOR' && !integrations.laboratory) {
+    return <><PageHeader title="Medical Records" subtitle="Treating doctor records" />
+      <Alert tone="info">Doctor record lookup is unavailable until Task 04 ownership checks are merged, running and verified.</Alert></>;
+  }
+  return <AuthorizedMedicalRecordsPage records={records} role={role} error={error} loading={loading} onRefresh={onRefresh} />;
+}
 
-  return (
-    <>
-      <PageHeader title="Medical Records" subtitle="Medical records you are authorized to view." actions={
-        <div className="inline-search"><Search size={16} /><input aria-label="Search records" placeholder="Search records..." value={query} onChange={(event) => setQuery(event.target.value)} /></div>
-      } />
-      {error && <Alert tone="error">Unable to load medical records: {error}</Alert>}
-      {!supported && <Alert>The backend currently exposes a patient record list only. Staff record lists are not available yet.</Alert>}
-      {supported && !loading && !error && rows.length === 0 && <Alert>{query ? 'No records match your search.' : 'No medical records found.'}</Alert>}
-      {supported && rows.length > 0 && (
-        <section className="split-page">
-          <article className="panel table-panel">
-            <div className="data-table">
-              <div className="table-row table-head records-grid">
-                <span>Patient</span><span>Record Type</span><span>Date</span><span>Doctor</span><span>Status</span>
-              </div>
-              {rows.map((record) => (
-                <button className="table-row records-grid" type="button" key={record.id} aria-pressed={selected.id === record.id} onClick={() => setSelectedId(record.id)}>
-                  <span className="person-cell"><Avatar label={record.patientName} size="sm" />{record.patientName}</span>
-                  <span>{record.recordType}</span>
-                  <span>{formatDate(record.createdAt)}</span>
-                  <span>{record.doctorName}</span>
-                  <span><Badge tone={record.status}>{record.status}</Badge></span>
-                </button>
-              ))}
-            </div>
-          </article>
-          {selected && (
-            <article className="panel detail-panel">
-              <div className="panel-heading"><h3>{selected.patientName}</h3><Badge tone={selected.status}>{selected.status}</Badge></div>
-              <p>Record ID: MR-{shortId(selected.id)}</p>
-              <dl className="details-list compact">
-                <div><dt>Diagnosis</dt><dd>{selected.diagnosis}</dd></div>
-                <div><dt>Symptoms</dt><dd>{selected.symptoms ?? 'Not recorded'}</dd></div>
-                <div><dt>Doctor Notes</dt><dd>{selected.notes ?? 'No notes'}</dd></div>
-                <div><dt>Prescriptions</dt><dd>{selected.prescriptions?.length ?? 0}</dd></div>
-              </dl>
-              {selected.prescriptions?.map((prescription) => (
-                <div key={prescription.id}>
-                  <h4>Prescription {shortId(prescription.id)}</h4>
-                  {prescription.items.map((item) => <p key={item.id}>{item.medicineName}: {item.dosage}, {item.frequency}, {item.duration}</p>)}
-                </div>
-              ))}
-            </article>
-          )}
-        </section>
-      )}
-    </>
-  );
+function AuthorizedMedicalRecordsPage({ records, role, error, loading, onRefresh }: MedicalRecordsPageProps) {
+  const [patientId, setPatientId] = useState('');
+  const [staffRecords, setStaffRecords] = useState<MedicalRecordResponse[] | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [queryError, setQueryError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const isPatient = role === 'PATIENT';
+  useEffect(() => { setSelectedId(null); }, [records]);
+  const rows = getUiMedicalRecords(isPatient ? records : staffRecords);
+  const selected = rows.find((row) => row.id === selectedId) ?? rows[0];
+
+  async function search(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setBusy(true); setQueryError(null); setStaffRecords(null); setSelectedId(null);
+    try {
+      if (!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i.test(patientId.trim())) throw new Error('Enter a valid patient UUID.');
+      const result = await getPatientMedicalRecords(patientId.trim());
+      if (!Array.isArray(result)) throw new Error('Unexpected medical record response');
+      setStaffRecords(result);
+    } catch (cause) { setQueryError(cause instanceof Error ? cause.message : 'Unable to load medical records'); }
+    finally { setBusy(false); }
+  }
+
+  return <>
+    <PageHeader title="Medical Records" subtitle={isPatient ? 'Your medical records and prescriptions.' : 'Search records by patient ID. The backend enforces record access.'}
+      actions={isPatient ? <button type="button" className="soft-button" onClick={onRefresh} disabled={loading}>Refresh</button> : undefined} />
+    {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Retry</button></Alert>}
+    {queryError && <Alert tone="error">{queryError}</Alert>}
+    {!isPatient && <form className="inline-search" onSubmit={(event) => void search(event)}>
+      <Search size={16} /><input aria-label="Patient UUID" required placeholder="Patient UUID" value={patientId} onChange={(event) => setPatientId(event.target.value)} />
+      <button type="submit" disabled={busy}>Search records</button>
+    </form>}
+    {loading && isPatient && <p role="status">Loading records...</p>}
+    <section className="split-page">
+      <article className="panel table-panel">
+        {rows.length === 0 && <p>{busy ? 'Loading records...' : !isPatient && !staffRecords ? 'Enter a patient UUID to load records.' : isPatient && !records ? 'No medical record data loaded.' : 'No medical records found.'}</p>}
+        {rows.length > 0 && <div className="data-table">
+          <div className="table-row table-head records-grid"><span>Patient ID</span><span>Record Type</span><span>Date</span><span>Doctor ID</span><span>Status</span></div>
+          {rows.map((record) => <button type="button" className="table-row records-grid" key={record.id} aria-pressed={selected?.id === record.id} onClick={() => setSelectedId(record.id)}>
+            <span className="person-cell"><Avatar label={record.patientName} size="sm" />{record.patientName}</span>
+            <span>{record.recordType}</span><span>{formatDate(record.createdAt)}</span><span>{record.doctorName}</span>
+            <span><Badge tone={record.status}>{record.status}</Badge></span>
+          </button>)}
+        </div>}
+      </article>
+      {selected && <article className="panel detail-panel">
+        <div className="panel-heading"><h3>{selected.patientName}</h3><Badge tone={selected.status}>{selected.status}</Badge></div>
+        <p>Record ID: MR-{shortId(selected.id)}</p>
+        <dl className="details-list compact">
+          <div><dt>Appointment</dt><dd>{selected.appointmentId}</dd></div>
+          <div><dt>Diagnosis</dt><dd>{selected.diagnosis}</dd></div>
+          <div><dt>Symptoms</dt><dd>{selected.symptoms ?? 'Not recorded'}</dd></div>
+          <div><dt>Doctor notes</dt><dd>{selected.notes ?? 'Not recorded'}</dd></div>
+        </dl>
+        <h4>Prescriptions</h4>
+        {!selected.prescriptions?.length ? <p>No prescriptions recorded.</p> : selected.prescriptions.map((prescription) =>
+          <div key={prescription.id}>
+            <p>Prescription {shortId(prescription.id)} · {formatDate(prescription.createdAt)}</p>
+            <ul>{prescription.items.map((item) => <li key={item.id}>
+              <strong>{item.medicineName}</strong> — {item.dosage}, {item.frequency}, {item.duration}{item.note ? ` (${item.note})` : ''}
+            </li>)}</ul>
+          </div>
+        )}
+      </article>}
+    </section>
+  </>;
 }

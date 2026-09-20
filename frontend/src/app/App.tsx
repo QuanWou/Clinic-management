@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getCurrentUser, logout } from '../api/auth';
-import { ApiError } from '../api/client';
-import { getPatientProfile } from '../api/clinic';
 import { getDashboard } from '../api/dashboard';
 import { getAccessToken } from '../api/token';
-import { appConfig } from '../config/app.config';
+import Alert from '../components/Alert';
 import AppShell from '../layouts/AppShell';
 import AppointmentsPage from '../pages/AppointmentsPage';
 import DashboardPage from '../pages/DashboardPage';
@@ -13,148 +11,151 @@ import DoctorsPage from '../pages/DoctorsPage';
 import InvoicesPage from '../pages/InvoicesPage';
 import LoginPage from '../pages/LoginPage';
 import MedicalRecordsPage from '../pages/MedicalRecordsPage';
+import NotificationsPage from '../pages/NotificationsPage';
+import CatalogPage from '../pages/CatalogPage';
 import PatientsPage from '../pages/PatientsPage';
-import PatientOnboardingPage from '../pages/PatientOnboardingPage';
 import SettingsPage from '../pages/SettingsPage';
-import type { CurrentUser, DashboardResponse, PatientProfileResponse } from '../types/domain';
+import type { CurrentUser, DashboardResponse } from '../types/domain';
 import type { AppView } from '../types/view';
-import { getPrimaryRole, normalizeRoles } from '../utils/roles';
+import { canAccess, getPrimaryRole, normalizeRoles, type ClinicRole } from '../utils/roles';
 
 export default function App() {
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
-  const [patientProfile, setPatientProfile] = useState<PatientProfileResponse | null | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<AppView>('dashboard');
+  const requestId = useRef(0);
 
   async function loadSession() {
+    const currentRequest = ++requestId.current;
     if (!getAccessToken()) {
       setUser(null);
       setDashboard(null);
-      setPatientProfile(undefined);
+      setLoading(false);
       return;
     }
-
     setLoading(true);
     setError(null);
-    setDashboard(null);
-    setPatientProfile(undefined);
-
     try {
       const currentUser = await getCurrentUser();
+      if (currentRequest !== requestId.current) return;
       setUser(currentUser);
-      const warnings: string[] = [];
+      setDashboard(null);
       const roles = normalizeRoles(currentUser.roles);
-
-      if (roles.includes('ROLE_PATIENT')) {
+      // The current gateway dashboard aggregates patient-only /my endpoints.
+      // Never invoke it for staff until a role-aware aggregation endpoint exists.
+      if (getPrimaryRole(roles) === 'PATIENT') {
         try {
-          setPatientProfile(await getPatientProfile());
-        } catch (err) {
-          if (err instanceof ApiError && err.status === 404) {
-            setPatientProfile(null);
-          } else {
-            const detail = err instanceof Error ? err.message : 'Unknown error';
-            warnings.push(`Unable to load patient profile: ${detail}`);
-          }
+          const result = await getDashboard();
+          if (currentRequest === requestId.current) setDashboard(result);
+        } catch (cause) {
+          if (currentRequest === requestId.current) setError(errorMessage(cause));
         }
       }
-
-      try {
-        const dashboardResponse = await getDashboard();
-        setDashboard(dashboardResponse);
-      } catch (err) {
-        const detail = err instanceof Error ? `: ${err.message}` : '';
-        warnings.push(`${appConfig.dashboardLoadError}${detail}`);
+    } catch (cause) {
+      if (currentRequest === requestId.current) {
+        setUser(null);
+        setDashboard(null);
+        setError(errorMessage(cause));
       }
-
-      setError(warnings.length > 0 ? warnings.join(' ') : null);
-    } catch (err) {
-      setUser(null);
-      setDashboard(null);
-      setPatientProfile(undefined);
-      setError(err instanceof Error ? err.message : appConfig.dashboardLoadError);
     } finally {
-      setLoading(false);
+      if (currentRequest === requestId.current) setLoading(false);
     }
   }
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    ++requestId.current;
     setUser(null);
     setDashboard(null);
-    setPatientProfile(undefined);
+    setActiveView('dashboard');
+    setError(null);
+    try {
+      await logout();
+    } catch {
+      setError('Signed out locally, but the server could not confirm token revocation.');
+    }
   }
 
   useEffect(() => {
+    const onUnauthorized = () => {
+      ++requestId.current;
+      setUser(null);
+      setDashboard(null);
+      setError('Your session expired. Please sign in again.');
+      setLoading(false);
+    };
+    window.addEventListener('clinic:unauthorized', onUnauthorized);
     void loadSession();
+    return () => {
+      ++requestId.current;
+      window.removeEventListener('clinic:unauthorized', onUnauthorized);
+    };
   }, []);
 
+  if (loading && !user) return <main className="auth-shell" role="status">Loading your session...</main>;
   if (!getAccessToken() || !user) {
-    return <LoginPage onLogin={loadSession} />;
+    return <LoginPage onLogin={loadSession} sessionError={error} />;
   }
 
   const roles = normalizeRoles(user.roles);
   const primaryRole = getPrimaryRole(roles);
-
-  if (roles.includes('ROLE_PATIENT') && patientProfile === null) {
-    return (
-      <PatientOnboardingPage
-        user={user}
-        onComplete={setPatientProfile}
-        onLogout={handleLogout}
-      />
-    );
+  if (!primaryRole) {
+    return <main className="auth-shell"><Alert tone="error">This account has no supported clinic role.</Alert><button type="button" onClick={() => void handleLogout()}>Sign out</button></main>;
+  }
+  const activeRole: ClinicRole = primaryRole;
+  // A multi-role account uses one consistent active role, not the union of
+  // patient and administrative navigation permissions.
+  const allowedView = canAccess(activeView, [activeRole]) ? activeView : 'dashboard';
+  function navigate(view: AppView) {
+    if (canAccess(view, [activeRole])) setActiveView(view);
   }
 
   return (
-    <AppShell
-      activeItemId={activeView}
-      user={user}
-      loading={loading}
-      primaryRole={primaryRole}
-      onNavigate={setActiveView}
-      onRefresh={loadSession}
-      onLogout={handleLogout}
-    >
-      {renderView(activeView, user, dashboard, patientProfile, error, setPatientProfile)}
+    <AppShell activeItemId={allowedView} user={user} loading={loading} primaryRole={primaryRole}
+      onNavigate={navigate} onRefresh={() => void loadSession()} onLogout={() => void handleLogout()}>
+      {renderView(allowedView, user, dashboard, error, loading, primaryRole, () => void loadSession())}
     </AppShell>
   );
+}
+
+function errorMessage(cause: unknown): string {
+  return cause instanceof Error ? cause.message : 'Unable to load data';
 }
 
 function renderView(
   activeView: AppView,
   user: CurrentUser,
   dashboard: DashboardResponse | null,
-  patientProfile: PatientProfileResponse | null | undefined,
   error: string | null,
-  onPatientProfileSaved: (profile: PatientProfileResponse) => void
+  loading: boolean,
+  role: ClinicRole,
+  refresh: () => void
 ) {
   switch (activeView) {
     case 'appointments':
-      return <AppointmentsPage appointments={dashboard?.appointments} />;
+      return <AppointmentsPage appointments={role === 'PATIENT' ? dashboard?.appointments : null}
+        role={role} error={role === 'PATIENT' ? error : null} loading={loading} onRefresh={refresh} />;
     case 'patients':
-      return <PatientsPage />;
+      return <PatientsPage role={role} user={user} />;
     case 'doctors':
-      return <DoctorsPage />;
+      return <DoctorsPage role={role} />;
     case 'doctor-profile':
-      return normalizeRoles(user.roles).includes('ROLE_DOCTOR')
-        ? <DoctorProfilePage user={user} />
-        : <DashboardPage dashboard={dashboard} error="Doctor profile access requires the doctor role." />;
+      return <DoctorProfilePage user={user} />;
     case 'medical-records':
-      return <MedicalRecordsPage records={dashboard?.medicalRecords} />;
+      return <MedicalRecordsPage records={role === 'PATIENT' ? dashboard?.medicalRecords : null}
+        role={role} loading={loading} error={role === 'PATIENT' ? error : null} onRefresh={refresh} />;
     case 'invoices':
-      return <InvoicesPage invoices={dashboard?.invoices} />;
+      return <InvoicesPage invoices={role === 'PATIENT' ? dashboard?.invoices : null}
+        role={role} loading={loading} error={role === 'PATIENT' ? error : null} onRefresh={refresh} />;
+    case 'catalog':
+      return <CatalogPage role={role} />;
+    case 'notifications':
+      return <NotificationsPage />;
     case 'settings':
-      return (
-        <SettingsPage
-          user={user}
-          patientProfile={patientProfile}
-          onPatientProfileSaved={onPatientProfileSaved}
-        />
-      );
+      return <SettingsPage user={user} role={role} />;
     case 'dashboard':
     default:
-      return <DashboardPage dashboard={dashboard} error={error} />;
+      return <DashboardPage dashboard={dashboard} user={user} role={role} error={error} loading={loading} onRefresh={refresh} />;
   }
 }

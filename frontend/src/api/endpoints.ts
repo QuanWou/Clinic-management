@@ -9,19 +9,22 @@ export const apiEndpoints = {
     me: '/api/users/me'
   },
   patients: {
-    collection: '/api/patients',
-    profile: '/api/patients/profile'
+    profile: '/api/patients/profile',
+    reception: '/api/patients/reception',
+    receptionById: (id: string) => `/api/patients/reception/${encodeURIComponent(id)}`
   },
   doctors: {
-    collection: '/api/doctors',
     profile: '/api/doctors/profile',
-    profileSchedules: '/api/doctors/profile/schedules',
-    byId: (doctorId: string) => `/api/doctors/${doctorId}`,
-    schedules: (doctorId: string) => `/api/doctors/${doctorId}/schedules`,
-    availability: (doctorId: string) => `/api/doctors/${doctorId}/availability`
+    availability: (doctorId: string) => `/api/doctors/${encodeURIComponent(doctorId)}/availability`,
+    admin: '/api/doctors/admin'
   },
   specialties: {
     collection: '/api/specialties'
+  },
+  catalog: {
+    services: '/api/catalog/services',
+    medicines: '/api/catalog/medicines',
+    servicePrice: (id: string) => `/api/catalog/services/${encodeURIComponent(id)}/price`
   },
   appointments: {
     collection: '/api/appointments',
@@ -29,7 +32,13 @@ export const apiEndpoints = {
     byId: (id: string) => `/api/appointments/${id}`,
     cancel: (id: string) => `/api/appointments/${id}/cancel`,
     confirm: (id: string) => `/api/appointments/${id}/confirm`,
-    complete: (id: string) => `/api/appointments/${id}/complete`
+    complete: (id: string) => `/api/appointments/${id}/complete`,
+    receptionBookings: '/api/appointments/reception/bookings',
+    receptionReschedule: (id: string) => `/api/appointments/reception/${encodeURIComponent(id)}/reschedule`,
+    receptionCancel: (id: string) => `/api/appointments/reception/${encodeURIComponent(id)}/cancel`,
+    receptionCheckIn: (id: string) => `/api/appointments/reception/${encodeURIComponent(id)}/check-in`,
+    receptionQueue: '/api/appointments/reception/queue',
+    receptionQueueById: (id: string) => `/api/appointments/reception/queue/${encodeURIComponent(id)}`
   },
   medicalRecords: {
     collection: '/api/medical-records',
@@ -43,11 +52,15 @@ export const apiEndpoints = {
     byId: (id: string) => `/api/invoices/${id}`,
     byPatient: (patientId: string) => `/api/invoices/patients/${patientId}`,
     byAppointment: (appointmentId: string) => `/api/invoices/appointments/${appointmentId}`,
-    pay: (id: string) => `/api/invoices/${id}/pay`
+    cashPayment: (id: string) => `/api/invoices/${encodeURIComponent(id)}/cash-payment`,
+    transactions: (id: string) => `/api/invoices/${encodeURIComponent(id)}/transactions`
   },
   notifications: {
-    collection: '/api/notifications',
-    byId: (id: string) => `/api/notifications/${id}`
+    my: '/api/notifications/my',
+    preferences: '/api/notifications/my/preferences',
+    preference: (type: string) => `/api/notifications/my/preferences/${encodeURIComponent(type)}`,
+    byId: (id: string) => `/api/notifications/${encodeURIComponent(id)}`,
+    markRead: (id: string) => `/api/notifications/${encodeURIComponent(id)}/read`
   },
   dashboard: {
     me: '/api/dashboard/me'

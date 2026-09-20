@@ -38,10 +38,67 @@ export type RegisterRequest = {
   phone?: string;
 };
 
+export type CreateAppointmentRequest = {
+  doctorId: string;
+  appointmentDate: string;
+  startTime: string;
+  endTime: string;
+  reason: string;
+};
+
+export type ReceptionBookingRequest = CreateAppointmentRequest & { patientId: string };
+export type ReceptionRescheduleRequest = Omit<CreateAppointmentRequest, 'reason'>;
+export type ReceptionPatientResponse = {
+  id: string;
+  userId: string | null;
+  fullName: string;
+  phone: string;
+  dob: string | null;
+  gender: string | null;
+  address: string | null;
+  bloodType: string | null;
+};
+export type RegisterWalkInPatientRequest = {
+  fullName: string;
+  phone: string;
+  dob?: string | null;
+  gender?: string | null;
+  address?: string | null;
+  bloodType?: string | null;
+};
+export type QueueStatus = 'WAITING' | 'CALLED' | 'IN_PROGRESS' | 'COMPLETED' | 'SKIPPED';
+export type ReceptionVisitResponse = {
+  id: string;
+  appointmentId: string;
+  patientId: string;
+  doctorId: string;
+  visitDate: string;
+  queueNumber: number;
+  status: QueueStatus;
+  checkedInAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+};
+export type PageResponse<T> = {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+};
+export type AdminDoctorResponse = DoctorProfileResponse & { active: boolean };
+export type SpecialtyResponse = { id: string; name: string; description: string | null };
+export type CatalogServiceResponse = { id: string; code: string; name: string; description: string | null; active: boolean };
+export type MedicineResponse = { id: string; code: string; name: string; unit: string; description: string | null; active: boolean };
+export type PriceResponse = {
+  id: string; serviceId: string; amount: number | string; currency: string;
+  effectiveFrom: string; effectiveUntil: string | null;
+};
+
 export type AppointmentStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
-export type InvoiceStatus = 'UNPAID' | 'PAID' | 'CANCELLED';
+export type InvoiceStatus = 'UNPAID' | 'PAID' | 'REFUNDED' | 'RECONCILIATION_REQUIRED' | 'CANCELLED';
 export type PaymentMethod = 'CASH' | 'CARD' | 'BANK_TRANSFER' | 'INSURANCE' | string;
-export type NotificationType = 'EMAIL' | 'SMS' | 'PUSH' | string;
+export type NotificationType = 'EMAIL' | 'SMS' | 'PUSH' | 'IN_APP';
 export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED' | string;
 export type PatientGender = 'MALE' | 'FEMALE' | 'OTHER';
 
@@ -147,22 +204,62 @@ export type InvoiceResponse = {
   patientId: string;
   appointmentId: string;
   totalAmount: number | string;
+  catalogRevision?: string | null;
+  // Required in the newest Task 05 DTO, optional during migration from baseline.
+  currency?: string | null;
+  items?: InvoiceItemResponse[] | null;
   status: InvoiceStatus;
   paymentMethod?: PaymentMethod | null;
   paidAt?: string | null;
+  paidBy?: string | null;
+  refundedAt?: string | null;
+  refundedBy?: string | null;
+  cancelledAt?: string | null;
+  cancelledBy?: string | null;
   createdAt?: string | null;
   updatedAt?: string | null;
 };
 
+export type InvoiceItemResponse = {
+  id: string;
+  sourceType: string;
+  sourceId: string;
+  serviceId: string;
+  serviceCode: string;
+  serviceName: string;
+  priceId: string;
+  serviceDate: string;
+  unitPrice: number | string;
+  quantity: number;
+  lineAmount: number | string;
+  currency: string;
+};
+
+export type PaymentTransactionResponse = {
+  id: string;
+  invoiceId: string;
+  type: 'CAPTURE' | 'REFUND';
+  provider: string;
+  externalReference: string;
+  amount: number | string;
+  currency: string;
+  status: string;
+  confirmedBy: string;
+  confirmedAt: string;
+  reason: string | null;
+};
+
 export type NotificationResponse = {
   id: string;
-  recipient: string;
   subject: string;
   content: string;
   type: NotificationType;
   status: NotificationStatus;
   sentAt?: string | null;
+  readAt?: string | null;
+  createdAt?: string | null;
 };
+export type NotificationPreferenceResponse = { type: NotificationType; enabled: boolean };
 
 export type DashboardResponse = {
   user: CurrentUser | Record<string, unknown>;
