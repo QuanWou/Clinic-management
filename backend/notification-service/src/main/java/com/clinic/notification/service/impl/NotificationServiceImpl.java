@@ -107,15 +107,10 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationResponse getById(UUID id, CurrentUserPrincipal principal) {
         Notification notification = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Notification not found"));
+        // This is a personal detail endpoint, even for users who have a staff role.
+        // Staff administration has a separately authorized list endpoint.
         if (notification.getStatus() == NotificationStatus.SKIPPED
-                && !principal.authorities().stream().anyMatch(authority ->
-                    authority.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Notification not found");
-        }
-        boolean staff = principal.authorities().stream().anyMatch(authority ->
-                authority.getAuthority().equals("ROLE_ADMIN") || authority.getAuthority().equals("ROLE_RECEPTIONIST"));
-        if (!staff && !principal.id().equals(notification.getRecipientUserId())) {
-            // Do not reveal whether another user's notification exists.
+                || !principal.id().equals(notification.getRecipientUserId())) {
             throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Notification not found");
         }
         return mapper.toResponse(notification);

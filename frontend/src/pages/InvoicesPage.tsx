@@ -10,6 +10,7 @@ import type { InvoiceResponse, PaymentTransactionResponse } from '../types/domai
 import type { ClinicRole } from '../utils/roles';
 import { formatDate, formatMoney, shortId } from '../utils/format';
 import { getUiInvoices } from '../utils/uiData';
+import BillingWorkflowPanel from './BillingWorkflowPanel';
 
 type InvoicesPageProps = {
   invoices: InvoiceResponse[] | null | undefined;
@@ -33,6 +34,11 @@ export default function InvoicesPage({ invoices, role, error, loading, onRefresh
   const isPatient = role === 'PATIENT';
   const isCashier = role === 'ADMIN' || role === 'RECEPTIONIST';
   const cashEnabled = integrations.billing && isCashier;
+  function invoiceCreated(invoice: InvoiceResponse) {
+    setStaffInvoices((previous) => [invoice, ...(previous ?? []).filter((item) => item.id !== invoice.id)]);
+    setSelectedId(invoice.id);
+    setNotice(`Hóa đơn ${invoice.id} đã phát hành. Chưa ghi nhận thanh toán.`);
+  }
   useEffect(() => { setSelectedId(null); }, [invoices]);
   const rows = getUiInvoices(isPatient ? invoices : staffInvoices);
   const selected = rows.find((item) => item.id === selectedId) ?? rows[0];
@@ -90,6 +96,7 @@ export default function InvoicesPage({ invoices, role, error, loading, onRefresh
     {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Retry</button></Alert>}
     {queryError && <Alert tone="error">{queryError}</Alert>}
     {notice && <Alert tone="info">{notice}</Alert>}
+    {cashEnabled && <BillingWorkflowPanel onCreated={invoiceCreated} />}
     {!isPatient && <form className="inline-search" onSubmit={(event) => void search(event)}>
       <Search size={16} /><input aria-label="Patient UUID" placeholder="Patient UUID" required value={patientId} onChange={(event) => setPatientId(event.target.value)} />
       <button type="submit" disabled={busy}>Search invoices</button>

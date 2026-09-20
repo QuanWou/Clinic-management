@@ -26,7 +26,12 @@ export const apiEndpoints = {
   catalog: {
     services: '/api/catalog/services',
     medicines: '/api/catalog/medicines',
-    servicePrice: (id: string) => `/api/catalog/services/${encodeURIComponent(id)}/price`
+    servicePrice: (id: string) => `/api/catalog/services/${encodeURIComponent(id)}/price`,
+    adminServices: '/api/catalog/admin/services',
+    adminMedicines: '/api/catalog/admin/medicines',
+    adminService: (id: string) => `/api/catalog/admin/services/${encodeURIComponent(id)}`,
+    adminMedicine: (id: string) => `/api/catalog/admin/medicines/${encodeURIComponent(id)}`,
+    adminServicePrices: (id: string) => `/api/catalog/admin/services/${encodeURIComponent(id)}/prices`
   },
   appointments: {
     collection: '/api/appointments',
@@ -41,13 +46,22 @@ export const apiEndpoints = {
     receptionCheckIn: (id: string) => `/api/appointments/reception/${encodeURIComponent(id)}/check-in`,
     receptionQueue: '/api/appointments/reception/queue',
     receptionHistory: '/api/appointments/reception/dashboard/history',
-    receptionQueueById: (id: string) => `/api/appointments/reception/queue/${encodeURIComponent(id)}`
+    receptionQueueById: (id: string) => `/api/appointments/reception/queue/${encodeURIComponent(id)}`,
+    performedServices: (id: string) => `/api/appointments/${encodeURIComponent(id)}/performed-services`,
+    performedServiceItem: (id: string, itemId: string) => `/api/appointments/${encodeURIComponent(id)}/performed-services/${encodeURIComponent(itemId)}`,
+    performedServicesFinalize: (id: string) => `/api/appointments/${encodeURIComponent(id)}/performed-services/finalize`,
+    availability: (doctorId: string) => `/api/appointments/doctors/${encodeURIComponent(doctorId)}/availability`
   },
   medicalRecords: {
     collection: '/api/medical-records',
     my: '/api/medical-records/my',
     byId: (id: string) => `/api/medical-records/${id}`,
-    byPatient: (patientId: string) => `/api/medical-records/patients/${patientId}`
+    byPatient: (patientId: string) => `/api/medical-records/patients/${encodeURIComponent(patientId)}`,
+    labOrders: (recordId: string) => `/api/medical-records/${encodeURIComponent(recordId)}/lab-orders`,
+    labOrderStatus: (orderId: string, action: 'sample' | 'processing' | 'result' | 'release') =>
+      `/api/medical-records/lab-orders/${encodeURIComponent(orderId)}/${action}`,
+    labBillable: (appointmentId: string) => `/api/medical-records/appointments/${encodeURIComponent(appointmentId)}/billable-items`,
+    labBillableFinalize: (appointmentId: string) => `/api/medical-records/appointments/${encodeURIComponent(appointmentId)}/billable-items/finalize`
   },
   invoices: {
     collection: '/api/invoices',

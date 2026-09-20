@@ -3,8 +3,6 @@ package com.clinic.gateway.service;
 import com.clinic.gateway.config.ServicesProperties;
 import com.clinic.gateway.dto.DashboardResponse;
 import com.clinic.gateway.dto.DownstreamApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,6 @@ import java.util.Map;
 @Service
 public class DashboardAggregationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DashboardAggregationService.class);
     private static final String PATIENT_ROLE = "ROLE_PATIENT";
     private static final ParameterizedTypeReference<DownstreamApiResponse<Map<String, Object>>> OBJECT_RESPONSE = new ParameterizedTypeReference<>() {
     };
@@ -40,11 +37,11 @@ public class DashboardAggregationService {
                         return Mono.just(new DashboardResponse(user, List.of(), List.of(), List.of()));
                     }
 
-                    Mono<List<Map<String, Object>>> appointments = getListSafely(
+                    Mono<List<Map<String, Object>>> appointments = getList(
                             servicesProperties.appointmentUrl(), "/api/appointments/my", authorizationHeader);
-                    Mono<List<Map<String, Object>>> medicalRecords = getListSafely(
+                    Mono<List<Map<String, Object>>> medicalRecords = getList(
                             servicesProperties.medicalRecordUrl(), "/api/medical-records/my", authorizationHeader);
-                    Mono<List<Map<String, Object>>> invoices = getListSafely(
+                    Mono<List<Map<String, Object>>> invoices = getList(
                             servicesProperties.billingUrl(), "/api/invoices/my", authorizationHeader);
 
                     return Mono.zip(appointments, medicalRecords, invoices)
@@ -68,7 +65,7 @@ public class DashboardAggregationService {
                 .defaultIfEmpty(Map.of());
     }
 
-    private Mono<List<Map<String, Object>>> getListSafely(
+    private Mono<List<Map<String, Object>>> getList(
             String baseUrl,
             String path,
             String authorizationHeader
@@ -79,17 +76,12 @@ public class DashboardAggregationService {
                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                 .retrieve()
                 .bodyToMono(LIST_RESPONSE)
-                .map(response -> response.data() == null
-                        ? List.<Map<String, Object>>of()
-                        : response.data())
-                .defaultIfEmpty(List.of())
-                .onErrorResume(exception -> {
-                    LOGGER.warn(
-                            "Dashboard downstream request failed for {}: {}",
-                            path,
-                            exception.getClass().getSimpleName()
-                    );
-                    return Mono.just(List.of());
+                .switchIfEmpty(Mono.error(new IllegalStateException("Dashboard downstream response is missing")))
+                .map(response -> {
+                    if (response.data() == null) {
+                        throw new IllegalStateException("Dashboard downstream data is missing");
+                    }
+                    return response.data();
                 });
     }
 

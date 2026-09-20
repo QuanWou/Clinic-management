@@ -13,6 +13,10 @@ import CatalogPage from './CatalogPage';
 import ReceptionAppointmentsPage, { allowedQueueTransitions } from './ReceptionAppointmentsPage';
 import ReceptionPatientsPage from './ReceptionPatientsPage';
 import DoctorsPage from './DoctorsPage';
+import DoctorQueuePage from './DoctorQueuePage';
+import LabOrdersPanel from './LabOrdersPanel';
+import BillingWorkflowPanel from './BillingWorkflowPanel';
+import CatalogAdminPanel from './CatalogAdminPanel';
 import type { CurrentUser, DashboardResponse } from '../types/domain';
 
 const patient: CurrentUser = { id: 'p', email: 'patient@clinic.test', fullName: 'Current Patient', roles: ['ROLE_PATIENT'] };
@@ -92,11 +96,32 @@ describe('role-aware pages and empty states', () => {
     const patients = renderToStaticMarkup(<ReceptionPatientsPage role="RECEPTIONIST" />);
     const doctors = renderToStaticMarkup(<DoctorsPage role="ADMIN" />);
     expect(catalog).toContain('not enabled');
-    expect(notifications).toContain('unavailable');
+    expect(notifications).toContain('chưa được bật');
+    expect(notifications).not.toContain('Task 06 is merged');
     expect(reception).toContain('unavailable');
     expect(patients).toContain('unavailable');
     expect(doctors).toContain('not enabled');
     expect([catalog, notifications, reception, patients, doctors].join(' ')).not.toContain('Loading catalog');
+  });
+
+  it('renders newly integrated role-scoped workflows without fake success or patient access to admin actions', () => {
+    const doctorQueue = renderToStaticMarkup(<DoctorQueuePage />);
+    expect(doctorQueue).toContain('Hàng đợi của tôi');
+    expect(doctorQueue).not.toContain('ClinicDemo@2026');
+    const cashier = renderToStaticMarkup(<BillingWorkflowPanel onCreated={noop} />);
+    expect(cashier).toContain('Xuất hóa đơn từ dữ liệu thực tế');
+    expect(cashier).not.toContain('Thanh toán thành công');
+    const catalog = renderToStaticMarkup(<CatalogAdminPanel services={[]} medicines={[]} onChanged={noop} />);
+    expect(catalog).toContain('Quản lý Catalog');
+    expect(catalog).not.toContain('DỮ LIỆU MẪU');
+    const lab = renderToStaticMarkup(<LabOrdersPanel doctor={false} record={{
+      id: 'record', appointmentId: 'appointment', patientId: 'patient', doctorId: 'doctor', diagnosis: 'Sample',
+      prescriptions: []
+    }} />);
+    expect(lab).toContain('Xét nghiệm');
+    expect(lab).not.toContain('Chỉ định xét nghiệm mới');
+    const patientInvoice = renderToStaticMarkup(<InvoicesPage invoices={[]} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
+    expect(patientInvoice).not.toContain('Xuất hóa đơn từ dữ liệu thực tế');
   });
 
   it('shows only today’s actual reception appointments and queue figures for clinic staff', () => {

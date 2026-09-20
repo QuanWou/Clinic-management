@@ -69,7 +69,7 @@ class DashboardAggregationServiceTest {
     }
 
     @Test
-    void getCurrentUserDashboardKeepsAvailablePatientDataWhenOneServiceFails() {
+    void getCurrentUserDashboardNeverMisrepresentsFailedDownstreamAsEmptyPatientRecords() {
         WebClient.Builder builder = WebClient.builder()
                 .exchangeFunction(request -> {
                     if ("/api/appointments/my".equals(request.url().getPath())) {
@@ -83,12 +83,8 @@ class DashboardAggregationServiceTest {
         DashboardAggregationService service = new DashboardAggregationService(builder, servicesProperties());
 
         StepVerifier.create(service.getCurrentUserDashboard("Bearer token"))
-                .assertNext(response -> {
-                    assertThat(response.appointments()).isEmpty();
-                    assertThat(response.medicalRecords()).hasSize(1);
-                    assertThat(response.invoices()).hasSize(1);
-                })
-                .verifyComplete();
+                .expectError()
+                .verify();
     }
 
     private ServicesProperties servicesProperties() {

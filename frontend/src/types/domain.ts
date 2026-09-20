@@ -88,6 +88,30 @@ export type ReceptionHistoryResponse = {
   days: Array<{ date: string; appointments: number; checkIns: number;
     completedVisits: number; cancelledAppointments: number }>;
 };
+export type PerformedServicesResponse = {
+  appointmentId: string;
+  finalized: boolean;
+  revision: string | null;
+  items: Array<{ performedItemId: string; serviceId: string; quantity: number; serviceDate: string }>;
+};
+export type LabOrderStatus = 'ORDERED' | 'COLLECTED' | 'PROCESSING' | 'RESULTED' | 'RELEASED';
+export type LabOrderResponse = {
+  id: string; medicalRecordId: string; testCode: string; testName: string;
+  serviceId: string; performedOn: string; status: LabOrderStatus;
+  sampleIdentifier: string | null; collectedAt: string | null;
+  resultValue: string | null; resultUnit: string | null; referenceRange: string | null;
+  resultedAt: string | null; releasedAt: string | null;
+};
+export type LabBillableItemsResponse = {
+  appointmentId: string;
+  items: Array<{ orderId: string; testCode: string; quantity: number; status: LabOrderStatus;
+    billableAt: string | null; serviceId: string; performedOn: string }>;
+  finalizedForBilling: boolean;
+  billableRevision: string | null;
+};
+export type AppointmentAvailabilityResponse = {
+  doctorId: string; date: string; startTime: string; endTime: string; available: boolean;
+};
 export type PageResponse<T> = {
   content: T[];
   totalElements: number;

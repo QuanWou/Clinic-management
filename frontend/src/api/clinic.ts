@@ -6,7 +6,8 @@ import type {
   ReceptionRescheduleRequest, ReceptionPatientResponse, RegisterWalkInPatientRequest,
   ReceptionVisitResponse, QueueStatus, AdminDoctorResponse, PageResponse, SpecialtyResponse,
   CatalogServiceResponse, MedicineResponse, PriceResponse, PaymentTransactionResponse,
-  NotificationPreferenceResponse, NotificationType, ReceptionHistoryResponse
+  NotificationPreferenceResponse, NotificationType, ReceptionHistoryResponse,
+  PerformedServicesResponse, LabBillableItemsResponse, LabOrderResponse, AppointmentAvailabilityResponse
 } from '../types/domain';
 
 export function getPatientProfile(): Promise<PatientProfileResponse> {
@@ -48,6 +49,26 @@ export function getCatalogMedicines(): Promise<MedicineResponse[]> {
 
 export function getServicePrice(id: string, on?: string): Promise<PriceResponse> {
   return apiRequest<PriceResponse>(`${apiEndpoints.catalog.servicePrice(id)}${on ? `?${new URLSearchParams({ on })}` : ''}`);
+}
+
+export function createCatalogService(request: { code: string; name: string; description: string; active: true }): Promise<CatalogServiceResponse> {
+  return apiRequest<CatalogServiceResponse>(apiEndpoints.catalog.adminServices, { method: 'POST', body: JSON.stringify(request) });
+}
+
+export function createCatalogMedicine(request: { code: string; name: string; unit: string; description: string; active: true }): Promise<MedicineResponse> {
+  return apiRequest<MedicineResponse>(apiEndpoints.catalog.adminMedicines, { method: 'POST', body: JSON.stringify(request) });
+}
+
+export function publishCatalogPrice(serviceId: string, request: { amount: string; currency: 'VND'; effectiveFrom: string; effectiveUntil: string | null }): Promise<PriceResponse> {
+  return apiRequest<PriceResponse>(apiEndpoints.catalog.adminServicePrices(serviceId), { method: 'POST', body: JSON.stringify(request) });
+}
+
+export function deactivateCatalogService(serviceId: string): Promise<CatalogServiceResponse> {
+  return apiRequest<CatalogServiceResponse>(apiEndpoints.catalog.adminService(serviceId), { method: 'DELETE' });
+}
+
+export function deactivateCatalogMedicine(medicineId: string): Promise<MedicineResponse> {
+  return apiRequest<MedicineResponse>(apiEndpoints.catalog.adminMedicine(medicineId), { method: 'DELETE' });
 }
 
 export function searchReceptionPatients(filters: { name?: string; phone?: string }): Promise<ReceptionPatientResponse[]> {
@@ -93,6 +114,57 @@ export function getReceptionQueue(filters: { date?: string; doctorId?: string } 
 
 export function getReceptionHistory(from: string, to: string): Promise<ReceptionHistoryResponse> {
   return apiRequest<ReceptionHistoryResponse>(`${apiEndpoints.appointments.receptionHistory}?${new URLSearchParams({ from, to })}`);
+}
+
+export function getAppointmentAvailability(doctorId: string, date: string, startTime: string, endTime: string): Promise<AppointmentAvailabilityResponse> {
+  return apiRequest<AppointmentAvailabilityResponse>(`${apiEndpoints.appointments.availability(doctorId)}?${new URLSearchParams({ date, startTime, endTime })}`);
+}
+
+export function getPerformedServices(appointmentId: string): Promise<PerformedServicesResponse> {
+  return apiRequest<PerformedServicesResponse>(apiEndpoints.appointments.performedServices(appointmentId));
+}
+
+export function addPerformedService(appointmentId: string, request: { serviceId: string; quantity: number; serviceDate: string }): Promise<PerformedServicesResponse> {
+  return apiRequest<PerformedServicesResponse>(apiEndpoints.appointments.performedServices(appointmentId),
+    { method: 'POST', body: JSON.stringify(request) });
+}
+
+export function removePerformedService(appointmentId: string, itemId: string): Promise<PerformedServicesResponse> {
+  return apiRequest<PerformedServicesResponse>(apiEndpoints.appointments.performedServiceItem(appointmentId, itemId), { method: 'DELETE' });
+}
+
+export function finalizePerformedServices(appointmentId: string): Promise<PerformedServicesResponse> {
+  return apiRequest<PerformedServicesResponse>(apiEndpoints.appointments.performedServicesFinalize(appointmentId), { method: 'POST' });
+}
+
+export function getLabBillableItems(appointmentId: string): Promise<LabBillableItemsResponse> {
+  return apiRequest<LabBillableItemsResponse>(apiEndpoints.medicalRecords.labBillable(appointmentId));
+}
+
+export function finalizeLabBillableItems(appointmentId: string): Promise<LabBillableItemsResponse> {
+  return apiRequest<LabBillableItemsResponse>(apiEndpoints.medicalRecords.labBillableFinalize(appointmentId), { method: 'POST' });
+}
+
+export function createMedicalRecord(request: { appointmentId: string; symptoms: string; diagnosis: string; notes: string; prescriptionItems: [] }): Promise<MedicalRecordResponse> {
+  return apiRequest<MedicalRecordResponse>(apiEndpoints.medicalRecords.collection, { method: 'POST', body: JSON.stringify(request) });
+}
+
+export function getLabOrders(recordId: string): Promise<LabOrderResponse[]> {
+  return apiRequest<LabOrderResponse[]>(apiEndpoints.medicalRecords.labOrders(recordId));
+}
+
+export function createLabOrder(recordId: string, request: { testCode: string; testName: string; serviceId: string; performedOn: string }): Promise<LabOrderResponse> {
+  return apiRequest<LabOrderResponse>(apiEndpoints.medicalRecords.labOrders(recordId), { method: 'POST', body: JSON.stringify(request) });
+}
+
+export function changeLabOrder(orderId: string, action: 'sample' | 'processing' | 'result' | 'release', body?: object): Promise<LabOrderResponse> {
+  return apiRequest<LabOrderResponse>(apiEndpoints.medicalRecords.labOrderStatus(orderId, action),
+    { method: 'PATCH', ...(body ? { body: JSON.stringify(body) } : {}) });
+}
+
+export function createInvoice(appointmentId: string): Promise<InvoiceResponse> {
+  return apiRequest<InvoiceResponse>(apiEndpoints.invoices.collection,
+    { method: 'POST', body: JSON.stringify({ appointmentId }) });
 }
 
 export function updateReceptionQueue(visitId: string, status: QueueStatus): Promise<ReceptionVisitResponse> {

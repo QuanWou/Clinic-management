@@ -136,8 +136,10 @@ class NotificationServiceImplTest {
         assertThat(service.getById(notification.getId(), owner).id()).isEqualTo(notification.getId());
         assertThatThrownBy(() -> service.getById(notification.getId(), principal(UUID.randomUUID(), "ROLE_PATIENT")))
                 .isInstanceOf(BusinessException.class).hasMessage("Notification not found");
-        assertThat(service.getById(notification.getId(), principal(UUID.randomUUID(), "ROLE_ADMIN")).id())
-                .isEqualTo(notification.getId());
+        assertThatThrownBy(() -> service.getById(notification.getId(), principal(UUID.randomUUID(), "ROLE_ADMIN")))
+                .isInstanceOf(BusinessException.class).hasMessage("Notification not found");
+        assertThatThrownBy(() -> service.getById(notification.getId(), principal(UUID.randomUUID(), "ROLE_RECEPTIONIST")))
+                .isInstanceOf(BusinessException.class).hasMessage("Notification not found");
     }
 
     @Test

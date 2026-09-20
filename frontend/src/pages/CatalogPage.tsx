@@ -6,6 +6,7 @@ import { integrations } from '../config/integrations.config';
 import type { AdminDoctorResponse, CatalogServiceResponse, MedicineResponse, PriceResponse, SpecialtyResponse } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
 import { formatMoney } from '../utils/format';
+import CatalogAdminPanel from './CatalogAdminPanel';
 
 export default function CatalogPage({ role }: { role: ClinicRole }) {
   if (!['ADMIN', 'DOCTOR'].includes(role)) return <Alert tone="error">Catalog access is not available for this role.</Alert>;
@@ -63,6 +64,8 @@ function ActiveCatalogPage({ role }: { role: ClinicRole }) {
       actions={<button type="button" className="soft-button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Refresh</button>} />
     {loading && <p role="status">Loading catalog...</p>}
     {error && <Alert tone="error">{error} <button type="button" onClick={() => setRevision((value) => value + 1)}>Retry</button></Alert>}
+    {role === 'ADMIN' && services && medicines && <CatalogAdminPanel services={services} medicines={medicines}
+      onChanged={() => setRevision((value) => value + 1)} />}
     {services && <section className="panel settings-form"><h3>Available services</h3>
       {services.length === 0 ? <p>No active services.</p> : <label>Choose a service
         <select value={selectedService} onChange={(event) => void chooseService(event.target.value)}>

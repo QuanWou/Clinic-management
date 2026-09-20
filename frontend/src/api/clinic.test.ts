@@ -6,7 +6,10 @@ import {
   cancelReceptionAppointment, checkInReceptionAppointment, getReceptionQueue, updateReceptionQueue,
   confirmCashPayment, getInvoiceTransactions, getNotifications, markNotificationRead,
   getNotificationPreferences, updateNotificationPreference, getAdminDoctors, getSpecialties,
-  getCatalogServices, getCatalogMedicines, getServicePrice, getDoctors
+  getCatalogServices, getCatalogMedicines, getServicePrice, getDoctors,
+  getAppointmentAvailability, getPerformedServices, addPerformedService, finalizePerformedServices,
+  getLabBillableItems, finalizeLabBillableItems, createInvoice, getLabOrders, changeLabOrder,
+  createCatalogService, publishCatalogPrice
 } from './clinic';
 import { apiEndpoints } from './endpoints';
 import { logout } from './auth';
@@ -28,6 +31,40 @@ beforeEach(() => {
 });
 
 describe('verified business API routes', () => {
+  it('wires Task 01, 04, and 05 actions only to existing backend routes and request methods', async () => {
+    await getAppointmentAvailability('doctor', '2026-09-21', '08:00', '08:30');
+    await getPerformedServices('appointment');
+    await addPerformedService('appointment', { serviceId: 'service', quantity: 2, serviceDate: '2026-09-20' });
+    await finalizePerformedServices('appointment');
+    await getLabBillableItems('appointment');
+    await finalizeLabBillableItems('appointment');
+    await createInvoice('appointment');
+    await getLabOrders('record');
+    await changeLabOrder('order', 'sample', { sampleIdentifier: 'S-001' });
+    expect(vi.mocked(fetch).mock.calls.map(([url, init]) => [String(url).split('/api/')[1], init?.method ?? 'GET'])).toEqual([
+      ['appointments/doctors/doctor/availability?date=2026-09-21&startTime=08%3A00&endTime=08%3A30', 'GET'],
+      ['appointments/appointment/performed-services', 'GET'],
+      ['appointments/appointment/performed-services', 'POST'],
+      ['appointments/appointment/performed-services/finalize', 'POST'],
+      ['medical-records/appointments/appointment/billable-items', 'GET'],
+      ['medical-records/appointments/appointment/billable-items/finalize', 'POST'],
+      ['invoices', 'POST'],
+      ['medical-records/record/lab-orders', 'GET'],
+      ['medical-records/lab-orders/order/sample', 'PATCH']
+    ]);
+    expect(JSON.parse(String(vi.mocked(fetch).mock.calls[6][1]?.body))).toEqual({ appointmentId: 'appointment' });
+    expect(JSON.parse(String(vi.mocked(fetch).mock.calls[8][1]?.body))).toEqual({ sampleIdentifier: 'S-001' });
+  });
+
+  it('publishes Catalog changes only through its administrator routes', async () => {
+    await createCatalogService({ code: 'CONSULT', name: 'Consultation', description: '', active: true });
+    await publishCatalogPrice('service', { amount: '120000', currency: 'VND', effectiveFrom: '2026-09-20', effectiveUntil: null });
+    const calls = vi.mocked(fetch).mock.calls;
+    expect(calls.map(([url, init]) => [String(url).split('/api/')[1], init?.method])).toEqual([
+      ['catalog/admin/services', 'POST'], ['catalog/admin/services/service/prices', 'POST']
+    ]);
+    expect(JSON.parse(String(calls[1][1]?.body))).toEqual({ amount: '120000', currency: 'VND', effectiveFrom: '2026-09-20', effectiveUntil: null });
+  });
   it('uses the authenticated public active-doctor list rather than the administrator endpoint for receptionist and patient directories', async () => {
     await getDoctors();
     expect(String(vi.mocked(fetch).mock.calls[0][0])).toMatch(/\/api\/doctors$/);

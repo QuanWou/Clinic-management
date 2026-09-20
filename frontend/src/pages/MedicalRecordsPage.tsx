@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import { getPatientMedicalRecords } from '../api/clinic';
+import { createMedicalRecord, getPatientMedicalRecords } from '../api/clinic';
 import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
@@ -10,6 +10,7 @@ import type { ClinicRole } from '../utils/roles';
 import { formatDate, shortId } from '../utils/format';
 import { getUiMedicalRecords } from '../utils/uiData';
 import { integrations } from '../config/integrations.config';
+import LabOrdersPanel from './LabOrdersPanel';
 
 type MedicalRecordsPageProps = {
   records: MedicalRecordResponse[] | null | undefined;
@@ -38,6 +39,8 @@ function AuthorizedMedicalRecordsPage({ records, role, error, loading, onRefresh
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [queryError, setQueryError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [newRecord, setNewRecord] = useState({ appointmentId: '', symptoms: '', diagnosis: '', notes: '' });
+  const [notice, setNotice] = useState<string | null>(null);
   const isPatient = role === 'PATIENT';
   useEffect(() => { setSelectedId(null); }, [records]);
   const rows = getUiMedicalRecords(isPatient ? records : staffRecords);
@@ -54,11 +57,40 @@ function AuthorizedMedicalRecordsPage({ records, role, error, loading, onRefresh
     finally { setBusy(false); }
   }
 
+  async function create(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setBusy(true); setQueryError(null); setNotice(null);
+    try {
+      if (!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i.test(newRecord.appointmentId)) {
+        throw new Error('Appointment UUID is invalid');
+      }
+      const created = await createMedicalRecord({ ...newRecord, prescriptionItems: [] });
+      if (created.appointmentId !== newRecord.appointmentId || !created.id) {
+        throw new Error('Medical record creation was not confirmed by the server');
+      }
+      setStaffRecords((previous) => [created, ...(previous ?? []).filter((record) => record.id !== created.id)]);
+      setSelectedId(created.id);
+      setNewRecord({ appointmentId: '', symptoms: '', diagnosis: '', notes: '' });
+      setNotice('Hồ sơ bệnh án đã được ghi nhận. Chỉ định xét nghiệm có thể tạo phía dưới.');
+    } catch (cause) { setQueryError(cause instanceof Error ? cause.message : 'Unable to create medical record'); }
+    finally { setBusy(false); }
+  }
+
   return <>
     <PageHeader title="Medical Records" subtitle={isPatient ? 'Your medical records and prescriptions.' : 'Search records by patient ID. The backend enforces record access.'}
       actions={isPatient ? <button type="button" className="soft-button" onClick={onRefresh} disabled={loading}>Refresh</button> : undefined} />
     {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Retry</button></Alert>}
     {queryError && <Alert tone="error">{queryError}</Alert>}
+    {notice && <Alert tone="info">{notice}</Alert>}
+    {!isPatient && <form className="panel settings-form" onSubmit={(event) => void create(event)}>
+      <h3>Tạo bệnh án sau khi khám hoàn thành</h3>
+      <p>Chỉ bác sĩ được phân công có thể tạo bệnh án; backend kiểm tra appointment COMPLETED.</p>
+      <label>Appointment UUID<input required value={newRecord.appointmentId} onChange={(event) => setNewRecord({ ...newRecord, appointmentId: event.target.value })} /></label>
+      <label>Chẩn đoán<textarea required maxLength={4000} value={newRecord.diagnosis} onChange={(event) => setNewRecord({ ...newRecord, diagnosis: event.target.value })} /></label>
+      <label>Triệu chứng<textarea maxLength={4000} value={newRecord.symptoms} onChange={(event) => setNewRecord({ ...newRecord, symptoms: event.target.value })} /></label>
+      <label>Ghi chú bác sĩ<textarea maxLength={4000} value={newRecord.notes} onChange={(event) => setNewRecord({ ...newRecord, notes: event.target.value })} /></label>
+      <p>Đơn thuốc chỉ được ghi khi đã chọn thuốc từ Catalog qua luồng được kiểm chứng; biểu mẫu này chưa tạo đơn thuốc.</p>
+      <button type="submit" disabled={busy || !newRecord.diagnosis.trim()}>Lưu bệnh án</button>
+    </form>}
     {!isPatient && <form className="inline-search" onSubmit={(event) => void search(event)}>
       <Search size={16} /><input aria-label="Patient UUID" required placeholder="Patient UUID" value={patientId} onChange={(event) => setPatientId(event.target.value)} />
       <button type="submit" disabled={busy}>Search records</button>
@@ -96,5 +128,6 @@ function AuthorizedMedicalRecordsPage({ records, role, error, loading, onRefresh
         )}
       </article>}
     </section>
+    {selected && <LabOrdersPanel key={selected.id} record={selected} doctor={!isPatient} />}
   </>;
 }

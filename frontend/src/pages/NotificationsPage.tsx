@@ -8,8 +8,8 @@ import { formatDate } from '../utils/format';
 
 export default function NotificationsPage() {
   if (!integrations.notifications) {
-    return <><PageHeader title="Notifications" subtitle="Your personal inbox" />
-      <Alert tone="info">Personal notifications are unavailable until Task 06 is merged, running and routed through the gateway.</Alert></>;
+    return <><PageHeader title="Thông báo" subtitle="Hộp thư của bạn" />
+      <Alert tone="info">Hộp thư cá nhân chưa được bật trong cấu hình triển khai này.</Alert></>;
   }
   return <ActiveNotificationsPage />;
 }
@@ -58,11 +58,11 @@ function ActiveNotificationsPage() {
   }
 
   return <>
-    <PageHeader title="Notifications" subtitle="Messages addressed to your account only"
+    <PageHeader title="Thông báo cá nhân" subtitle="Chỉ hiển thị thông báo gửi tới tài khoản đang đăng nhập"
       actions={<button type="button" className="soft-button" disabled={loading || busy} onClick={() => setRevision((value) => value + 1)}>Refresh</button>} />
     {error && <Alert tone="error">{error} <button type="button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Retry</button></Alert>}
-    {loading && <p role="status">Loading notifications...</p>}
-    {!loading && items?.length === 0 && <p>No notifications.</p>}
+    {loading && <p role="status">Đang tải thông báo...</p>}
+    {!loading && items?.length === 0 && <p>Chưa có thông báo nào dành cho tài khoản này.</p>}
     {items?.map((item) => <article className="panel" key={item.id}>
       <h3>{item.subject}</h3><p>{item.content}</p><p>{formatDate(item.createdAt ?? item.sentAt)}</p>
       {item.readAt ? <span>Read</span> : <button type="button" disabled={busy} onClick={() => void read(item.id)}>Mark as read</button>}
