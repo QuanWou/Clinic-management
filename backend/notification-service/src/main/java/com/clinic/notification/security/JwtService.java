@@ -3,51 +3,41 @@ package com.clinic.notification.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
+import javax.crypto.SecretKey;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+/** Reads the identity-service access-token contract: UUID subject, email claim and ROLE_* authorities. */
 @Service
 public class JwtService {
+    private final SecretKey key;
 
-    private final SecretKey secretKey;
+    public JwtService(JwtProperties properties) {
+        this.key = Keys.hmacShaKeyFor(properties.secret().getBytes(StandardCharsets.UTF_8));
+    }
 
-    public JwtService(JwtProperties jwtProperties) {
-        this.secretKey = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
+    private Claims claims(String token) {
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
     public String extractEmail(String token) {
-        return extractClaim(token, claims -> claims.get("email", String.class));
+        return claims(token).get("email", String.class);
     }
 
     public UUID extractUserId(String token) {
-        return UUID.fromString(extractClaim(token, Claims::getSubject));
+        return UUID.fromString(claims(token).getSubject());
     }
 
-    @SuppressWarnings("unchecked")
     public Collection<? extends GrantedAuthority> extractAuthorities(String token) {
-        List<String> roles = extractClaim(token, claims -> claims.get("roles", List.class));
-        return (roles == null ? List.<String>of() : roles).stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList();
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        Object roles = claims(token).get("roles");
+        if (!(roles instanceof List<?> roleList) || roleList.stream().anyMatch(role -> !(role instanceof String))) {
+            throw new IllegalArgumentException("Invalid roles claim");
+        }
+        return roleList.stream().map(role -> new SimpleGrantedAuthority((String) role)).toList();
     }
 }

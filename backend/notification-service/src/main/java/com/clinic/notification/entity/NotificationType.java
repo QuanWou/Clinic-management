@@ -3,5 +3,6 @@ package com.clinic.notification.entity;
 public enum NotificationType {
     EMAIL,
     SMS,
-    PUSH
+    PUSH,
+    IN_APP
 }

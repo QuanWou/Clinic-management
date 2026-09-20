@@ -20,6 +20,15 @@ public class Notification {
     @Id
     private UUID id;
 
+    @Column(name = "recipient_user_id")
+    private UUID recipientUserId;
+
+    @Column(name = "event_id")
+    private UUID eventId;
+
+    @Column(name = "event_type", length = 64)
+    private String eventType;
+
     @Column(nullable = false)
     private String recipient;
 
@@ -38,6 +47,21 @@ public class Notification {
     private NotificationStatus status;
 
     private Instant sentAt;
+
+    private Instant readAt;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private int deliveryAttempts = 0;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private int publishFailures = 0;
+
+    @Column(nullable = false)
+    private Instant nextAttemptAt;
+
+    private Instant lastEnqueuedAt;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

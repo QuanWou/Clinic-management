@@ -16,7 +16,7 @@ public class NotificationDeliveryConsumer {
 
     @RabbitListener(queues = "${app.notification.rabbitmq.queue}")
     public void consume(NotificationDeliveryMessage message) {
-        log.info("Received notification delivery message id={} type={}", message.notificationId(), message.type());
+        log.debug("Received notification delivery message id={}", message.notificationId());
         notificationService.deliver(message.notificationId());
     }
 }
