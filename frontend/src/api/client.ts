@@ -8,7 +8,8 @@ export class HttpApiError extends Error {
   constructor(
     public readonly status: number,
     message: string,
-    public readonly errorCode?: string
+    public readonly errorCode?: string,
+    public readonly path?: string
   ) {
     super(message);
     this.name = 'HttpApiError';
@@ -34,13 +35,19 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       clearTokens();
       window.dispatchEvent(new Event('clinic:unauthorized'));
     }
+    // Show only the route; query parameters can contain patient identifiers.
+    const safePath = path.split('?')[0];
     const message = isObject(body) && typeof body.message === 'string' && body.message
       ? body.message
-      : `Request failed (${response.status})`;
+      : response.status === 403
+        ? auth
+          ? `Không có quyền truy cập API ${safePath} (403). Kiểm tra vai trò tài khoản và đăng nhập lại nếu quyền vừa thay đổi.`
+          : `Yêu cầu ${safePath} bị chặn (403). Kiểm tra cấu hình Origin/CORS của máy chủ; chưa phải lỗi phân quyền tài khoản.`
+        : `Request failed (${response.status})`;
     const errorCode = isObject(body) && typeof body.errorCode === 'string'
       ? body.errorCode
       : undefined;
-    throw new HttpApiError(response.status, message, errorCode);
+    throw new HttpApiError(response.status, message, errorCode, safePath);
   }
   if (!isObject(body) || body.success !== true || !('data' in body)) {
     throw new Error('Invalid API response');

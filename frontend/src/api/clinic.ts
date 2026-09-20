@@ -7,7 +7,8 @@ import type {
   ReceptionVisitResponse, QueueStatus, AdminDoctorResponse, PageResponse, SpecialtyResponse,
   CatalogServiceResponse, MedicineResponse, PriceResponse, PaymentTransactionResponse,
   NotificationPreferenceResponse, NotificationType, ReceptionHistoryResponse,
-  PerformedServicesResponse, LabBillableItemsResponse, LabOrderResponse, AppointmentAvailabilityResponse
+  PerformedServicesResponse, LabBillableItemsResponse, LabOrderResponse, AppointmentAvailabilityResponse,
+  CreateAdminDoctorRequest, UpdateAdminDoctorRequest, AdminDoctorSchedule, DoctorSchedule
 } from '../types/domain';
 
 export function getPatientProfile(): Promise<PatientProfileResponse> {
@@ -22,9 +23,19 @@ export function getDoctorProfile(): Promise<DoctorProfileResponse> {
   return apiRequest<DoctorProfileResponse>(apiEndpoints.doctors.profile);
 }
 
+/** This endpoint is scoped to the authenticated doctor's own schedule. */
+export function getMyDoctorSchedules(): Promise<DoctorSchedule[]> {
+  return apiRequest<DoctorSchedule[]>(apiEndpoints.doctors.mySchedules);
+}
+
 /** Active public directory: available to authenticated patients and receptionists. */
 export function getDoctors(): Promise<DoctorProfileResponse[]> {
   return apiRequest<DoctorProfileResponse[]>(apiEndpoints.doctors.collection);
+}
+
+/** Weekly shifts are read-only and do not prove that an appointment slot is available. */
+export function getDoctorSchedules(doctorId: string): Promise<DoctorSchedule[]> {
+  return apiRequest<DoctorSchedule[]>(apiEndpoints.doctors.schedules(doctorId));
 }
 
 export function updateDoctorProfile(request: { biography: string }): Promise<DoctorProfileResponse> {
@@ -33,6 +44,26 @@ export function updateDoctorProfile(request: { biography: string }): Promise<Doc
 
 export function getAdminDoctors(page = 0, size = 100): Promise<PageResponse<AdminDoctorResponse>> {
   return apiRequest<PageResponse<AdminDoctorResponse>>(`${apiEndpoints.doctors.admin}?${new URLSearchParams({ page: String(page), size: String(size) })}`);
+}
+
+export function getAdminDoctor(id: string): Promise<AdminDoctorResponse> {
+  return apiRequest<AdminDoctorResponse>(apiEndpoints.doctors.adminById(id));
+}
+
+export function getAdminDoctorSchedules(id: string): Promise<AdminDoctorSchedule[]> {
+  return apiRequest<AdminDoctorSchedule[]>(apiEndpoints.doctors.adminSchedules(id));
+}
+
+export function createAdminDoctor(request: CreateAdminDoctorRequest): Promise<AdminDoctorResponse> {
+  return apiRequest<AdminDoctorResponse>(apiEndpoints.doctors.admin, { method: 'POST', body: JSON.stringify(request) });
+}
+
+export function updateAdminDoctor(id: string, request: UpdateAdminDoctorRequest): Promise<AdminDoctorResponse> {
+  return apiRequest<AdminDoctorResponse>(apiEndpoints.doctors.adminById(id), { method: 'PUT', body: JSON.stringify(request) });
+}
+
+export function deactivateAdminDoctor(id: string): Promise<AdminDoctorResponse> {
+  return apiRequest<AdminDoctorResponse>(apiEndpoints.doctors.adminById(id), { method: 'DELETE' });
 }
 
 export function getSpecialties(): Promise<SpecialtyResponse[]> {
@@ -45,6 +76,19 @@ export function getCatalogServices(): Promise<CatalogServiceResponse[]> {
 
 export function getCatalogMedicines(): Promise<MedicineResponse[]> {
   return apiRequest<MedicineResponse[]>(apiEndpoints.catalog.medicines);
+}
+
+/** Admin listing includes inactive entries; public catalog contains active entries only. */
+export function getAdminCatalogServices(): Promise<CatalogServiceResponse[]> {
+  return apiRequest<CatalogServiceResponse[]>(apiEndpoints.catalog.adminServices);
+}
+
+export function getAdminCatalogMedicines(): Promise<MedicineResponse[]> {
+  return apiRequest<MedicineResponse[]>(apiEndpoints.catalog.adminMedicines);
+}
+
+export function getServicePriceHistory(id: string): Promise<PriceResponse[]> {
+  return apiRequest<PriceResponse[]>(apiEndpoints.catalog.servicePrices(id));
 }
 
 export function getServicePrice(id: string, on?: string): Promise<PriceResponse> {

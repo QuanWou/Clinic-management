@@ -11,6 +11,8 @@ import { formatDate, shortId } from '../utils/format';
 import { getUiMedicalRecords } from '../utils/uiData';
 import { integrations } from '../config/integrations.config';
 import LabOrdersPanel from './LabOrdersPanel';
+import DoctorMedicalRecordsWorkspace from './DoctorMedicalRecordsWorkspace';
+import PatientMedicalRecordsWorkspace from './PatientMedicalRecordsWorkspace';
 
 type MedicalRecordsPageProps = {
   records: MedicalRecordResponse[] | null | undefined;
@@ -30,6 +32,8 @@ export default function MedicalRecordsPage({ records, role, error, loading, onRe
     return <><PageHeader title="Medical Records" subtitle="Treating doctor records" />
       <Alert tone="info">Doctor record lookup is unavailable until Task 04 ownership checks are merged, running and verified.</Alert></>;
   }
+  if (role === 'DOCTOR') return <DoctorMedicalRecordsWorkspace />;
+  if (role === 'PATIENT') return <PatientMedicalRecordsWorkspace records={records} error={error} loading={loading} onRefresh={onRefresh} />;
   return <AuthorizedMedicalRecordsPage records={records} role={role} error={error} loading={loading} onRefresh={onRefresh} />;
 }
 

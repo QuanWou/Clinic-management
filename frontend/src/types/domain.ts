@@ -120,6 +120,14 @@ export type PageResponse<T> = {
   size: number;
 };
 export type AdminDoctorResponse = DoctorProfileResponse & { active: boolean };
+/** Administrator-only doctor profile operations; account creation belongs to Identity. */
+export type CreateAdminDoctorRequest = {
+  userId: string; specialtyId: string; biography: string; consultationFee: string;
+};
+export type UpdateAdminDoctorRequest = Omit<CreateAdminDoctorRequest, 'userId'> & { active: boolean };
+export type AdminDoctorSchedule = {
+  id: string; doctorId: string | null; dayOfWeek: number; startTime: string; endTime: string;
+};
 export type SpecialtyResponse = { id: string; name: string; description: string | null };
 export type CatalogServiceResponse = { id: string; code: string; name: string; description: string | null; active: boolean };
 export type MedicineResponse = { id: string; code: string; name: string; unit: string; description: string | null; active: boolean };

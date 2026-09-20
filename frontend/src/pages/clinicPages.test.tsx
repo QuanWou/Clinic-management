@@ -47,7 +47,7 @@ describe('role-aware pages and empty states', () => {
   it('shows genuine empty patient dashboard instead of fake figures', () => {
     const html = renderToStaticMarkup(<DashboardPage dashboard={emptyDashboard} user={patient} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
     expect(html).toContain('Xin chào, Current Patient');
-    expect(html).toContain('Chưa có lịch hẹn.');
+    expect(html).toContain('Bạn chưa có lịch khám sắp tới');
     expect(html).toContain('Chưa có hồ sơ bệnh án.');
     expect(html).toContain('Chưa có hóa đơn.');
     expect(html).not.toContain('Olivia');
@@ -58,9 +58,9 @@ describe('role-aware pages and empty states', () => {
     const appointments = renderToStaticMarkup(<AppointmentsPage appointments={[]} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
     const invoices = renderToStaticMarkup(<InvoicesPage invoices={[]} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
     const records = renderToStaticMarkup(<MedicalRecordsPage records={[]} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
-    expect(appointments).toContain('No appointments found.');
+    expect(appointments).toContain('Không có lịch hẹn phù hợp.');
     expect(invoices).toContain('No invoices found.');
-    expect(records).toContain('No medical records found.');
+    expect(records).toContain('Chưa có hồ sơ bệnh án.');
     expect(invoices).not.toContain('December 12, 2024');
     expect(records).not.toContain('December 26, 2024');
   });
@@ -131,14 +131,14 @@ describe('role-aware pages and empty states', () => {
       queue: [{ id: 'visit', appointmentId: 'actual-appointment', patientId: 'patient-id', doctorId: 'doctor-id', visitDate: '2026-09-20', queueNumber: 7, status: 'WAITING', checkedInAt: '2026-09-20T09:00:00', startedAt: null, completedAt: null }]
     }} user={receptionist} role="RECEPTIONIST" error={null} loading={false} onRefresh={noop} />);
     expect(html).toContain('Lịch hẹn hôm nay');
-    expect(html).toContain('actual-appointment');
-    expect(html).toContain('Số thứ tự #7');
-    expect(html).toContain('Đang chờ hoặc đã gọi');
-    expect(html).toContain('clinic-preview-dashboard');
-    expect(html).toContain('Phân bổ lịch hẹn');
-    expect(html).toContain('Lịch bác sĩ');
-    expect(html).toContain('Bệnh nhân có lịch hôm nay');
-    expect(html).toContain('9:00 — 1 lượt');
+    expect(html).toContain('reception-dashboard');
+    expect(html).toContain('Dashboard tiếp đón lễ tân');
+    expect(html).toContain('Trung tâm tiếp đón bệnh nhân');
+    expect(html).toContain('Hàng đợi hôm nay');
+    expect(html).toContain('Bệnh nhân PATIENT-');
+    expect(html).toContain('Mã lịch ACTUAL-A');
+    expect(html).toContain('#7');
+    expect(html).toContain('Bác sĩ có lịch hôm nay');
     expect(html).not.toContain('748.839');
     expect(html).not.toContain('421.748');
     expect(html).not.toContain('DỮ LIỆU MẪU');
@@ -158,13 +158,34 @@ describe('role-aware pages and empty states', () => {
       scope: 'RECEPTION', date: '2026-09-20', appointments: [], queue: [],
       history: { scope: 'RECEPTION', from: '2026-08-22', to: '2026-09-20', days }
     }} user={admin} role="ADMIN" error={null} loading={false} onRefresh={noop} />);
-    expect(html).toContain('Lịch hẹn 30 ngày');
-    expect(html).toContain('Hoạt động 30 ngày');
-    expect(html).toContain('live-month-chart');
+    expect(html).toContain('Tổng quan quản trị phòng khám');
+    expect(html).toContain('Xu hướng 30 ngày');
+    expect(html).toContain('admin-chart');
     expect(html).toContain('<strong>80</strong>');
     expect(html).toContain('<strong>60</strong>');
-    expect(html).toContain('Hôm nay chưa có lịch hẹn.');
+    expect(html).toContain('Hôm nay chưa có lịch hẹn đang hoạt động.');
     expect(html).not.toContain('748.839');
+  });
+
+  it('renders admin-only dashboard without borrowing patient data or a doctor queue', () => {
+    const data = { scope: 'RECEPTION' as const, date: '2026-09-20', appointments: [{
+      id: 'admin-booking-001', patientId: 'patient-uuid', doctorId: 'doctor-uuid', appointmentDate: '2026-09-20',
+      startTime: '09:00', endTime: '09:30', status: 'PENDING' as const
+    }], queue: [] };
+    const html = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={data} user={admin}
+      role="ADMIN" error={null} loading={false} onRefresh={noop} onNavigate={noop} />);
+    expect(html).toContain('admin-overview');
+    expect(html).toContain('Lịch #ADMIN-BO');
+    expect(html).toContain('Đang chờ khám');
+    expect(html).toContain('Thống kê lịch sử chưa khả dụng.');
+    expect(html).not.toContain('clinic-preview-dashboard');
+    expect(html).not.toContain('Hồ sơ bệnh án của tôi');
+    expect(html).not.toContain('Doanh thu');
+    const mismatch = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={{
+      scope: 'DOCTOR', date: '2026-09-20', queue: []
+    }} user={admin} role="ADMIN" error={null} loading={false} onRefresh={noop} />);
+    expect(mismatch).toContain('Phạm vi dashboard không khớp');
+    expect(mismatch).not.toContain('admin-overview');
   });
 
   it('rejects stale or mismatched dashboard data across role switches', () => {

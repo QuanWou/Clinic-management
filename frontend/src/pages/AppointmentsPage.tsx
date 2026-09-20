@@ -11,7 +11,8 @@ import { formatDate, formatTime, shortId } from '../utils/format';
 import { getUiAppointments } from '../utils/uiData';
 import ReceptionAppointmentsPage from './ReceptionAppointmentsPage';
 import { integrations } from '../config/integrations.config';
-import DoctorQueuePage from './DoctorQueuePage';
+import DoctorAppointmentsWorkspace from './DoctorAppointmentsWorkspace';
+import PatientAppointmentsWorkspace from './PatientAppointmentsWorkspace';
 
 type AppointmentsPageProps = {
   appointments: AppointmentResponse[] | null | undefined;
@@ -28,13 +29,13 @@ type Filter = 'All' | 'Upcoming' | 'Completed' | 'Canceled';
 
 export default function AppointmentsPage({ appointments, role, error, loading, onRefresh }: AppointmentsPageProps) {
   if (role === 'ADMIN' || role === 'RECEPTIONIST') return <ReceptionAppointmentsPage role={role} />;
+  if (role === 'PATIENT') return <PatientAppointmentsWorkspace appointments={appointments} error={error} loading={loading} onRefresh={onRefresh} />;
   if (role === 'DOCTOR' && !integrations.appointmentOwnership) {
     return <><PageHeader title="Appointments" subtitle="Your assigned appointments" />
       <Alert tone="info">Doctor appointment access is unavailable until Task 01 ownership checks are merged and verified.</Alert></>;
   }
-  return role === 'DOCTOR' ? <><DoctorQueuePage />
-    <PersonalAppointmentsPage appointments={appointments} role={role} error={error} loading={loading} onRefresh={onRefresh} /></>
-    : <PersonalAppointmentsPage appointments={appointments} role={role} error={error} loading={loading} onRefresh={onRefresh} />;
+  if (role === 'DOCTOR') return <DoctorAppointmentsWorkspace />;
+  return <PersonalAppointmentsPage appointments={appointments} role={role} error={error} loading={loading} onRefresh={onRefresh} />;
 }
 
 function PersonalAppointmentsPage({ appointments, role, error, loading, onRefresh }: AppointmentsPageProps) {

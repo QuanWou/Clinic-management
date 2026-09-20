@@ -1,0 +1,106 @@
+/* Treating-doctor medical records. All selectors are isolated from the patient and admin pages. */
+.doctor-records {display:grid;align-content:start;gap:1.15rem;min-width:0;padding-bottom:2rem}
+.doctor-records>*,.doctor-records-hero>*,.doctor-records-content>*,.doctor-records-section-head>* {min-width:0}
+.doctor-records .panel {border-radius:17px;padding:clamp(1rem,1.8vw,1.55rem)}
+.doctor-records-hero {position:relative;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:2rem;min-height:207px;overflow:hidden;border-radius:19px;padding:clamp(1.35rem,3vw,2.1rem);color:#fff;background:linear-gradient(115deg,#103746 0%,#145f60 65%,#18936e 100%)}
+.doctor-records-hero:after {content:"";position:absolute;pointer-events:none;width:410px;aspect-ratio:1;right:-90px;bottom:-280px;border:1px solid #ffffff30;border-radius:50%;box-shadow:0 0 0 65px #ffffff08,0 0 0 135px #ffffff05}
+.doctor-records-hero>div {position:relative;z-index:1;max-width:710px}
+.doctor-records-kicker {display:inline-flex;align-items:center;gap:.45rem;color:#bdf9e3;font-size:.69rem;letter-spacing:.1em;font-weight:850}
+.doctor-records-hero h3 {color:#fff;font-size:clamp(1.48rem,2.45vw,2.15rem);letter-spacing:-.04em;line-height:1.2;margin:.65rem 0 .55rem;overflow-wrap:anywhere}
+.doctor-records-hero p {font-size:.85rem;line-height:1.65;color:#d2e9e7;margin:0}
+.doctor-records-hero-chip {display:inline-flex;align-items:center;gap:.5rem;max-width:100%;flex-wrap:wrap;margin-top:1.25rem;padding:.46rem .72rem;border:1px solid #ffffff30;border-radius:999px;background:#ffffff17;color:#effff9;font-size:.73rem;font-weight:700}
+.doctor-records-hero-icon {display:grid;place-items:center;position:relative;z-index:1;flex:none;width:125px;height:125px;transform:rotate(-5deg);border:1px solid #ffffff40;border-radius:30px;background:#ffffff13;color:#c2f8e8}
+.doctor-records-section-head {display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.doctor-records-section-head>div>span {color:#0d8b6c;font-size:.66rem;font-weight:850;letter-spacing:.12em}
+.doctor-records-section-head h3 {color:#193646;font-size:1.11rem;letter-spacing:-.035em;margin:.35rem 0 .22rem;overflow-wrap:anywhere}
+.doctor-records-section-head p {color:#728590;font-size:.78rem;line-height:1.55;margin:0;max-width:720px}
+.doctor-records-section-head>svg {color:#0b916b}
+.doctor-records-search,.doctor-records-create {min-width:0}
+.doctor-records-search-form,.doctor-records-verify>div {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.7rem}
+.doctor-records-search-form>label,.doctor-records-filter {display:flex;align-items:center;gap:.7rem;min-width:0;border:1px solid #dfe9ef;background:#fff;padding:0 .85rem;border-radius:11px;color:#477080}
+.doctor-records-search-form>label:focus-within,.doctor-records-filter:focus-within {border-color:#12a778;box-shadow:0 0 0 3px #16ad7820}
+.doctor-records-search-form input,.doctor-records-filter input {width:100%;min-width:0;min-height:45px;padding:.5rem 0;border:0;border-radius:0;background:transparent;box-shadow:none;color:#344e5c;font-size:.82rem}
+.doctor-records-search-form input:focus,.doctor-records-filter input:focus {border:0;box-shadow:none}
+.doctor-records-search-form button {min-height:45px;font-size:.79rem}
+.doctor-records-refresh {min-height:37px;font-size:.75rem}
+.doctor-records-sr-only {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.doctor-records-loading {font-size:.82rem;color:#387963}
+.doctor-records-intro,.doctor-records-detail-empty {display:grid;justify-items:center;align-content:center;gap:.65rem;min-height:175px;text-align:center;color:#79929e;padding:1rem}
+.doctor-records-intro>svg,.doctor-records-detail-empty>svg {color:#0c966f;background:#e6f8ef;width:57px;height:57px;padding:14px;border-radius:15px}
+.doctor-records-intro strong,.doctor-records-detail-empty strong {font-size:.91rem;color:#274755}
+.doctor-records-intro p,.doctor-records-detail-empty p {max-width:480px;font-size:.78rem;line-height:1.6;margin:0}
+.doctor-records-scope,.doctor-records-api {display:inline-flex;align-items:center;gap:.5rem;max-width:100%;flex-wrap:wrap;color:#0b7d5d;background:#eaf8f0;border-radius:999px;padding:.48rem .75rem;font-size:.72rem;font-weight:750}
+.doctor-records-scope {margin-top:1rem;border-radius:9px}
+.doctor-records-metrics {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.85rem;margin-top:1rem}
+.doctor-records-metric {min-width:0;display:grid;align-content:start;justify-items:start;gap:.35rem;padding:1.05rem;border:1px solid #e6eaf0;background:#fff;border-radius:14px;box-shadow:0 8px 26px #16314708}
+.doctor-records-metric-icon {display:grid;place-items:center;width:43px;height:43px;border-radius:12px;background:#e9f1ff;color:#4273cc;margin-bottom:.35rem}
+.doctor-records-metric-green .doctor-records-metric-icon {background:#e3f7ec;color:#0e986d}
+.doctor-records-metric-purple .doctor-records-metric-icon {background:#f2eaff;color:#8751c4}
+.doctor-records-metric-orange .doctor-records-metric-icon {background:#fff0e2;color:#ca7a20}
+.doctor-records-metric>strong {font-size:clamp(1.12rem,2vw,1.86rem);font-weight:850;letter-spacing:-.035em;line-height:1.18;color:#1d3747;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.doctor-records-metric h4 {font-size:.8rem;margin:0;color:#31495a}
+.doctor-records-metric p {font-size:.7rem;color:#7b8d99;line-height:1.5;margin:0}
+.doctor-records-content {display:grid;grid-template-columns:minmax(0,1.07fr) minmax(350px,.93fr);gap:1rem;align-items:start;min-width:0}
+.doctor-records-directory,.doctor-records-detail {min-width:0}
+.doctor-records-filter {margin-bottom:1rem}
+.doctor-records-table-scroll {max-width:100%;overflow-x:auto;scrollbar-width:thin}
+.doctor-records-table-scroll:focus-visible {outline:2px solid #12a778;outline-offset:-2px}
+.doctor-records-table {width:100%;min-width:540px;border-collapse:collapse;text-align:left}
+.doctor-records-table thead {background:#f4f8fb}
+.doctor-records-table th {padding:.78rem .65rem;color:#687c8c;white-space:nowrap;font-size:.71rem;font-weight:800}
+.doctor-records-table td {padding:.82rem .65rem;border-bottom:1px solid #e9eef3;color:#4b6575;font-size:.78rem;vertical-align:middle}
+.doctor-records-table tbody tr:last-child td {border-bottom:0}
+.doctor-records-table tr.selected {background:#eefaf4}
+.doctor-records-record {display:flex;align-items:center;gap:.6rem;min-width:0}
+.doctor-records-record>span {display:grid;place-items:center;flex:none;width:37px;height:37px;border-radius:11px;background:#e2f7eb;color:#0e986d}
+.doctor-records-record>div {display:grid;gap:.25rem;min-width:0}
+.doctor-records-record strong {color:#193b4a;font-size:.78rem}
+.doctor-records-record small {color:#8294a1;line-height:1.45;font-size:.7rem;overflow-wrap:anywhere;max-width:230px}
+.doctor-records-id {font-variant-numeric:tabular-nums;white-space:nowrap}
+.doctor-records-row-action {white-space:nowrap;padding:.48rem .7rem;min-height:34px;font-size:.72rem;background:#ebf8f2;color:#0b8061;border-radius:9px}
+.doctor-records-row-action:hover:not(:disabled) {color:#0b8061;background:#d8f1e5;box-shadow:none;transform:none}
+.doctor-records-pagination {display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;padding:1rem 0;font-size:.74rem;color:#6b8090}
+.doctor-records-pagination>div {display:flex;align-items:center;gap:.55rem}
+.doctor-records-pagination button {min-height:33px;font-size:.73rem;padding:.43rem .66rem}
+.doctor-records-empty {text-align:center;color:#7a8e9b;padding:2rem .6rem;font-size:.82rem}
+.doctor-records-data-note,.doctor-records-form-note {display:flex;align-items:flex-start;gap:.5rem;line-height:1.6;font-size:.74rem;border-radius:11px;background:#eff9f4;color:#397760;padding:.8rem .95rem;margin:.9rem 0 0}
+.doctor-records-data-note svg,.doctor-records-form-note svg {flex:none}
+.doctor-records-detail-status,.doctor-records-verified {display:flex;align-items:flex-start;gap:.65rem;background:#eaf9f0;color:#137d5b;padding:.8rem 1rem;border:1px solid #c9ecd9;border-radius:11px;font-size:.78rem;font-weight:800;margin-bottom:1rem}
+.doctor-records-detail-status svg,.doctor-records-verified svg {flex:none}
+.doctor-records-detail-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin:0 0 1rem}
+.doctor-records-detail-grid>div {display:grid;gap:.4rem;min-width:0;align-content:start;padding:.82rem;border:1px solid #eaf0f2;border-radius:11px;background:#f8fafb}
+.doctor-records-detail-grid dt {display:flex;align-items:center;gap:.45rem;color:#708592;font-size:.7rem;font-weight:750}
+.doctor-records-detail-grid dd {margin:0;color:#274453;font-size:.74rem;font-weight:700;overflow-wrap:anywhere}
+.doctor-records-clinical,.doctor-records-prescriptions {padding:1rem 0;border-top:1px solid #e8eef2}
+.doctor-records-clinical h4,.doctor-records-prescriptions h4 {display:flex;align-items:center;gap:.5rem;color:#254151;margin:0 0 .6rem;font-size:.86rem}
+.doctor-records-clinical>p,.doctor-records-prescriptions>p {color:#536b79;font-size:.8rem;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.doctor-records-prescription {display:grid;gap:.65rem;margin:.75rem 0;padding:.95rem;border:1px solid #e5eef0;border-radius:11px;background:#f9fbfc}
+.doctor-records-prescription>strong {color:#234c5b;font-size:.78rem}
+.doctor-records-prescription>div {display:grid;gap:.26rem;color:#728592;font-size:.75rem}
+.doctor-records-prescription>div strong {color:#264656}
+.doctor-records-steps {display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.doctor-records-steps>span {flex:1 1 170px;text-align:center;padding:.55rem;border-radius:9px;background:#f0f4f6;color:#798b95;font-size:.73rem;font-weight:750}
+.doctor-records-steps>span.active {background:#e2f7ec;color:#087654}
+.doctor-records-verify {display:grid;gap:.45rem}
+.doctor-records-verify>label,.doctor-records-create-fields>label:not(.doctor-records-ack) {display:grid;gap:.4rem;color:#365263;font-size:.79rem;font-weight:750}
+.doctor-records-verify input,.doctor-records-create-fields textarea {min-width:0;padding:.78rem .85rem;font-size:.82rem}
+.doctor-records-verify button {white-space:nowrap;font-size:.76rem}
+.doctor-records-verified {margin:1rem 0}
+.doctor-records-verified>div {display:grid;gap:.32rem;min-width:0}
+.doctor-records-verified span {font-weight:600;font-size:.73rem;overflow-wrap:anywhere}
+.doctor-records-create-fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start}
+.doctor-records-create-fields>label:first-child,.doctor-records-create-fields>label:nth-child(4),.doctor-records-form-note,.doctor-records-ack {grid-column:1/-1}
+.doctor-records-create-fields textarea {width:100%;resize:vertical;min-height:96px}
+.doctor-records-required {color:#c33737}
+.doctor-records-form-note {margin:0;align-self:center}
+.doctor-records-ack {display:flex;align-items:flex-start;gap:.7rem;font-size:.78rem;line-height:1.5;font-weight:750;color:#285a4b}
+.doctor-records-ack input {flex:none;width:18px;height:18px;margin:.1rem 0 0;accent-color:#11966d}
+.doctor-records-create-fields>button {justify-self:start;min-height:43px;font-size:.8rem}
+.doctor-records-lab {display:grid;gap:.85rem;min-width:0}
+.doctor-records-lab>.doctor-records-section-head {margin:0}
+.doctor-records-lab>.panel {display:grid;align-content:start;gap:.85rem}
+.doctor-records-lab>.panel>h3 {color:#254151;margin:0;font-size:1.02rem}
+.doctor-records-lab>.panel>.person-row {min-width:0;overflow-wrap:anywhere;border:1px solid #e7eef1;border-radius:11px;padding:.88rem}
+.doctor-records-lab .settings-form form {display:grid;gap:.75rem}
+@media(max-width:1320px) {.doctor-records-content {grid-template-columns:minmax(0,1fr)}.doctor-records-metrics {grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px) {.doctor-records-hero-icon {display:none}.doctor-records-hero {min-height:0}.doctor-records-metrics,.doctor-records-detail-grid,.doctor-records-create-fields,.doctor-records-search-form,.doctor-records-verify>div {grid-template-columns:minmax(0,1fr)}.doctor-records-create-fields>label:first-child,.doctor-records-create-fields>label:nth-child(4),.doctor-records-form-note,.doctor-records-ack {grid-column:auto}.doctor-records-search-form button,.doctor-records-verify button,.doctor-records-create-fields>button {width:100%}.doctor-records-api {white-space:normal}}

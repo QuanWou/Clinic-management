@@ -5,8 +5,10 @@ import {
   getReceptionAppointments, bookReceptionAppointment, rescheduleReceptionAppointment,
   cancelReceptionAppointment, checkInReceptionAppointment, getReceptionQueue, updateReceptionQueue,
   confirmCashPayment, getInvoiceTransactions, getNotifications, markNotificationRead,
-  getNotificationPreferences, updateNotificationPreference, getAdminDoctors, getSpecialties,
-  getCatalogServices, getCatalogMedicines, getServicePrice, getDoctors,
+  getNotificationPreferences, updateNotificationPreference, getAdminDoctors, getAdminDoctor,
+  getAdminDoctorSchedules, createAdminDoctor, updateAdminDoctor, deactivateAdminDoctor, getSpecialties,
+  getCatalogServices, getCatalogMedicines, getAdminCatalogServices, getAdminCatalogMedicines,
+  getServicePriceHistory, getServicePrice, getDoctors,
   getAppointmentAvailability, getPerformedServices, addPerformedService, finalizePerformedServices,
   getLabBillableItems, finalizeLabBillableItems, createInvoice, getLabOrders, changeLabOrder,
   createCatalogService, publishCatalogPrice
@@ -31,6 +33,41 @@ beforeEach(() => {
 });
 
 describe('verified business API routes', () => {
+  it('separates read-only catalog routes, admin-only all-item routes and price history', async () => {
+    await getCatalogServices();
+    await getCatalogMedicines();
+    await getAdminCatalogServices();
+    await getAdminCatalogMedicines();
+    await getServicePriceHistory('service/id');
+    await getServicePrice('service/id');
+    expect(vi.mocked(fetch).mock.calls.map(([url, opts]) => [String(url).split('/api/')[1], opts?.method ?? 'GET'])).toEqual([
+      ['catalog/services', 'GET'], ['catalog/medicines', 'GET'],
+      ['catalog/admin/services', 'GET'], ['catalog/admin/medicines', 'GET'],
+      ['catalog/services/service%2Fid/prices', 'GET'], ['catalog/services/service%2Fid/price', 'GET']
+    ]);
+  });
+  it('uses administrator-only doctor routes with exact create/update/deactivate contracts', async () => {
+    const create = { userId: 'identity-uuid', specialtyId: 'specialty-uuid', biography: 'Doctor profile', consultationFee: '125000.00' };
+    const update = { specialtyId: 'specialty-uuid', biography: 'Updated', consultationFee: '140000.00', active: false };
+    await getAdminDoctors(2, 20);
+    await getAdminDoctor('doctor-id');
+    await getAdminDoctorSchedules('doctor-id');
+    await createAdminDoctor(create);
+    await updateAdminDoctor('doctor-id', update);
+    await deactivateAdminDoctor('doctor-id');
+    const calls = vi.mocked(fetch).mock.calls;
+    expect(calls.map(([url, options]) => [String(url).split('/api/')[1], options?.method ?? 'GET'])).toEqual([
+      ['doctors/admin?page=2&size=20', 'GET'],
+      ['doctors/admin/doctor-id', 'GET'],
+      ['doctors/admin/doctor-id/schedules', 'GET'],
+      ['doctors/admin', 'POST'],
+      ['doctors/admin/doctor-id', 'PUT'],
+      ['doctors/admin/doctor-id', 'DELETE']
+    ]);
+    expect(JSON.parse(String(calls[3][1]?.body))).toEqual(create);
+    expect(JSON.parse(String(calls[4][1]?.body))).toEqual(update);
+    expect(calls[5][1]?.body).toBeUndefined();
+  });
   it('wires Task 01, 04, and 05 actions only to existing backend routes and request methods', async () => {
     await getAppointmentAvailability('doctor', '2026-09-21', '08:00', '08:30');
     await getPerformedServices('appointment');

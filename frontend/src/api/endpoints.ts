@@ -16,9 +16,12 @@ export const apiEndpoints = {
   doctors: {
     collection: '/api/doctors',
     profile: '/api/doctors/profile',
+    mySchedules: '/api/doctors/profile/schedules',
     schedules: (doctorId: string) => `/api/doctors/${encodeURIComponent(doctorId)}/schedules`,
     availability: (doctorId: string) => `/api/doctors/${encodeURIComponent(doctorId)}/availability`,
-    admin: '/api/doctors/admin'
+    admin: '/api/doctors/admin',
+    adminById: (id: string) => `/api/doctors/admin/${encodeURIComponent(id)}`,
+    adminSchedules: (id: string) => `/api/doctors/admin/${encodeURIComponent(id)}/schedules`
   },
   specialties: {
     collection: '/api/specialties'
@@ -26,6 +29,7 @@ export const apiEndpoints = {
   catalog: {
     services: '/api/catalog/services',
     medicines: '/api/catalog/medicines',
+    servicePrices: (id: string) => `/api/catalog/services/${encodeURIComponent(id)}/prices`,
     servicePrice: (id: string) => `/api/catalog/services/${encodeURIComponent(id)}/price`,
     adminServices: '/api/catalog/admin/services',
     adminMedicines: '/api/catalog/admin/medicines',

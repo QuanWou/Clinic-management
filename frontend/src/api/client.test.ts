@@ -30,9 +30,35 @@ describe('typed API client', () => {
   it('reports 403 without logging out or leaking into a fallback request', async () => {
     vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({ message: 'Not authorized' }), { status: 403 }));
     setAccessToken('access');
-    await expect(apiRequest('/api/medical-records/my')).rejects.toMatchObject({ status: 403, message: 'Not authorized' });
+    await expect(apiRequest('/api/medical-records/my')).rejects.toMatchObject({ status: 403, message: 'Not authorized', path: '/api/medical-records/my' });
     expect(getAccessToken()).toBe('access');
     expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('identifies the denied API without exposing query values or clearing the session', async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response('', { status: 403 }));
+    setAccessToken('access');
+    const error = await apiRequest('/api/appointments/reception/bookings?patientId=private-value')
+      .catch((cause: unknown) => cause);
+    expect(error).toBeInstanceOf(HttpApiError);
+    expect(error).toMatchObject({ status: 403, path: '/api/appointments/reception/bookings' });
+    expect((error as HttpApiError).message).toContain('/api/appointments/reception/bookings');
+    expect((error as HttpApiError).message).not.toContain('private-value');
+    expect(getAccessToken()).toBe('access');
+  });
+
+  it('labels a forbidden unauthenticated login as a gateway/CORS issue, not a user role failure', async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response('', { status: 403 }));
+    setAccessToken('previous-session');
+    const error = await apiRequest('/api/auth/login', { method: 'POST', auth: false,
+      body: JSON.stringify({ email: 'invalid@example.invalid', password: 'invalid' }) })
+      .catch((cause: unknown) => cause);
+    expect(error).toMatchObject({ status: 403, path: '/api/auth/login' });
+    expect((error as HttpApiError).message).toContain('Origin/CORS');
+    expect((error as HttpApiError).message).not.toContain('vai trò tài khoản');
+    const [, options] = vi.mocked(fetch).mock.calls[0];
+    expect(new Headers(options?.headers).has('Authorization')).toBe(false);
+    expect(getAccessToken()).toBe('previous-session');
   });
 
   it('clears both credentials and signals expiration on authenticated 401', async () => {

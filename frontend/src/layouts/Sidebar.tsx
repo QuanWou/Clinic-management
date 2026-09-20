@@ -14,6 +14,13 @@ type SidebarProps = {
   onClose?: () => void;
 };
 
+/** Patient labels describe personal data without changing navigation permissions. */
+export const patientNavigationLabels: Partial<Record<AppView, string>> = {
+  dashboard: 'Tổng quan của tôi', appointments: 'Lịch hẹn của tôi', patients: 'Hồ sơ của tôi',
+  doctors: 'Bác sĩ', 'medical-records': 'Hồ sơ bệnh án của tôi', invoices: 'Hóa đơn của tôi',
+  notifications: 'Thông báo của tôi', settings: 'Cài đặt của tôi'
+};
+
 export default function Sidebar({ activeItemId, user, onNavigate, onLogout, onClose = () => undefined }: SidebarProps) {
   const roles = normalizeRoles(user.roles);
   const role = getPrimaryRole(roles);
@@ -24,20 +31,20 @@ export default function Sidebar({ activeItemId, user, onNavigate, onLogout, onCl
         <div><h2>{appConfig.shortName}</h2><p>Quản lý chăm sóc sức khỏe</p></div>
         <button className="icon-button sidebar-close" type="button" aria-label="Đóng menu" onClick={onClose}><X size={19} /></button>
       </div>
-      <span className="nav-caption">KHÔNG GIAN LÀM VIỆC</span>
+      <span className="nav-caption">{role === 'PATIENT' ? 'KHÔNG GIAN BỆNH NHÂN' : 'KHÔNG GIAN LÀM VIỆC'}</span>
       <nav className="sidebar-nav" aria-label="Điều hướng chính">
         {mainNavigation.filter((item) => canAccess(item.id, role ? [role] : [])).map((item) => (
           <button key={item.id} className={item.id === activeItemId ? 'active' : undefined}
             type="button" aria-current={item.id === activeItemId ? 'page' : undefined}
             onClick={() => onNavigate(item.id)}>
-            <item.icon size={18} strokeWidth={2.2} aria-hidden="true" />{item.label}
+            <item.icon size={18} strokeWidth={2.2} aria-hidden="true" />{role === 'PATIENT' ? patientNavigationLabels[item.id] ?? item.label : item.label}
           </button>
         ))}
       </nav>
       <div className="sidebar-helper">
         <span>TRUY CẬP NHANH</span>
-        <strong>Quản lý lịch hẹn</strong>
-        <p>Xem lịch khám trong phạm vi tài khoản của bạn.</p>
+        <strong>{role === 'PATIENT' ? 'Lịch khám của tôi' : 'Quản lý lịch hẹn'}</strong>
+        <p>{role === 'PATIENT' ? 'Theo dõi và đặt lịch khám trong tài khoản của bạn.' : 'Xem lịch khám trong phạm vi tài khoản của bạn.'}</p>
         <button type="button" onClick={() => onNavigate('appointments')}>Xem lịch hẹn <ArrowRight size={16} aria-hidden="true" /></button>
       </div>
       <div className="sidebar-footer">

@@ -54,7 +54,7 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
 
   async function publishPrice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!services.some((item) => item.id === serviceId) || !/^\d{1,11}$/.test(amount) || !effectiveFrom) {
+    if (!services.some((item) => item.id === serviceId && item.active) || !/^[1-9]\d{0,9}$/.test(amount) || !effectiveFrom) {
       setError('Chọn dịch vụ, ngày hiệu lực và số tiền VND hợp lệ.'); return;
     }
     await execute(async () => {
@@ -68,9 +68,9 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
     }, 'Đơn giá đã được Catalog công bố.');
   }
 
-  return <section className="panel settings-form" aria-label="Admin quản lý Catalog">
+  return <section className="panel settings-form catalog-admin-panel" aria-label="Admin quản lý Catalog">
     <h3>Quản lý Catalog · Chỉ Admin</h3>
-    <p>Không có dữ liệu mẫu. Mọi thay đổi bên dưới ghi trực tiếp vào PostgreSQL thật thông qua API quản trị; chỉ nhập thông tin nghiệp vụ đã được phòng khám xác nhận.</p>
+    <p>Không có dữ liệu mẫu. Các biểu mẫu chỉ ghi thay đổi khi bạn xác nhận và Catalog API trả về kết quả hợp lệ. Chỉ nhập thông tin đã được phòng khám phê duyệt.</p>
     {error && <Alert tone="error">{error}</Alert>}
     {notice && <Alert tone="info">{notice}</Alert>}
     <form onSubmit={(event) => void addService(event)}>
@@ -93,7 +93,7 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
         onChange={(event) => setAmount(event.target.value)} /></label>
       <label>Ngày bắt đầu hiệu lực<input type="date" required value={effectiveFrom}
         onChange={(event) => setEffectiveFrom(event.target.value)} /></label>
-      <button type="submit" disabled={busy || !serviceId || !effectiveFrom}>Công bố giá</button>
+      <button type="submit" disabled={busy || !serviceId || !effectiveFrom || !/^[1-9]\d{0,9}$/.test(amount)}>Công bố giá</button>
     </form>
     <form onSubmit={(event) => void addMedicine(event)}>
       <h4>Thêm thuốc</h4>

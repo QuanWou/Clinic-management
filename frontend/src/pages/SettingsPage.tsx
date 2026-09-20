@@ -7,10 +7,22 @@ import PageHeader from '../components/PageHeader';
 import type { CurrentUser } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
 import { normalizeRoles } from '../utils/roles';
+import AdminSettingsPage from './AdminSettingsPage';
+import DoctorSettingsPage from './DoctorSettingsPage';
+import ReceptionSettingsPage from './ReceptionSettingsPage';
+import PatientSettingsPage from './PatientSettingsPage';
 
 const emptyForm = { dob: '', gender: '', address: '', bloodType: '' };
 
 export default function SettingsPage({ user, role }: { user: CurrentUser; role: ClinicRole }) {
+  if (role === 'ADMIN') return <AdminSettingsPage user={user} />;
+  if (role === 'DOCTOR') return <DoctorSettingsPage key={user.userId || user.id || user.email} user={user} />;
+  if (role === 'RECEPTIONIST') return <ReceptionSettingsPage key={user.userId || user.id || user.email} user={user} />;
+  if (role === 'PATIENT') return <PatientSettingsPage key={user.userId || user.id || user.email} user={user} />;
+  return <PersonalSettingsPage user={user} role={role} />;
+}
+
+function PersonalSettingsPage({ user, role }: { user: CurrentUser; role: ClinicRole }) {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(role === 'PATIENT');
   const [saving, setSaving] = useState(false);
@@ -62,7 +74,7 @@ export default function SettingsPage({ user, role }: { user: CurrentUser; role: 
         <label>Email<input value={user.email} readOnly /></label>
         <label>Phone<input value={user.phone ?? ''} readOnly /></label>
         <label>Role<input value={roles.join(', ')} readOnly /></label>
-        <p>Account edits are unavailable because the identity service exposes no account update endpoint.</p>
+        <p>Thông tin tài khoản được lấy từ Identity. Trang này không cung cấp chức năng tự chỉnh sửa tài khoản.</p>
       </article>
       {role === 'PATIENT' && <form className="panel settings-form" onSubmit={(event) => void save(event)}>
         <h3>Patient profile</h3>

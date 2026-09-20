@@ -5,6 +5,7 @@ import { mainNavigation } from '../config/navigation.config';
 import Avatar from '../components/Avatar';
 import { RefreshCw } from 'lucide-react';
 import { roleLabel } from '../utils/locale';
+import { patientNavigationLabels } from './Sidebar';
 
 type TopbarProps = {
   loading: boolean;
@@ -16,10 +17,11 @@ type TopbarProps = {
 };
 
 export default function Topbar({ activeView, loading, primaryRole, user, onRefresh, menuButton }: TopbarProps) {
-  const page = mainNavigation.find((item) => item.id === activeView)?.label ?? 'Tổng quan';
+  const page = primaryRole === 'PATIENT' ? patientNavigationLabels[activeView] ?? 'Tổng quan của tôi'
+    : mainNavigation.find((item) => item.id === activeView)?.label ?? 'Tổng quan';
   return (
     <header className="topbar">
-      <div className="topbar-location">{menuButton}<div><span className="breadcrumb">Clinic / Không gian làm việc</span><strong>{page}</strong></div></div>
+      <div className="topbar-location">{menuButton}<div><span className="breadcrumb">{primaryRole === 'PATIENT' ? 'Clinic / Bệnh nhân' : 'Clinic / Không gian làm việc'}</span><strong>{page}</strong></div></div>
       <div className="topbar-actions">
         <button className="icon-button" type="button" onClick={onRefresh} disabled={loading} aria-label="Làm mới dữ liệu" title="Làm mới dữ liệu">
           <RefreshCw size={18} className={loading ? 'spin' : undefined} />

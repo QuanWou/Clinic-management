@@ -13,8 +13,12 @@ import type {
   ReceptionRescheduleRequest, ReceptionVisitResponse
 } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
-import { formatDate, formatTime } from '../utils/format';
+import { formatDate, formatTime, shortId } from '../utils/format';
+import { statusLabel } from '../utils/locale';
+import ReceptionAppointmentsOverview from './ReceptionAppointmentsOverview';
+import ReceptionDeskOverview from './ReceptionDeskOverview';
 import { clinicToday } from '../api/staffDashboard';
+import './reception-desk.css';
 
 const uuid = /^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i;
 const blankBooking = { patientId: '', doctorId: '', appointmentDate: '', startTime: '', endTime: '', reason: '' };
@@ -45,21 +49,41 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
   const [queue, setQueue] = useState<ReceptionVisitResponse[] | null>(null);
   const [patients, setPatients] = useState<ReceptionPatientResponse[] | null>(null);
   const [doctors, setDoctors] = useState<DoctorProfileResponse[] | null>(null);
+  const [doctorError, setDoctorError] = useState<string | null>(null);
   const [patientSearch, setPatientSearch] = useState('');
   const [booking, setBooking] = useState(blankBooking);
   const [selectedId, setSelectedId] = useState('');
   const [rescheduling, setRescheduling] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+  const [cancelPendingId, setCancelPendingId] = useState('');
   const [revision, setRevision] = useState(0);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const selected = appointments?.find((item) => item.id === selectedId) ?? appointments?.[0];
+  const selected = appointments?.find((item) => item.id === selectedId);
+  const selectedVisit = queue?.find((visit) => visit.appointmentId === selected?.id);
+  useEffect(() => {
+    if (role === 'RECEPTIONIST' && showBooking) {
+      document.getElementById('reception-booking-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showBooking, role]);
+  useEffect(() => {
+    if (role === 'RECEPTIONIST' && selectedId) {
+      document.getElementById('reception-detail-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selectedId, role]);
+  function selectDate(next: string) {
+    setSelectedId('');
+    setRescheduling(false);
+    setCancelPendingId('');
+    setDate(next);
+  }
 
   useEffect(() => {
     let active = true;
-    setLoading(true); setError(null);
+    setLoading(true); setError(null); setDoctorError(null); setDoctors(null);
+    setAppointments(null); setQueue(null);
     // Only administrators call the privileged directory; receptionists use the
     // authenticated, active-doctors-only /api/doctors endpoint.
     const directory = role === 'ADMIN' && integrations.adminCatalog
@@ -67,15 +91,24 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
         if (!Array.isArray(page.content)) throw new Error('Invalid administrator doctor directory');
         return page.content.filter((doctor) => doctor.active);
       }) : getDoctors();
-    void Promise.all([getReceptionAppointments({ date }), getReceptionQueue({ date }), directory])
+    void Promise.allSettled([getReceptionAppointments({ date }), getReceptionQueue({ date }), directory])
       .then(([bookings, visits, doctorList]) => {
         if (!active) return;
-        if (!Array.isArray(bookings) || !Array.isArray(visits) || !Array.isArray(doctorList)) {
-          throw new Error('Invalid receptionist API response');
+        if (bookings.status === 'rejected' || visits.status === 'rejected') {
+          setError(message(bookings.status === 'rejected' ? bookings.reason : visits.status === 'rejected' ? visits.reason : null));
+          return;
         }
-        setAppointments(bookings); setQueue(visits);
-        setDoctors(doctorList);
-      }).catch((cause: unknown) => { if (active) { setAppointments(null); setQueue(null); setError(message(cause)); } })
+        if (!Array.isArray(bookings.value) || !Array.isArray(visits.value)) {
+          setError('Invalid receptionist API response');
+          return;
+        }
+        setAppointments(bookings.value); setQueue(visits.value);
+        if (doctorList.status === 'fulfilled' && Array.isArray(doctorList.value)) {
+          setDoctors(doctorList.value);
+        } else {
+          setDoctorError(doctorList.status === 'rejected' ? message(doctorList.reason) : 'Invalid doctor directory response');
+        }
+      })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [date, revision, role]);
@@ -97,11 +130,13 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
 
   async function searchPatients(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError(null); setPatients(null);
-    if (!patientSearch.trim()) { setError('Enter a patient name or phone.'); return; }
+    if (!patientSearch.trim()) { setError('Nhập tên hoặc số điện thoại bệnh nhân.'); return; }
     setBusy(true);
     try {
-      const result = await searchReceptionPatients({ name: patientSearch.trim() });
-      if (!Array.isArray(result)) throw new Error('Invalid patient directory response');
+      const term = patientSearch.trim();
+      const result = await searchReceptionPatients(/^[+\d\s().-]+$/.test(term)
+        ? { phone: term } : { name: term });
+      if (!Array.isArray(result)) throw new Error('Dữ liệu tìm kiếm bệnh nhân không hợp lệ.');
       setPatients(result);
     } catch (cause) { setError(message(cause)); }
     finally { setBusy(false); }
@@ -114,9 +149,9 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
   async function book(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!uuid.test(booking.patientId) || !validSlot() || !booking.reason.trim()) {
-      setError('Select a registered patient, supply a valid doctor ID, future slot and reason.'); return;
+      setError('Chọn bệnh nhân, bác sĩ, khung giờ hợp lệ từ hôm nay và nhập lý do khám.'); return;
     }
-    const succeeded = await execute(() => bookReceptionAppointment({ ...booking, reason: booking.reason.trim() }), 'Booking request created by the server.',
+    const succeeded = await execute(() => bookReceptionAppointment({ ...booking, reason: booking.reason.trim() }), 'Máy chủ đã xác nhận tạo lịch hẹn.',
       (result) => (result as AppointmentResponse).status === 'PENDING' && (result as AppointmentResponse).patientId === booking.patientId
         && (result as AppointmentResponse).doctorId === booking.doctorId);
     if (succeeded) { setShowBooking(false); setBooking(blankBooking); }
@@ -124,12 +159,12 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
 
   async function reschedule(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!selected || !validSlot()) { setError('Select an appointment and valid future slot.'); return; }
+    if (!selected || !validSlot()) { setError('Chọn lịch hẹn và khung giờ hợp lệ từ hôm nay.'); return; }
     const request: ReceptionRescheduleRequest = {
       doctorId: booking.doctorId, appointmentDate: booking.appointmentDate,
       startTime: booking.startTime, endTime: booking.endTime
     };
-    const succeeded = await execute(() => rescheduleReceptionAppointment(selected.id, request), 'Reschedule confirmed by the server.',
+    const succeeded = await execute(() => rescheduleReceptionAppointment(selected.id, request), 'Máy chủ đã xác nhận đổi lịch.',
       (result) => (result as AppointmentResponse).id === selected.id && (result as AppointmentResponse).status === 'PENDING'
         && (result as AppointmentResponse).appointmentDate === request.appointmentDate);
     if (succeeded) setRescheduling(false);
@@ -138,81 +173,87 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
   const doctorDirectoryAvailable = doctors !== null;
   const doctorInput = (value: string, change: (id: string) => void) => doctorDirectoryAvailable
     ? <select required value={value} onChange={(event) => change(event.target.value)}>
-      <option value="">{doctors.length ? 'Choose a doctor' : 'No active doctors available'}</option>{doctors.map((doctor) => <option key={doctor.id} value={doctor.id}>{doctor.specialtyName || 'Doctor'} — {doctor.id.slice(0, 8)}</option>)}
+      <option value="">{doctors.length ? 'Chọn bác sĩ' : 'Chưa có bác sĩ đang hoạt động'}</option>{doctors.map((doctor) => <option key={doctor.id} value={doctor.id}>{doctor.specialtyName || 'Bác sĩ'} — {doctor.id.slice(0, 8)}</option>)}
     </select>
-    : <input required value={value} placeholder="Doctor UUID from clinic schedule" onChange={(event) => change(event.target.value)} />;
+    : <input required value={value} placeholder="Mã UUID bác sĩ từ lịch phòng khám" onChange={(event) => change(event.target.value)} />;
 
-  return <>
-    <PageHeader title="Appointments" subtitle="Authorized staff bookings and daily queue"
-      actions={<button type="button" disabled={loading} className="soft-button" onClick={() => setRevision((value) => value + 1)}>Refresh</button>} />
-    {error && <Alert tone="error">{error} <button type="button" disabled={loading || busy} onClick={() => setRevision((value) => value + 1)}>Retry</button></Alert>}
+  return <div className={`reception-workspace${role === 'RECEPTIONIST' ? ' receptionist-workspace' : ''}`}>
+    <PageHeader title={role === 'RECEPTIONIST' ? 'Lịch hẹn lễ tân' : 'Lịch hẹn'} subtitle={role === 'RECEPTIONIST' ? 'Tiếp đón bệnh nhân, quản lý lịch và hàng đợi trong phạm vi lễ tân' : 'Quản lý và theo dõi lịch khám từ dữ liệu phòng khám'}
+      actions={<><button type="button" disabled={busy} onClick={() => setShowBooking((value) => !value)}>{showBooking ? 'Đóng đặt lịch' : 'Đặt lịch cho bệnh nhân'}</button>
+        <button type="button" disabled={loading || busy} className="soft-button" onClick={() => setRevision((value) => value + 1)}>Làm mới</button></>} />
+    {error && <Alert tone="error">{error} <button type="button" disabled={loading || busy} onClick={() => setRevision((value) => value + 1)}>Thử lại</button></Alert>}
+    {doctorError && appointments && <Alert tone="info">Không tải được danh sách bác sĩ: {doctorError}. Vẫn có thể xem lịch hẹn theo mã định danh.</Alert>}
     {notice && <Alert tone="info">{notice}</Alert>}
-    <label>Day <input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
-    {loading && <p role="status">Loading staff appointments and queue...</p>}
-    {!loading && appointments?.length === 0 && <p>No appointments on this date.</p>}
-    {appointments && appointments.length > 0 && <section className="split-page">
-      <article className="panel table-panel"><h3>Daily appointments</h3>
-        {appointments.map((item) => <button type="button" key={item.id} className="table-row"
-          aria-pressed={selected?.id === item.id} onClick={() => { setSelectedId(item.id); setRescheduling(false); }}>
-          {formatTime(item.startTime)} — {item.patientId.slice(0, 8)} / {item.doctorId.slice(0, 8)} <Badge tone={item.status}>{item.status}</Badge>
-        </button>)}
-      </article>
-      {selected && <article className="panel detail-panel"><h3>Selected appointment</h3>
-        <p>{selected.id} — {formatDate(selected.appointmentDate)}</p>
-        <p>{selected.reason || 'No reason supplied'}</p>
-        {['PENDING', 'CONFIRMED'].includes(selected.status) && <div className="detail-actions">
+    {loading && <p role="status">Đang tải lịch hẹn và hàng đợi từ API...</p>}
+    {role === 'RECEPTIONIST' && !loading && appointments && queue && <ReceptionDeskOverview date={date} today={todayKey} appointments={appointments} queue={queue}
+      onBooking={() => setShowBooking(true)} onSelect={(id) => { setSelectedId(id); setRescheduling(false); setCancelPendingId(''); }} />}
+    {!loading && appointments && queue && <ReceptionAppointmentsOverview date={date} appointments={appointments} queue={queue} doctors={doctors}
+      selectedId={selectedId} onDateChange={selectDate} onSelect={(id) => { setSelectedId(id); setRescheduling(false); setCancelPendingId(''); }} />}
+    {selected && !loading && <section className="reception-detail-grid">
+      <article className="panel detail-panel reception-desk-detail" id="reception-detail-panel"><div className="reception-detail-header"><div><span className="reception-desk-section-kicker">THÔNG TIN LỊCH KHÁM</span><h3>Chi tiết lịch hẹn</h3></div><button type="button" className="soft-button" onClick={() => { setSelectedId(''); setRescheduling(false); setCancelPendingId(''); }}>Đóng chi tiết</button></div>
+        <div className="reception-desk-detail-facts"><span>Mã lịch <strong>{shortId(selected.id)}</strong></span><span>Ngày khám <strong>{formatDate(selected.appointmentDate)}</strong></span><span>Khung giờ <strong>{formatTime(selected.startTime)}–{formatTime(selected.endTime)}</strong></span><span>Trạng thái <Badge tone={selectedVisit?.status ?? selected.status}>{statusLabel(selectedVisit?.status ?? selected.status)}</Badge></span></div>
+        <p className="reception-desk-detail-reason">Lý do khám: {selected.reason || 'Chưa có lý do khám.'}</p>
+        {selectedVisit && <p className="info-note">Lịch đã check-in. Không thể hủy hoặc đổi lịch sau tiếp nhận.</p>}
+        {!selectedVisit && ['PENDING', 'CONFIRMED'].includes(selected.status) && <div className="detail-actions">
           {selected.status === 'PENDING' && integrations.appointmentOwnership &&
-            <button type="button" disabled={busy} onClick={() => void execute(() => confirmAppointment(selected.id), 'Appointment confirmation recorded by the server.',
-              (result) => (result as AppointmentResponse).id === selected.id && (result as AppointmentResponse).status === 'CONFIRMED')}>Confirm appointment</button>}
-          <button type="button" disabled={busy} onClick={() => { setRescheduling(true); setBooking({ ...blankBooking, doctorId: selected.doctorId, patientId: selected.patientId, appointmentDate: selected.appointmentDate, startTime: selected.startTime, endTime: selected.endTime }); }}>Reschedule</button>
-          <button type="button" disabled={busy} className="soft-button danger" onClick={() => void execute(() => cancelReceptionAppointment(selected.id), 'Cancellation confirmed by the server.',
-            (result) => (result as AppointmentResponse).id === selected.id && (result as AppointmentResponse).status === 'CANCELLED')}>Cancel booking</button>
+            <button type="button" disabled={busy} onClick={() => void execute(() => confirmAppointment(selected.id), 'Máy chủ đã xác nhận lịch hẹn.',
+              (result) => (result as AppointmentResponse).id === selected.id && (result as AppointmentResponse).status === 'CONFIRMED')}>Xác nhận lịch</button>}
+          <button type="button" disabled={busy} onClick={() => { setCancelPendingId(''); setRescheduling(true); setBooking({ ...blankBooking, doctorId: selected.doctorId, patientId: selected.patientId, appointmentDate: selected.appointmentDate, startTime: selected.startTime, endTime: selected.endTime }); }}>Đổi lịch</button>
+          <button type="button" disabled={busy} className="soft-button danger" onClick={() => { setCancelPendingId(selected.id); setRescheduling(false); }}>Hủy lịch</button>
           {selected.status === 'CONFIRMED' && selected.appointmentDate === todayKey &&
-            <button type="button" disabled={busy} onClick={() => void execute(() => checkInReceptionAppointment(selected.id), 'Check-in confirmed by the server.',
-              (result) => (result as ReceptionVisitResponse).appointmentId === selected.id)}>Check in</button>}
+            <button type="button" disabled={busy} onClick={() => void execute(() => checkInReceptionAppointment(selected.id), 'Máy chủ đã xác nhận tiếp nhận bệnh nhân.',
+              (result) => (result as ReceptionVisitResponse).appointmentId === selected.id)}>Check-in bệnh nhân</button>}
         </div>}
-      </article>}
+        {cancelPendingId === selected.id && !selectedVisit && <div className="reception-desk-cancel" role="group" aria-label="Xác nhận hủy lịch">
+          <p>Hủy lịch #{shortId(selected.id)}? Thao tác này chỉ được gửi khi bạn xác nhận.</p>
+          <button type="button" className="soft-button danger" disabled={busy} onClick={() => void execute(() => cancelReceptionAppointment(selected.id), 'Máy chủ đã xác nhận hủy lịch.',
+            (result) => (result as AppointmentResponse).id === selected.id && (result as AppointmentResponse).status === 'CANCELLED').then((success) => { if (success) setCancelPendingId(''); })}>Xác nhận hủy lịch</button>
+          <button type="button" className="soft-button" disabled={busy} onClick={() => setCancelPendingId('')}>Giữ lịch</button>
+        </div>}
+      </article>
     </section>}
-    {rescheduling && selected && <form className="panel settings-form" onSubmit={(event) => void reschedule(event)}>
-      <h3>Reschedule appointment</h3>
-      <label>Doctor {doctorInput(booking.doctorId, (doctorId) => setBooking({ ...booking, doctorId }))}</label>
-      <label>Date<input type="date" required min={todayKey} value={booking.appointmentDate} onChange={(event) => setBooking({ ...booking, appointmentDate: event.target.value })} /></label>
-      <label>Start<input type="time" required value={booking.startTime} onChange={(event) => setBooking({ ...booking, startTime: event.target.value })} /></label>
-      <label>End<input type="time" required value={booking.endTime} onChange={(event) => setBooking({ ...booking, endTime: event.target.value })} /></label>
-      <button type="submit" disabled={busy}>Confirm reschedule</button>
-      <button type="button" className="soft-button" onClick={() => setRescheduling(false)}>Close</button>
+    {rescheduling && selected && !selectedVisit && <form className="panel settings-form reception-desk-form" onSubmit={(event) => void reschedule(event)}>
+      <div className="reception-desk-form-head"><span className="reception-desk-section-kicker">THAY ĐỔI LỊCH</span><h3>Đổi lịch hẹn</h3><p>Không cho phép đổi lịch sau khi bệnh nhân đã check-in.</p></div>
+      <div className="reception-desk-form-fields"><label>Bác sĩ {doctorInput(booking.doctorId, (doctorId) => setBooking({ ...booking, doctorId }))}</label>
+      <label>Ngày khám<input type="date" required min={todayKey} value={booking.appointmentDate} onChange={(event) => setBooking({ ...booking, appointmentDate: event.target.value })} /></label>
+      <label>Giờ bắt đầu<input type="time" required value={booking.startTime} onChange={(event) => setBooking({ ...booking, startTime: event.target.value })} /></label>
+      <label>Giờ kết thúc<input type="time" required value={booking.endTime} onChange={(event) => setBooking({ ...booking, endTime: event.target.value })} /></label></div>
+      <div className="reception-desk-form-actions"><button type="submit" disabled={busy}>Xác nhận đổi lịch</button>
+      <button type="button" className="soft-button" onClick={() => setRescheduling(false)}>Đóng</button></div>
     </form>}
-    <section className="panel"><h3>Queue</h3>
-      {queue?.length === 0 && <p>No checked-in visits on this date.</p>}
-      {queue?.map((visit) => <div className="person-row" key={visit.id}>
-        <strong>#{visit.queueNumber} — {visit.patientId.slice(0, 8)}</strong><Badge tone={visit.status}>{visit.status}</Badge>
-        {allowedQueueTransitions(visit.status, role).map((status) => <button key={status} type="button" disabled={busy}
-          onClick={() => void execute(() => updateReceptionQueue(visit.id, status), `Queue status ${status} confirmed by the server.`,
-            (result) => (result as ReceptionVisitResponse).id === visit.id && (result as ReceptionVisitResponse).status === status)}>{status}</button>)}
-      </div>)}
+    <section className="panel reception-desk-queue" aria-label="Hàng đợi tiếp nhận"><div className="reception-desk-queue-head"><div><span className="reception-desk-section-kicker">HÀNG ĐỢI THEO NGÀY</span><h3>Hàng đợi tiếp nhận</h3><p>Ngày {formatDate(date)} · Chỉ thay đổi trạng thái được phép theo vai trò.</p></div><strong>{queue?.length ?? '—'} lượt</strong></div>
+      {queue?.length === 0 && <p className="reception-desk-empty">Chưa có bệnh nhân check-in trong ngày đã chọn.</p>}
+      {queue?.filter((visit) => visit.visitDate === date).sort((a, b) => a.queueNumber - b.queueNumber).map((visit) => <article className="reception-desk-queue-row" key={visit.id}>
+        <span className="reception-desk-ticket">#{visit.queueNumber}</span>
+        <div className="reception-desk-queue-person"><strong>BN #{shortId(visit.patientId)}</strong><span>Lịch #{shortId(visit.appointmentId)}</span></div>
+        <Badge tone={visit.status}>{statusLabel(visit.status)}</Badge>
+        <div className="reception-desk-queue-actions">{allowedQueueTransitions(visit.status, role).map((status) => <button key={status} type="button" disabled={busy}
+          onClick={() => void execute(() => updateReceptionQueue(visit.id, status), `Máy chủ đã xác nhận: ${statusLabel(status)}.`,
+            (result) => (result as ReceptionVisitResponse).id === visit.id && (result as ReceptionVisitResponse).status === status)}>{status === 'CALLED' ? 'Gọi bệnh nhân' : status === 'SKIPPED' ? 'Bỏ qua lượt' : status === 'WAITING' ? 'Đưa về chờ' : statusLabel(status)}</button>)}</div>
+      </article>)}
+      {role === 'RECEPTIONIST' && <p className="reception-desk-permission">Lễ tân chỉ được gọi, bỏ qua hoặc đưa lượt về trạng thái chờ. Bác sĩ phụ trách thao tác bắt đầu và hoàn tất khám.</p>}
     </section>
-    <button type="button" disabled={busy} onClick={() => setShowBooking((value) => !value)}>{showBooking ? 'Close booking' : 'Book for a patient'}</button>
-    {showBooking && <section className="panel settings-form"><h3>Find a patient before booking</h3>
+    {showBooking && <section className="panel settings-form reception-desk-form" id="reception-booking-form" aria-label="Đặt lịch cho bệnh nhân"><div className="reception-desk-form-head"><span className="reception-desk-section-kicker">ĐẶT LỊCH MỚI</span><h3>Tìm bệnh nhân trước khi đặt lịch</h3><p>Chọn bệnh nhân từ kết quả API; không sử dụng bệnh nhân mẫu.</p></div>
       <form className="inline-search" onSubmit={(event) => void searchPatients(event)}>
-        <input required aria-label="Patient name" value={patientSearch} onChange={(event) => setPatientSearch(event.target.value)} />
-        <button type="submit" disabled={busy}>Find patient</button>
+        <input required aria-label="Tên hoặc số điện thoại bệnh nhân" placeholder="Nhập tên hoặc số điện thoại..." value={patientSearch} onChange={(event) => setPatientSearch(event.target.value)} />
+        <button type="submit" disabled={busy}>Tìm bệnh nhân</button>
       </form>
-      {patients?.length === 0 && <p>No matching patient found.</p>}
+      {patients?.length === 0 && <p className="reception-desk-empty">Không tìm thấy bệnh nhân phù hợp.</p>}
       <form onSubmit={(event) => void book(event)}>
-        <label>Patient <select required value={booking.patientId} onChange={(event) => setBooking({ ...booking, patientId: event.target.value })}>
-          <option value="">Select a patient from search results</option>
+        <label>Bệnh nhân <select required value={booking.patientId} onChange={(event) => setBooking({ ...booking, patientId: event.target.value })}>
+          <option value="">Chọn bệnh nhân từ kết quả tìm kiếm</option>
           {patients?.map((patient) => <option key={patient.id} value={patient.id}>{patient.fullName} — {patient.id.slice(0, 8)}</option>)}
         </select></label>
-        <label>Doctor {doctorInput(booking.doctorId, (doctorId) => setBooking({ ...booking, doctorId }))}</label>
-        {!doctorDirectoryAvailable && <p>No role-authorized doctor directory is available. Use the clinician ID supplied by the clinic; never use sample doctors.</p>}
-        <label>Date<input type="date" required min={todayKey} value={booking.appointmentDate} onChange={(event) => setBooking({ ...booking, appointmentDate: event.target.value })} /></label>
-        <label>Start<input type="time" required value={booking.startTime} onChange={(event) => setBooking({ ...booking, startTime: event.target.value })} /></label>
-        <label>End<input type="time" required value={booking.endTime} onChange={(event) => setBooking({ ...booking, endTime: event.target.value })} /></label>
-        <label>Reason<textarea required maxLength={500} value={booking.reason} onChange={(event) => setBooking({ ...booking, reason: event.target.value })} /></label>
-        <button type="submit" disabled={busy || !booking.patientId}>Submit reception booking</button>
+        <label>Bác sĩ {doctorInput(booking.doctorId, (doctorId) => setBooking({ ...booking, doctorId }))}</label>
+        {!doctorDirectoryAvailable && <p className="reception-desk-empty">Danh sách bác sĩ chưa khả dụng. Dùng UUID bác sĩ được phòng khám cung cấp; không nhập mã mẫu.</p>}
+        <label>Ngày khám<input type="date" required min={todayKey} value={booking.appointmentDate} onChange={(event) => setBooking({ ...booking, appointmentDate: event.target.value })} /></label>
+        <label>Giờ bắt đầu<input type="time" required value={booking.startTime} onChange={(event) => setBooking({ ...booking, startTime: event.target.value })} /></label>
+        <label>Giờ kết thúc<input type="time" required value={booking.endTime} onChange={(event) => setBooking({ ...booking, endTime: event.target.value })} /></label>
+        <label>Lý do khám<textarea required maxLength={500} value={booking.reason} onChange={(event) => setBooking({ ...booking, reason: event.target.value })} /></label>
+        <button type="submit" disabled={busy || !booking.patientId}>Tạo lịch hẹn</button>
       </form>
     </section>}
-  </>;
+  </div>;
 }
 
 function message(cause: unknown): string {

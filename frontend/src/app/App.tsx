@@ -156,7 +156,7 @@ function renderView(
     case 'patients':
       return <PatientsPage role={role} user={user} />;
     case 'doctors':
-      return <DoctorsPage role={role} />;
+      return <DoctorsPage role={role} onNavigate={navigate} />;
     case 'doctor-profile':
       return <DoctorProfilePage user={user} />;
     case 'medical-records':
@@ -168,7 +168,8 @@ function renderView(
     case 'catalog':
       return <CatalogPage role={role} />;
     case 'notifications':
-      return <NotificationsPage />;
+      // A different signed-in user or primary role must never retain the previous inbox state.
+      return <NotificationsPage key={`${user.id ?? user.userId ?? user.email}:${role}`} role={role} />;
     case 'settings':
       return <SettingsPage user={user} role={role} />;
     case 'dashboard':

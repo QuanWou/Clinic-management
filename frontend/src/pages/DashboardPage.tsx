@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { CalendarDays, FileText, HeartPulse, ReceiptText, Stethoscope, UsersRound } from 'lucide-react';
+import { CalendarDays, FileText, HeartPulse, Stethoscope, UsersRound } from 'lucide-react';
 import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
@@ -9,10 +9,14 @@ import type { StaffDashboard } from '../api/staffDashboard';
 import { clinicToday } from '../api/staffDashboard';
 import type { ClinicRole } from '../utils/roles';
 import { formatDate, formatTime, shortId } from '../utils/format';
-import { getUiAppointments } from '../utils/uiData';
 import { roleLabel } from '../utils/locale';
 import type { AppView } from '../types/view';
 import type { AppointmentResponse } from '../types/domain';
+import AdminDashboard from './AdminDashboard';
+import DoctorDashboard from './DoctorDashboard';
+import ReceptionDashboard from './ReceptionDashboard';
+import PatientDashboard from './PatientDashboard';
+import { integrations } from '../config/integrations.config';
 
 export type DashboardPageProps = {
   dashboard: DashboardResponse | null;
@@ -27,72 +31,29 @@ export type DashboardPageProps = {
 
 export default function DashboardPage({ dashboard, staffDashboard, user, role, error, loading, onRefresh, onNavigate }: DashboardPageProps) {
   const isPatient = role === 'PATIENT';
-  const appointments = isPatient && dashboard ? getUiAppointments(dashboard.appointments) : [];
-  const todayKey = clinicToday();
-  const todayAppointments = appointments.filter((item) => item.appointmentDate === todayKey && item.status !== 'CANCELLED');
-  const upcoming = appointments.filter((item) => item.appointmentDate >= todayKey && !['CANCELLED', 'COMPLETED'].includes(item.status))
-    .sort((a, b) => `${a.appointmentDate}${a.startTime}`.localeCompare(`${b.appointmentDate}${b.startTime}`));
-  const unpaid = dashboard?.invoices.filter((item) => item.status === 'UNPAID') ?? [];
 
   return (
     <>
       <PageHeader title={`Xin chào, ${user.fullName || user.email}`}
         subtitle={isPatient ? 'Cổng thông tin cá nhân · Lịch khám, bệnh án và hóa đơn của bạn.' : `${roleLabel(role)} · Hoạt động trong phạm vi tài khoản được cấp quyền.`}
         actions={<><span className="soft-button dashboard-date"><CalendarDays size={17} />{formatDate(clinicToday())}</span>
-          {onNavigate && <button type="button" onClick={() => onNavigate('appointments')}>Xem lịch hẹn</button>}
+          {onNavigate && (role !== 'DOCTOR' || integrations.appointmentOwnership) && <button type="button" onClick={() => onNavigate('appointments')}>Xem lịch hẹn</button>}
           <button className="soft-button" type="button" onClick={onRefresh} disabled={loading}>Làm mới</button></>} />
       {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Retry</button></Alert>}
       {loading && <p role="status">Đang tải dữ liệu tổng quan...</p>}
-      {!isPatient && staffDashboard && !loading && !error && <StaffOverview data={staffDashboard} role={role} onNavigate={onNavigate} />}
+      {role === 'ADMIN' && staffDashboard && !loading && !error && <AdminDashboard data={staffDashboard} onNavigate={onNavigate} />}
+      {role === 'DOCTOR' && staffDashboard && !loading && !error && <DoctorDashboard data={staffDashboard} onNavigate={onNavigate} />}
+      {role === 'RECEPTIONIST' && staffDashboard && !loading && !error && <StaffOverview data={staffDashboard} role={role} onNavigate={onNavigate} />}
       {!isPatient && !staffDashboard && !loading && !error && <Alert tone="info">Chưa tải được lịch khám. Hãy nhấn Làm mới để thử lại.</Alert>}
       {isPatient && !dashboard && !loading && !error && <Alert tone="info">Chưa tải được dữ liệu cá nhân. Hãy nhấn Làm mới để thử lại.</Alert>}
-      {isPatient && dashboard && (
-        <>
-          <section className="patient-preview-hero" aria-label="Lịch khám sắp tới của bạn">
-            <div><span className="hero-kicker"><span className="status-dot" /> THÔNG TIN CÁ NHÂN · DỮ LIỆU THỰC</span>
-              <h3>{upcoming.length ? `Bạn có ${upcoming.length} lịch khám sắp tới` : 'Bạn chưa có lịch khám sắp tới'}</h3>
-              <p>{upcoming.length ? `Lịch gần nhất: ${formatDate(upcoming[0].appointmentDate)} lúc ${formatTime(upcoming[0].startTime)}.` : 'Lịch khám của bạn sẽ xuất hiện ở đây khi được tạo.'}</p>
-            </div><CalendarDays size={65} strokeWidth={1.4} aria-hidden="true" />
-          </section>
-          <section className="overview-grid" aria-label="Thống kê cá nhân">
-            <MetricCard icon={<CalendarDays />} label="Lịch khám của tôi" value={appointments.length} tone="green" />
-            <MetricCard icon={<UsersRound />} label="Lịch khám sắp tới" value={upcoming.length} tone="purple" />
-            <MetricCard icon={<FileText />} label="Hồ sơ bệnh án của tôi" value={dashboard.medicalRecords.length} tone="blue" />
-            <MetricCard icon={<ReceiptText />} label="Hóa đơn chưa thanh toán" value={unpaid.length} tone="orange" />
-          </section>
-          <section className="patient-preview-layout" aria-label="Thông tin bệnh nhân">
-            <article className="panel"><div className="panel-heading"><h3>Lịch hẹn của tôi</h3><span>{appointments.length} lịch</span></div>
-              {appointments.length === 0 ? <p>Chưa có lịch hẹn.</p> : <div className="patient-preview-list">{appointments.map((item) => (
-                <div className="patient-preview-row" key={item.id}>
-                  <span className="patient-preview-date"><strong>{formatDate(item.appointmentDate)}</strong><small>{formatTime(item.startTime)}</small></span>
-                  <span><strong>{item.doctorName}</strong><small>{item.reason || `Mã lịch: ${item.id}`}</small></span>
-                  <Badge tone={item.status}>{item.status}</Badge>
-                </div>
-              ))}</div>}
-            </article>
-            <div className="patient-preview-side">
-              <article className="panel"><div className="panel-heading"><h3>Hồ sơ sức khỏe</h3><span>{dashboard.medicalRecords.length} hồ sơ</span></div>
-                <p className="patient-preview-copy">{dashboard.medicalRecords.length ? 'Hồ sơ bệnh án của bạn đã có trong hệ thống.' : 'Chưa có hồ sơ bệnh án.'}</p>
-              </article>
-              <article className="panel"><div className="panel-heading"><h3>Hóa đơn của tôi</h3><span>{dashboard.invoices.length} hóa đơn</span></div>
-                <p className="patient-preview-copy">{dashboard.invoices.length ? `${unpaid.length} hóa đơn chưa thanh toán.` : 'Chưa có hóa đơn.'}</p>
-              </article>
-              <article className="panel today-panel"><div className="panel-heading"><h3>Lịch khám hôm nay</h3><span>{todayAppointments.length}</span></div>
-                {todayAppointments.length === 0 ? <p>Hôm nay chưa có lịch khám.</p> : <div className="today-grid">{todayAppointments.map((item) => (
-                  <div className="today-card" key={item.id}><strong>{formatTime(item.startTime)}</strong><span>{formatDate(item.appointmentDate)}</span>
-                    <div><Avatar label={item.doctorAvatar} size="sm" /><p>{item.doctorName}</p></div><Badge tone={item.status}>{item.status}</Badge>
-                  </div>
-                ))}</div>}
-              </article>
-            </div>
-          </section>
-        </>
-      )}
+      {isPatient && dashboard && <PatientDashboard data={dashboard} user={user} onNavigate={onNavigate} />}
     </>
   );
 }
 
 function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role: ClinicRole; onNavigate?: (view: AppView) => void }) {
+  // Reception has its own dashboard; keep the legacy overview isolated while migrating.
+  if (role === 'RECEPTIONIST') return <ReceptionDashboard data={data} onNavigate={onNavigate} />;
   const queue = data.queue;
   const waiting = queue.filter((visit) => visit.status === 'WAITING' || visit.status === 'CALLED').length;
   const inProgress = queue.filter((visit) => visit.status === 'IN_PROGRESS').length;
