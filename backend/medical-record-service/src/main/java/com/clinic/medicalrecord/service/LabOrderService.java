@@ -26,4 +26,6 @@ public interface LabOrderService {
     LabOrderResponse release(CurrentUserPrincipal principal, String authorization, UUID orderId);
 
     LabBillableItemsResponse billableItems(CurrentUserPrincipal principal, UUID appointmentId);
+
+    LabBillableItemsResponse finalizeBilling(CurrentUserPrincipal principal, UUID appointmentId);
 }

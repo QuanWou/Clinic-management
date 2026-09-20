@@ -11,10 +11,12 @@ import com.clinic.medicalrecord.dto.LabBillableItemResponse;
 import com.clinic.medicalrecord.dto.LabBillableItemsResponse;
 import com.clinic.medicalrecord.dto.RecordLabResultRequest;
 import com.clinic.medicalrecord.entity.LabOrder;
+import com.clinic.medicalrecord.entity.LabBillingClosure;
 import com.clinic.medicalrecord.entity.LabOrderStatus;
 import com.clinic.medicalrecord.entity.LabEventOutbox;
 import com.clinic.medicalrecord.entity.MedicalRecord;
 import com.clinic.medicalrecord.repository.LabOrderRepository;
+import com.clinic.medicalrecord.repository.LabBillingClosureRepository;
 import com.clinic.medicalrecord.repository.LabEventOutboxRepository;
 import com.clinic.medicalrecord.repository.MedicalRecordRepository;
 import com.clinic.medicalrecord.security.CurrentUserPrincipal;
@@ -38,16 +40,25 @@ public class LabOrderServiceImpl implements LabOrderService {
     private final PatientClient patients;
     private final MedicalAuditService audit;
     private final LabEventOutboxRepository outbox;
+    private final LabBillingClosureRepository billingClosures;
 
     @Override
     @Transactional
     public LabOrderResponse create(CurrentUserPrincipal principal, String authorization, UUID recordId, CreateLabOrderRequest request) {
         MedicalRecord record = findRecord(recordId);
         requireTreatingDoctor(principal, authorization, record);
+        if (request.serviceId() == null || request.performedOn() == null
+                || request.performedOn().isAfter(java.time.LocalDate.now())) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR,
+                    "Lab order requires a catalog service and a non-future performed date");
+        }
+        ensureBillingOpen(record.getAppointmentId());
         LabOrder order = LabOrder.builder()
                 .medicalRecord(record)
                 .testCode(request.testCode().trim())
                 .testName(request.testName().trim())
+                .serviceId(request.serviceId())
+                .performedOn(request.performedOn())
                 .status(LabOrderStatus.ORDERED)
                 .build();
         LabOrder saved = labOrders.save(order);
@@ -141,9 +152,38 @@ public class LabOrderServiceImpl implements LabOrderService {
     @Override
     @Transactional(readOnly = true)
     public LabBillableItemsResponse billableItems(CurrentUserPrincipal principal, UUID appointmentId) {
-        if (!principal.hasRole("ADMIN") && !principal.hasRole("RECEPTIONIST")) {
-            throw forbidden();
+        requireBillingStaff(principal);
+        LabBillingClosure closure = billingClosures.findById(appointmentId)
+                .orElseGet(() -> LabBillingClosure.builder().appointmentId(appointmentId).finalized(false).build());
+        return billableItemsResponse(principal, appointmentId, closure);
+    }
+
+    @Override
+    @Transactional
+    public LabBillableItemsResponse finalizeBilling(CurrentUserPrincipal principal, UUID appointmentId) {
+        requireBillingStaff(principal);
+        MedicalRecord record = records.findByAppointmentId(appointmentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Medical record not found"));
+        LabBillingClosure closure = getOrCreateClosureForUpdate(appointmentId);
+        if (closure.isFinalized()) {
+            return billableItemsResponse(principal, appointmentId, closure);
         }
+        List<LabOrder> orders = labOrders.findByMedicalRecordIdOrderByCreatedAtDesc(record.getId());
+        boolean invalid = orders.stream().anyMatch(order -> order.getStatus() != LabOrderStatus.RELEASED
+                || order.getServiceId() == null || order.getPerformedOn() == null);
+        if (invalid) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "All lab orders must be released and linked to catalog services before billing finalization");
+        }
+        closure.setFinalized(true);
+        closure.setRevision(UUID.randomUUID().toString());
+        closure.setFinalizedAt(LocalDateTime.now());
+        billingClosures.saveAndFlush(closure);
+        return billableItemsResponse(principal, appointmentId, closure);
+    }
+
+    private LabBillableItemsResponse billableItemsResponse(CurrentUserPrincipal principal, UUID appointmentId,
+                                                            LabBillingClosure closure) {
         return records.findByAppointmentId(appointmentId)
                 .map(record -> new LabBillableItemsResponse(appointmentId,
                         labOrders.findByMedicalRecordIdOrderByCreatedAtDesc(record.getId()).stream()
@@ -151,9 +191,10 @@ public class LabOrderServiceImpl implements LabOrderService {
                                     audit.recordRead(principal.id(), "LAB_BILLING_METADATA_READ", order.getId());
                                     return new LabBillableItemResponse(order.getId(), order.getTestCode(), 1,
                                             order.getStatus(), order.getStatus() == LabOrderStatus.RELEASED
-                                            ? order.getReleasedAt() : null);
-                                }).toList()))
-                .orElseGet(() -> new LabBillableItemsResponse(appointmentId, List.of()));
+                                            ? order.getReleasedAt() : null, order.getServiceId(), order.getPerformedOn());
+                                }).toList(), closure.isFinalized(), closure.getRevision()))
+                .orElseGet(() -> new LabBillableItemsResponse(appointmentId, List.of(),
+                        closure.isFinalized(), closure.getRevision()));
     }
 
     private LabOrderResponse saveTransition(CurrentUserPrincipal principal, LabOrder order, String action) {
@@ -166,7 +207,29 @@ public class LabOrderServiceImpl implements LabOrderService {
     private LabOrder authorizedOrder(CurrentUserPrincipal principal, String authorization, UUID orderId) {
         LabOrder order = findOrder(orderId);
         requireTreatingDoctor(principal, authorization, order.getMedicalRecord());
+        ensureBillingOpen(order.getMedicalRecord().getAppointmentId());
         return order;
+    }
+
+    private void ensureBillingOpen(UUID appointmentId) {
+        if (getOrCreateClosureForUpdate(appointmentId).isFinalized()) {
+            throw new BusinessException(ErrorCode.CONFLICT, "Lab billing items are already finalized");
+        }
+    }
+
+    private LabBillingClosure getOrCreateClosureForUpdate(UUID appointmentId) {
+        return billingClosures.findByAppointmentIdForUpdate(appointmentId).orElseGet(() -> {
+            LabBillingClosure created = LabBillingClosure.builder()
+                    .appointmentId(appointmentId).finalized(false).build();
+            billingClosures.save(created);
+            return created;
+        });
+    }
+
+    private void requireBillingStaff(CurrentUserPrincipal principal) {
+        if (!principal.hasRole("ADMIN") && !principal.hasRole("RECEPTIONIST")) {
+            throw forbidden();
+        }
     }
 
     private MedicalRecord findRecord(UUID id) {
@@ -209,6 +272,7 @@ public class LabOrderServiceImpl implements LabOrderService {
     private LabOrderResponse toResponse(LabOrder order) {
         return new LabOrderResponse(
                 order.getId(), order.getMedicalRecord().getId(), order.getTestCode(), order.getTestName(),
+                order.getServiceId(), order.getPerformedOn(),
                 order.getStatus(), order.getSampleIdentifier(), order.getCollectedAt(), order.getResultValue(),
                 order.getResultUnit(), order.getReferenceRange(), order.getResultedAt(), order.getReleasedAt(),
                 order.getCreatedAt(), order.getUpdatedAt());

@@ -43,6 +43,23 @@ class LabBillingClientTest {
         server.verify();
     }
 
+    @Test void readsFinalizedFreezeMetadataAndCatalogIdentity() {
+        UUID orderId = UUID.randomUUID();
+        UUID serviceId = UUID.randomUUID();
+        expect("{\"success\":true,\"data\":{\"appointmentId\":\"" + appointmentId
+                + "\",\"finalizedForBilling\":true,\"billableRevision\":\"lab-r1\",\"items\":[{\"orderId\":\""
+                + orderId + "\",\"testCode\":\"CBC\",\"quantity\":1,\"status\":\"RELEASED\","
+                + "\"billableAt\":\"2026-09-20T09:00:00\",\"serviceId\":\"" + serviceId
+                + "\",\"performedOn\":\"2026-09-20\"}]}}");
+
+        var data = client.get("Bearer staff", appointmentId);
+
+        assertTrue(data.finalizedForBilling());
+        assertEquals("lab-r1", data.billableRevision());
+        assertEquals(serviceId, data.items().getFirst().serviceId());
+        server.verify();
+    }
+
     @Test void mismatchedAppointmentFailsClosed() {
         expect("{\"success\":true,\"data\":{\"appointmentId\":\"" + UUID.randomUUID() + "\",\"items\":[]}}");
         assertEquals(ErrorCode.CONFLICT, assertThrows(BusinessException.class,

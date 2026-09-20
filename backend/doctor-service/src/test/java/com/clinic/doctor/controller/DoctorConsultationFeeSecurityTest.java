@@ -32,7 +32,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** The doctor profile API authorizes only the authenticated doctor's own fee update. */
+/** Administrative doctor fields cannot be changed through the self-service profile API. */
 @WebMvcTest(DoctorController.class)
 @Import(SecurityConfig.class)
 class DoctorConsultationFeeSecurityTest {
@@ -62,18 +62,16 @@ class DoctorConsultationFeeSecurityTest {
     }
 
     @Test
-    void doctorCanOnlyUpdateOwnProfileThroughPrincipalIdentity() throws Exception {
+    void doctorCannotUpdateAdministrativeProfileFields() throws Exception {
         UUID user = UUID.randomUUID();
         UUID specialty = UUID.randomUUID();
-        when(doctors.updateProfile(eq(user), any())).thenReturn(new DoctorProfileResponse(
-                UUID.randomUUID(), user, specialty, "General", "Updated", new BigDecimal("500000.00")));
 
         mvc.perform(put("/api/doctors/profile")
                         .with(authentication(auth(user, "ROLE_DOCTOR")))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(feeRequest(specialty, "500000.00")))
-                .andExpect(status().isOk());
-        verify(doctors).updateProfile(eq(user), any());
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(doctors);
     }
 
     @Test

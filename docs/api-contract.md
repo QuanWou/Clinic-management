@@ -46,6 +46,10 @@
 - `PATCH /api/appointments/{id}/cancel`: Hủy lịch hẹn.
 - `PATCH /api/appointments/{id}/confirm`: Xác nhận lịch hẹn.
 - `PATCH /api/appointments/{id}/complete`: Hoàn tất lịch hẹn.
+- `POST /api/appointments/{id}/performed-services`: Ghi nhận dịch vụ catalog đã thực hiện (`serviceId`, `quantity`, `serviceDate`).
+- `DELETE /api/appointments/{id}/performed-services/{itemId}`: Xóa dịch vụ trước khi chốt.
+- `POST /api/appointments/{id}/performed-services/finalize`: Chốt danh sách dịch vụ bất biến để xuất hóa đơn; appointment phải `COMPLETED` và có ít nhất một dịch vụ.
+- `GET /api/appointments/{id}/performed-services`: Lễ tân/admin đọc hợp đồng billing gồm `finalized`, `revision` và danh sách item.
 
 #### Appointment authorization and booking integrity (Security & Booking Integrity P0)
 
@@ -78,6 +82,9 @@ Identity issues access JWTs with `token_type=access`, refresh JWTs with `token_t
 - `GET /api/medical-records/my`: Bệnh nhân xem hồ sơ bệnh án của mình.
 - `GET /api/medical-records/patients/{patientId}`: Bác sĩ/lễ tân/admin xem hồ sơ theo bệnh nhân.
 - `GET /api/medical-records/{id}`: Xem chi tiết hồ sơ bệnh án theo quyền truy cập.
+- `POST /api/medical-records/{recordId}/lab-orders`: Bác sĩ phụ trách tạo chỉ định lab với `serviceId` catalog và `performedOn` rõ ràng.
+- `GET /api/medical-records/appointments/{appointmentId}/billable-items`: Lễ tân/admin đọc metadata lab dành cho billing (không trả dữ liệu kết quả lâm sàng).
+- `POST /api/medical-records/appointments/{appointmentId}/billable-items/finalize`: Chốt danh sách lab; mọi order hiện có phải `RELEASED` và có catalog mapping. Sau khi chốt, không thể thêm hay chuyển trạng thái lab order.
 
 ### Billing Service
 - `POST /api/invoices`: Tạo hóa đơn cho appointment đã hoàn tất.
@@ -85,7 +92,10 @@ Identity issues access JWTs with `token_type=access`, refresh JWTs with `token_t
 - `GET /api/invoices/patients/{patientId}`: Lễ tân/admin xem hóa đơn theo bệnh nhân.
 - `GET /api/invoices/appointments/{appointmentId}`: Xem hóa đơn theo appointment.
 - `GET /api/invoices/{id}`: Xem chi tiết hóa đơn theo quyền truy cập.
-- `PATCH /api/invoices/{id}/pay`: Đánh dấu hóa đơn đã thanh toán.
+- `POST /api/invoices/{id}/cash-payment`: Lễ tân/admin xác nhận khoản tiền mặt đã thực nhận với mã biên lai duy nhất.
+- `GET /api/invoices/{id}/transactions`: Lễ tân/admin xem các giao dịch đã ghi nhận.
+
+`POST /api/invoices` chỉ tạo hóa đơn từ hai nguồn đã chốt: performed-services của appointment và billable-items của lab. Billing kiểm tra revision hai lần, định giá từng `serviceId` theo ngày thực hiện, từ chối dữ liệu pending/thiếu/đổi giữa chừng, và lưu snapshot giá bất biến.
 
 ### Notification Service
 - `POST /api/notifications`: Tạo và gửi thông báo.

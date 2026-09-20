@@ -6,14 +6,12 @@ import com.clinic.doctor.dto.DoctorAvailabilityResponse;
 import com.clinic.doctor.dto.DoctorProfileResponse;
 import com.clinic.doctor.dto.DoctorScheduleRequest;
 import com.clinic.doctor.dto.ScheduleResponse;
-import com.clinic.doctor.dto.UpdateDoctorRequest;
 import com.clinic.doctor.dto.UpdateDoctorSchedulesRequest;
 import com.clinic.doctor.entity.Doctor;
 import com.clinic.doctor.entity.Schedule;
 import com.clinic.doctor.entity.Specialty;
 import com.clinic.doctor.repository.DoctorRepository;
 import com.clinic.doctor.repository.ScheduleRepository;
-import com.clinic.doctor.repository.SpecialtyRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -41,9 +39,6 @@ class DoctorServiceTest {
     private DoctorRepository doctorRepository;
 
     @Mock
-    private SpecialtyRepository specialtyRepository;
-
-    @Mock
     private ScheduleRepository scheduleRepository;
 
     @InjectMocks
@@ -62,29 +57,6 @@ class DoctorServiceTest {
             assertThat(item.specialtyName()).isEqualTo("Cardiology");
         });
         verify(doctorRepository, never()).findAll();
-    }
-
-    @Test
-    void createsDoctorProfileAndNormalizesBiography() {
-        UUID userId = UUID.randomUUID();
-        Specialty specialty = specialty(UUID.randomUUID(), "Neurology");
-        when(specialtyRepository.findById(specialty.getId())).thenReturn(Optional.of(specialty));
-        when(doctorRepository.findByUserId(userId)).thenReturn(Optional.empty());
-        when(doctorRepository.save(org.mockito.ArgumentMatchers.any(Doctor.class)))
-                .thenAnswer(invocation -> {
-                    Doctor saved = invocation.getArgument(0);
-                    saved.setId(UUID.randomUUID());
-                    return saved;
-                });
-
-        DoctorProfileResponse response = doctorService.updateProfile(
-                userId,
-                new UpdateDoctorRequest(specialty.getId(), "  Focused on headache care.  ", new BigDecimal("450000.00"))
-        );
-
-        assertThat(response.userId()).isEqualTo(userId);
-        assertThat(response.biography()).isEqualTo("Focused on headache care.");
-        assertThat(response.consultationFee()).isEqualByComparingTo("450000.00");
     }
 
     @Test

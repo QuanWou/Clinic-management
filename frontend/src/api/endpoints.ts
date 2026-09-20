@@ -15,6 +15,7 @@ export const apiEndpoints = {
   },
   doctors: {
     profile: '/api/doctors/profile',
+    schedules: (doctorId: string) => `/api/doctors/${encodeURIComponent(doctorId)}/schedules`,
     availability: (doctorId: string) => `/api/doctors/${encodeURIComponent(doctorId)}/availability`,
     admin: '/api/doctors/admin'
   },

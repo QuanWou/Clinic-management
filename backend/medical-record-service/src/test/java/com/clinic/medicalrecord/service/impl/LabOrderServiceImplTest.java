@@ -10,10 +10,12 @@ import com.clinic.medicalrecord.dto.CollectLabSampleRequest;
 import com.clinic.medicalrecord.dto.CreateLabOrderRequest;
 import com.clinic.medicalrecord.dto.RecordLabResultRequest;
 import com.clinic.medicalrecord.entity.LabOrder;
+import com.clinic.medicalrecord.entity.LabBillingClosure;
 import com.clinic.medicalrecord.entity.LabEventOutbox;
 import com.clinic.medicalrecord.entity.LabOrderStatus;
 import com.clinic.medicalrecord.entity.MedicalRecord;
 import com.clinic.medicalrecord.repository.LabOrderRepository;
+import com.clinic.medicalrecord.repository.LabBillingClosureRepository;
 import com.clinic.medicalrecord.repository.LabEventOutboxRepository;
 import com.clinic.medicalrecord.repository.MedicalRecordRepository;
 import com.clinic.medicalrecord.security.CurrentUserPrincipal;
@@ -27,6 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -53,6 +56,7 @@ class LabOrderServiceImplTest {
     @Mock private PatientClient patients;
     @Mock private MedicalAuditService audit;
     @Mock private LabEventOutboxRepository outbox;
+    @Mock private LabBillingClosureRepository billingClosures;
     @InjectMocks private LabOrderServiceImpl service;
 
     private UUID doctorId;
@@ -71,7 +75,8 @@ class LabOrderServiceImplTest {
         record = MedicalRecord.builder().id(UUID.randomUUID()).appointmentId(UUID.randomUUID())
                 .doctorId(doctorId).patientId(patientId).build();
         order = LabOrder.builder().id(UUID.randomUUID()).medicalRecord(record).testCode("CBC")
-                .testName("Complete blood count").status(LabOrderStatus.ORDERED).build();
+                .testName("Complete blood count").serviceId(UUID.randomUUID())
+                .performedOn(LocalDate.now()).status(LabOrderStatus.ORDERED).build();
     }
 
     @Test
@@ -84,7 +89,8 @@ class LabOrderServiceImplTest {
             return saved;
         });
 
-        var result = service.create(doctor, AUTH, record.getId(), new CreateLabOrderRequest(" CBC ", " Blood count "));
+        var result = service.create(doctor, AUTH, record.getId(), new CreateLabOrderRequest(
+                " CBC ", " Blood count ", UUID.randomUUID(), LocalDate.now()));
 
         assertEquals(LabOrderStatus.ORDERED, result.status());
         assertEquals(record.getId(), result.medicalRecordId());
@@ -98,7 +104,8 @@ class LabOrderServiceImplTest {
         authorizeDoctor(UUID.randomUUID());
 
         BusinessException ex = assertThrows(BusinessException.class,
-                () -> service.create(doctor, AUTH, record.getId(), new CreateLabOrderRequest("CBC", "Blood count")));
+                () -> service.create(doctor, AUTH, record.getId(), new CreateLabOrderRequest(
+                        "CBC", "Blood count", UUID.randomUUID(), LocalDate.now())));
         assertEquals(ErrorCode.FORBIDDEN, ex.getErrorCode());
         verify(labOrders, never()).save(any());
     }
@@ -331,6 +338,43 @@ class LabOrderServiceImplTest {
                 () -> service.billableItems(patient, UUID.randomUUID()));
         assertEquals(ErrorCode.FORBIDDEN, ex.getErrorCode());
         verify(records, never()).findByAppointmentId(any());
+    }
+
+    @Test
+    void receptionistCanFinalizeOnlyReleasedCatalogLinkedOrders() {
+        UUID appointmentId = record.getAppointmentId();
+        CurrentUserPrincipal receptionist = new CurrentUserPrincipal(UUID.randomUUID(), "reception@test.com",
+                "Reception", Set.of("ROLE_RECEPTIONIST"));
+        order.setStatus(LabOrderStatus.RELEASED);
+        order.setReleasedAt(LocalDateTime.now());
+        LabBillingClosure closure = LabBillingClosure.builder()
+                .appointmentId(appointmentId).finalized(false).build();
+        when(records.findByAppointmentId(appointmentId)).thenReturn(Optional.of(record));
+        when(billingClosures.findByAppointmentIdForUpdate(appointmentId)).thenReturn(Optional.of(closure));
+        when(labOrders.findByMedicalRecordIdOrderByCreatedAtDesc(record.getId())).thenReturn(List.of(order));
+
+        var response = service.finalizeBilling(receptionist, appointmentId);
+
+        assertEquals(true, response.finalizedForBilling());
+        assertNotNull(response.billableRevision());
+        assertEquals(order.getServiceId(), response.items().getFirst().serviceId());
+        verify(billingClosures).saveAndFlush(closure);
+    }
+
+    @Test
+    void finalizedLabListRejectsFurtherClinicalMutation() {
+        order.setStatus(LabOrderStatus.RESULTED);
+        when(labOrders.findById(order.getId())).thenReturn(Optional.of(order));
+        authorizeDoctor(doctorId);
+        when(billingClosures.findByAppointmentIdForUpdate(record.getAppointmentId())).thenReturn(Optional.of(
+                LabBillingClosure.builder().appointmentId(record.getAppointmentId()).finalized(true)
+                        .revision("lab-r1").finalizedAt(LocalDateTime.now()).build()));
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> service.release(doctor, AUTH, order.getId()));
+
+        assertEquals(ErrorCode.CONFLICT, ex.getErrorCode());
+        verify(outbox, never()).save(any());
     }
 
     private void authorizeDoctor(UUID profileId) {

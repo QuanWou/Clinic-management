@@ -119,13 +119,6 @@ export type PatientProfileResponse = {
   updatedAt?: string | null;
 };
 
-export type UpdatePatientProfileRequest = {
-  dob: string | null;
-  gender: string | null;
-  address: string | null;
-  bloodType: string | null;
-};
-
 export type DoctorProfileResponse = {
   id: string;
   userId: string;
@@ -139,12 +132,6 @@ export type UpdateDoctorProfileRequest = {
   specialtyId: string;
   biography?: string;
   consultationFee: number;
-};
-
-export type SpecialtyResponse = {
-  id: string;
-  name: string;
-  description?: string | null;
 };
 
 export type DoctorSchedule = {

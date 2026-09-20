@@ -36,6 +36,14 @@ public class LabOrderController {
         return ApiResponse.success("Lab billing items fetched", labOrders.billableItems(principal, appointmentId));
     }
 
+    @PostMapping("/appointments/{appointmentId}/billable-items/finalize")
+    public ApiResponse<LabBillableItemsResponse> finalizeBilling(
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @PathVariable UUID appointmentId) {
+        return ApiResponse.success("Lab billing items finalized",
+                labOrders.finalizeBilling(principal, appointmentId));
+    }
+
     @PostMapping("/{recordId}/lab-orders")
     public ApiResponse<LabOrderResponse> create(@AuthenticationPrincipal CurrentUserPrincipal principal,
                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,

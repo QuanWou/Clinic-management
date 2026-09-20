@@ -92,7 +92,6 @@ class AuthServiceRefreshTest {
     @Test
     void accessTokenCannotBeUsedAsRefreshTokenEvenIfPersisted() {
         stored.setToken(jwt.generateAccessToken(user.getId(), user.getEmail(), Set.of("ROLE_PATIENT")));
-        when(tokens.findByTokenForUpdate(stored.getToken())).thenReturn(Optional.of(stored));
         BusinessException ex = assertThrows(BusinessException.class,
                 () -> service.refresh(new RefreshTokenRequest(stored.getToken())));
         assertEquals(ErrorCode.UNAUTHORIZED, ex.getErrorCode());

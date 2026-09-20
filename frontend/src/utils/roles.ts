@@ -20,7 +20,9 @@ const access: Record<AppView, ClinicRole[]> = {
 export function normalizeRoles(roles: CurrentUser['roles']): ClinicRole[] {
   if (!Array.isArray(roles)) return [];
   return roles.flatMap((entry) => {
-    const value = (typeof entry === 'string' ? entry : entry.code ?? '').replace(/^ROLE_/, '').toUpperCase();
+    const value = (typeof entry === 'string' ? entry : entry.code ?? entry.name ?? '')
+      .replace(/^ROLE_/, '')
+      .toUpperCase();
     return rolePriority.includes(value as ClinicRole) ? [value as ClinicRole] : [];
   });
 }

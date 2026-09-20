@@ -5,11 +5,18 @@ import { clearTokens, getAccessToken } from './token';
 type RequestOptions = RequestInit & { auth?: boolean };
 
 export class HttpApiError extends Error {
-  constructor(public readonly status: number, message: string) {
+  constructor(
+    public readonly status: number,
+    message: string,
+    public readonly errorCode?: string
+  ) {
     super(message);
     this.name = 'HttpApiError';
   }
 }
+
+// Backward-compatible name used by the registration/onboarding integration tests.
+export { HttpApiError as ApiError };
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { auth = true, ...requestOptions } = options;
@@ -30,7 +37,10 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     const message = isObject(body) && typeof body.message === 'string' && body.message
       ? body.message
       : `Request failed (${response.status})`;
-    throw new HttpApiError(response.status, message);
+    const errorCode = isObject(body) && typeof body.errorCode === 'string'
+      ? body.errorCode
+      : undefined;
+    throw new HttpApiError(response.status, message, errorCode);
   }
   if (!isObject(body) || body.success !== true || !('data' in body)) {
     throw new Error('Invalid API response');

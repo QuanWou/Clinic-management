@@ -12,15 +12,15 @@
 
 Services MUST use authenticated HTTP API calls or events, never direct cross-schema SQL or foreign keys. `catalog-service` is registered with the existing gateway route `/api/catalog/**`, exposed internally on port 8091, and uses independent Flyway and `ddl-auto=validate`.
 
-## Billing integration contract (task 05)
+## Billing integration contract (integrated)
 
-**Integration decision pending Task 05 acknowledgement:** `GET /api/pricing/appointments/{appointmentId}/quote` is an appointment-level billing orchestration endpoint, not an alias of catalog service pricing. Task 02 does not implement that quote route. See [Task 02 precise API and proposed quote contract](task-02-api-contract.md).
+The integration branch does not invent an appointment quote or infer a catalog item from a doctor, reason, or appointment ID.
 
-1. Appointment currently provides `appointmentId`, `doctorId`, patient, date and status but **no `serviceId`**. Task 05 must collect explicit billable service selections from the appropriate appointment/consultation workflow. Task 04 must provide explicit lab order/test IDs mapped to catalog `serviceId`, quantity and performed date. Do not infer a service ID from an appointment ID or reason.
-2. Fetch `GET /api/catalog/services/{serviceId}` and ensure `active=true` before billing a newly selected service.
-3. Fetch `GET /api/catalog/services/{serviceId}/price?on=YYYY-MM-DD`, using the billing event's explicitly agreed service date (not an unqualified current-day price for historical work).
-4. Persist `PriceResponse.id` as `priceId`, alongside `serviceId`, amount, currency, quantity and description in immutable invoice-item snapshots. Do not dynamically recalculate already issued invoices after price changes. Fail closed if mapping/price is missing; do not invent zero prices.
-5. Task 05 must own quote route, calculation, deduplication, currency consistency and invoice creation; doctor profile `consultationFee` must not silently replace catalog pricing. Consultation source-of-truth and quote response require Task 05 confirmation.
+1. Appointment owns the explicit performed-service list at `/api/appointments/{appointmentId}/performed-services`. A treating doctor, receptionist, or admin may edit it until a completed appointment is finalized. Finalization creates an immutable revision; billing staff can read it.
+2. Medical Record owns lab orders. Every new lab order carries an explicit catalog `serviceId` and `performedOn`. `/api/medical-records/appointments/{appointmentId}/billable-items/finalize` freezes only released, catalog-linked orders; an empty finalized list is valid when no lab work was ordered.
+3. Billing reads both finalized contracts and fetches `GET /api/catalog/services/{serviceId}/price?on=YYYY-MM-DD` for each item. Missing mappings, missing prices, future dates, pending orders, duplicate source IDs, invalid currency, or changed revisions all fail closed.
+4. Billing persists `priceId`, `serviceId`, amount, currency, quantity, description, service date, source ID, and both upstream revisions as immutable invoice snapshots. Historical invoices are never dynamically recalculated after catalog changes.
+5. Doctor profile `consultationFee` is not used as a pricing fallback. The catalog price history remains the only monetary source for new invoice items.
 
 ## Medical integration contract (task 04)
 

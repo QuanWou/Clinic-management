@@ -156,12 +156,18 @@ services:
         condition: service_started
       patient-service:
         condition: service_started
+      catalog-service:
+        condition: service_started
+      medical-record-service:
+        condition: service_started
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=billing
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
       SERVICES_APPOINTMENT_URL: http://appointment-service:8086
       SERVICES_PATIENT_URL: http://patient-service:8084
+      CATALOG_SERVICE_URL: http://catalog-service:8091
+      MEDICAL_SERVICE_URL: http://medical-record-service:8087
       APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
     ports:
       - "8088:8088"

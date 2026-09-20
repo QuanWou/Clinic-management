@@ -3,6 +3,7 @@ package com.clinic.medicalrecord.dto;
 import com.clinic.medicalrecord.entity.LabOrderStatus;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record LabOrderResponse(
@@ -10,6 +11,8 @@ public record LabOrderResponse(
         UUID medicalRecordId,
         String testCode,
         String testName,
+        UUID serviceId,
+        LocalDate performedOn,
         LabOrderStatus status,
         String sampleIdentifier,
         LocalDateTime collectedAt,

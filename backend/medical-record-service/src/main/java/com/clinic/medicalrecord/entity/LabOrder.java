@@ -21,6 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -44,6 +45,12 @@ public class LabOrder {
 
     @Column(name = "test_name", nullable = false, length = 255)
     private String testName;
+
+    @Column(name = "service_id")
+    private UUID serviceId;
+
+    @Column(name = "performed_on")
+    private LocalDate performedOn;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)

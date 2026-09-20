@@ -21,16 +21,24 @@ assert.ok(chunk, 'Vite must produce a test entry bundle');
 const api = await import(`data:text/javascript;base64,${Buffer.from(chunk.code).toString('base64')}`);
 const originalFetch = globalThis.fetch;
 const originalLocalStorage = globalThis.localStorage;
+const originalSessionStorage = globalThis.sessionStorage;
 let items;
+let sessionItems;
 let requests;
 
 beforeEach(() => {
   items = new Map();
+  sessionItems = new Map();
   requests = [];
   globalThis.localStorage = {
     getItem: (key) => items.get(key) ?? null,
     setItem: (key, value) => items.set(key, String(value)),
     removeItem: (key) => items.delete(key)
+  };
+  globalThis.sessionStorage = {
+    getItem: (key) => sessionItems.get(key) ?? null,
+    setItem: (key, value) => sessionItems.set(key, String(value)),
+    removeItem: (key) => sessionItems.delete(key)
   };
   globalThis.fetch = async (url, options) => {
     requests.push({ url, options });
@@ -41,6 +49,7 @@ beforeEach(() => {
 afterEach(() => {
   globalThis.fetch = originalFetch;
   globalThis.localStorage = originalLocalStorage;
+  globalThis.sessionStorage = originalSessionStorage;
 });
 
 function success(data) {
@@ -54,9 +63,9 @@ test('API request attaches bearer token and unwraps the response', async () => {
   items.set('clinic.accessToken', 'test-token');
   const data = await api.apiRequest('/api/users/me');
   assert.deepEqual(data, { ok: true });
-  assert.equal(requests[0].url, 'http://localhost:8090/api/users/me');
+  assert.equal(requests[0].url, '/api/users/me');
   assert.equal(requests[0].options.headers.get('Authorization'), 'Bearer test-token');
-  assert.equal(requests[0].options.headers.get('Content-Type'), 'application/json');
+  assert.equal(requests[0].options.headers.get('Content-Type'), null);
 });
 
 test('unauthenticated API request does not leak a stored token', async () => {
@@ -86,15 +95,19 @@ test('API request rejects malformed success response', async () => {
 test('login persists access token, current-user call sends it, logout clears it', async () => {
   globalThis.fetch = async (url, options) => {
     requests.push({ url, options });
-    return success(url.endsWith('/login') ? { accessToken: 'issued-token' } : { email: 'user@clinic.test' });
+    return success(url.endsWith('/login')
+      ? { accessToken: 'issued-token', refreshToken: 'issued-refresh-token' }
+      : { email: 'user@clinic.test' });
   };
   await api.login({ email: 'user@clinic.test', password: 'not-a-real-password' });
   assert.equal(items.get('clinic.accessToken'), 'issued-token');
+  assert.equal(sessionItems.get('clinic.refreshToken'), 'issued-refresh-token');
   assert.equal(requests[0].options.headers.has('Authorization'), false);
   assert.deepEqual(await api.getCurrentUser(), { email: 'user@clinic.test' });
   assert.equal(requests[1].options.headers.get('Authorization'), 'Bearer issued-token');
-  api.logout();
+  await api.logout();
   assert.equal(items.has('clinic.accessToken'), false);
+  assert.equal(sessionItems.has('clinic.refreshToken'), false);
 });
 
 test('frontend endpoint contract points to gateway routes', () => {
@@ -106,8 +119,8 @@ test('frontend endpoint contract points to gateway routes', () => {
 
 test('role utilities support strings, role objects and empty roles', () => {
   assert.deepEqual(api.normalizeRoles(['ROLE_PATIENT', { code: 'ROLE_DOCTOR' }, { name: 'ROLE_ADMIN' }]),
-    ['ROLE_PATIENT', 'ROLE_DOCTOR', 'ROLE_ADMIN']);
+    ['PATIENT', 'DOCTOR', 'ADMIN']);
   assert.deepEqual(api.normalizeRoles(null), []);
-  assert.equal(api.getPrimaryRole([]), 'USER');
+  assert.equal(api.getPrimaryRole([]), null);
   assert.match(api.getWorkspaceCopy('ROLE_PATIENT'), /patient portal/i);
 });

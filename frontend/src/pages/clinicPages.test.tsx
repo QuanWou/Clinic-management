@@ -80,20 +80,18 @@ describe('role-aware pages and empty states', () => {
     expect(multiRoleMenu).not.toContain('Medical Records');
   });
 
-  it('blocks unmerged Task 02–06 screens without showing fake data or mutation buttons', () => {
+  it('exposes the merged Task 02–06 screens without rendering fake loaded data', () => {
     const catalog = renderToStaticMarkup(<CatalogPage role="ADMIN" />);
     const notifications = renderToStaticMarkup(<NotificationsPage />);
     const reception = renderToStaticMarkup(<ReceptionAppointmentsPage role="RECEPTIONIST" />);
     const patients = renderToStaticMarkup(<ReceptionPatientsPage role="RECEPTIONIST" />);
     const doctors = renderToStaticMarkup(<DoctorsPage role="ADMIN" />);
-    expect(catalog).toContain('unmerged');
-    expect(notifications).toContain('unavailable');
-    expect(reception).toContain('unavailable');
-    expect(patients).toContain('unavailable');
-    expect(doctors).toContain('unmerged');
-    expect(notifications).not.toContain('Mark as read');
-    expect(reception).not.toContain('Check in');
-    expect(patients).not.toContain('Register patient');
+    expect(catalog).toContain('Loading catalog');
+    expect(notifications).toContain('Loading notifications');
+    expect(reception).toContain('Authorized staff bookings and daily queue');
+    expect(patients).toContain('Search authorized patient profiles and register walk-ins');
+    expect(doctors).toContain('Administrator-only doctor directory');
+    expect([catalog, notifications, reception, patients, doctors].join(' ')).not.toContain('unmerged');
   });
 
   it('does not show cash/online payment controls to a patient or record a fake payment', () => {
