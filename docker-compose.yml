@@ -31,6 +31,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_db?currentSchema=identity
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
+      # Legacy production V3 seeded its admin; V4 verifies known history before
+      # applying the audit DDL. Disable Flyway validation for this service only.
+      SPRING_FLYWAY_VALIDATE_ON_MIGRATE: "false"
       APP_SECURITY_JWT_SECRET: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
     ports:
       - "8083:8083"

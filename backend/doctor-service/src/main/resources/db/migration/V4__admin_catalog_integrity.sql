@@ -1,7 +1,5 @@
+-- Extend the original production V2 lineage without rewriting its installed history.
 ALTER TABLE doctor.doctors ADD COLUMN active BOOLEAN NOT NULL DEFAULT TRUE;
-
-ALTER TABLE doctor.schedules ADD CONSTRAINT ck_schedule_day_of_week CHECK (day_of_week BETWEEN 1 AND 7);
-ALTER TABLE doctor.schedules ADD CONSTRAINT ck_schedule_time_range CHECK (start_time < end_time);
 ALTER TABLE doctor.doctors ADD CONSTRAINT ck_doctor_consultation_fee CHECK (consultation_fee >= 0);
 
 CREATE UNIQUE INDEX uk_specialty_name_lower ON doctor.specialties (LOWER(name));

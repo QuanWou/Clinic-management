@@ -8,5 +8,9 @@ VALUES
     ('10000000-0000-0000-0000-000000000006', 'Pediatrics', 'Medical care for infants, children, and adolescents')
 ON CONFLICT (name) DO NOTHING;
 
-CREATE INDEX IF NOT EXISTS idx_schedules_doctor_day_time
+ALTER TABLE schedules
+    ADD CONSTRAINT chk_schedules_day_of_week CHECK (day_of_week BETWEEN 1 AND 7),
+    ADD CONSTRAINT chk_schedules_time_range CHECK (end_time > start_time);
+
+CREATE INDEX idx_schedules_doctor_day_time
     ON schedules (doctor_id, day_of_week, start_time, end_time);
