@@ -1,0 +1,10 @@
+server:
+  port: 8090
+
+SERVICES_IDENTITY_URL: http://localhost:8083
+SERVICES_PATIENT_URL: http://localhost:8084
+SERVICES_DOCTOR_URL: http://localhost:8085
+SERVICES_APPOINTMENT_URL: http://localhost:8086
+SERVICES_MEDICAL_RECORD_URL: http://localhost:8087
+SERVICES_BILLING_URL: http://localhost:8088
+SERVICES_NOTIFICATION_URL: http://localhost:8089

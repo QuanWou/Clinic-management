@@ -13,6 +13,7 @@ Micro-service based platform for managing clinics. Built with **Java 21**, **Spr
 - [API contract](docs/api-contract.md)
 - [ERD](docs/erd.md)
 - [Roadmap](docs/roadmap.md)
+- [Testing and smoke checks](docs/testing.md)
 
 ## Quick Start (dev)
 ```bash

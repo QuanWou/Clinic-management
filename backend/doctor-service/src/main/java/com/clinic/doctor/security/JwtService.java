@@ -32,7 +32,8 @@ public class JwtService {
                 .subject(userId.toString())
                 .claims(Map.of(
                         "email", email,
-                        "roles", roles
+                        "roles", roles,
+                        "token_type", "access"
                 ))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))

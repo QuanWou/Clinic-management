@@ -1,14 +1,44 @@
+import { useState } from 'react';
+import { updatePatientProfile } from '../api/clinic';
+import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import PageHeader from '../components/PageHeader';
-import type { CurrentUser } from '../types/domain';
+import PatientProfileForm from '../features/patient/components/PatientProfileForm';
+import type {
+  CurrentUser,
+  PatientProfileResponse,
+  UpdatePatientProfileRequest
+} from '../types/domain';
 import { normalizeRoles } from '../utils/roles';
 
 type SettingsPageProps = {
   user: CurrentUser;
+  patientProfile?: PatientProfileResponse | null;
+  onPatientProfileSaved: (profile: PatientProfileResponse) => void;
 };
 
-export default function SettingsPage({ user }: SettingsPageProps) {
+export default function SettingsPage({ user, patientProfile, onPatientProfileSaved }: SettingsPageProps) {
   const roles = normalizeRoles(user.roles);
+  const isPatient = roles.includes('ROLE_PATIENT');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  async function handlePatientProfileSubmit(request: UpdatePatientProfileRequest) {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const profile = await updatePatientProfile(request);
+      onPatientProfileSaved(profile);
+      setSuccess('Patient profile saved successfully.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to save patient profile');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -27,14 +57,30 @@ export default function SettingsPage({ user }: SettingsPageProps) {
             <Avatar label={user.fullName ?? user.email} size="lg" />
             <div>
               <strong>{user.fullName ?? 'Olivia Rhye'}</strong>
-              <span>Administrator</span>
+              <span>{roles.join(', ') || 'Clinic user'}</span>
             </div>
           </div>
-          <label>Full Name<input value={user.fullName ?? 'Olivia Rhye'} readOnly /></label>
+          <label>Full Name<input value={user.fullName ?? ''} readOnly /></label>
           <label>Email<input value={user.email} readOnly /></label>
-          <label>Phone<input value={user.phone ?? '+1 (555) 123-4567'} readOnly /></label>
-          <label>Role<input value={roles.join(', ') || 'Administrator'} readOnly /></label>
-          <button type="button">Save Changes</button>
+          <label>Phone<input value={user.phone ?? ''} placeholder="Not provided" readOnly /></label>
+          <label>Role<input value={roles.join(', ') || 'Clinic user'} readOnly /></label>
+
+          {isPatient && patientProfile && (
+            <section className="settings-section">
+              <div>
+                <h3>Patient Information</h3>
+                <p className="muted">Update the clinical profile associated with your account.</p>
+              </div>
+              {success && <Alert tone="info">{success}</Alert>}
+              <PatientProfileForm
+                profile={patientProfile}
+                error={error}
+                loading={loading}
+                submitLabel="Save patient profile"
+                onSubmit={handlePatientProfileSubmit}
+              />
+            </section>
+          )}
         </article>
       </section>
     </>

@@ -12,7 +12,11 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ activeItemId, user, onNavigate, onLogout }: SidebarProps) {
-  const role = normalizeRoles(user.roles)[0] ?? 'USER';
+  const roles = normalizeRoles(user.roles);
+  const role = roles[0] ?? 'USER';
+  const visibleNavigation = mainNavigation.filter(
+    (item) => !item.roles || item.roles.some((allowedRole) => roles.includes(allowedRole))
+  );
 
   return (
     <aside className="sidebar">
@@ -25,7 +29,7 @@ export default function Sidebar({ activeItemId, user, onNavigate, onLogout }: Si
       </div>
 
       <nav className="sidebar-nav" aria-label="Main navigation">
-        {mainNavigation.map((item) => (
+        {visibleNavigation.map((item) => (
           <button
             key={item.id}
             className={item.id === activeItemId ? 'active' : undefined}

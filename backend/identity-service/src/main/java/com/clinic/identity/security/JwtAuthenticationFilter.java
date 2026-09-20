@@ -1,6 +1,7 @@
 package com.clinic.identity.security;
 
 import com.clinic.identity.repository.UserRepository;
+import com.clinic.identity.entity.UserStatus;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        if (!jwtService.isTokenValid(token)) {
+        if (!jwtService.isAccessTokenValid(token)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -55,6 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         var user = userOpt.get();
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         Set<String> roleNames = user.getRoles().stream()
                 .map(role -> role.getCode().name())

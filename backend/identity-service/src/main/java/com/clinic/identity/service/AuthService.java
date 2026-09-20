@@ -82,21 +82,28 @@ public class AuthService {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "User not found"));
 
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Account is not active");
+        }
         return buildAuthResponse(user);
     }
 
     @Transactional
     public AuthResponse refresh(RefreshTokenRequest request) {
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(request.refreshToken())
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenForUpdate(request.refreshToken())
                 .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED, "Invalid refresh token"));
 
         if (Boolean.TRUE.equals(refreshToken.getRevoked())
                 || refreshToken.getExpiresAt().isBefore(LocalDateTime.now())
-                || !jwtService.isTokenValid(refreshToken.getToken())) {
+                || !jwtService.isRefreshTokenValid(refreshToken.getToken())
+                || !jwtService.extractUserId(refreshToken.getToken()).equals(refreshToken.getUser().getId())) {
             throw new BusinessException(ErrorCode.UNAUTHORIZED, "Refresh token expired or revoked");
         }
 
         User user = refreshToken.getUser();
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "Account is not active");
+        }
         refreshToken.setRevoked(true);
         refreshTokenRepository.save(refreshToken);
 
@@ -105,9 +112,15 @@ public class AuthService {
 
     @Transactional
     public void logout(RefreshTokenRequest request) {
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(request.refreshToken())
+        if (!jwtService.isRefreshTokenValid(request.refreshToken())) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "Invalid refresh token");
+        }
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenForUpdate(request.refreshToken())
                 .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED, "Invalid refresh token"));
 
+        if (!jwtService.extractUserId(request.refreshToken()).equals(refreshToken.getUser().getId())) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "Refresh token does not belong to this account");
+        }
         refreshToken.setRevoked(true);
         refreshTokenRepository.save(refreshToken);
     }

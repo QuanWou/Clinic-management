@@ -2,9 +2,9 @@ package com.clinic.notification.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -16,25 +16,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
-    private final JwtProperties jwtProperties;
+    private final SecretKey secretKey;
 
     public JwtService(JwtProperties jwtProperties) {
-        this.jwtProperties = jwtProperties;
+        this.secretKey = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
     public String extractEmail(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, claims -> claims.get("email", String.class));
     }
 
     public UUID extractUserId(String token) {
-        String userIdStr = extractClaim(token, claims -> claims.get("userId", String.class));
-        return UUID.fromString(userIdStr);
+        return UUID.fromString(extractClaim(token, Claims::getSubject));
     }
 
     @SuppressWarnings("unchecked")
     public Collection<? extends GrantedAuthority> extractAuthorities(String token) {
         List<String> roles = extractClaim(token, claims -> claims.get("roles", List.class));
-        return roles.stream()
+        return (roles == null ? List.<String>of() : roles).stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
     }
@@ -46,14 +45,9 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(getSignInKey())
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.secret());
-        return Keys.hmacShaKeyFor(keyBytes);
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

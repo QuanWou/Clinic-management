@@ -31,7 +31,9 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -62,8 +64,11 @@ button:disabled {
   opacity: 0.65;
 }
 
-input {
+input,
+select,
+textarea {
   width: 100%;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   color: var(--text);
@@ -71,7 +76,13 @@ input {
   padding: 0.85rem 1rem;
 }
 
-input:focus {
+textarea {
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
   border-color: rgba(16, 185, 129, 0.85);
   box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
 }
@@ -126,6 +137,58 @@ input:focus {
   font-size: 0.9rem;
   font-weight: 800;
   gap: 0.45rem;
+}
+
+.optional-label {
+  color: var(--muted);
+  display: inline;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.auth-switch {
+  align-items: center;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+}
+
+.auth-switch button {
+  min-height: 38px;
+  padding: 0.55rem 0.8rem;
+}
+
+.onboarding-card {
+  max-width: 760px;
+}
+
+.onboarding-heading {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.onboarding-heading .muted {
+  margin-bottom: 0;
+}
+
+.form-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-span {
+  grid-column: span 2;
+}
+
+.patient-profile-form > button {
+  justify-self: start;
 }
 
 .alert {
@@ -321,6 +384,11 @@ input:focus {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem;
+}
+
+.filter-select {
+  min-width: 190px;
+  width: auto;
 }
 
 .icon-button {
@@ -803,7 +871,20 @@ input:focus {
 }
 
 .doctors-grid {
-  grid-template-columns: 1.3fr 1fr 0.8fr 1fr 0.75fr 0.6fr;
+  grid-template-columns: 1.2fr 1fr minmax(180px, 1.5fr) 0.7fr 0.75fr;
+}
+
+.truncate-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty-state {
+  color: var(--muted);
+  margin: 0;
+  padding: 1.25rem 0;
+  text-align: center;
 }
 
 .records-grid {
@@ -916,6 +997,57 @@ input:focus {
   margin: 0;
 }
 
+.doctor-workspace {
+  display: grid;
+  gap: 1rem;
+}
+
+.doctor-profile-form {
+  margin-top: 0;
+}
+
+.doctor-profile-form > button,
+.schedule-editor > button {
+  justify-self: start;
+}
+
+.schedule-editor {
+  display: grid;
+  gap: 1rem;
+}
+
+.schedule-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.schedule-row {
+  align-items: center;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: auto minmax(150px, 1fr) 125px auto 125px minmax(140px, auto) auto;
+  padding: 0.75rem;
+}
+
+.schedule-row > span:not(.schedule-summary) {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.schedule-summary {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: right;
+}
+
+.danger-icon {
+  color: #b91c1c;
+}
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;
@@ -995,6 +1127,18 @@ input:focus {
 
 .settings-form h3 {
   margin: 0;
+}
+
+.settings-section {
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
+}
+
+.settings-section p {
+  margin: 0.35rem 0 0;
 }
 
 .settings-profile {
@@ -1257,6 +1401,14 @@ progress::-webkit-progress-value {
   .premium-panel {
     grid-column: auto;
   }
+
+  .schedule-row {
+    grid-template-columns: auto minmax(140px, 1fr) 110px auto 110px auto;
+  }
+
+  .schedule-summary {
+    display: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1287,12 +1439,40 @@ progress::-webkit-progress-value {
   }
 
   .detail-columns,
-  .today-grid {
+  .today-grid,
+  .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .form-span {
+    grid-column: auto;
+  }
+
+  .auth-switch,
+  .onboarding-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filter-select,
+  .inline-search {
+    width: 100%;
   }
 
   .details-list div,
   .details-list.compact div {
     grid-template-columns: 1fr;
+  }
+
+  .schedule-row {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .schedule-row select {
+    grid-column: span 2;
+  }
+
+  .schedule-row input {
+    grid-column: span 1;
   }
 }

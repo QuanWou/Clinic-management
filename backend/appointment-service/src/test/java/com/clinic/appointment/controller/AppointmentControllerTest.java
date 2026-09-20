@@ -116,7 +116,7 @@ class AppointmentControllerTest implements WebMvcConfigurer {
                 LocalDateTime.now()
         );
 
-        when(appointmentService.create(eq(currentUserId), any(), any())).thenReturn(response);
+        when(appointmentService.create(eq(currentUserId), any(), any(CurrentUserPrincipal.class), any())).thenReturn(response);
 
         CurrentUserPrincipal principal = new CurrentUserPrincipal(currentUserId, "test@test.com", "Test", Set.of("PATIENT"));
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, Set.of(new SimpleGrantedAuthority("ROLE_PATIENT")));
@@ -174,7 +174,7 @@ class AppointmentControllerTest implements WebMvcConfigurer {
                 LocalDateTime.now()
         );
 
-        when(appointmentService.confirm(eq(currentUserId), any(CurrentUserPrincipal.class), eq(appointmentId))).thenReturn(response);
+        when(appointmentService.confirm(eq(currentUserId), any(), any(CurrentUserPrincipal.class), eq(appointmentId))).thenReturn(response);
 
         CurrentUserPrincipal principal = new CurrentUserPrincipal(currentUserId, "doctor@test.com", "Doctor", Set.of("DOCTOR"));
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, Set.of(new SimpleGrantedAuthority("ROLE_DOCTOR")));

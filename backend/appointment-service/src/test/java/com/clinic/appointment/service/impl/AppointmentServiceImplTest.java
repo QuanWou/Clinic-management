@@ -8,6 +8,8 @@ import com.clinic.appointment.dto.CreateAppointmentRequest;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
 import com.clinic.appointment.repository.AppointmentRepository;
+import com.clinic.appointment.repository.ReceptionVisitRepository;
+import com.clinic.appointment.service.ReceptionQueueService;
 import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
 import com.clinic.appointment.security.CurrentUserPrincipal;
@@ -46,6 +48,12 @@ class AppointmentServiceImplTest {
 
     @Mock
     private DoctorClient doctorClient;
+
+    @Mock
+    private ReceptionVisitRepository receptionVisitRepository;
+
+    @Mock
+    private ReceptionQueueService receptionQueueService;
 
     @InjectMocks
     private AppointmentServiceImpl appointmentService;
@@ -86,7 +94,7 @@ class AppointmentServiceImplTest {
                 eq(request.startTime()),
                 eq(AppointmentStatus.CANCELLED)
         )).thenReturn(false);
-        when(appointmentRepository.save(any(Appointment.class))).thenAnswer(invocation -> {
+        when(appointmentRepository.saveAndFlush(any(Appointment.class))).thenAnswer(invocation -> {
             Appointment appointment = invocation.getArgument(0);
             appointment.setId(UUID.randomUUID());
             appointment.setCreatedAt(LocalDateTime.now());
@@ -94,7 +102,7 @@ class AppointmentServiceImplTest {
             return appointment;
         });
 
-        var response = appointmentService.create(currentUserId, AUTHORIZATION, request);
+        var response = appointmentService.create(currentUserId, AUTHORIZATION, patientPrincipal(), request);
 
         assertEquals(patientId, response.patientId());
         assertEquals(doctorId, response.doctorId());
@@ -112,7 +120,7 @@ class AppointmentServiceImplTest {
         );
 
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> appointmentService.create(currentUserId, AUTHORIZATION, request));
+                () -> appointmentService.create(currentUserId, AUTHORIZATION, patientPrincipal(), request));
 
         assertEquals(ErrorCode.VALIDATION_ERROR, exception.getErrorCode());
         verify(patientClient, never()).getCurrentPatientProfile(any());
@@ -145,7 +153,7 @@ class AppointmentServiceImplTest {
         )).thenReturn(true);
 
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> appointmentService.create(currentUserId, AUTHORIZATION, request));
+                () -> appointmentService.create(currentUserId, AUTHORIZATION, patientPrincipal(), request));
 
         assertEquals(ErrorCode.CONFLICT, exception.getErrorCode());
     }
@@ -170,7 +178,7 @@ class AppointmentServiceImplTest {
         )).thenReturn(new DoctorAvailabilityResponse(doctorId, false, request.appointmentDate().getDayOfWeek().getValue(), request.startTime(), request.endTime()));
 
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> appointmentService.create(currentUserId, AUTHORIZATION, request));
+                () -> appointmentService.create(currentUserId, AUTHORIZATION, patientPrincipal(), request));
 
         assertEquals(ErrorCode.CONFLICT, exception.getErrorCode());
         assertEquals("Doctor is not available at the requested time slot based on schedule", exception.getMessage());
@@ -182,7 +190,7 @@ class AppointmentServiceImplTest {
         when(appointmentRepository.findByPatientIdOrderByAppointmentDateDescStartTimeDesc(patientId))
                 .thenReturn(List.of(appointment()));
 
-        var responses = appointmentService.getMyAppointments(currentUserId, AUTHORIZATION);
+        var responses = appointmentService.getMyAppointments(currentUserId, AUTHORIZATION, patientPrincipal());
 
         assertEquals(1, responses.size());
         assertEquals(patientId, responses.getFirst().patientId());
@@ -192,12 +200,12 @@ class AppointmentServiceImplTest {
     void cancelShouldThrowWhenAppointmentBelongsToAnotherPatient() {
         UUID appointmentId = UUID.randomUUID();
         when(patientClient.getCurrentPatientProfile(AUTHORIZATION)).thenReturn(patientProfile());
-        when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(
+        when(appointmentRepository.findByIdForUpdate(appointmentId)).thenReturn(Optional.of(
                 appointmentBuilder().patientId(UUID.randomUUID()).status(AppointmentStatus.PENDING).build()
         ));
 
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> appointmentService.cancel(currentUserId, AUTHORIZATION, appointmentId));
+                () -> appointmentService.cancel(currentUserId, AUTHORIZATION, patientPrincipal(), appointmentId));
 
         assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
     }
@@ -212,6 +220,10 @@ class AppointmentServiceImplTest {
                 null,
                 LocalDateTime.now()
         );
+    }
+
+    private CurrentUserPrincipal patientPrincipal() {
+        return new CurrentUserPrincipal(currentUserId, "patient@example.test", "Patient", java.util.Set.of("ROLE_PATIENT"));
     }
 
     private Appointment appointment() {

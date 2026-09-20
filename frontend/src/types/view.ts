@@ -21,6 +21,7 @@ export type NavigationItem = {
   id: AppView;
   label: string;
   icon: LucideIcon;
+  roles?: string[];
 };
 
 export type DemoPatient = {

@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/clinic_db?currentSchema=medical_record
+    username: postgres
+    password: 0000
+
+services:
+  appointment:
+    url: http://localhost:8086
+  doctor:
+    url: http://localhost:8085
+  patient:
+    url: http://localhost:8084
+
+app:
+  security:
+    jwt:
+      secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF

@@ -10,5 +10,12 @@ export const authConfig = {
     passwordPlaceholder: '********',
     submitLabel: 'Sign in',
     loadingLabel: 'Signing in...'
+  },
+  register: {
+    eyebrow: 'Create patient account',
+    title: 'Start managing your care',
+    subtitle: 'Create an account, then complete your patient profile to access the clinic workspace.',
+    submitLabel: 'Create account',
+    loadingLabel: 'Creating account...'
   }
 } as const;

@@ -46,7 +46,7 @@ flowchart LR
 | `api-gateway` | Single entry point and route dispatch to backend services | Route config exists |
 | `identity-service` | Auth, users, roles, JWT access tokens, refresh tokens | Core flow implemented |
 | `patient-service` | Patient profile data linked to identity user id | Profile flow implemented |
-| `doctor-service` | Doctor profile, specialties, schedules | Profile foundation implemented |
+| `doctor-service` | Doctor profile, specialties, schedules | Directory, profile, weekly schedule, and availability APIs implemented |
 | `appointment-service` | Appointment booking, confirmation, cancellation, completion | Core lifecycle implemented with patient/doctor service checks |
 | `medical-record-service` | Diagnosis, medical record, prescriptions | Core record and prescription workflow implemented |
 | `billing-service` | Invoices and payment state | Core invoice and payment-state workflow implemented |

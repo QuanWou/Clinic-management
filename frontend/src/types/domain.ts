@@ -43,12 +43,20 @@ export type InvoiceStatus = 'UNPAID' | 'PAID' | 'CANCELLED';
 export type PaymentMethod = 'CASH' | 'CARD' | 'BANK_TRANSFER' | 'INSURANCE' | string;
 export type NotificationType = 'EMAIL' | 'SMS' | 'PUSH' | string;
 export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED' | string;
+export type PatientGender = 'MALE' | 'FEMALE' | 'OTHER';
+
+export type UpdatePatientProfileRequest = {
+  dob: string;
+  gender: PatientGender;
+  address?: string;
+  bloodType?: string;
+};
 
 export type PatientProfileResponse = {
   id: string;
   userId: string;
   dob?: string | null;
-  gender?: string | null;
+  gender?: PatientGender | string | null;
   address?: string | null;
   bloodType?: string | null;
   updatedAt?: string | null;
@@ -61,6 +69,29 @@ export type DoctorProfileResponse = {
   specialtyName?: string | null;
   biography?: string | null;
   consultationFee?: number | string | null;
+};
+
+export type UpdateDoctorProfileRequest = {
+  specialtyId: string;
+  biography?: string;
+  consultationFee: number;
+};
+
+export type SpecialtyResponse = {
+  id: string;
+  name: string;
+  description?: string | null;
+};
+
+export type DoctorSchedule = {
+  id?: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+};
+
+export type UpdateDoctorSchedulesRequest = {
+  schedules: Array<Omit<DoctorSchedule, 'id'>>;
 };
 
 export type AppointmentResponse = {

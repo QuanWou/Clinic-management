@@ -12,8 +12,15 @@ export const apiEndpoints = {
     profile: '/api/patients/profile'
   },
   doctors: {
+    collection: '/api/doctors',
     profile: '/api/doctors/profile',
+    profileSchedules: '/api/doctors/profile/schedules',
+    byId: (doctorId: string) => `/api/doctors/${doctorId}`,
+    schedules: (doctorId: string) => `/api/doctors/${doctorId}/schedules`,
     availability: (doctorId: string) => `/api/doctors/${doctorId}/availability`
+  },
+  specialties: {
+    collection: '/api/specialties'
   },
   appointments: {
     collection: '/api/appointments',

@@ -6,6 +6,22 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowed-origins:
+              - ${APP_CORS_ALLOWED_ORIGIN:http://localhost:5173}
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowed-headers:
+              - "*"
+            allow-credentials: true
       routes:
         - id: identity-service
           uri: ${SERVICES_IDENTITY_URL:http://identity-service:8083}

@@ -32,7 +32,8 @@ public class JwtService {
                 .subject(userId.toString())
                 .claims(Map.of(
                         "email", email,
-                        "roles", roles
+                        "roles", roles,
+                        "token_type", "access"
                 ))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))
@@ -46,6 +47,8 @@ public class JwtService {
 
         return Jwts.builder()
                 .subject(userId.toString())
+                .id(UUID.randomUUID().toString())
+                .claim("token_type", "refresh")
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))
                 .signWith(secretKey)
@@ -69,6 +72,25 @@ public class JwtService {
             Claims claims = extractAllClaims(token);
             return claims.getExpiration().after(new Date());
         } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    public boolean isAccessTokenValid(String token) {
+        return hasPurpose(token, "access");
+    }
+
+    public boolean isRefreshTokenValid(String token) {
+        return hasPurpose(token, "refresh");
+    }
+
+    private boolean hasPurpose(String token, String purpose) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return claims.getExpiration() != null
+                    && claims.getExpiration().after(new Date())
+                    && purpose.equals(claims.get("token_type", String.class));
+        } catch (RuntimeException ex) {
             return false;
         }
     }

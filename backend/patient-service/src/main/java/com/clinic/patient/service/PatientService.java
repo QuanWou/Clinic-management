@@ -9,6 +9,7 @@ import com.clinic.patient.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -33,9 +34,9 @@ public class PatientService {
                 .orElseGet(() -> Patient.builder().userId(userId).build());
 
         patient.setDob(request.dob());
-        patient.setGender(request.gender());
-        patient.setAddress(request.address());
-        patient.setBloodType(request.bloodType());
+        patient.setGender(request.gender().trim().toUpperCase(Locale.ROOT));
+        patient.setAddress(normalizeNullable(request.address()));
+        patient.setBloodType(normalizeBloodType(request.bloodType()));
 
         return toResponse(patientRepository.save(patient));
     }
@@ -50,5 +51,17 @@ public class PatientService {
                 patient.getBloodType(),
                 patient.getUpdatedAt()
         );
+    }
+
+    private String normalizeBloodType(String bloodType) {
+        String normalized = normalizeNullable(bloodType);
+        return normalized == null ? null : normalized.toUpperCase(Locale.ROOT);
+    }
+
+    private String normalizeNullable(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
     }
 }

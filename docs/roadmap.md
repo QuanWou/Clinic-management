@@ -18,7 +18,10 @@
 - [ ] **Notification Provider Integration**: Tích hợp RabbitMQ và provider mail/SMS thật.
 
 ## Phase 4: Infra & Frontend
-- [ ] **API Gateway**: Routing và Aggregation.
+- [x] **API Gateway**: Routing, CORS và dashboard aggregation chịu lỗi theo role.
 - [x] **Dockerization**: Docker Compose nền tảng cho backend và PostgreSQL.
 - [ ] **Frontend (React)**: Xây dựng Dashboard cho Admin/Doctor và Portal cho Patient.
+  - [x] Đăng nhập, đăng ký và patient onboarding bằng API thật.
+  - [x] Danh mục bác sĩ, doctor profile và weekly schedule bằng API thật.
+  - [ ] Đặt lịch khám end-to-end và thay thế các màn hình nghiệp vụ demo còn lại.
 - [x] **Monitoring**: Tích hợp Actuator, Prometheus và Grafana cho môi trường Docker Compose local.

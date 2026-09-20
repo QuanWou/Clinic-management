@@ -6,6 +6,23 @@ type RequestOptions = RequestInit & {
   auth?: boolean;
 };
 
+type ApiErrorBody = {
+  errorCode?: string;
+  message?: string;
+};
+
+export class ApiError extends Error {
+  readonly status: number;
+  readonly errorCode?: string;
+
+  constructor(message: string, status: number, errorCode?: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.errorCode = errorCode;
+  }
+}
+
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
@@ -22,11 +39,12 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     headers
   });
 
-  const body = await response.json().catch(() => null) as ApiResponse<T> | { message?: string } | null;
+  const body = await response.json().catch(() => null) as ApiResponse<T> | ApiErrorBody | null;
 
   if (!response.ok) {
     const message = body && 'message' in body && body.message ? body.message : 'Request failed';
-    throw new Error(message);
+    const errorCode = body && 'errorCode' in body ? body.errorCode : undefined;
+    throw new ApiError(message, response.status, errorCode);
   }
 
   if (!body || !('data' in body)) {
