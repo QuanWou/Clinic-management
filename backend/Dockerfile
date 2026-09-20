@@ -8,6 +8,7 @@ COPY api-gateway/pom.xml api-gateway/pom.xml
 COPY identity-service/pom.xml identity-service/pom.xml
 COPY patient-service/pom.xml patient-service/pom.xml
 COPY doctor-service/pom.xml doctor-service/pom.xml
+COPY catalog-service/pom.xml catalog-service/pom.xml
 COPY appointment-service/pom.xml appointment-service/pom.xml
 COPY medical-record-service/pom.xml medical-record-service/pom.xml
 COPY billing-service/pom.xml billing-service/pom.xml

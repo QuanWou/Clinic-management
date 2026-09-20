@@ -35,6 +35,10 @@ public class Doctor {
     @Column(name = "consultation_fee", nullable = false, precision = 12, scale = 2)
     private BigDecimal consultationFee;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean active = true;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

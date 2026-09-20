@@ -35,6 +35,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                 .requestMatchers("/api/doctors/profile", "/api/doctors/profile/**").hasRole("DOCTOR")
+                .requestMatchers("/api/doctors/admin", "/api/doctors/admin/**", "/api/specialties/admin", "/api/specialties/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

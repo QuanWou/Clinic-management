@@ -6,6 +6,7 @@ import com.clinic.doctor.dto.DoctorAvailabilityResponse;
 import com.clinic.doctor.dto.DoctorProfileResponse;
 import com.clinic.doctor.dto.DoctorScheduleRequest;
 import com.clinic.doctor.dto.ScheduleResponse;
+import com.clinic.doctor.dto.UpdateDoctorProfileRequest;
 import com.clinic.doctor.dto.UpdateDoctorRequest;
 import com.clinic.doctor.dto.UpdateDoctorSchedulesRequest;
 import com.clinic.doctor.entity.Doctor;
@@ -16,6 +17,7 @@ import com.clinic.doctor.repository.ScheduleRepository;
 import com.clinic.doctor.repository.SpecialtyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -23,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.List;
 
 @Service
 public class DoctorService {
@@ -32,6 +33,7 @@ public class DoctorService {
     private final SpecialtyRepository specialtyRepository;
     private final ScheduleRepository scheduleRepository;
 
+    @Autowired
     public DoctorService(
             DoctorRepository doctorRepository,
             SpecialtyRepository specialtyRepository,
@@ -40,6 +42,10 @@ public class DoctorService {
         this.doctorRepository = doctorRepository;
         this.specialtyRepository = specialtyRepository;
         this.scheduleRepository = scheduleRepository;
+    }
+
+    public DoctorService(DoctorRepository doctorRepository, ScheduleRepository scheduleRepository) {
+        this(doctorRepository, null, scheduleRepository);
     }
 
     @Transactional(readOnly = true)
@@ -75,6 +81,9 @@ public class DoctorService {
 
     @Transactional
     public DoctorProfileResponse updateProfile(UUID userId, UpdateDoctorRequest request) {
+        if (specialtyRepository == null) {
+            throw new IllegalStateException("Specialty repository is required for administrative profile updates");
+        }
         Specialty specialty = specialtyRepository.findById(request.specialtyId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Specialty not found"));
 
@@ -88,6 +97,17 @@ public class DoctorService {
         doctor.setBiography(normalizeNullable(request.biography()));
         doctor.setConsultationFee(request.consultationFee());
 
+        return toResponse(doctorRepository.save(doctor));
+    }
+
+    @Transactional
+    public DoctorProfileResponse updateProfile(UUID userId, UpdateDoctorProfileRequest request) {
+        Doctor doctor = doctorRepository.findByUserId(userId)
+                .orElseThrow(() -> new BusinessException(
+                        ErrorCode.RESOURCE_NOT_FOUND,
+                        "Doctor profile must be created by an administrator"
+                ));
+        doctor.setBiography(normalizeNullable(request.biography()));
         return toResponse(doctorRepository.save(doctor));
     }
 

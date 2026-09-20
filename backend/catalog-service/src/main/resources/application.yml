@@ -1,0 +1,26 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: catalog-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/clinic_db?currentSchema=catalog}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: catalog
+  flyway:
+    enabled: true
+    schemas: catalog
+    locations: classpath:db/migration
+
+app:
+  security:
+    jwt:
+      secret: ${APP_SECURITY_JWT_SECRET}

@@ -35,6 +35,10 @@ spring:
           uri: ${SERVICES_DOCTOR_URL:http://doctor-service:8085}
           predicates:
             - Path=/api/doctors/**,/api/specialties/**
+        - id: catalog-service
+          uri: ${SERVICES_CATALOG_URL:http://catalog-service:8091}
+          predicates:
+            - Path=/api/catalog/**
         - id: appointment-service
           uri: ${SERVICES_APPOINTMENT_URL:http://appointment-service:8086}
           predicates:

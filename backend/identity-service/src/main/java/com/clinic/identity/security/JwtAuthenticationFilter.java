@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        SecurityContextHolder.clearContext();
         String token = authHeader.substring(7);
 
         if (!jwtService.isAccessTokenValid(token)) {
@@ -47,7 +48,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        UUID userId = jwtService.extractUserId(token);
+        UUID userId;
+        try {
+            userId = jwtService.extractUserId(token);
+        } catch (RuntimeException invalidSubject) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         var userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
