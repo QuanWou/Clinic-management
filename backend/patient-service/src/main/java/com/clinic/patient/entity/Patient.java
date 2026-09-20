@@ -22,8 +22,14 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(name = "user_id", unique = true)
     private UUID userId;
+
+    @Column(name = "full_name", length = 150)
+    private String fullName;
+
+    @Column(name = "phone", length = 20)
+    private String phone;
 
     private LocalDate dob;
 
