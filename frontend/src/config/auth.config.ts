@@ -1,15 +1,15 @@
 export const authConfig = {
   accessTokenKey: 'clinic.accessToken',
   login: {
-    eyebrow: 'Clinic Management',
-    title: 'Sign in to your workspace',
-    subtitle: 'Use your clinic account to manage appointments, medical records, invoices, and notifications.',
+    eyebrow: 'Quản lý phòng khám',
+    title: 'Đăng nhập vào hệ thống',
+    subtitle: 'Sử dụng tài khoản của bạn để xem lịch hẹn và các chức năng được cấp quyền.',
     emailLabel: 'Email',
     emailPlaceholder: 'patient@example.com',
-    passwordLabel: 'Password',
+    passwordLabel: 'Mật khẩu',
     passwordPlaceholder: '********',
-    submitLabel: 'Sign in',
-    loadingLabel: 'Signing in...'
+    submitLabel: 'Đăng nhập',
+    loadingLabel: 'Đang đăng nhập...'
   },
   register: {
     eyebrow: 'Create patient account',

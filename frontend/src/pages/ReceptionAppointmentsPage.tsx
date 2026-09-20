@@ -14,6 +14,7 @@ import type {
 } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
 import { formatDate, formatTime } from '../utils/format';
+import { clinicToday } from '../api/staffDashboard';
 
 const uuid = /^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i;
 const blankBooking = { patientId: '', doctorId: '', appointmentDate: '', startTime: '', endTime: '', reason: '' };
@@ -38,8 +39,7 @@ export default function ReceptionAppointmentsPage({ role }: { role: ClinicRole }
 }
 
 function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
-  const today = new Date();
-  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const todayKey = clinicToday();
   const [date, setDate] = useState(todayKey);
   const [appointments, setAppointments] = useState<AppointmentResponse[] | null>(null);
   const [queue, setQueue] = useState<ReceptionVisitResponse[] | null>(null);

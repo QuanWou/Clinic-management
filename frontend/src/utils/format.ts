@@ -1,6 +1,9 @@
 export function formatDate(value?: string | null): string {
-  if (!value || Number.isNaN(new Date(value).getTime())) return 'Not available';
-  return new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', year: 'numeric' }).format(new Date(value));
+  if (!value) return 'Chưa có dữ liệu';
+  // Date-only API values are local calendar days, not UTC instants.
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(`${value}T12:00:00`) : new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Ngày không hợp lệ';
+  return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
 }
 
 export function formatTime(value?: string | null): string {
@@ -9,7 +12,7 @@ export function formatTime(value?: string | null): string {
   const date = new Date();
   date.setHours(Number(hour), Number(minute), 0, 0);
   if (Number.isNaN(date.getTime())) return '--:--';
-  return new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit' }).format(date);
+  return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(date);
 }
 
 // Formats a numeric amount only. Callers must render a server-supplied currency;

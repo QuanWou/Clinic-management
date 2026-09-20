@@ -5,6 +5,9 @@ import AppointmentsPage from './AppointmentsPage';
 import InvoicesPage from './InvoicesPage';
 import MedicalRecordsPage from './MedicalRecordsPage';
 import Sidebar from '../layouts/Sidebar';
+import AppShell from '../layouts/AppShell';
+import LoginPage from './LoginPage';
+import Badge from '../components/Badge';
 import NotificationsPage from './NotificationsPage';
 import CatalogPage from './CatalogPage';
 import ReceptionAppointmentsPage, { allowedQueueTransitions } from './ReceptionAppointmentsPage';
@@ -22,27 +25,27 @@ const noop = () => undefined;
 describe('role-aware pages and empty states', () => {
   it('renders only authorized sidebar links for patients', () => {
     const html = renderToStaticMarkup(<Sidebar activeItemId="dashboard" user={patient} onNavigate={noop} onLogout={noop} />);
-    expect(html).not.toContain('Doctor Profile');
-    expect(html).toContain('Invoices');
+    expect(html).not.toContain('Hồ sơ bác sĩ');
+    expect(html).toContain('Hóa đơn');
   });
 
   it('does not render invoices or staff-wide data for a doctor', () => {
     const html = renderToStaticMarkup(<Sidebar activeItemId="dashboard" user={doctor} onNavigate={noop} onLogout={noop} />);
-    expect(html).not.toContain('Invoices');
-    expect(html).toContain('Doctor Profile');
+    expect(html).not.toContain('Hóa đơn');
+    expect(html).toContain('Hồ sơ bác sĩ');
     const dashboard = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={{ scope: 'DOCTOR', date: '2026-09-20', queue: [] }} user={doctor} role="DOCTOR" error={null} loading={false} onRefresh={noop} />);
-    expect(dashboard).toContain('My queue today');
-    expect(dashboard).not.toContain('Revenue');
-    expect(dashboard).not.toContain('Appointments today');
-    expect(dashboard).not.toContain('My medical records');
+    expect(dashboard).toContain('Hàng đợi của bác sĩ hôm nay');
+    expect(dashboard).not.toContain('Doanh thu');
+    expect(dashboard).not.toContain('Lịch hẹn hôm nay');
+    expect(dashboard).not.toContain('Hồ sơ bệnh án của tôi');
   });
 
   it('shows genuine empty patient dashboard instead of fake figures', () => {
     const html = renderToStaticMarkup(<DashboardPage dashboard={emptyDashboard} user={patient} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
-    expect(html).toContain('Welcome, Current Patient');
-    expect(html).toContain('No appointments found.');
-    expect(html).toContain('No medical records found.');
-    expect(html).toContain('No invoices found.');
+    expect(html).toContain('Xin chào, Current Patient');
+    expect(html).toContain('Chưa có lịch hẹn.');
+    expect(html).toContain('Chưa có hồ sơ bệnh án.');
+    expect(html).toContain('Chưa có hóa đơn.');
     expect(html).not.toContain('Olivia');
     expect(html).not.toContain('748,839');
   });
@@ -61,7 +64,7 @@ describe('role-aware pages and empty states', () => {
   it('never renders medical-record navigation or search for administrators or receptionists', () => {
     for (const user of [admin, receptionist]) {
       const html = renderToStaticMarkup(<Sidebar activeItemId="dashboard" user={user} onNavigate={noop} onLogout={noop} />);
-      expect(html).not.toContain('Medical Records');
+      expect(html).not.toContain('Hồ sơ bệnh án');
       const role = user.roles?.[0] === 'ROLE_ADMIN' ? 'ADMIN' : 'RECEPTIONIST';
       const records = renderToStaticMarkup(<MedicalRecordsPage records={[]} role={role} error={null} loading={false} onRefresh={noop} />);
       expect(records).toContain('restricted to patients');
@@ -74,12 +77,12 @@ describe('role-aware pages and empty states', () => {
     const patientMenu = renderToStaticMarkup(<Sidebar activeItemId="dashboard" user={patient} onNavigate={noop} onLogout={noop} />);
     const adminMenu = renderToStaticMarkup(<Sidebar activeItemId="dashboard" user={admin} onNavigate={noop} onLogout={noop} />);
     const doctorMenu = renderToStaticMarkup(<Sidebar activeItemId="dashboard" user={doctor} onNavigate={noop} onLogout={noop} />);
-    expect(patientMenu).toContain('Medical Records');
-    expect(adminMenu).not.toContain('Medical Records');
-    expect(doctorMenu).not.toContain('Invoices');
+    expect(patientMenu).toContain('Hồ sơ bệnh án');
+    expect(adminMenu).not.toContain('Hồ sơ bệnh án');
+    expect(doctorMenu).not.toContain('Hóa đơn');
     const multiRole = { ...admin, roles: ['ROLE_ADMIN', 'ROLE_PATIENT'] };
     const multiRoleMenu = renderToStaticMarkup(<Sidebar activeItemId="dashboard" user={multiRole} onNavigate={noop} onLogout={noop} />);
-    expect(multiRoleMenu).not.toContain('Medical Records');
+    expect(multiRoleMenu).not.toContain('Hồ sơ bệnh án');
   });
 
   it('keeps unverified Task 02–06 screens disabled when flags are absent', () => {
@@ -102,21 +105,51 @@ describe('role-aware pages and empty states', () => {
       appointments: [{ id: 'actual-appointment', patientId: 'patient-id', doctorId: 'doctor-id', appointmentDate: '2026-09-20', startTime: '09:30', endTime: '10:00', status: 'CONFIRMED' }],
       queue: [{ id: 'visit', appointmentId: 'actual-appointment', patientId: 'patient-id', doctorId: 'doctor-id', visitDate: '2026-09-20', queueNumber: 7, status: 'WAITING', checkedInAt: '2026-09-20T09:00:00', startedAt: null, completedAt: null }]
     }} user={receptionist} role="RECEPTIONIST" error={null} loading={false} onRefresh={noop} />);
-    expect(html).toContain('Appointments today');
+    expect(html).toContain('Lịch hẹn hôm nay');
     expect(html).toContain('actual-appointment');
-    expect(html).toContain('Ticket #7');
-    expect(html).toContain('Waiting or called');
-    expect(html).not.toContain('My medical records');
-    expect(html).not.toContain('Revenue');
+    expect(html).toContain('Số thứ tự #7');
+    expect(html).toContain('Đang chờ hoặc đã gọi');
+    expect(html).not.toContain('Hồ sơ bệnh án của tôi');
+    expect(html).not.toContain('Doanh thu');
   });
 
   it('rejects stale or mismatched dashboard data across role switches', () => {
     const receptionData = { scope: 'RECEPTION' as const, date: '2026-09-20', appointments: [{ id: 'private-staff-appointment', patientId: 'p', doctorId: 'd', appointmentDate: '2026-09-20', startTime: '10:00', endTime: '10:30', status: 'PENDING' as const }], queue: [] };
     const html = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={receptionData} user={doctor} role="DOCTOR" error={null} loading={false} onRefresh={noop} />);
-    expect(html).toContain('Dashboard scope does not match');
+    expect(html).toContain('Phạm vi dashboard không khớp');
     expect(html).not.toContain('private-staff-appointment');
     const patientHtml = renderToStaticMarkup(<DashboardPage dashboard={emptyDashboard} staffDashboard={receptionData} user={patient} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
     expect(patientHtml).not.toContain('private-staff-appointment');
+  });
+
+  it('integrates accessible UI UX Pro Max shell without bypassing role-based navigation', () => {
+    const html = renderToStaticMarkup(<AppShell activeItemId="dashboard" user={doctor} loading={false} primaryRole="DOCTOR" onNavigate={noop} onRefresh={noop} onLogout={noop}>
+      <section>Real clinic content</section>
+    </AppShell>);
+    expect(html).toContain('Bỏ qua điều hướng');
+    expect(html).toContain('id="main-content"');
+    expect(html).toContain('aria-controls="app-navigation"');
+    expect(html).toContain('Hồ sơ bác sĩ');
+    expect(html).not.toContain('>Hóa đơn</button>');
+    expect(html).not.toContain('Upgrade to Pro');
+    expect(html).not.toContain('DỮ LIỆU MẪU');
+  });
+
+  it('uses the redesigned real login form without displaying demo credentials', () => {
+    const html = renderToStaticMarkup(<LoginPage onLogin={noop} sessionError="Authentication required" />);
+    expect(html).toContain('Đăng nhập vào hệ thống');
+    expect(html).toContain('auth-intro');
+    expect(html).toContain('autoComplete="current-password"');
+    expect(html).toContain('Hiện mật khẩu');
+    expect(html).toContain('Authentication required');
+    expect(html).not.toContain('ClinicDemo@2026');
+  });
+
+  it('translates only visible status text, not machine-readable CSS state', () => {
+    const html = renderToStaticMarkup(<Badge tone="IN_PROGRESS">IN_PROGRESS</Badge>);
+    expect(html).toContain('badge-in-progress');
+    expect(html).toContain('Đang khám');
+    expect(html).not.toContain('>IN_PROGRESS<');
   });
 
   it('does not show cash/online payment controls to a patient or record a fake payment', () => {
