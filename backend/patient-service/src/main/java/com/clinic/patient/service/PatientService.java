@@ -39,9 +39,8 @@ public class PatientService {
     public PatientRecipientResponse getRecipient(UUID patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Patient profile not found"));
-        if (patient.getUserId() == null) {
-            throw new BusinessException(ErrorCode.CONFLICT, "Patient has no linked identity account");
-        }
+        // An existing walk-in patient is a valid profile even without an Identity account.
+        // Null is an explicit "no account" result; missing patients still return 404.
         return new PatientRecipientResponse(patient.getId(), patient.getUserId());
     }
 

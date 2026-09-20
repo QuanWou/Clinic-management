@@ -3,7 +3,6 @@ package com.clinic.billing.service.impl;
 import com.clinic.billing.client.AppointmentClient;
 import com.clinic.billing.client.AppointmentResponse;
 import com.clinic.billing.client.PatientClient;
-import com.clinic.billing.client.RecipientDirectoryClient;
 import com.clinic.billing.client.PricingClient;
 import com.clinic.billing.client.PerformedServicesClient;
 import com.clinic.billing.client.LabBillingClient;
@@ -59,7 +58,6 @@ public class BillingServiceImpl implements BillingService {
     private final LabBillingClient labBillingClient;
     private final InvoiceItemRepository invoiceItemRepository;
     private final InvoicePaidOutboxRepository paidOutboxRepository;
-    private final RecipientDirectoryClient recipients;
 
     @Override
     @Transactional
@@ -281,14 +279,13 @@ public class BillingServiceImpl implements BillingService {
         LocalDateTime now = LocalDateTime.now();
         persistCashTransaction(cashTransaction(invoice, PaymentTransactionType.CAPTURE,
                 request.receiptReference(), principal.id(), now, null));
-        UUID recipientUserId = recipients.resolve(invoice.getPatientId());
         invoice.setStatus(InvoiceStatus.PAID);
         invoice.setPaymentMethod(PaymentMethod.CASH);
         invoice.setPaidAt(now);
         invoice.setPaidBy(principal.id());
         paidOutboxRepository.saveAndFlush(InvoicePaidOutbox.builder()
                 .eventId(UUID.randomUUID()).invoiceId(invoiceId).patientId(invoice.getPatientId())
-                .recipientUserId(recipientUserId).eventType("INVOICE_PAID").status("PENDING")
+                .eventType("INVOICE_PAID").status("WAITING_RECIPIENT")
                 .nextAttemptAt(now).build());
         log.info("Cash receipt confirmed for invoice {} by cashier {}", invoiceId, principal.id());
         return toResponse(invoiceRepository.save(invoice));

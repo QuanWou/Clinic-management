@@ -15,7 +15,10 @@ public class LabNotificationRelayJob {
 
     @Scheduled(fixedDelayString = "${app.notification.relay-interval-ms:10000}")
     public void relay() {
-        outbox.findTop50ByStatusAndNextAttemptAtLessThanEqualOrderByOccurredAtAsc("PENDING", LocalDateTime.now())
+        LocalDateTime now = LocalDateTime.now();
+        outbox.findTop50ByStatusAndNextAttemptAtLessThanEqualOrderByOccurredAtAsc("WAITING_RECIPIENT", now)
+                .forEach(event -> publisher.publish(event.getId()));
+        outbox.findTop50ByStatusAndNextAttemptAtLessThanEqualOrderByOccurredAtAsc("PENDING", now)
                 .forEach(event -> publisher.publish(event.getId()));
     }
 }

@@ -4,7 +4,6 @@ import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
 import com.clinic.medicalrecord.client.DoctorClient;
 import com.clinic.medicalrecord.client.CatalogClient;
-import com.clinic.medicalrecord.client.RecipientDirectoryClient;
 import com.clinic.medicalrecord.client.DoctorProfileResponse;
 import com.clinic.medicalrecord.client.PatientClient;
 import com.clinic.medicalrecord.client.PatientProfileResponse;
@@ -60,7 +59,6 @@ class LabOrderServiceImplTest {
     @Mock private LabEventOutboxRepository outbox;
     @Mock private LabBillingClosureRepository billingClosures;
     @Mock private CatalogClient catalog;
-    @Mock private RecipientDirectoryClient recipients;
     @InjectMocks private LabOrderServiceImpl service;
 
     private UUID doctorId;
@@ -208,7 +206,6 @@ class LabOrderServiceImplTest {
         when(labOrders.findById(order.getId())).thenReturn(Optional.of(order));
         authorizeDoctor(doctorId);
         when(labOrders.saveAndFlush(any(LabOrder.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(recipients.resolve(patientId)).thenReturn(patient.id());
 
         assertEquals(LabOrderStatus.COLLECTED,
                 service.collect(doctor, AUTH, order.getId(), new CollectLabSampleRequest("S001")).status());
@@ -228,7 +225,9 @@ class LabOrderServiceImplTest {
         assertEquals(LabEventOutbox.RESULT_READY, event.getValue().toEvent().eventType());
         assertEquals(order.getId(), event.getValue().toEvent().orderId());
         assertEquals(record.getAppointmentId(), event.getValue().toEvent().appointmentId());
-        assertEquals(patient.id(), event.getValue().getRecipientUserId());
+        assertEquals(patientId, event.getValue().getPatientId());
+        assertNull(event.getValue().getRecipientUserId());
+        assertEquals("WAITING_RECIPIENT", event.getValue().getStatus());
         assertNotNull(event.getValue().toEvent().eventId());
         assertNotNull(event.getValue().toEvent().occurredAt());
         assertNull(event.getValue().getPublishedAt());

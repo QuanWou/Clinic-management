@@ -4,7 +4,6 @@ import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
 import com.clinic.medicalrecord.client.DoctorClient;
 import com.clinic.medicalrecord.client.CatalogClient;
-import com.clinic.medicalrecord.client.RecipientDirectoryClient;
 import com.clinic.medicalrecord.client.PatientClient;
 import com.clinic.medicalrecord.dto.CollectLabSampleRequest;
 import com.clinic.medicalrecord.dto.CreateLabOrderRequest;
@@ -44,7 +43,6 @@ public class LabOrderServiceImpl implements LabOrderService {
     private final LabEventOutboxRepository outbox;
     private final LabBillingClosureRepository billingClosures;
     private final CatalogClient catalog;
-    private final RecipientDirectoryClient recipients;
 
     @Override
     @Transactional
@@ -149,11 +147,10 @@ public class LabOrderServiceImpl implements LabOrderService {
         order.setStatus(LabOrderStatus.RELEASED);
         LabOrderResponse released = saveTransition(principal, order, "LAB_RESULT_RELEASED");
         MedicalRecord record = order.getMedicalRecord();
-        // This write and the order/audit writes share the transaction: a rollback emits nothing.
-        // A publisher/consumer must be agreed with Task 06 before any external delivery.
-        UUID recipientUserId = recipients.resolve(record.getPatientId());
+        // The result, audit and durable intent share a transaction. Recipient lookup happens
+        // later in the relay: a walk-in patient or unavailable directory must not block release.
         outbox.save(new LabEventOutbox(order.getId(), record.getAppointmentId(),
-                recipientUserId, order.getReleasedAt()));
+                record.getPatientId(), null, order.getReleasedAt()));
         return released;
     }
 

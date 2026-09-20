@@ -36,6 +36,18 @@ public class InvoicePaidOutbox {
     @CreationTimestamp @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    public void recipientResolved(UUID userId) {
+        recipientUserId = java.util.Objects.requireNonNull(userId);
+        status = "PENDING";
+        nextAttemptAt = LocalDateTime.now();
+        lastError = null;
+    }
+
+    public void skippedNoAccount() {
+        status = "SKIPPED_NO_ACCOUNT";
+        lastError = null;
+    }
+
     public void published() {
         status = "PUBLISHED";
         publishedAt = LocalDateTime.now();

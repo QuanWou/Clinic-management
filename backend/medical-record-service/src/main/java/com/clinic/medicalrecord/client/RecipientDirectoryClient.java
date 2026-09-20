@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -23,7 +24,8 @@ public class RecipientDirectoryClient {
         this.serviceKey = serviceKey;
     }
 
-    public UUID resolve(UUID patientId) {
+    /** Empty means a verified patient profile without an Identity account; failures throw. */
+    public Optional<UUID> findLinkedUser(UUID patientId) {
         try {
             ApiResponse<Recipient> response = client.get()
                     .uri("/internal/patients/{id}/recipient", patientId)
@@ -31,8 +33,8 @@ public class RecipientDirectoryClient {
                     .retrieve().body(new ParameterizedTypeReference<>() {});
             Recipient recipient = response == null ? null : response.data();
             if (response == null || !response.success() || recipient == null
-                    || !patientId.equals(recipient.patientId()) || recipient.userId() == null) throw unavailable();
-            return recipient.userId();
+                    || !patientId.equals(recipient.patientId())) throw unavailable();
+            return Optional.ofNullable(recipient.userId());
         } catch (BusinessException ex) {
             throw ex;
         } catch (RestClientException ex) {

@@ -15,7 +15,10 @@ public class InvoiceNotificationRelayJob {
 
     @Scheduled(fixedDelayString = "${app.notification.relay-interval-ms:10000}")
     public void relay() {
-        outbox.findTop50ByStatusAndNextAttemptAtLessThanEqualOrderByCreatedAtAsc("PENDING", LocalDateTime.now())
+        LocalDateTime now = LocalDateTime.now();
+        outbox.findTop50ByStatusAndNextAttemptAtLessThanEqualOrderByCreatedAtAsc("WAITING_RECIPIENT", now)
+                .forEach(event -> publisher.publish(event.getEventId()));
+        outbox.findTop50ByStatusAndNextAttemptAtLessThanEqualOrderByCreatedAtAsc("PENDING", now)
                 .forEach(event -> publisher.publish(event.getEventId()));
     }
 }

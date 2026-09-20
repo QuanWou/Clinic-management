@@ -41,7 +41,6 @@ class BillingServiceImplTest {
     @Mock PricingClient pricing;
     @Mock PerformedServicesClient performed;
     @Mock LabBillingClient laboratory;
-    @Mock RecipientDirectoryClient recipients;
     @InjectMocks BillingServiceImpl billing;
 
     private UUID user, appointmentId, patientId, doctorId, serviceId, itemId;
@@ -225,16 +224,14 @@ class BillingServiceImplTest {
         UUID id = UUID.randomUUID(); Invoice invoice = invoice(id, InvoiceStatus.UNPAID);
         when(invoices.findByIdForUpdate(id)).thenReturn(Optional.of(invoice));
         when(items.findByInvoiceIdOrderBySourceTypeAscSourceIdAsc(id)).thenReturn(List.of(verifiedItem(id)));
-        UUID recipientUserId = UUID.randomUUID();
-        when(recipients.resolve(patientId)).thenReturn(recipientUserId);
         when(invoices.save(invoice)).thenReturn(invoice);
         var result = billing.confirmCashPayment(cashier, id, new CashPaymentRequest("R1"));
         assertEquals(InvoiceStatus.PAID, result.status()); assertEquals(user, result.paidBy());
         verify(payments).saveAndFlush(argThat(tx -> tx.getType() == PaymentTransactionType.CAPTURE
                 && id.equals(tx.getInvoiceId()) && user.equals(tx.getConfirmedBy())));
         verify(outbox).saveAndFlush(argThat(event -> id.equals(event.getInvoiceId())
-                && "INVOICE_PAID".equals(event.getEventType()) && "PENDING".equals(event.getStatus())
-                && patientId.equals(event.getPatientId()) && recipientUserId.equals(event.getRecipientUserId())));
+                && "INVOICE_PAID".equals(event.getEventType()) && "WAITING_RECIPIENT".equals(event.getStatus())
+                && patientId.equals(event.getPatientId()) && event.getRecipientUserId() == null));
     }
     @Test void legacyUnverifiedInvoiceCannotCaptureCash() {
         UUID id = UUID.randomUUID(); Invoice invoice = invoice(id, InvoiceStatus.UNPAID);
@@ -353,7 +350,6 @@ class BillingServiceImplTest {
         UUID id = UUID.randomUUID(); Invoice invoice = invoice(id, InvoiceStatus.UNPAID);
         when(invoices.findByIdForUpdate(id)).thenReturn(Optional.of(invoice));
         when(items.findByInvoiceIdOrderBySourceTypeAscSourceIdAsc(id)).thenReturn(List.of(verifiedItem(id)));
-        when(recipients.resolve(patientId)).thenReturn(UUID.randomUUID());
         when(outbox.saveAndFlush(any(InvoicePaidOutbox.class)))
                 .thenThrow(new DataIntegrityViolationException("outbox uniqueness violation"));
         assertThrows(DataIntegrityViolationException.class,

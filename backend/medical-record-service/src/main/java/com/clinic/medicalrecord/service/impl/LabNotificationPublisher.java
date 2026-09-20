@@ -1,6 +1,7 @@
 package com.clinic.medicalrecord.service.impl;
 
 import com.clinic.medicalrecord.dto.BusinessNotificationEvent;
+import com.clinic.medicalrecord.client.RecipientDirectoryClient;
 import com.clinic.medicalrecord.entity.LabEventOutbox;
 import com.clinic.medicalrecord.repository.LabEventOutboxRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class LabNotificationPublisher {
     private final LabEventOutboxRepository outbox;
     private final RabbitTemplate rabbit;
+    private final RecipientDirectoryClient recipients;
 
     @Value("${app.notification.rabbitmq.exchange:notification.exchange}") private String exchange;
     @Value("${app.notification.rabbitmq.event-routing-key:notification.business}") private String routingKey;
@@ -28,8 +30,20 @@ public class LabNotificationPublisher {
     @Transactional
     public void publish(UUID id) {
         LabEventOutbox event = outbox.findByIdForUpdate(id).orElse(null);
-        if (event == null || !"PENDING".equals(event.getStatus())
-                || event.getNextAttemptAt().isAfter(LocalDateTime.now())) return;
+        if (event == null || event.getNextAttemptAt().isAfter(LocalDateTime.now())) return;
+        if ("WAITING_RECIPIENT".equals(event.getStatus())) {
+            try {
+                var linkedUser = recipients.findLinkedUser(event.getPatientId());
+                if (linkedUser.isPresent()) event.recipientResolved(linkedUser.get());
+                else event.skippedNoAccount();
+            } catch (Exception ex) {
+                event.failed(ex.getClass().getSimpleName());
+                log.warn("Lab recipient lookup failed event={} attempt={}", id, event.getPublishAttempts());
+            }
+            // Commit recipient resolution before attempting delivery on the next relay pass.
+            return;
+        }
+        if (!"PENDING".equals(event.getStatus()) || event.getRecipientUserId() == null) return;
         try {
             CorrelationData correlation = new CorrelationData(event.getId().toString());
             rabbit.convertAndSend(exchange, routingKey, new BusinessNotificationEvent(1, event.getId(),

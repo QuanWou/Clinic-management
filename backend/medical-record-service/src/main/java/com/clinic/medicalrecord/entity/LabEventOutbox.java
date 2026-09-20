@@ -31,6 +31,9 @@ public class LabEventOutbox {
     @Column(name = "appointment_id", nullable = false)
     private UUID appointmentId;
 
+    @Column(name = "patient_id", nullable = false)
+    private UUID patientId;
+
     @Column(name = "occurred_at", nullable = false)
     private LocalDateTime occurredAt;
 
@@ -52,14 +55,36 @@ public class LabEventOutbox {
     @Column(name = "last_error", length = 255)
     private String lastError;
 
-    public LabEventOutbox(UUID labOrderId, UUID appointmentId, UUID recipientUserId, LocalDateTime occurredAt) {
+    public LabEventOutbox(UUID labOrderId, UUID appointmentId, UUID patientId,
+                          UUID recipientUserId, LocalDateTime occurredAt) {
         this.id = UUID.randomUUID();
         this.eventType = RESULT_READY;
         this.labOrderId = labOrderId;
         this.appointmentId = appointmentId;
+        this.patientId = patientId;
         this.recipientUserId = recipientUserId;
+        this.status = recipientUserId == null ? "WAITING_RECIPIENT" : "PENDING";
         this.occurredAt = occurredAt;
         this.nextAttemptAt = occurredAt;
+    }
+
+    // Existing call sites can construct an already-resolved event; all new clinical
+    // releases use the five-argument constructor with the authoritative patient ID.
+    public LabEventOutbox(UUID labOrderId, UUID appointmentId, UUID recipientUserId,
+                          LocalDateTime occurredAt) {
+        this(labOrderId, appointmentId, null, recipientUserId, occurredAt);
+    }
+
+    public void recipientResolved(UUID userId) {
+        this.recipientUserId = java.util.Objects.requireNonNull(userId);
+        this.status = "PENDING";
+        this.nextAttemptAt = LocalDateTime.now();
+        this.lastError = null;
+    }
+
+    public void skippedNoAccount() {
+        this.status = "SKIPPED_NO_ACCOUNT";
+        this.lastError = null;
     }
 
     public LabResultReadyEvent toEvent() {
