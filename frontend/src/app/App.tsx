@@ -129,7 +129,7 @@ export default function App() {
   return (
     <AppShell activeItemId={allowedView} user={user} loading={loading} primaryRole={primaryRole}
       onNavigate={navigate} onRefresh={() => void loadSession()} onLogout={() => void handleLogout()}>
-      {renderView(allowedView, user, dashboard, staffDashboard, error, loading, primaryRole, () => void loadSession())}
+      {renderView(allowedView, user, dashboard, staffDashboard, error, loading, primaryRole, () => void loadSession(), navigate)}
     </AppShell>
   );
 }
@@ -146,7 +146,8 @@ function renderView(
   error: string | null,
   loading: boolean,
   role: ClinicRole,
-  refresh: () => void
+  refresh: () => void,
+  navigate: (view: AppView) => void
 ) {
   switch (activeView) {
     case 'appointments':
@@ -172,6 +173,6 @@ function renderView(
       return <SettingsPage user={user} role={role} />;
     case 'dashboard':
     default:
-      return <DashboardPage dashboard={dashboard} staffDashboard={staffDashboard} user={user} role={role} error={error} loading={loading} onRefresh={refresh} />;
+      return <DashboardPage dashboard={dashboard} staffDashboard={staffDashboard} user={user} role={role} error={error} loading={loading} onRefresh={refresh} onNavigate={navigate} />;
   }
 }

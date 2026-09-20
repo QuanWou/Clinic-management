@@ -1792,3 +1792,67 @@ progress::-webkit-progress-value {
 .content, .page-content, .operations-main, .operations-side, .activity-row > div { min-width: 0; }
 .activity-row strong, .activity-row span, .dashboard-hero h3, .patient-preview-copy { overflow-wrap: anywhere; }
 .page-content > *, .overview-grid > *, .operations-grid > *, .patient-preview-layout > * { min-width: 0; }
+
+/* The original UI UX Pro Max admin dashboard composition, connected to real
+   role-scoped data. Chart bars are hidden when an API has no observations. */
+.clinic-preview-dashboard { grid-template-columns: minmax(0, 1fr) 315px; align-items: start; }
+.clinic-preview-dashboard .dashboard-main { min-width: 0; align-content: start; }
+.clinic-preview-dashboard .metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .85rem; }
+.clinic-preview-dashboard .live-metric-card { min-width: 0; min-height: 254px; align-content: start; padding: 1.15rem; gap: .65rem; }
+.clinic-preview-dashboard .live-metric-card .metric-icon { height: 49px; width: 49px; border-radius: 14px; }
+.clinic-preview-dashboard .live-metric-card strong { font-size: clamp(1.3rem, 1.8vw, 1.9rem); overflow-wrap: anywhere; }
+.clinic-preview-dashboard .live-metric-card span { display: block; font-size: .8rem; }
+.clinic-preview-dashboard .live-metric-card .metric-availability { color: var(--muted); font-weight: 650; font-size: .72rem; line-height: 1.4; }
+.clinic-preview-dashboard .live-metric-bars { align-self: end; width: 100%; margin-top: auto; height: 70px; }
+.clinic-preview-dashboard .live-metric-bars span { flex: 1; min-width: 2px; }
+.clinic-preview-dashboard .metric-chart-unavailable { align-self: end; margin-top: auto; min-height: 70px; font-size: .75rem; }
+.clinic-preview-dashboard .analytics-grid { grid-template-columns: minmax(0, 1fr); }
+.clinic-preview-dashboard .analytics-grid .patient-status { grid-column: auto; }
+.clinic-preview-dashboard .live-status-panel { min-height: 320px; min-width: 0; padding: 1.4rem; }
+.clinic-preview-dashboard .live-status-panel .panel-heading { margin-bottom: 1.5rem; }
+.clinic-preview-dashboard .live-status-panel .panel-heading strong { font-size: 1.85rem; }
+.clinic-preview-dashboard .live-hourly-chart { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: .45rem; min-height: 187px; }
+.clinic-preview-dashboard .live-hour-column { display: flex; flex-direction: column; align-items: stretch; justify-content: end; min-width: 0; gap: .35rem; }
+.clinic-preview-dashboard .live-hour-stack { display: flex; flex-direction: column-reverse; align-items: stretch; justify-content: flex-start; height: 150px; min-height: 150px; overflow: hidden; border-radius: 6px 6px 0 0; }
+.clinic-preview-dashboard .live-hour-stack .live-segment { display: block; width: 100%; flex: none; border-radius: 3px 3px 0 0; }
+.clinic-preview-dashboard .live-hour-column small { font-size: .67rem; text-align: center; white-space: nowrap; }
+.live-segment-pending, .live-segment-waiting { background: #f5c94e !important; }
+.live-segment-confirmed, .live-segment-called { background: #34bd85 !important; }
+.live-segment-in_progress { background: #64a1e9 !important; }
+.live-segment-completed { background: #168f74 !important; }
+.live-segment-cancelled, .live-segment-skipped { background: #ef7777 !important; }
+.clinic-preview-dashboard .live-chart-legend { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; padding-top: 1rem; }
+.clinic-preview-dashboard .live-chart-legend > span { display: inline-flex; align-items: center; gap: .35rem; }
+.clinic-preview-dashboard .live-chart-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; }
+.clinic-preview-dashboard .live-detail-panel { min-width: 0; }
+.clinic-preview-dashboard .live-detail-panel .status-list { gap: .9rem; }
+.clinic-preview-dashboard .live-detail-panel .status-item > div { justify-content: space-between; }
+.clinic-preview-dashboard .live-appointments-panel { min-width: 0; }
+.clinic-preview-dashboard .dashboard-side { align-content: start; min-width: 0; }
+.clinic-preview-dashboard .person-row { min-width: 0; grid-template-columns: auto minmax(0, 1fr) auto; }
+.clinic-preview-dashboard .person-row > div { min-width: 0; }
+.clinic-preview-dashboard .person-row strong, .clinic-preview-dashboard .person-row span { overflow-wrap: anywhere; }
+.clinic-preview-dashboard .today-grid { grid-template-columns: minmax(0, 1fr); }
+.clinic-preview-dashboard .today-card { min-width: 0; }
+.clinic-preview-dashboard .today-card p { overflow-wrap: anywhere; }
+.clinic-preview-dashboard .live-dashboard-tip p { max-width: 230px; font-size: .78rem; line-height: 1.55; color: #f0fdf4; }
+.clinic-preview-dashboard .live-dashboard-tip > div { min-width: 0; position: relative; z-index: 1; }
+.clinic-preview-dashboard .live-dashboard-tip > span { flex: none; }
+@media (max-width: 1450px) {
+  .clinic-preview-dashboard { grid-template-columns: minmax(0, 1fr) 290px; }
+  .clinic-preview-dashboard .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1280px) {
+  .clinic-preview-dashboard { grid-template-columns: minmax(0, 1fr); }
+  .clinic-preview-dashboard .dashboard-side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinic-preview-dashboard .live-dashboard-tip { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  .clinic-preview-dashboard .dashboard-side { grid-template-columns: minmax(0, 1fr); }
+  .clinic-preview-dashboard .live-dashboard-tip { grid-column: auto; }
+  .clinic-preview-dashboard .live-hourly-chart { gap: .2rem; }
+  .clinic-preview-dashboard .live-hour-column small { font-size: .58rem; }
+}
+@media (max-width: 420px) {
+  .clinic-preview-dashboard .metric-grid { grid-template-columns: minmax(0, 1fr); }
+}

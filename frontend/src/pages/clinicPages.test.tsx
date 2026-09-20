@@ -109,6 +109,14 @@ describe('role-aware pages and empty states', () => {
     expect(html).toContain('actual-appointment');
     expect(html).toContain('Số thứ tự #7');
     expect(html).toContain('Đang chờ hoặc đã gọi');
+    expect(html).toContain('clinic-preview-dashboard');
+    expect(html).toContain('Phân bổ lịch hẹn');
+    expect(html).toContain('Lịch bác sĩ');
+    expect(html).toContain('Bệnh nhân có lịch hôm nay');
+    expect(html).toContain('9:00 — 1 lượt');
+    expect(html).not.toContain('748.839');
+    expect(html).not.toContain('421.748');
+    expect(html).not.toContain('DỮ LIỆU MẪU');
     expect(html).not.toContain('Hồ sơ bệnh án của tôi');
     expect(html).not.toContain('Doanh thu');
   });
