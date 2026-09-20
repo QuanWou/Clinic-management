@@ -25,6 +25,7 @@ import java.time.ZoneId;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,6 +53,64 @@ class ReceptionQueueServiceTest {
         appointment = Appointment.builder().id(appointmentId).patientId(UUID.randomUUID())
                 .doctorId(doctorId).appointmentDate(today).startTime(LocalTime.of(9, 0))
                 .endTime(LocalTime.of(10, 0)).status(AppointmentStatus.CONFIRMED).build();
+    }
+
+    @Test
+    void receptionistHistoryReturnsOnlyThirtyDayAggregatesWithEmptyWeekendDays() {
+        LocalDate from = LocalDate.of(2026, 8, 22);
+        LocalDate to = LocalDate.of(2026, 9, 20);
+        Appointment synthetic = Appointment.builder().id(UUID.randomUUID()).doctorId(doctorId)
+                .patientId(UUID.randomUUID()).appointmentDate(LocalDate.of(2026, 9, 18))
+                .status(AppointmentStatus.COMPLETED).build();
+        ReceptionVisit visit = ReceptionVisit.builder().id(UUID.randomUUID()).appointmentId(synthetic.getId())
+                .doctorId(doctorId).patientId(synthetic.getPatientId())
+                .visitDate(synthetic.getAppointmentDate()).status(QueueStatus.COMPLETED).build();
+        when(appointments.findByAppointmentDateBetweenOrderByAppointmentDateAscStartTimeAsc(from, to))
+                .thenReturn(List.of(synthetic));
+        when(visits.findByVisitDateBetweenOrderByVisitDateAscQueueNumberAsc(from, to))
+                .thenReturn(List.of(visit));
+        var principal = new CurrentUserPrincipal(UUID.randomUUID(), "reception@test.local", "Reception",
+                Set.of("ROLE_RECEPTIONIST"));
+
+        var report = service.history(from, to, principal, "Bearer test");
+
+        assertEquals("RECEPTION", report.scope());
+        assertEquals(30, report.days().size());
+        assertEquals(1, report.days().get(27).appointments());
+        assertEquals(1, report.days().get(27).checkIns());
+        assertEquals(1, report.days().get(27).completedVisits());
+        assertEquals(0, report.days().get(29).appointments());
+        verifyNoInteractions(doctorClient);
+    }
+
+    @Test
+    void doctorHistoryNeverQueriesClinicWideAppointmentsOrVisits() {
+        LocalDate from = LocalDate.of(2026, 8, 22);
+        LocalDate to = LocalDate.of(2026, 9, 20);
+        var principal = new CurrentUserPrincipal(UUID.randomUUID(), "doctor@test.local", "Doctor", Set.of("ROLE_DOCTOR"));
+        when(doctorClient.getCurrentDoctorProfile("Bearer doctor"))
+                .thenReturn(new DoctorProfileResponse(doctorId, principal.id()));
+        when(visits.findByDoctorIdAndVisitDateBetweenOrderByVisitDateAscQueueNumberAsc(doctorId, from, to))
+                .thenReturn(List.of(ReceptionVisit.builder().visitDate(LocalDate.of(2026, 9, 18))
+                        .status(QueueStatus.COMPLETED).build()));
+
+        var report = service.history(from, to, principal, "Bearer doctor");
+
+        assertEquals("DOCTOR", report.scope());
+        assertEquals(1, report.days().get(27).checkIns());
+        assertEquals(0, report.days().get(27).appointments());
+        verify(appointments, never()).findByAppointmentDateBetweenOrderByAppointmentDateAscStartTimeAsc(any(), any());
+        verify(visits, never()).findByVisitDateBetweenOrderByVisitDateAscQueueNumberAsc(any(), any());
+    }
+
+    @Test
+    void historyRejectsUnboundedRangesBeforeAnyQueries() {
+        var receptionist = new CurrentUserPrincipal(UUID.randomUUID(), "reception@test.local", "Reception",
+                Set.of("ROLE_RECEPTIONIST"));
+        assertEquals(ErrorCode.VALIDATION_ERROR, assertThrows(BusinessException.class,
+                () -> service.history(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 9, 20),
+                        receptionist, "Bearer test")).getErrorCode());
+        verifyNoInteractions(appointments, visits, doctorClient);
     }
 
     @Test

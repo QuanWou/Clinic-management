@@ -2,6 +2,7 @@ package com.clinic.appointment.service;
 
 import com.clinic.appointment.client.DoctorClient;
 import com.clinic.appointment.dto.ReceptionVisitResponse;
+import com.clinic.appointment.dto.ReceptionHistoryResponse;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
 import com.clinic.appointment.entity.QueueStatus;
@@ -20,8 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -85,6 +89,40 @@ public class ReceptionQueueService {
                 ? visitRepository.findByVisitDateOrderByDoctorIdAscQueueNumberAsc(visitDate)
                 : visitRepository.findByDoctorIdAndVisitDateOrderByQueueNumberAsc(doctorId, visitDate);
         return visits.stream().map(this::toResponse).toList();
+    }
+
+    /** A single bounded read for history, with the same doctor ownership check as list(). */
+    @Transactional(readOnly = true)
+    public ReceptionHistoryResponse history(LocalDate from, LocalDate to,
+                                            CurrentUserPrincipal principal, String authorization) {
+        if (from == null || to == null || from.isAfter(to) || ChronoUnit.DAYS.between(from, to) > 30) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR, "History range must contain 1 to 31 days");
+        }
+        if (principal == null || (!principal.hasRole("ADMIN") && !principal.hasRole("RECEPTIONIST")
+                && !principal.hasRole("DOCTOR"))) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Staff role required");
+        }
+        UUID doctorId = ownedDoctorId(principal, authorization);
+        // A doctor never queries even an aggregated clinic-wide appointment list.
+        var appointmentRows = doctorId == null
+                ? appointmentRepository.findByAppointmentDateBetweenOrderByAppointmentDateAscStartTimeAsc(from, to)
+                : List.<Appointment>of();
+        var visitRows = doctorId == null
+                ? visitRepository.findByVisitDateBetweenOrderByVisitDateAscQueueNumberAsc(from, to)
+                : visitRepository.findByDoctorIdAndVisitDateBetweenOrderByVisitDateAscQueueNumberAsc(doctorId, from, to);
+
+        Map<LocalDate, List<Appointment>> byAppointmentDay = appointmentRows.stream()
+                .collect(Collectors.groupingBy(Appointment::getAppointmentDate));
+        Map<LocalDate, List<ReceptionVisit>> byVisitDay = visitRows.stream()
+                .collect(Collectors.groupingBy(ReceptionVisit::getVisitDate));
+        List<ReceptionHistoryResponse.Day> days = from.datesUntil(to.plusDays(1)).map(day -> {
+            var appointmentsOnDay = byAppointmentDay.getOrDefault(day, List.of());
+            var visitsOnDay = byVisitDay.getOrDefault(day, List.of());
+            return new ReceptionHistoryResponse.Day(day, appointmentsOnDay.size(), visitsOnDay.size(),
+                    visitsOnDay.stream().filter(v -> v.getStatus() == QueueStatus.COMPLETED).count(),
+                    appointmentsOnDay.stream().filter(a -> a.getStatus() == AppointmentStatus.CANCELLED).count());
+        }).toList();
+        return new ReceptionHistoryResponse(from, to, doctorId == null ? "RECEPTION" : "DOCTOR", days);
     }
 
     @Transactional

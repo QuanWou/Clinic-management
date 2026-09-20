@@ -24,6 +24,11 @@ public interface ReceptionVisitRepository extends JpaRepository<ReceptionVisit, 
 
     List<ReceptionVisit> findByVisitDateOrderByDoctorIdAscQueueNumberAsc(LocalDate visitDate);
 
+    List<ReceptionVisit> findByVisitDateBetweenOrderByVisitDateAscQueueNumberAsc(LocalDate from, LocalDate to);
+
+    List<ReceptionVisit> findByDoctorIdAndVisitDateBetweenOrderByVisitDateAscQueueNumberAsc(
+            UUID doctorId, LocalDate from, LocalDate to);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select v from ReceptionVisit v where v.id = :id")
     Optional<ReceptionVisit> lockById(@Param("id") UUID id);

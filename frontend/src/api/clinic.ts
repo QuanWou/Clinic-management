@@ -6,7 +6,7 @@ import type {
   ReceptionRescheduleRequest, ReceptionPatientResponse, RegisterWalkInPatientRequest,
   ReceptionVisitResponse, QueueStatus, AdminDoctorResponse, PageResponse, SpecialtyResponse,
   CatalogServiceResponse, MedicineResponse, PriceResponse, PaymentTransactionResponse,
-  NotificationPreferenceResponse, NotificationType
+  NotificationPreferenceResponse, NotificationType, ReceptionHistoryResponse
 } from '../types/domain';
 
 export function getPatientProfile(): Promise<PatientProfileResponse> {
@@ -89,6 +89,10 @@ export function getReceptionQueue(filters: { date?: string; doctorId?: string } 
   if (filters.date) query.set('date', filters.date);
   if (filters.doctorId) query.set('doctorId', filters.doctorId);
   return apiRequest<ReceptionVisitResponse[]>(`${apiEndpoints.appointments.receptionQueue}${query.size ? `?${query}` : ''}`);
+}
+
+export function getReceptionHistory(from: string, to: string): Promise<ReceptionHistoryResponse> {
+  return apiRequest<ReceptionHistoryResponse>(`${apiEndpoints.appointments.receptionHistory}?${new URLSearchParams({ from, to })}`);
 }
 
 export function updateReceptionQueue(visitId: string, status: QueueStatus): Promise<ReceptionVisitResponse> {

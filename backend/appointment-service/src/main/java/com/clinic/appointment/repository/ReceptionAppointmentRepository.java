@@ -37,4 +37,6 @@ public interface ReceptionAppointmentRepository extends Repository<Appointment, 
     List<Appointment> findByAppointmentDateOrderByStartTimeAsc(LocalDate appointmentDate);
 
     List<Appointment> findByDoctorIdAndAppointmentDateOrderByStartTimeAsc(UUID doctorId, LocalDate appointmentDate);
+
+    List<Appointment> findByAppointmentDateBetweenOrderByAppointmentDateAscStartTimeAsc(LocalDate from, LocalDate to);
 }

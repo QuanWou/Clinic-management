@@ -1,6 +1,7 @@
 package com.clinic.appointment.controller;
 
 import com.clinic.appointment.dto.ReceptionVisitResponse;
+import com.clinic.appointment.dto.ReceptionHistoryResponse;
 import com.clinic.appointment.dto.UpdateQueueStatusRequest;
 import com.clinic.appointment.security.CurrentUserPrincipal;
 import com.clinic.appointment.service.ReceptionQueueService;
@@ -37,6 +38,15 @@ public class ReceptionQueueController {
             @AuthenticationPrincipal CurrentUserPrincipal principal,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         return ApiResponse.success("Queue retrieved", service.list(date, doctorId, principal, authorization));
+    }
+
+    @GetMapping("/dashboard/history")
+    public ApiResponse<ReceptionHistoryResponse> history(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        return ApiResponse.success("Role-scoped dashboard history", service.history(from, to, principal, authorization));
     }
 
     @PatchMapping("/queue/{visitId}")

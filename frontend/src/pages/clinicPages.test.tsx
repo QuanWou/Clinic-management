@@ -121,6 +121,27 @@ describe('role-aware pages and empty states', () => {
     expect(html).not.toContain('Doanh thu');
   });
 
+  it('renders the imported 30-day totals without pretending Sunday has appointments', () => {
+    const days = Array.from({ length: 30 }, (_, index) => {
+      const date = new Date(Date.UTC(2026, 7, 22 + index));
+      const workingDay = date.getUTCDay() >= 1 && date.getUTCDay() <= 5;
+      return { date: date.toISOString().slice(0, 10), appointments: workingDay ? 4 : 0,
+        checkIns: workingDay ? 3 : 0, completedVisits: workingDay ? 3 : 0,
+        cancelledAppointments: workingDay ? 1 : 0 };
+    });
+    const html = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={{
+      scope: 'RECEPTION', date: '2026-09-20', appointments: [], queue: [],
+      history: { scope: 'RECEPTION', from: '2026-08-22', to: '2026-09-20', days }
+    }} user={admin} role="ADMIN" error={null} loading={false} onRefresh={noop} />);
+    expect(html).toContain('Lịch hẹn 30 ngày');
+    expect(html).toContain('Hoạt động 30 ngày');
+    expect(html).toContain('live-month-chart');
+    expect(html).toContain('<strong>80</strong>');
+    expect(html).toContain('<strong>60</strong>');
+    expect(html).toContain('Hôm nay chưa có lịch hẹn.');
+    expect(html).not.toContain('748.839');
+  });
+
   it('rejects stale or mismatched dashboard data across role switches', () => {
     const receptionData = { scope: 'RECEPTION' as const, date: '2026-09-20', appointments: [{ id: 'private-staff-appointment', patientId: 'p', doctorId: 'd', appointmentDate: '2026-09-20', startTime: '10:00', endTime: '10:30', status: 'PENDING' as const }], queue: [] };
     const html = renderToStaticMarkup(<DashboardPage dashboard={null} staffDashboard={receptionData} user={doctor} role="DOCTOR" error={null} loading={false} onRefresh={noop} />);

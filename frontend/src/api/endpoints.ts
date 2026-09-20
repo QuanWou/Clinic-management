@@ -40,6 +40,7 @@ export const apiEndpoints = {
     receptionCancel: (id: string) => `/api/appointments/reception/${encodeURIComponent(id)}/cancel`,
     receptionCheckIn: (id: string) => `/api/appointments/reception/${encodeURIComponent(id)}/check-in`,
     receptionQueue: '/api/appointments/reception/queue',
+    receptionHistory: '/api/appointments/reception/dashboard/history',
     receptionQueueById: (id: string) => `/api/appointments/reception/queue/${encodeURIComponent(id)}`
   },
   medicalRecords: {

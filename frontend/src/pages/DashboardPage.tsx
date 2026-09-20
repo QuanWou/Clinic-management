@@ -112,8 +112,12 @@ function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role:
   const chartStatuses = data.scope === 'RECEPTION'
     ? ['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED']
     : ['WAITING', 'CALLED', 'IN_PROGRESS', 'COMPLETED', 'SKIPPED'];
+  const history = data.history?.scope === data.scope && data.history.to === data.date ? data.history : null;
+  const days = history?.days ?? [];
+  const historyTotal = (key: 'appointments' | 'checkIns' | 'completedVisits' | 'cancelledAppointments') =>
+    days.reduce((sum, day) => sum + day[key], 0);
   const doctors = [...new Set(appointments.map((item) => item.doctorId))];
-  const metrics = data.scope === 'RECEPTION' ? [
+  const todayMetrics = data.scope === 'RECEPTION' ? [
     { label: 'Lịch hẹn hôm nay', value: appointments.length, icon: <CalendarDays />, tone: 'green', statuses: chartStatuses },
     { label: 'Lượt đã check-in', value: queue.length, icon: <UsersRound />, tone: 'purple', statuses: [] },
     { label: 'Đang chờ hoặc đã gọi', value: waiting, icon: <Stethoscope />, tone: 'blue', statuses: ['WAITING', 'CALLED'] },
@@ -124,6 +128,15 @@ function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role:
     { label: 'Đang khám', value: inProgress, icon: <Stethoscope />, tone: 'blue', statuses: ['IN_PROGRESS'] },
     { label: 'Lượt khám hoàn thành', value: completed, icon: <HeartPulse />, tone: 'orange', statuses: ['COMPLETED'] }
   ];
+  const metrics = history ? (data.scope === 'RECEPTION' ? [
+    { label: 'Lịch hẹn 30 ngày', value: historyTotal('appointments'), icon: <CalendarDays />, tone: 'green', statuses: [], dailyValues: days.map((day) => day.appointments) },
+    { label: 'Lượt check-in 30 ngày', value: historyTotal('checkIns'), icon: <UsersRound />, tone: 'purple', statuses: [], dailyValues: days.map((day) => day.checkIns) },
+    { label: 'Đã hoàn tất 30 ngày', value: historyTotal('completedVisits'), icon: <HeartPulse />, tone: 'blue', statuses: [], dailyValues: days.map((day) => day.completedVisits) },
+    { label: 'Lịch hủy 30 ngày', value: historyTotal('cancelledAppointments'), icon: <FileText />, tone: 'orange', statuses: [], dailyValues: days.map((day) => day.cancelledAppointments) }
+  ] : [
+    { label: 'Lượt khám 30 ngày', value: historyTotal('checkIns'), icon: <CalendarDays />, tone: 'green', statuses: [], dailyValues: days.map((day) => day.checkIns) },
+    { label: 'Hoàn tất 30 ngày', value: historyTotal('completedVisits'), icon: <HeartPulse />, tone: 'purple', statuses: [], dailyValues: days.map((day) => day.completedVisits) }
+  ]) : todayMetrics;
   const hours = Array.from({ length: 12 }, (_, index) => index + 7);
   const hourBuckets = hours.map((hour) => chartStatuses.map((status) => activities.filter((item) =>
     hourOf(item.time) === hour && item.status === status).length));
@@ -131,6 +144,13 @@ function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role:
 
   return <section className="dashboard-layout clinic-preview-dashboard" aria-label="Dashboard theo giao diện UI UX pro max với dữ liệu thật">
     <div className="dashboard-main">
+      <div className="dashboard-history-note" role="status">
+        {history ? <>Thống kê 30 ngày: <strong>{formatDate(history.from)} – {formatDate(history.to)}</strong>.
+          Thống kê có thể bao gồm dữ liệu thử nghiệm đã import; không dùng làm báo cáo y tế hoặc doanh thu.
+          Mục bên phải chỉ hiển thị ngày {formatDate(data.date)}.</>
+          : <>Chưa tải được báo cáo 30 ngày: {data.historyError || 'Dữ liệu lịch sử không hợp lệ'}.
+            Các chỉ số dưới đây chỉ tính ngày {formatDate(data.date)}.</>}
+      </div>
       <section className="metric-grid" aria-label="Chỉ số theo phạm vi được cấp quyền">
         {metrics.map((metric) => <LiveMetricCard key={metric.label} {...metric}
           activities={metric.label === 'Lượt đã check-in' || metric.label === 'Đang chờ hoặc đã gọi' || metric.label === 'Lượt khám hoàn thành'
@@ -138,9 +158,21 @@ function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role:
       </section>
       <section className="analytics-grid" aria-label="Hoạt động trong ngày">
         <article className="panel patient-status live-status-panel">
-          <div className="panel-heading"><div><h3>{isDoctor ? 'Phân bổ lượt check-in' : 'Phân bổ lịch hẹn'}</h3>
-            <strong>{activities.length.toLocaleString('vi-VN')}</strong></div><span>07–18 giờ · {formatDate(data.date)} · API thật</span></div>
-          {activities.length === 0 ? <p className="dashboard-unavailable">Chưa có dữ liệu để vẽ biểu đồ hôm nay.</p> : <>
+          <div className="panel-heading"><div><h3>{history ? 'Hoạt động 30 ngày' : isDoctor ? 'Phân bổ lượt check-in' : 'Phân bổ lịch hẹn'}</h3>
+            <strong>{(history ? historyTotal(data.scope === 'RECEPTION' ? 'appointments' : 'checkIns') : activities.length).toLocaleString('vi-VN')}</strong></div>
+            <span>{history ? `${formatDate(history.from)} – ${formatDate(history.to)}` : `07–18 giờ · ${formatDate(data.date)}`} · API thật</span></div>
+          {history ? (days.every((day) => day.appointments === 0 && day.checkIns === 0)
+            ? <p className="dashboard-unavailable">Không có hoạt động trong 30 ngày này.</p>
+            : <div className="live-month-chart" role="img" aria-label="Biểu đồ số lượt theo từng ngày trong 30 ngày">
+              {days.map((day) => {
+                const count = data.scope === 'RECEPTION' ? day.appointments : day.checkIns;
+                const max = Math.max(1, ...days.map((entry) => data.scope === 'RECEPTION' ? entry.appointments : entry.checkIns));
+                return <div className="live-month-column" key={day.date} title={`${formatDate(day.date)}: ${count} lượt`}>
+                  <span style={{ height: `${count ? Math.max(5, count / max * 170) : 0}px` }} />
+                  <small>{day.date.slice(8)}</small>
+                </div>;
+              })}
+            </div>) : activities.length === 0 ? <p className="dashboard-unavailable">Chưa có dữ liệu để vẽ biểu đồ hôm nay.</p> : <>
             <div className="stacked-chart live-hourly-chart" role="img" aria-label={`Phân bố ${activities.length} lượt theo từng giờ trong ngày`}>
               {hours.map((hour, index) => <div className="live-hour-column" key={hour}>
                 <div className="live-hour-stack" title={`${hour}:00 — ${hourBuckets[index].reduce((sum, count) => sum + count, 0)} lượt`}>
@@ -238,22 +270,23 @@ function hourOf(time?: string | null): number | null {
   return match ? Number(match[1]) : null;
 }
 
-function LiveMetricCard({ icon, label, value, tone, statuses, activities }: {
+function LiveMetricCard({ icon, label, value, tone, statuses, activities, dailyValues }: {
   icon: ReactNode; label: string; value: number; tone: string; statuses: string[];
   activities: Array<{ time: string | null; status: string }>;
+  dailyValues?: number[];
 }) {
-  const values = Array.from({ length: 12 }, (_, index) => activities.filter((item) =>
+  const values = dailyValues ?? Array.from({ length: 12 }, (_, index) => activities.filter((item) =>
     hourOf(item.time) === index + 7 && (statuses.length === 0 || statuses.includes(item.status))).length);
   const max = Math.max(1, ...values);
   const hasHourlyData = values.some((item) => item > 0);
   return <article className={`metric-card metric-${tone} live-metric-card`}>
     <div className="metric-icon">{icon}</div>
     <div><strong>{value.toLocaleString('vi-VN')}</strong><span>{label}</span></div>
-    <p className="metric-availability">Theo dữ liệu hôm nay · 07–18h</p>
-    {hasHourlyData ? <div className={`mini-bars mini-bars-${tone} live-metric-bars`} role="img" aria-label={`Phân bổ theo giờ của ${label}`}>
-      {values.map((count, index) => <span key={index} title={`${index + 7}:00 — ${count} lượt`}
+    <p className="metric-availability">{dailyValues ? 'Tổng hợp theo ngày · 30 ngày' : 'Theo dữ liệu hôm nay · 07–18h'}</p>
+    {hasHourlyData ? <div className={`mini-bars mini-bars-${tone} live-metric-bars`} role="img" aria-label={`Phân bổ ${dailyValues ? 'theo ngày' : 'theo giờ'} của ${label}`}>
+      {values.map((count, index) => <span key={index} title={`${dailyValues ? `Ngày ${index + 1}` : `${index + 7}:00`} — ${count} lượt`}
         style={{ height: `${count === 0 ? 0 : 12 + (count / max) * 48}px` }} />)}
-    </div> : <span className="metric-chart-unavailable">Chưa có lượt theo giờ trong phạm vi dữ liệu.</span>}
+    </div> : <span className="metric-chart-unavailable">Chưa có lượt trong phạm vi dữ liệu.</span>}
   </article>;
 }
 

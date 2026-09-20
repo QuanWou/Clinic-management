@@ -79,6 +79,15 @@ export type ReceptionVisitResponse = {
   startedAt: string | null;
   completedAt: string | null;
 };
+
+/** Aggregated by the appointment service, scoped to the authenticated staff role. */
+export type ReceptionHistoryResponse = {
+  from: string;
+  to: string;
+  scope: 'RECEPTION' | 'DOCTOR';
+  days: Array<{ date: string; appointments: number; checkIns: number;
+    completedVisits: number; cancelledAppointments: number }>;
+};
 export type PageResponse<T> = {
   content: T[];
   totalElements: number;

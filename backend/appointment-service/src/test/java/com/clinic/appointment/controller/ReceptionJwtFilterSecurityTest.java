@@ -8,6 +8,7 @@ import com.clinic.appointment.security.JwtService;
 import com.clinic.appointment.security.SecurityConfig;
 import com.clinic.appointment.service.ReceptionQueueService;
 import com.clinic.appointment.service.ReceptionSchedulingService;
+import com.clinic.appointment.dto.ReceptionHistoryResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
+import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -87,5 +89,28 @@ class ReceptionJwtFilterSecurityTest {
                         .header("Authorization", doctor))
                 .andExpect(status().isForbidden());
         verify(queue, never()).checkIn(any());
+    }
+
+    @Test
+    void patientJwtCannotReadThirtyDayStaffHistory() throws Exception {
+        mvc.perform(get("/api/appointments/reception/dashboard/history")
+                        .param("from", "2026-08-22").param("to", "2026-09-20")
+                        .header("Authorization", token("ROLE_PATIENT")))
+                .andExpect(status().isForbidden());
+        verifyNoInteractions(queue);
+    }
+
+    @Test
+    void doctorJwtHistoryPassesIdentityToScopedService() throws Exception {
+        String doctor = token("ROLE_DOCTOR");
+        LocalDate from = LocalDate.of(2026, 8, 22);
+        LocalDate to = LocalDate.of(2026, 9, 20);
+        when(queue.history(eq(from), eq(to), any(CurrentUserPrincipal.class), eq(doctor)))
+                .thenReturn(new ReceptionHistoryResponse(from, to, "DOCTOR", List.of()));
+        mvc.perform(get("/api/appointments/reception/dashboard/history")
+                        .param("from", "2026-08-22").param("to", "2026-09-20")
+                        .header("Authorization", doctor))
+                .andExpect(status().isOk());
+        verify(queue).history(eq(from), eq(to), argThat(p -> p.hasRole("DOCTOR") && !p.hasRole("ADMIN")), eq(doctor));
     }
 }
