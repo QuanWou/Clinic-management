@@ -25,13 +25,13 @@ export default function Sidebar({ activeItemId, user, onNavigate, onLogout, onCl
   const roles = normalizeRoles(user.roles);
   const role = getPrimaryRole(roles);
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" aria-label="Điều hướng phòng khám">
       <div className="brand">
         <span className="brand-mark" aria-hidden="true">+</span>
         <div><h2>{appConfig.shortName}</h2><p>Quản lý chăm sóc sức khỏe</p></div>
         <button className="icon-button sidebar-close" type="button" aria-label="Đóng menu" onClick={onClose}><X size={19} /></button>
       </div>
-      <span className="nav-caption">{role === 'PATIENT' ? 'KHÔNG GIAN BỆNH NHÂN' : 'KHÔNG GIAN LÀM VIỆC'}</span>
+      <span className="nav-caption">{role === 'PATIENT' ? 'BỆNH NHÂN' : 'ĐIỀU HƯỚNG'}</span>
       <nav className="sidebar-nav" aria-label="Điều hướng chính">
         {mainNavigation.filter((item) => canAccess(item.id, role ? [role] : [])).map((item) => (
           <button key={item.id} className={item.id === activeItemId ? 'active' : undefined}
@@ -43,8 +43,8 @@ export default function Sidebar({ activeItemId, user, onNavigate, onLogout, onCl
       </nav>
       <div className="sidebar-helper">
         <span>TRUY CẬP NHANH</span>
-        <strong>{role === 'PATIENT' ? 'Lịch khám của tôi' : 'Quản lý lịch hẹn'}</strong>
-        <p>{role === 'PATIENT' ? 'Theo dõi và đặt lịch khám trong tài khoản của bạn.' : 'Xem lịch khám trong phạm vi tài khoản của bạn.'}</p>
+        <strong>{role === 'PATIENT' ? 'Lịch khám của tôi' : 'Lịch hẹn hôm nay'}</strong>
+        <p>{role === 'PATIENT' ? 'Theo dõi và đặt lịch khám trong tài khoản của bạn.' : 'Mở lịch để tiếp nhận và xử lý nhanh.'}</p>
         <button type="button" onClick={() => onNavigate('appointments')}>Xem lịch hẹn <ArrowRight size={16} aria-hidden="true" /></button>
       </div>
       <div className="sidebar-footer">

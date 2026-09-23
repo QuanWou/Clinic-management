@@ -27,7 +27,22 @@
 .patient-portal button:focus-visible,.patient-portal :is(input,textarea,select):focus-visible{outline:3px solid #14ac7b;outline-offset:2px}
 @media(max-width:1150px){.patient-metrics,.patient-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}.patient-dashboard-layout,.patient-two-columns{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:740px){.patient-hero{flex-direction:column;align-items:stretch}.patient-hero-action{align-self:flex-start}.patient-directory-grid,.patient-form-fields{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:440px){.patient-metrics{gap:.6rem}.patient-metrics article{padding:.82rem}.patient-metrics h4{font-size:.76rem}.patient-shortcuts{grid-template-columns:minmax(0,1fr)}.patient-next{grid-template-columns:minmax(0,1fr)}.patient-fields{grid-template-columns:minmax(0,1fr)}.patient-fields .patient-field-wide{grid-column:auto}.patient-compact-row{flex-wrap:wrap}}
+@media(max-width:440px){
+  .patient-hero{align-items:flex-start;min-height:0;padding:1rem;border-radius:15px}
+  .patient-hero>svg{display:none}
+  .patient-hero h3{font-size:1.2rem;line-height:1.22;margin:.45rem 0 .35rem}
+  .patient-hero p{font-size:.76rem;line-height:1.5}
+  .patient-hero-tags{gap:.4rem;margin-top:.7rem}
+  .patient-hero-tags span{font-size:.67rem;padding:.34rem .5rem}
+  .patient-metrics{gap:.6rem}
+  .patient-metrics article{padding:.82rem}
+  .patient-metrics h4{font-size:.76rem}
+  .patient-shortcuts{grid-template-columns:minmax(0,1fr)}
+  .patient-next{grid-template-columns:minmax(0,1fr)}
+  .patient-fields{grid-template-columns:minmax(0,1fr)}
+  .patient-fields .patient-field-wide{grid-column:auto}
+  .patient-compact-row{flex-wrap:wrap}
+}
 
 /* Personal invoices and notifications share the patient portal's visual language. */
 .patient-invoices .invoice-hero,.patient-notifications .notifications-hero{background:linear-gradient(112deg,#103746,#126262 61%,#159773);border-radius:20px}
@@ -36,6 +51,8 @@
 .patient-invoices .invoice-detail-panel,.patient-invoices .invoice-list-panel,.patient-notifications .notifications-focus,.patient-notifications .doctor-notifications-focus{border-radius:17px}
 .patient-notifications{display:grid;gap:1.1rem;min-width:0}.patient-notifications .doctor-notifications-focus{border:1px solid #daeee1;background:#fff}
 .patient-invoices>*,.patient-notifications>*{min-width:0}
+.invoice-workspace .invoice-hero{display:none}
+@media(max-width:700px){.invoice-workspace .invoice-search-panel .invoice-section-icon{display:none}.invoice-workspace .invoice-section-head{margin-bottom:.85rem}}
 
 /* Personal settings use a narrow navigation rail and a wide information panel. */
 .patient-settings .patient-two-columns{grid-template-columns:minmax(215px,275px) minmax(0,1fr);align-items:start}

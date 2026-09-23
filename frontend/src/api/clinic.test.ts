@@ -1,16 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   cancelAppointment, completeAppointment, confirmAppointment, createAppointment, getMyMedicalRecords,
-  getPatientInvoices, updateDoctorProfile, searchReceptionPatients, registerReceptionPatient,
+  getPatientInvoices, getStaffInvoiceDirectory, updateDoctorProfile, getReceptionPatientDirectory, getReceptionPatientByCode, searchReceptionPatients, registerReceptionPatient,
   getReceptionAppointments, bookReceptionAppointment, rescheduleReceptionAppointment,
   cancelReceptionAppointment, checkInReceptionAppointment, getReceptionQueue, updateReceptionQueue,
   confirmCashPayment, getInvoiceTransactions, getNotifications, markNotificationRead,
   getNotificationPreferences, updateNotificationPreference, getAdminDoctors, getAdminDoctor,
-  getAdminDoctorSchedules, createAdminDoctor, updateAdminDoctor, deactivateAdminDoctor, getSpecialties,
+  getAdminDoctorSchedules, getAdminUser, createAdminDoctor, updateAdminDoctor, deactivateAdminDoctor, getSpecialties,
   getCatalogServices, getCatalogMedicines, getAdminCatalogServices, getAdminCatalogMedicines,
   getServicePriceHistory, getServicePrice, getDoctors,
   getAppointmentAvailability, getPerformedServices, addPerformedService, finalizePerformedServices,
-  getLabBillableItems, finalizeLabBillableItems, createInvoice, getLabOrders, changeLabOrder,
+  getLabBillableItems, finalizeLabBillableItems, createInvoice, getLabOrders, getDoctorLabBillingStatus, changeLabOrder,
   createCatalogService, publishCatalogPrice
 } from './clinic';
 import { apiEndpoints } from './endpoints';
@@ -33,6 +33,14 @@ beforeEach(() => {
 });
 
 describe('verified business API routes', () => {
+  it('reads the linked account name from the admin-only Identity route without using public user endpoints', async () => {
+    const response = { id: 'account-01', fullName: 'Nguyễn Văn Minh' };
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: response }), { status: 200 }));
+    expect(await getAdminUser('account-01')).toEqual(response);
+    const [url, options] = vi.mocked(fetch).mock.calls[0];
+    expect(String(url)).toMatch(/\/api\/users\/admin\/account-01$/);
+    expect(options?.method ?? 'GET').toBe('GET');
+  });
   it('separates read-only catalog routes, admin-only all-item routes and price history', async () => {
     await getCatalogServices();
     await getCatalogMedicines();
@@ -93,6 +101,17 @@ describe('verified business API routes', () => {
     expect(JSON.parse(String(vi.mocked(fetch).mock.calls[8][1]?.body))).toEqual({ sampleIdentifier: 'S-001' });
   });
 
+  it('reads the doctor billing lock using a status-only GET, never the staff billing items endpoint', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: {
+      medicalRecordId: 'record-id', finalizedForBilling: true
+    } }), { status: 200 }));
+    expect(await getDoctorLabBillingStatus('record-id')).toEqual({ medicalRecordId: 'record-id', finalizedForBilling: true });
+    const [url, options] = vi.mocked(fetch).mock.calls[0];
+    expect(String(url)).toMatch(/\/api\/medical-records\/record-id\/lab-orders\/billing-status$/);
+    expect(options?.method ?? 'GET').toBe('GET');
+    expect(options?.body).toBeUndefined();
+  });
+
   it('publishes Catalog changes only through its administrator routes', async () => {
     await createCatalogService({ code: 'CONSULT', name: 'Consultation', description: '', active: true });
     await publishCatalogPrice('service', { amount: '120000', currency: 'VND', effectiveFrom: '2026-09-20', effectiveUntil: null });
@@ -103,9 +122,22 @@ describe('verified business API routes', () => {
     expect(JSON.parse(String(calls[1][1]?.body))).toEqual({ amount: '120000', currency: 'VND', effectiveFrom: '2026-09-20', effectiveUntil: null });
   });
   it('uses the authenticated public active-doctor list rather than the administrator endpoint for receptionist and patient directories', async () => {
-    await getDoctors();
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: [
+      { id: 'doctor-1', userId: 'account-1', specialtyName: 'Tim mạch' },
+      { id: 'doctor-2', userId: 'account-2', specialtyName: 'Nhi khoa' }
+    ] }), { status: 200 }));
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: [
+      { id: 'account-1', fullName: 'Nguyễn Minh Khôi' },
+      { id: 'doctor-2', fullName: 'Tên không thuộc tài khoản bác sĩ' }
+    ] }), { status: 200 }));
+    expect(await getDoctors()).toEqual([
+      { id: 'doctor-1', userId: 'account-1', specialtyName: 'Tim mạch', fullName: 'Nguyễn Minh Khôi' },
+      { id: 'doctor-2', userId: 'account-2', specialtyName: 'Nhi khoa', fullName: undefined }
+    ]);
     expect(String(vi.mocked(fetch).mock.calls[0][0])).toMatch(/\/api\/doctors$/);
     expect(String(vi.mocked(fetch).mock.calls[0][0])).not.toContain('/admin');
+    expect(String(vi.mocked(fetch).mock.calls[1][0])).toBe('/api/users/doctors/names');
+    expect(vi.mocked(fetch).mock.calls.every(([url]) => !String(url).includes('/users/admin'))).toBe(true);
   });
   it('posts booking payload to the actual appointment controller', async () => {
     const request = { doctorId: 'doctor-id', appointmentDate: '2026-09-30', startTime: '09:00', endTime: '09:30', reason: 'Consultation' };
@@ -130,6 +162,23 @@ describe('verified business API routes', () => {
     expect(String(vi.mocked(fetch).mock.calls[0][0])).toMatch(/\/api\/medical-records\/my$/);
     expect(String(vi.mocked(fetch).mock.calls[1][0])).toMatch(/\/api\/invoices\/patients\/patient-id$/);
     expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('loads a bounded staff invoice directory from its dedicated route', async () => {
+    const page = { content: [{ id: 'invoice-a', patientId: 'patient-a', appointmentId: 'appointment-a' }],
+      number: 1, size: 20, totalElements: 42, totalPages: 3 };
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: page }), { status: 200 }));
+    expect(await getStaffInvoiceDirectory(1, 20)).toEqual(page);
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).toContain('/api/invoices/staff?page=1&size=20');
+    expect(vi.mocked(fetch).mock.calls[0][1]?.method ?? 'GET').toBe('GET');
+  });
+
+  it('resolves staff-visible BN patient codes through the role-scoped directory endpoint', async () => {
+    const patient = { id: 'patient-uuid', patientCode: 'BN000513', fullName: 'Đặng Gia Phong' };
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: patient }), { status: 200 }));
+    expect(await getReceptionPatientByCode('BN000513')).toEqual(patient);
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).toMatch(/\/api\/patients\/reception\/code\/BN000513$/);
+    expect(vi.mocked(fetch).mock.calls[0][1]?.method ?? 'GET').toBe('GET');
   });
 
   it('revokes refresh token via server on logout and always clears local credentials', async () => {
@@ -159,6 +208,23 @@ describe('verified business API routes', () => {
     expect(calls[1][0]).toMatch(/\/api\/patients\/reception$/);
     expect(calls[1][1]?.method).toBe('POST');
     expect(JSON.parse(String(calls[1][1]?.body))).toEqual({ fullName: 'Nguyen An', phone: '0901234567' });
+  });
+
+  it('uses the authorized patient directory with bounded server-side pagination', async () => {
+    const page = { content: [{ id: 'patient-a', fullName: 'Nguyễn An' }], totalElements: 501, totalPages: 26, number: 0, size: 20 };
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: page }), { status: 200 }));
+    expect(await getReceptionPatientDirectory(0, 20)).toEqual(page);
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).toContain('/api/patients/reception/list?page=0&size=20');
+  });
+
+  it('returns actual patient matches when reception searches by a Vietnamese name, without silently replacing them', async () => {
+    const matches = [
+      { id: 'patient-a', fullName: 'Đặng Văn Hoàng', phone: '0912345678' },
+      { id: 'patient-b', fullName: 'Đặng Thị Mai', phone: '0987654321' }
+    ];
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: matches }), { status: 200 }));
+    expect(await searchReceptionPatients({ name: 'Đặng' })).toEqual(matches);
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).toContain('/api/patients/reception?name=%C4%90%E1%BA%B7ng');
   });
 
   it('uses only actual Task 03 reception booking/list/reschedule/cancel routes', async () => {

@@ -1,6 +1,8 @@
 package com.clinic.patient.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Generated;
+import org.hibernate.generator.EventType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,6 +23,11 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    /** Independent patient chart number, including walk-in patients without an account. */
+    @Generated(event = EventType.INSERT)
+    @Column(name = "patient_code", nullable = false, unique = true, length = 24, insertable = false, updatable = false)
+    private String patientCode;
 
     @Column(name = "user_id", unique = true)
     private UUID userId;

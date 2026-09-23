@@ -6,7 +6,7 @@ vi.mock('../config/integrations.config', () => ({ integrations: { notifications:
 import SettingsPage from './SettingsPage';
 
 const doctor: CurrentUser = {
-  id: 'identity-doctor-id', email: 'doctor@clinic.test', fullName: 'Bác sĩ An',
+  id: 'identity-doctor-id', accountCode: 'TK000057', email: 'doctor@clinic.test', fullName: 'Bác sĩ An',
   phone: '0900000000', roles: ['ROLE_DOCTOR'], status: 'ACTIVE'
 };
 
@@ -17,7 +17,8 @@ describe('doctor personal settings workspace', () => {
     expect(html).toContain('Cài đặt bác sĩ');
     expect(html).toContain('Bác sĩ An');
     expect(html).toContain('doctor@clinic.test');
-    expect(html).toContain('identity-doctor-id');
+    expect(html).toContain('TK000057');
+    expect(html).not.toContain('identity-doctor-id');
     expect(html).toContain('0900000000');
     expect(html).toContain('Đang tải...');
     expect(html).toContain('Chỉ xem');

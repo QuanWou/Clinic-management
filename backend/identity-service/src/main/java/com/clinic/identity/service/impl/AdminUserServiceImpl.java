@@ -69,6 +69,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(user.getCreatedAt());
         users.save(user);
+        users.flush(); // Ensure accountCode is available in the create response.
         audit(actorId, user.getId(), "CREATE_USER", null, roleNames(user));
         return toResponse(user);
     }
@@ -238,7 +239,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private AdminUserResponse toResponse(User user) {
         return new AdminUserResponse(user.getId(), user.getEmail(), user.getFullName(), user.getPhone(),
                 user.getStatus(), user.getRoles().stream().map(role -> role.getCode().name()).collect(Collectors.toSet()),
-                user.getCreatedAt(), user.getUpdatedAt());
+                user.getCreatedAt(), user.getUpdatedAt(), user.getAccountCode());
     }
 
     private void audit(UUID actorId, UUID targetId, String action, String before, String after) {

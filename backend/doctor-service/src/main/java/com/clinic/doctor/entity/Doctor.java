@@ -1,6 +1,8 @@
 package com.clinic.doctor.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Generated;
+import org.hibernate.generator.EventType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,6 +23,11 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    /** Public doctor profile code; userId links only to the Identity service. */
+    @Generated(event = EventType.INSERT)
+    @Column(name = "doctor_code", nullable = false, unique = true, length = 24, insertable = false, updatable = false)
+    private String doctorCode;
 
     @Column(name = "user_id", nullable = false, unique = true)
     private UUID userId;

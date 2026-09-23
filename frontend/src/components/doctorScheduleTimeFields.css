@@ -1,0 +1,5 @@
+.doctor-schedule-help { grid-column: 1 / -1; min-width: 0; margin: .15rem 0; padding: .65rem .8rem; border: 1px solid #d4e9df; border-radius: 9px; background: #f3fbf7; color: #376b5e; font-size: .75rem; font-weight: 550; line-height: 1.55; }
+.doctor-schedule-field { display: grid; align-content: start; min-width: 0; gap: .4rem; color: #304a56; font-size: .79rem; font-weight: 750; }
+.doctor-schedule-field select { box-sizing: border-box; width: 100%; min-width: 0; }
+.doctor-schedule-field select:disabled { cursor: not-allowed; opacity: .7; background: #f5f8fa; }
+.doctor-schedule-field select[aria-invalid="true"] { border-color: #d36666; }

@@ -17,14 +17,19 @@ import com.clinic.medicalrecord.entity.MedicalRecord;
 import com.clinic.medicalrecord.entity.Prescription;
 import com.clinic.medicalrecord.entity.PrescriptionItem;
 import com.clinic.medicalrecord.repository.MedicalRecordRepository;
+import com.clinic.medicalrecord.repository.MedicalRecordDisplayLookup;
 import com.clinic.medicalrecord.security.CurrentUserPrincipal;
 import com.clinic.medicalrecord.service.MedicalRecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -35,6 +40,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     private static final String COMPLETED_STATUS = "COMPLETED";
 
     private final MedicalRecordRepository medicalRecordRepository;
+    private final MedicalRecordDisplayLookup displayLookup;
     private final AppointmentClient appointmentClient;
     private final DoctorClient doctorClient;
     private final PatientClient patientClient;
@@ -92,6 +98,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         MedicalRecord medicalRecord = getMedicalRecordById(medicalRecordId);
         authorizeRead(authorizationHeader, principal, medicalRecord);
         auditService.recordRead(currentUserId, "MEDICAL_RECORD_READ", medicalRecordId);
+        if (principal.hasRole("DOCTOR")) {
+            return toResponse(medicalRecord, displayLookup.forDoctor(medicalRecord.getDoctorId(),
+                    List.of(medicalRecord.getId())).get(medicalRecord.getId()));
+        }
         return toResponse(medicalRecord);
     }
 
@@ -122,15 +132,59 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
             if (records.isEmpty()) {
                 throw new BusinessException(ErrorCode.FORBIDDEN, "Not authorized to view patient medical records");
             }
-            return records.stream()
-                    .map(record -> {
-                        auditService.recordRead(currentUserId, "MEDICAL_RECORD_READ", record.getId());
-                        return toResponse(record);
-                    })
-                    .toList();
+            records.forEach(record -> auditService.recordRead(currentUserId, "MEDICAL_RECORD_READ", record.getId()));
+            Map<UUID, MedicalRecordDisplayLookup.Display> display = displayLookup.forDoctor(doctorId,
+                    records.stream().map(MedicalRecord::getId).toList());
+            return records.stream().map(record -> toResponse(record, display.get(record.getId()))).toList();
         }
 
         throw new BusinessException(ErrorCode.FORBIDDEN, "Not authorized to view patient medical records");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MedicalRecordResponse> getByPatientCode(UUID currentUserId, String authorizationHeader,
+                                                        CurrentUserPrincipal principal, String patientCode) {
+        if (!principal.hasRole("DOCTOR")) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Only treating doctors can search medical records");
+        }
+        if (patientCode == null || !patientCode.matches("BN[0-9]{6,}")) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR, "Invalid patient code");
+        }
+        UUID doctorId = doctorClient.getCurrentDoctorProfile(authorizationHeader).id();
+        UUID patientId = displayLookup.patientIdForDoctorCode(doctorId, patientCode);
+        if (patientId == null) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "No medical records assigned to this doctor for that patient");
+        }
+        List<MedicalRecord> records = medicalRecordRepository.findByPatientIdAndDoctorIdOrderByCreatedAtDesc(patientId, doctorId);
+        if (records.isEmpty()) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "No medical records assigned to this doctor for that patient");
+        }
+        records.forEach(record -> auditService.recordRead(currentUserId, "MEDICAL_RECORD_READ", record.getId()));
+        Map<UUID, MedicalRecordDisplayLookup.Display> display = displayLookup.forDoctor(doctorId,
+                records.stream().map(MedicalRecord::getId).toList());
+        return records.stream().map(record -> toResponse(record, display.get(record.getId()))).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<MedicalRecordResponse> getMyDoctorRecords(UUID currentUserId, String authorizationHeader,
+                                                          CurrentUserPrincipal principal, int page, int size) {
+        // Resolve ownership from the authenticated doctor profile, never from a client-supplied doctor ID.
+        if (!principal.hasRole("DOCTOR")) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Only doctors can view their assigned medical records");
+        }
+        if (page < 0 || page > 100000 || size < 1 || size > 20) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR, "Invalid medical record page or size");
+        }
+        UUID doctorId = doctorClient.getCurrentDoctorProfile(authorizationHeader).id();
+        Page<MedicalRecord> records = medicalRecordRepository.findByDoctorId(doctorId,
+                PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))));
+        // Audit every record returned; a read audit failure must fail the response rather than silently skip it.
+        records.forEach(record -> auditService.recordRead(currentUserId, "MEDICAL_RECORD_READ", record.getId()));
+        Map<UUID, MedicalRecordDisplayLookup.Display> display = displayLookup.forDoctor(doctorId,
+                records.stream().map(MedicalRecord::getId).toList());
+        return records.map(record -> toResponse(record, display.get(record.getId())));
     }
 
     private MedicalRecord getMedicalRecordById(UUID medicalRecordId) {
@@ -167,6 +221,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
 
     private MedicalRecordResponse toResponse(MedicalRecord medicalRecord) {
+        return toResponse(medicalRecord, null);
+    }
+
+    private MedicalRecordResponse toResponse(MedicalRecord medicalRecord, MedicalRecordDisplayLookup.Display display) {
         return new MedicalRecordResponse(
                 medicalRecord.getId(),
                 medicalRecord.getAppointmentId(),
@@ -179,7 +237,15 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
                         .map(this::toPrescriptionResponse)
                         .toList(),
                 medicalRecord.getCreatedAt(),
-                medicalRecord.getUpdatedAt()
+                medicalRecord.getUpdatedAt(),
+                medicalRecord.getRecordCode(),
+                display == null ? null : display.patientCode(),
+                display == null ? null : display.patientName(),
+                display == null ? null : display.doctorCode(),
+                display == null ? null : display.doctorName(),
+                display == null ? null : display.appointmentDate(),
+                display == null ? null : display.startTime(),
+                display == null ? null : display.endTime()
         );
     }
 

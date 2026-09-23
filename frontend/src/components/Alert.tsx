@@ -6,5 +6,14 @@ type AlertProps = {
 };
 
 export default function Alert({ children, tone = 'info' }: AlertProps) {
-  return <div className={`alert alert-${tone}`}>{children}</div>;
+  const isError = tone === 'error';
+  return (
+    <div
+      className={`alert alert-${tone}`}
+      role={isError ? 'alert' : 'status'}
+      aria-live={isError ? 'assertive' : 'polite'}
+    >
+      {children}
+    </div>
+  );
 }

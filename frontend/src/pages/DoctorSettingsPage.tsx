@@ -10,6 +10,7 @@ import Avatar from '../components/Avatar';
 import PageHeader from '../components/PageHeader';
 import { integrations } from '../config/integrations.config';
 import type { CurrentUser, DoctorProfileResponse, DoctorSchedule, NotificationPreferenceResponse, NotificationType } from '../types/domain';
+import { formatVnd } from '../utils/format';
 import './doctorSettings.css';
 
 type Tab = 'account' | 'professional' | 'notifications';
@@ -21,7 +22,7 @@ const channelInfo: Record<NotificationType, { label: string; description: string
   PUSH: { label: 'Push', description: 'Chưa cấu hình nhà cung cấp Push. Không thể bật.', icon: Smartphone }
 };
 const weekdays = ['Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Chủ nhật'];
-const errorText = (cause: unknown) => cause instanceof Error ? cause.message : 'Máy chủ không thể hoàn tất yêu cầu.';
+const errorText = (cause: unknown) => cause instanceof Error ? cause.message : 'Không thể hoàn tất yêu cầu.';
 const accountStatus = (status: CurrentUser['status']) => status === 'ACTIVE' ? 'Đang hoạt động'
   : status === 'LOCKED' ? 'Đã khóa' : status === 'INACTIVE' ? 'Ngừng hoạt động' : 'Chưa có thông tin';
 const scheduleClock = (time: string) => /^\d{2}:\d{2}/.test(time) ? time.slice(0, 5) : 'Chưa rõ';
@@ -85,9 +86,9 @@ export default function DoctorSettingsPage({ user }: { user: CurrentUser }) {
     setSavingType(type); setPreferenceError(null); setNotice(null);
     try {
       const confirmed = await updateNotificationPreference(type, enabled);
-      if (!confirmed || confirmed.type !== type || confirmed.enabled !== enabled) throw new Error('Máy chủ chưa xác nhận tùy chọn mới. Tải lại để kiểm tra.');
+      if (!confirmed || confirmed.type !== type || confirmed.enabled !== enabled) throw new Error('Chưa lưu được tùy chọn. Hãy tải lại để kiểm tra.');
       setPreferences((current) => current?.map((item) => item.type === type ? confirmed : item) ?? null);
-      setNotice(`Máy chủ đã xác nhận ${enabled ? 'bật' : 'tắt'} ${channelInfo[type].label}.`);
+      setNotice(`Đã ${enabled ? 'bật' : 'tắt'} ${channelInfo[type].label}.`);
     } catch (cause) { setPreferenceError(errorText(cause)); }
     finally { setSavingType(null); }
   }
@@ -108,13 +109,13 @@ export default function DoctorSettingsPage({ user }: { user: CurrentUser }) {
     <section className="doctor-settings-hero" aria-label="Tổng quan cài đặt cá nhân"><div>
       <span className="doctor-settings-kicker"><ShieldCheck size={15} aria-hidden="true" /> KHÔNG GIAN BÁC SĨ · CÀI ĐẶT CÁ NHÂN</span>
       <h3>Cài đặt rõ ràng, thông tin an toàn.</h3>
-      <p>Quản lý tùy chọn thông báo của chính bạn và xem dữ liệu tài khoản, chuyên môn, lịch làm việc đã được máy chủ ghi nhận.</p>
+      <p>Quản lý tùy chọn thông báo và xem thông tin tài khoản, chuyên môn, lịch làm việc của bạn.</p>
       <span className="doctor-settings-hero-tag"><LockKeyhole size={15} aria-hidden="true" /> Không thay đổi cấu hình của phòng khám</span>
     </div><span className="doctor-settings-hero-icon" aria-hidden="true"><Settings2 size={62} strokeWidth={1.5} /></span></section>
     <section className="doctor-settings-stats" aria-label="Tổng quan tài khoản bác sĩ">
       <article><span className="doctor-settings-stat-icon"><UserRound size={21} /></span><small>Vai trò hiện tại</small><strong>Bác sĩ</strong><p>Phiên đăng nhập hiện tại</p></article>
-      <article><span className="doctor-settings-stat-icon blue"><Stethoscope size={21} /></span><small>Chuyên khoa</small><strong>{profileLoading ? 'Đang tải...' : doctor?.specialtyName || (profileError ? 'Chưa khả dụng' : 'Chưa cập nhật')}</strong><p>Theo hồ sơ bác sĩ từ API</p></article>
-      <article><span className="doctor-settings-stat-icon violet"><CalendarClock size={21} /></span><small>Lịch làm việc</small><strong>{dayCount === null ? '—' : `${dayCount} ngày/tuần`}</strong><p>Chỉ đếm ngày trong lịch API trả về</p></article>
+      <article><span className="doctor-settings-stat-icon blue"><Stethoscope size={21} /></span><small>Chuyên khoa</small><strong>{profileLoading ? 'Đang tải...' : doctor?.specialtyName || (profileError ? 'Chưa khả dụng' : 'Chưa cập nhật')}</strong><p>Theo hồ sơ bác sĩ</p></article>
+      <article><span className="doctor-settings-stat-icon violet"><CalendarClock size={21} /></span><small>Lịch làm việc</small><strong>{dayCount === null ? '—' : `${dayCount} ngày/tuần`}</strong><p>Số ngày có lịch làm việc</p></article>
     </section>
     <div className="doctor-settings-layout">
       <nav className="panel doctor-settings-nav" aria-label="Danh mục cài đặt bác sĩ"><span className="doctor-settings-eyebrow">THIẾT LẬP CỦA TÔI</span>
@@ -122,32 +123,32 @@ export default function DoctorSettingsPage({ user }: { user: CurrentUser }) {
           className={tab === id ? 'is-active' : ''} disabled={savingType !== null} onClick={() => { setTab(id); setNotice(null); }}>
           <span className="doctor-settings-nav-icon"><Icon size={19} aria-hidden="true" /></span><span><strong>{label}</strong><small>{description}</small></span>
         </button>)}
-        <p className="doctor-settings-nav-note"><ShieldCheck size={17} aria-hidden="true" /> Chỉ những cập nhật được API xác nhận mới hiển thị thành công.</p>
+        <p className="doctor-settings-nav-note"><ShieldCheck size={17} aria-hidden="true" /> Chỉ cập nhật đã lưu mới hiển thị thành công.</p>
       </nav>
       <div className="doctor-settings-content">
         {tab === 'account' && <>
-          <section className="panel doctor-settings-panel"><header className="doctor-settings-heading"><div><span>HỒ SƠ TÀI KHOẢN</span><h3>Thông tin đăng nhập</h3><p>Thông tin Identity trả về, không thể chỉnh sửa tại đây.</p></div><span className="doctor-settings-readonly"><LockKeyhole size={14} /> Chỉ xem</span></header>
+          <section className="panel doctor-settings-panel"><header className="doctor-settings-heading"><div><span>HỒ SƠ TÀI KHOẢN</span><h3>Thông tin đăng nhập</h3><p>Thông tin tài khoản hiện tại, không thể chỉnh sửa tại đây.</p></div><span className="doctor-settings-readonly"><LockKeyhole size={14} /> Chỉ xem</span></header>
             <div className="doctor-settings-person"><Avatar label={user.fullName || user.email} size="lg" /><div><strong>{user.fullName || user.email}</strong><span>Bác sĩ · Tài khoản hiện tại</span></div></div>
             <dl className="doctor-settings-fields"><div><dt>Họ và tên</dt><dd>{user.fullName || 'Chưa được cung cấp'}</dd></div><div><dt>Email</dt><dd>{user.email}</dd></div>
-              <div><dt>Số điện thoại</dt><dd>{user.phone || 'Chưa được cung cấp'}</dd></div><div><dt>Mã tài khoản</dt><dd>{user.userId || user.id || 'Chưa có thông tin'}</dd></div>
+              <div><dt>Số điện thoại</dt><dd>{user.phone || 'Chưa được cung cấp'}</dd></div><div><dt>Mã tài khoản</dt><dd>{user.accountCode || 'Chưa có thông tin'}</dd></div>
               <div><dt>Vai trò</dt><dd>Bác sĩ</dd></div><div><dt>Trạng thái</dt><dd>{accountStatus(user.status)}</dd></div></dl>
-            <p className="doctor-settings-note"><ShieldCheck size={17} /> Việc thay đổi tên, email hoặc quyền tài khoản cần quy trình Identity phù hợp. Trang này không gửi yêu cầu sửa tài khoản.</p>
+            <p className="doctor-settings-note"><ShieldCheck size={17} /> Việc thay đổi tên, email hoặc quyền tài khoản cần quy trình quản trị phù hợp. Trang này chỉ hiển thị thông tin.</p>
           </section>
           <section className="panel doctor-settings-panel"><header className="doctor-settings-heading"><div><span>BẢO MẬT</span><h3>Phiên đăng nhập và mật khẩu</h3><p>Các chức năng hiện có của tài khoản.</p></div><KeyRound size={21} /></header>
             <div className="doctor-settings-info"><LockKeyhole size={19} /><div><strong>Đăng xuất</strong><p>Dùng nút Đăng xuất trong thanh điều hướng để kết thúc phiên.</p></div><span>Khả dụng</span></div>
-            <div className="doctor-settings-info"><KeyRound size={19} /><div><strong>Đổi mật khẩu</strong><p>Chưa có quy trình đổi mật khẩu cá nhân được kết nối.</p></div><span>Chưa hỗ trợ</span></div></section>
+            <div className="doctor-settings-info"><KeyRound size={19} /><div><strong>Đổi mật khẩu</strong><p>Đổi mật khẩu hiện chưa khả dụng.</p></div><span>Chưa hỗ trợ</span></div></section>
         </>}
         {tab === 'professional' && <>
           <section className="panel doctor-settings-panel"><header className="doctor-settings-heading"><div><span>HỒ SƠ CHUYÊN MÔN</span><h3>Thông tin bác sĩ</h3><p>Chỉ tải hồ sơ của bác sĩ đang đăng nhập.</p></div><span className="doctor-settings-readonly"><Fingerprint size={14} /> Chỉ xem</span></header>
             {profileLoading && <p className="doctor-settings-loading" role="status">Đang tải hồ sơ chuyên môn...</p>}
             {profileError && <Alert tone="error">{profileError} <button type="button" className="soft-button" disabled={profileLoading || scheduleLoading} onClick={() => setProfileRevision((value) => value + 1)}>Thử lại</button></Alert>}
-            {doctor && <><dl className="doctor-settings-fields"><div><dt>Mã bác sĩ</dt><dd>{doctor.id}</dd></div><div><dt>Chuyên khoa</dt><dd>{doctor.specialtyName || 'Chưa cập nhật'}</dd></div>
-              <div><dt>Mã chuyên khoa</dt><dd>{doctor.specialtyId || 'Chưa cập nhật'}</dd></div><div><dt>Giá khám</dt><dd>{doctor.consultationFee == null ? 'Chưa cập nhật' : String(doctor.consultationFee)}</dd></div></dl>
+            {doctor && <><dl className="doctor-settings-fields"><div><dt>Mã bác sĩ</dt><dd>{doctor.doctorCode || 'Chưa có'}</dd></div><div><dt>Chuyên khoa</dt><dd>{doctor.specialtyName || 'Chưa cập nhật'}</dd></div>
+              <div><dt>Mã chuyên khoa</dt><dd>{doctor.specialtyId || 'Chưa cập nhật'}</dd></div><div><dt>Giá khám (VND)</dt><dd>{doctor.consultationFee == null ? 'Chưa cập nhật' : formatVnd(doctor.consultationFee)}</dd></div></dl>
               <div className="doctor-settings-biography"><strong>Tiểu sử chuyên môn</strong><p>{doctor.biography?.trim() || 'Chưa cập nhật tiểu sử.'}</p></div></>}
-            {!doctor && !profileLoading && !profileError && <p className="doctor-settings-loading">Chưa có hồ sơ được API trả về.</p>}
+            {!doctor && !profileLoading && !profileError && <p className="doctor-settings-loading">Chưa có hồ sơ để hiển thị.</p>}
             <p className="doctor-settings-note"><ShieldCheck size={17} /> Tiểu sử được chỉnh sửa ở mục Hồ sơ bác sĩ. Chuyên khoa và giá khám do quản trị viên quản lý.</p>
           </section>
-          <section className="panel doctor-settings-panel"><header className="doctor-settings-heading"><div><span>CA LÀM VIỆC</span><h3>Lịch làm việc trong tuần</h3><p>Dữ liệu lấy từ API lịch của chính bác sĩ.</p></div><CalendarClock size={22} /></header>
+          <section className="panel doctor-settings-panel"><header className="doctor-settings-heading"><div><span>CA LÀM VIỆC</span><h3>Lịch làm việc trong tuần</h3><p>Các ca làm việc của bạn.</p></div><CalendarClock size={22} /></header>
             {scheduleLoading && <p className="doctor-settings-loading" role="status">Đang tải lịch làm việc...</p>}
             {scheduleError && <Alert tone="error">{scheduleError} <button type="button" className="soft-button" disabled={profileLoading || scheduleLoading} onClick={() => setProfileRevision((value) => value + 1)}>Thử lại</button></Alert>}
             {!scheduleLoading && schedules?.length === 0 && <p className="doctor-settings-loading">Chưa có ca làm việc nào được ghi nhận.</p>}
@@ -157,11 +158,11 @@ export default function DoctorSettingsPage({ user }: { user: CurrentUser }) {
         </>}
         {tab === 'notifications' && <section className="panel doctor-settings-panel"><header className="doctor-settings-heading"><div><span>THÔNG BÁO CÁ NHÂN</span><h3>Kênh nhận thông báo</h3><p>Chỉ thay đổi tùy chọn của tài khoản đang đăng nhập.</p></div>
           {integrations.notifications && <button type="button" className="soft-button" disabled={preferenceLoading || savingType !== null} onClick={() => setPreferenceRevision((value) => value + 1)}><RefreshCw size={15} /> Tải lại</button>}</header>
-          {!integrations.notifications ? <div className="doctor-settings-empty"><Bell size={30} /><strong>Chưa bật tích hợp thông báo</strong><p>Không thể xem hoặc thay đổi tùy chọn khi API chưa được kích hoạt trong bản triển khai này.</p></div> : <>
+          {!integrations.notifications ? <div className="doctor-settings-empty"><Bell size={30} /><strong>Chưa bật tích hợp thông báo</strong><p>Tùy chọn thông báo chưa khả dụng trong tài khoản này.</p></div> : <>
             {preferenceError && <Alert tone="error">{preferenceError} <button type="button" className="soft-button" disabled={preferenceLoading || savingType !== null} onClick={() => setPreferenceRevision((value) => value + 1)}>Thử lại</button></Alert>}
             {notice && <div role="status"><Alert tone="info">{notice}</Alert></div>}
-            {preferenceLoading && <p className="doctor-settings-loading" role="status">Đang tải tùy chọn từ máy chủ...</p>}
-            {!preferenceLoading && preferences?.length === 0 && <p className="doctor-settings-loading">Máy chủ chưa trả về tùy chọn nào.</p>}
+            {preferenceLoading && <p className="doctor-settings-loading" role="status">Đang tải tùy chọn thông báo...</p>}
+            {!preferenceLoading && preferences?.length === 0 && <p className="doctor-settings-loading">Chưa có tùy chọn thông báo.</p>}
             {preferences && <div className="doctor-settings-channels">{channelTypes.filter((type) => preferences.some((item) => item.type === type)).map((type) => {
               const pref = preferences.find((item) => item.type === type)!;
               const Icon = channelInfo[type].icon;
@@ -170,7 +171,7 @@ export default function DoctorSettingsPage({ user }: { user: CurrentUser }) {
                 <input type="checkbox" aria-label={`Bật nhận thông báo ${channelInfo[type].label}`} checked={pref.enabled && type !== 'PUSH'} disabled={preferenceLoading || savingType !== null || type === 'PUSH'} onChange={(event) => void savePreference(type, event.target.checked)} />
               </label>;
             })}</div>}
-            <p className="doctor-settings-footnote"><CircleHelp size={16} /> Bật Email/SMS không đồng nghĩa nhà cung cấp đã hoạt động. Chỉ thông báo xác nhận từ API mới được coi là đã lưu.</p>
+            <p className="doctor-settings-footnote"><CircleHelp size={16} /> Bật Email/SMS không đồng nghĩa nhà cung cấp đã hoạt động. Chỉ trạng thái đã cập nhật mới được coi là đã lưu.</p>
           </>}
         </section>}
       </div>

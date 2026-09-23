@@ -9,6 +9,11 @@ public record DoctorProfileResponse(
         UUID specialtyId,
         String specialtyName,
         String biography,
-        BigDecimal consultationFee
+        BigDecimal consultationFee,
+        String doctorCode
 ) {
+    public DoctorProfileResponse(UUID id, UUID userId, UUID specialtyId, String specialtyName,
+                                 String biography, BigDecimal consultationFee) {
+        this(id, userId, specialtyId, specialtyName, biography, consultationFee, null);
+    }
 }

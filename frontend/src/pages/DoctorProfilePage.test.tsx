@@ -20,6 +20,9 @@ describe('doctor self-service profile', () => {
     expect(html).toContain('doctor-profile-workspace');
     expect(html).toContain('Hồ sơ bác sĩ');
     expect(html).toContain('Đang tải hồ sơ bác sĩ');
+    expect(html).not.toContain('doctor-profile-banner');
+    expect(html).not.toContain('Thông tin của bạn, cập nhật minh bạch.');
+    expect(html).not.toContain('Hồ sơ đã xác thực');
     expect(html).not.toContain('Bác sĩ Nguyễn Văn A');
     expect(html).not.toContain('Thành công');
     expect(html).not.toContain('Thay đổi giá khám');

@@ -15,6 +15,8 @@ import java.util.UUID;
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
     Optional<Patient> findByUserId(UUID userId);
 
+    Optional<Patient> findByPatientCode(String patientCode);
+
     @Query("select p from Patient p where (:phone is null or p.phone = :phone) "
             + "and (:name is null or lower(p.fullName) like :name escape '!') order by p.createdAt desc")
     List<Patient> searchForReception(@Param("phone") String phone, @Param("name") String name, Pageable pageable);

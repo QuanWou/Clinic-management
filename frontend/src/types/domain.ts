@@ -7,6 +7,7 @@ export type Role = {
 export type CurrentUser = {
   id?: string;
   userId?: string;
+  accountCode?: string;
   email: string;
   fullName?: string;
   phone?: string;
@@ -16,6 +17,7 @@ export type CurrentUser = {
 
 export type AuthResponse = {
   userId?: string;
+  accountCode?: string;
   email?: string;
   fullName?: string;
   roles?: string[];
@@ -50,6 +52,7 @@ export type ReceptionBookingRequest = CreateAppointmentRequest & { patientId: st
 export type ReceptionRescheduleRequest = Omit<CreateAppointmentRequest, 'reason'>;
 export type ReceptionPatientResponse = {
   id: string;
+  patientCode?: string;
   userId: string | null;
   fullName: string;
   phone: string;
@@ -109,6 +112,8 @@ export type LabBillableItemsResponse = {
   finalizedForBilling: boolean;
   billableRevision: string | null;
 };
+/** Doctor-only read-only status: never exposes financial items or clinical results. */
+export type LabBillingStatusResponse = { medicalRecordId: string; finalizedForBilling: boolean };
 export type AppointmentAvailabilityResponse = {
   doctorId: string; date: string; startTime: string; endTime: string; available: boolean;
 };
@@ -120,6 +125,12 @@ export type PageResponse<T> = {
   size: number;
 };
 export type AdminDoctorResponse = DoctorProfileResponse & { active: boolean };
+/** Identity's administrator-only account lookup; never returned by public doctor directories. */
+export type AdminUserResponse = {
+  id: string;
+  fullName: string;
+  accountCode?: string;
+};
 /** Administrator-only doctor profile operations; account creation belongs to Identity. */
 export type CreateAdminDoctorRequest = {
   userId: string; specialtyId: string; biography: string; consultationFee: string;
@@ -152,6 +163,7 @@ export type UpdatePatientProfileRequest = {
 
 export type PatientProfileResponse = {
   id: string;
+  patientCode?: string;
   userId: string;
   dob?: string | null;
   gender?: PatientGender | string | null;
@@ -162,7 +174,10 @@ export type PatientProfileResponse = {
 
 export type DoctorProfileResponse = {
   id: string;
+  doctorCode?: string;
   userId: string;
+  /** Verified from the linked, active DOCTOR account in Identity. */
+  fullName?: string;
   specialtyId?: string | null;
   specialtyName?: string | null;
   biography?: string | null;
@@ -216,9 +231,17 @@ export type PrescriptionResponse = {
 
 export type MedicalRecordResponse = {
   id: string;
+  recordCode?: string | null;
   appointmentId: string;
   patientId: string;
   doctorId: string;
+  patientCode?: string | null;
+  patientName?: string | null;
+  doctorCode?: string | null;
+  doctorName?: string | null;
+  appointmentDate?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
   symptoms?: string | null;
   diagnosis: string;
   notes?: string | null;

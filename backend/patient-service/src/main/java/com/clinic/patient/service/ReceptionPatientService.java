@@ -7,7 +7,9 @@ import com.clinic.patient.dto.RegisterWalkInPatientRequest;
 import com.clinic.patient.entity.Patient;
 import com.clinic.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,13 +33,37 @@ public class ReceptionPatientService {
                 .address(request.address())
                 .bloodType(request.bloodType())
                 .build();
-        return toResponse(repository.save(patient));
+        Patient saved = repository.save(patient);
+        repository.flush(); // Populate database-generated patientCode before responding.
+        return toResponse(saved);
     }
 
     @Transactional(readOnly = true)
     public ReceptionPatientResponse get(UUID id) {
         return toResponse(repository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Patient not found")));
+    }
+
+    /** Resolve the public chart number within the same role-restricted reception API. */
+    @Transactional(readOnly = true)
+    public ReceptionPatientResponse getByCode(String code) {
+        String normalized = code == null ? "" : code.trim().toUpperCase(Locale.ROOT);
+        if (normalized.length() > 24 || !normalized.matches("BN[0-9]{6,}")) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR, "Invalid patient code");
+        }
+        return toResponse(repository.findByPatientCode(normalized)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Patient not found")));
+    }
+
+    /** Authorized staff directory: return one stable page instead of transferring all medical profiles. */
+    @Transactional(readOnly = true)
+    public Page<ReceptionPatientResponse> list(int page, int size) {
+        if (page < 0 || size < 1 || size > 50) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR, "Page must be nonnegative and size between 1 and 50");
+        }
+        return repository.findAll(PageRequest.of(page, size,
+                Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))))
+                .map(this::toResponse);
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +81,7 @@ public class ReceptionPatientService {
 
     private ReceptionPatientResponse toResponse(Patient patient) {
         return new ReceptionPatientResponse(patient.getId(), patient.getUserId(), patient.getFullName(),
-                patient.getPhone(), patient.getDob(), patient.getGender(), patient.getAddress(), patient.getBloodType());
+                patient.getPhone(), patient.getDob(), patient.getGender(), patient.getAddress(), patient.getBloodType(),
+                patient.getPatientCode());
     }
 }

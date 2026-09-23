@@ -18,7 +18,7 @@ export type AdminSettingsTab = 'account' | 'notifications' | 'system';
 const channelLabels: Record<NotificationType, { title: string; description: string }> = {
   EMAIL: { title: 'Email', description: 'Nhận thông báo qua thư điện tử khi hệ thống hỗ trợ gửi.' },
   SMS: { title: 'SMS', description: 'Tùy chọn nhận thông báo qua tin nhắn điện thoại.' },
-  PUSH: { title: 'Push', description: 'Chưa có nhà cung cấp Push; không thể bật trong phiên bản này.' },
+  PUSH: { title: 'Push', description: 'Kênh này hiện chưa khả dụng.' },
   IN_APP: { title: 'Trong ứng dụng', description: 'Tùy chọn thông báo trong hộp thư cá nhân.' }
 };
 const channels: NotificationType[] = ['IN_APP', 'EMAIL', 'SMS', 'PUSH'];
@@ -67,10 +67,10 @@ export default function AdminSettingsPage({ user }: { user: CurrentUser }) {
     try {
       const confirmed = await updateNotificationPreference(type, enabled);
       if (!confirmed || confirmed.type !== type || confirmed.enabled !== enabled) {
-        throw new Error('Máy chủ chưa xác nhận thay đổi. Vui lòng tải lại tùy chọn.');
+        throw new Error('Thay đổi chưa được xác nhận. Vui lòng tải lại tùy chọn.');
       }
       setPreferences((current) => current?.map((item) => item.type === type ? confirmed : item) ?? null);
-      setNotice(`Đã ${enabled ? 'bật' : 'tắt'} tùy chọn ${channelLabels[type].title} theo xác nhận từ máy chủ.`);
+      setNotice(`Đã ${enabled ? 'bật' : 'tắt'} tùy chọn ${channelLabels[type].title}.`);
     } catch (cause) {
       setPreferenceError(apiMessage(cause));
     } finally {
@@ -99,18 +99,18 @@ export default function AdminSettingsPage({ user }: { user: CurrentUser }) {
         <h3>Thiết lập rõ ràng, quản lý an toàn.</h3>
         <p>Xem thông tin tài khoản, điều chỉnh tùy chọn thông báo cá nhân và kiểm tra cấu hình giao diện được triển khai.</p>
         <div className="admin-settings-hero-tags"><span><LockKeyhole size={14} aria-hidden="true" /> Chỉ trong tài khoản hiện tại</span>
-          <span><CheckCircle2 size={14} aria-hidden="true" /> Không dùng dữ liệu mẫu</span></div>
+          <span><CheckCircle2 size={14} aria-hidden="true" /> Cài đặt riêng tư</span></div>
       </div>
       <div className="admin-settings-hero-symbol" aria-hidden="true"><Settings2 size={58} strokeWidth={1.4} /></div>
     </section>
 
     <section className="admin-settings-highlights" aria-label="Trạng thái cài đặt">
       <article className="admin-settings-highlight"><span className="admin-settings-highlight-icon"><Fingerprint size={22} /></span>
-        <span>Vai trò đang sử dụng</span><strong>Quản trị viên</strong><small>Được xác định từ phiên đăng nhập</small></article>
+        <span>Vai trò đang sử dụng</span><strong>Quản trị viên</strong><small>Quyền truy cập hiện tại</small></article>
       <article className="admin-settings-highlight blue"><span className="admin-settings-highlight-icon"><Bell size={22} /></span>
-        <span>Thông báo cá nhân</span><strong>{integrations.notifications ? 'Có cấu hình API' : 'Chưa bật tích hợp'}</strong><small>Không đồng nghĩa với xác nhận gửi tin thành công</small></article>
+        <span>Thông báo cá nhân</span><strong>{integrations.notifications ? 'Đang bật' : 'Chưa bật'}</strong><small>Tùy chọn nhận tin</small></article>
       <article className="admin-settings-highlight violet"><span className="admin-settings-highlight-icon"><ShieldCheck size={22} /></span>
-        <span>Trạng thái tài khoản</span><strong>{accountStatus}</strong><small>Theo thông tin Identity cung cấp</small></article>
+        <span>Trạng thái tài khoản</span><strong>{accountStatus}</strong><small>Trạng thái hiện tại</small></article>
     </section>
 
     <section className="admin-settings-layout" aria-label="Khu vực cài đặt">
@@ -122,14 +122,14 @@ export default function AdminSettingsPage({ user }: { user: CurrentUser }) {
           <span><Icon size={19} aria-hidden="true" /></span><span><strong>{label}</strong><small>{description}</small></span>
         </button>)}
         <div className="admin-settings-navigation-foot"><CircleHelp size={18} aria-hidden="true" />
-          <p>Chỉ các thay đổi được API xác nhận mới được thông báo đã lưu.</p></div>
+          <p>Thay đổi chỉ được báo đã lưu sau khi hoàn tất.</p></div>
       </nav>
 
       <div className="admin-settings-content">
         {tab === 'account' && <>
           <article className="panel admin-settings-panel">
             <div className="admin-settings-heading"><div><span className="admin-settings-eyebrow">HỒ SƠ TÀI KHOẢN</span>
-              <h3>Thông tin quản trị viên</h3><p>Dữ liệu tài khoản trả về từ Identity, chỉ đọc trong trang này.</p></div>
+              <h3>Thông tin quản trị viên</h3><p>Thông tin tài khoản chỉ xem tại đây.</p></div>
               <span className="admin-settings-pill"><LockKeyhole size={13} aria-hidden="true" /> Chỉ xem</span></div>
             <div className="admin-settings-identity"><Avatar label={user.fullName || user.email} size="lg" />
               <div><strong>{user.fullName || user.email}</strong><span>{roles.join(' · ') || 'Chưa xác định vai trò'}</span></div></div>
@@ -137,12 +137,12 @@ export default function AdminSettingsPage({ user }: { user: CurrentUser }) {
               <div><dt>Họ và tên</dt><dd>{user.fullName || 'Chưa được cung cấp'}</dd></div>
               <div><dt>Email</dt><dd>{user.email}</dd></div>
               <div><dt>Số điện thoại</dt><dd>{user.phone || 'Chưa được cung cấp'}</dd></div>
-              <div><dt>Mã tài khoản</dt><dd>{user.userId || user.id || 'Chưa được cung cấp'}</dd></div>
+              <div><dt>Mã tài khoản</dt><dd>{user.accountCode || 'Chưa được cung cấp'}</dd></div>
               <div><dt>Vai trò</dt><dd>{roles.join(', ') || 'Chưa xác định'}</dd></div>
               <div><dt>Trạng thái</dt><dd>{accountStatus}</dd></div>
             </dl>
             <div className="admin-settings-explainer"><ShieldCheck size={19} aria-hidden="true" />
-              <p>Trang này không hỗ trợ tự sửa tài khoản. Không có thay đổi tên, email hoặc vai trò nào được gửi lên máy chủ.</p></div>
+              <p>Liên hệ quản trị viên để cập nhật tên, email hoặc vai trò tài khoản.</p></div>
           </article>
           <article className="panel admin-settings-panel admin-settings-security">
             <div className="admin-settings-heading"><div><span className="admin-settings-eyebrow">BẢO MẬT TÀI KHOẢN</span>
@@ -158,13 +158,13 @@ export default function AdminSettingsPage({ user }: { user: CurrentUser }) {
             {integrations.notifications && <button type="button" className="soft-button" disabled={loading || savingType !== null}
               onClick={() => setRevision((value) => value + 1)}><RefreshCw size={15} aria-hidden="true" /> Tải lại</button>}</div>
           {!integrations.notifications ? <div className="admin-settings-empty"><Bell size={27} aria-hidden="true" />
-            <strong>Tích hợp thông báo chưa được bật</strong><p>Chưa thể xem hoặc thay đổi tùy chọn khi API thông báo không được kích hoạt trong bản triển khai.</p></div>
+            <strong>Tích hợp thông báo chưa được bật</strong><p>Chưa thể xem hoặc thay đổi tùy chọn lúc này.</p></div>
             : <>
               {preferenceError && <Alert tone="error">{preferenceError} <button type="button" disabled={loading || savingType !== null}
                 onClick={() => setRevision((value) => value + 1)}>Thử lại</button></Alert>}
               {notice && <div role="status"><Alert tone="info">{notice}</Alert></div>}
-              {loading && <p role="status" className="admin-settings-loading">Đang tải tùy chọn từ máy chủ...</p>}
-              {!loading && preferences?.length === 0 && <p className="admin-settings-loading">Máy chủ chưa trả về kênh thông báo nào.</p>}
+              {loading && <p role="status" className="admin-settings-loading">Đang tải tùy chọn...</p>}
+              {!loading && preferences?.length === 0 && <p className="admin-settings-loading">Chưa có kênh thông báo nào.</p>}
               {!loading && preferences && <div className="admin-settings-channels">
                 {channels.filter((type) => preferences.some((item) => item.type === type)).map((type) => {
                   const preference = preferences.find((item) => item.type === type)!;
@@ -176,27 +176,27 @@ export default function AdminSettingsPage({ user }: { user: CurrentUser }) {
                       disabled={savingType !== null || type === 'PUSH'} onChange={(event) => void changePreference(type, event.target.checked)} />
                   </label>;
                 })}</div>}
-              <p className="admin-settings-footnote">Thay đổi chỉ hiển thị sau khi API xác nhận. Bật một kênh không bảo đảm hệ thống đã cấu hình nhà cung cấp gửi tin.</p>
+              <p className="admin-settings-footnote">Chỉ bật kênh bạn muốn sử dụng. Khả năng nhận tin còn tùy thuộc cấu hình dịch vụ.</p>
             </>}
         </article>}
 
         {tab === 'system' && <>
           <article className="panel admin-settings-panel">
             <div className="admin-settings-heading"><div><span className="admin-settings-eyebrow">CẤU HÌNH TRIỂN KHAI</span>
-              <h3>Tích hợp giao diện</h3><p>Thông tin từ các cờ cấu hình frontend, không phải kiểm tra sức khỏe server.</p></div>
+              <h3>Tích hợp giao diện</h3><p>Trạng thái các tính năng đang có trong giao diện.</p></div>
               <span className="admin-settings-pill"><Settings2 size={13} aria-hidden="true" /> Chỉ xem</span></div>
             <div className="admin-settings-features">{features.map((feature) => <div className="admin-settings-feature" key={feature.name}>
               <span className={feature.enabled ? 'admin-settings-feature-icon enabled' : 'admin-settings-feature-icon'}>
                 {feature.enabled ? <CheckCircle2 size={18} aria-hidden="true" /> : <CircleHelp size={18} aria-hidden="true" />}</span>
               <strong>{feature.name}</strong><span className={feature.enabled ? 'admin-settings-state enabled' : 'admin-settings-state'}>
                 {feature.enabled ? 'Bật trong giao diện' : 'Chưa bật'}</span></div>)}</div>
-            <p className="admin-settings-footnote">Trạng thái này không chứng minh API đã kết nối, có dữ liệu hay gửi thông báo thành công.</p>
+            <p className="admin-settings-footnote">Các tính năng chỉ hoạt động khi dịch vụ tương ứng đã sẵn sàng.</p>
           </article>
           <article className="panel admin-settings-panel">
             <div className="admin-settings-heading"><div><span className="admin-settings-eyebrow">THIẾT LẬP PHÒNG KHÁM</span>
-              <h3>Cấu hình chung</h3><p>Chức năng này cần API lưu cấu hình riêng và phân quyền Admin.</p></div></div>
+              <h3>Cấu hình chung</h3><p>Thiết lập tên phòng khám, giờ hoạt động và chính sách đặt lịch.</p></div></div>
             <div className="admin-settings-explainer"><LockKeyhole size={20} aria-hidden="true" />
-              <p>Chưa có API cấu hình chung được kết nối cho tên phòng khám, giờ hoạt động hoặc chính sách đặt lịch. Không có biểu mẫu lưu giả hay cấu hình chỉ lưu trong trình duyệt.</p></div>
+              <p>Tính năng cấu hình chung hiện chưa khả dụng.</p></div>
           </article>
         </>}
       </div>

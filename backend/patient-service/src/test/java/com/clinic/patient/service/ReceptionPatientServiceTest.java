@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -50,10 +52,52 @@ class ReceptionPatientServiceTest {
     }
 
     @Test
+    void resolvesPublicPatientCodeToTheExistingPatientId() {
+        UUID id = UUID.randomUUID();
+        Patient patient = Patient.builder().id(id).fullName("Đặng Gia Phong").build();
+        patient.setPatientCode("BN000513");
+        when(repository.findByPatientCode("BN000513")).thenReturn(java.util.Optional.of(patient));
+        var resolved = service.getByCode(" bn000513 ");
+        assertEquals(id, resolved.id());
+        assertEquals("BN000513", resolved.patientCode());
+        verify(repository).findByPatientCode("BN000513");
+    }
+
+    @Test
+    void rejectsMalformedCodesWithoutConsultingTheDirectory() {
+        assertEquals(ErrorCode.VALIDATION_ERROR,
+                assertThrows(BusinessException.class, () -> service.getByCode("e2000000-0000-4000-8000-000000000499")).getErrorCode());
+        assertEquals(ErrorCode.VALIDATION_ERROR,
+                assertThrows(BusinessException.class, () -> service.getByCode("BN00051%_")).getErrorCode());
+        verifyNoInteractions(repository);
+    }
+
+    @Test
     void escapesWildcardCharactersInPatientName() {
         when(repository.searchForReception(null, "%anh!%!_%", PageRequest.of(0, 50)))
                 .thenReturn(List.of());
         assertTrue(service.search(null, "Anh%_").isEmpty());
         verify(repository).searchForReception(null, "%anh!%!_%", PageRequest.of(0, 50));
+    }
+
+    @Test
+    void staffDirectoryReturnsPagedPatientNamesAndTotalWithoutSearchTerms() {
+        Patient patient = Patient.builder().id(UUID.randomUUID()).fullName("Nguyễn Thị An").phone("0900000000").build();
+        var pageable = PageRequest.of(1, 20, Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id")));
+        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(patient), pageable, 41));
+        var page = service.list(1, 20);
+        assertEquals(41, page.getTotalElements());
+        assertEquals(1, page.getNumber());
+        assertEquals("Nguyễn Thị An", page.getContent().get(0).fullName());
+        verify(repository).findAll(pageable);
+    }
+
+    @Test
+    void rejectsUnboundedOrInvalidDirectoryRequests() {
+        assertEquals(ErrorCode.VALIDATION_ERROR,
+                assertThrows(BusinessException.class, () -> service.list(0, 1000)).getErrorCode());
+        assertEquals(ErrorCode.VALIDATION_ERROR,
+                assertThrows(BusinessException.class, () -> service.list(-1, 20)).getErrorCode());
+        verifyNoInteractions(repository);
     }
 }

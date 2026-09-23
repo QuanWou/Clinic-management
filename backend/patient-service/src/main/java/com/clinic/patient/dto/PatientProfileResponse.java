@@ -11,6 +11,11 @@ public record PatientProfileResponse(
         String gender,
         String address,
         String bloodType,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        String patientCode
 ) {
+    public PatientProfileResponse(UUID id, UUID userId, LocalDate dob, String gender,
+                                  String address, String bloodType, LocalDateTime updatedAt) {
+        this(id, userId, dob, gender, address, bloodType, updatedAt, null);
+    }
 }

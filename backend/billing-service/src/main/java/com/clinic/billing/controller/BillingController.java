@@ -11,6 +11,7 @@ import com.clinic.common.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,6 +32,16 @@ import java.util.UUID;
 public class BillingController {
 
     private final BillingService billingService;
+
+    /** Bounded, server-paginated directory for staff; patients must use /my. */
+    @GetMapping("/staff")
+    public ApiResponse<Page<InvoiceResponse>> getStaffInvoices(
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return ApiResponse.success("Staff invoices fetched successfully", billingService.getStaffInvoices(principal, page, size));
+    }
 
     @PostMapping
     public ApiResponse<InvoiceResponse> create(

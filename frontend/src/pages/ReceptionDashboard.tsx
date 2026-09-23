@@ -66,11 +66,11 @@ function ReceptionOverview({ data, onNavigate }: { data: ReceptionData; onNaviga
   ] as const;
 
   return <div className="reception-dashboard" aria-label="Dashboard tiếp đón lễ tân">
-    <section className="reception-dashboard-hero" aria-label="Tổng quan quầy lễ tân">
+    <section className="reception-dashboard-hero reception-dashboard-compact-hero" aria-label="Tổng quan quầy lễ tân">
       <div className="reception-dashboard-hero-copy">
-        <span className="reception-dashboard-eyebrow"><HeartPulse size={15} aria-hidden="true" /> KHÔNG GIAN LỄ TÂN · DỮ LIỆU NGÀY KHÁM</span>
+        <span className="reception-dashboard-eyebrow"><HeartPulse size={15} aria-hidden="true" /> CA KHÁM HÔM NAY</span>
         <h3>Trung tâm tiếp đón bệnh nhân</h3>
-        <p>Theo dõi lịch cần xác nhận, bệnh nhân sắp đến và hàng đợi khám từ dữ liệu được API cấp quyền.</p>
+        <p>Theo dõi lịch cần xác nhận, bệnh nhân sắp đến và hàng đợi khám tại quầy.</p>
         <div className="reception-dashboard-hero-tags"><span><CalendarDays size={15} aria-hidden="true" /> {formatDate(data.date)}</span>
           <span><CalendarCheck2 size={15} aria-hidden="true" /> {appointmentsToday.length} lịch chưa hủy</span></div>
       </div>
@@ -112,15 +112,15 @@ function ReceptionOverview({ data, onNavigate }: { data: ReceptionData; onNaviga
             <Badge tone={visit.status}>{statusLabel(visit.status)}</Badge>
           </div>)}</div>}
         {queue.length > 5 && <p className="reception-dashboard-more">Đang hiển thị 5/{queue.length} lượt.</p>}
-        <p className="reception-dashboard-permission">Lễ tân không tự hoàn tất khám; thao tác chuyển trạng thái thực hiện theo quyền trên trang Lịch hẹn.</p>
+        <p className="reception-dashboard-permission">Cập nhật trạng thái lượt khám tại trang Lịch hẹn.</p>
       </article>
     </section>
 
     <section className="reception-dashboard-bottom" aria-label="Lịch sử và thông tin điều phối">
       <article className="panel reception-dashboard-history">
         <div className="reception-dashboard-heading"><div><span className="reception-dashboard-kicker">HOẠT ĐỘNG GẦN ĐÂY</span><h3>Xu hướng tiếp nhận 30 ngày</h3>
-          <p>{history ? `${formatDate(history.from)} – ${formatDate(history.to)}` : 'Báo cáo lịch sử chưa được xác minh'}</p></div>
-          {history && <span className="reception-dashboard-count">Dữ liệu API</span>}</div>
+          <p>{history ? `${formatDate(history.from)} – ${formatDate(history.to)}` : 'Chưa có thống kê trong khoảng thời gian này'}</p></div>
+          {history && <span className="reception-dashboard-count">30 ngày</span>}</div>
         {history ? <><div className="reception-dashboard-chart-summary"><span><i className="reception-dashboard-dot bookings" /> Lịch hẹn <strong>{historyBookings.toLocaleString('vi-VN')}</strong></span>
           <span><i className="reception-dashboard-dot checkins" /> Check-in <strong>{historyCheckins.toLocaleString('vi-VN')}</strong></span></div>
           {days.every((day) => day.appointments === 0 && day.checkIns === 0)
@@ -130,11 +130,11 @@ function ReceptionOverview({ data, onNavigate }: { data: ReceptionData; onNaviga
                 {days.map((day, index) => <div className="reception-dashboard-chart-day" key={day.date} title={`${formatDate(day.date)}: ${day.appointments} lịch, ${day.checkIns} check-in`}>
                   <div className="reception-dashboard-chart-bars" aria-hidden="true"><span className="bookings" style={{ height: `${day.appointments ? Math.max(3, day.appointments / chartMax * 100) : 0}%` }} />
                     <span className="checkins" style={{ height: `${day.checkIns ? Math.max(3, day.checkIns / chartMax * 100) : 0}%` }} /></div>
-                  <small>{index % 5 === 0 || index === days.length - 1 ? day.date.slice(8) : ''}</small>
+                  <small>{chartTick(day.date, index, days.length)}</small>
                 </div>)}</div></div>}
-          <p className="reception-dashboard-note">Thống kê lấy từ API; có thể bao gồm dữ liệu thử nghiệm đã nhập. Không dùng làm báo cáo doanh thu.</p></>
+          <p className="reception-dashboard-note">Biểu đồ tổng hợp lịch hẹn và check-in theo ngày.</p></>
           : <div className="reception-dashboard-empty" role="status"><Clock3 size={24} aria-hidden="true" />
-            <strong>Báo cáo 30 ngày chưa khả dụng</strong><p>{data.historyError || 'Không có dữ liệu lịch sử được xác minh.'} Chỉ số trong ngày phía trên vẫn được giữ nguyên.</p></div>}
+            <strong>Báo cáo 30 ngày chưa khả dụng</strong><p>{data.historyError || 'Không có dữ liệu lịch sử trong khoảng thời gian này.'} Chỉ số trong ngày phía trên vẫn được giữ nguyên.</p></div>}
       </article>
       <div className="reception-dashboard-side">
         <article className="panel reception-dashboard-doctors">
@@ -146,7 +146,7 @@ function ReceptionOverview({ data, onNavigate }: { data: ReceptionData; onNaviga
           {onNavigate && <button className="reception-dashboard-panel-action" type="button" onClick={() => onNavigate('appointments')}>Xem phân bổ trong Lịch hẹn <ArrowRight size={16} aria-hidden="true" /></button>}
         </article>
         <article className="reception-dashboard-shortcuts" aria-label="Truy cập nhanh cho lễ tân">
-          <span className="reception-dashboard-kicker">CÔNG CỤ TIẾP ĐÓN</span><h3>Truy cập nhanh</h3><p>Chuyển đến nghiệp vụ đúng quyền tài khoản.</p>
+          <span className="reception-dashboard-kicker">CÔNG CỤ TIẾP ĐÓN</span><h3>Truy cập nhanh</h3><p>Mở lịch hẹn, bệnh nhân hoặc hóa đơn.</p>
           <div>{onNavigate && <><button type="button" onClick={() => onNavigate('appointments')}><CalendarDays size={18} aria-hidden="true" /> Lịch hẹn & check-in <ArrowRight size={16} aria-hidden="true" /></button>
             <button type="button" onClick={() => onNavigate('patients')}><UsersRound size={18} aria-hidden="true" /> Tìm bệnh nhân <ArrowRight size={16} aria-hidden="true" /></button>
             {integrations.billing && <button type="button" onClick={() => onNavigate('invoices')}><ClipboardCheck size={18} aria-hidden="true" /> Tra cứu hóa đơn <ArrowRight size={16} aria-hidden="true" /></button>}</>}</div>
@@ -166,4 +166,10 @@ function PriorityRow({ appointment, stage }: { appointment: AppointmentResponse;
     <div><strong>BN {shortId(appointment.patientId)}</strong><small>Lịch #{shortId(appointment.id)} · BS {shortId(appointment.doctorId)}</small></div>
     <span className="reception-dashboard-stage">{stage}</span>
   </div>;
+}
+
+function chartTick(date: string, index: number, total: number): string {
+  const day = date.slice(8);
+  if (index % 5 !== 0 && index !== total - 1 && day !== '01') return '';
+  return day === '01' ? `${day}/${date.slice(5, 7)}` : day;
 }

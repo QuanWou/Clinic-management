@@ -54,7 +54,9 @@ public class PatientService {
         patient.setAddress(normalizeNullable(request.address()));
         patient.setBloodType(normalizeBloodType(request.bloodType()));
 
-        return toResponse(patientRepository.save(patient));
+        Patient saved = patientRepository.save(patient);
+        patientRepository.flush(); // Also handles first-time profile creation.
+        return toResponse(saved);
     }
 
     private PatientProfileResponse toResponse(Patient patient) {
@@ -65,7 +67,8 @@ public class PatientService {
                 patient.getGender(),
                 patient.getAddress(),
                 patient.getBloodType(),
-                patient.getUpdatedAt()
+                patient.getUpdatedAt(),
+                patient.getPatientCode()
         );
     }
 

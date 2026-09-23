@@ -8,9 +8,9 @@ type StatCardProps = {
 export default function StatCard({ label, value, detail, tone = 'green' }: StatCardProps) {
   return (
     <article className={`stat-card stat-card-${tone}`}>
-      <span>{label}</span>
-      <strong>{value}</strong>
-      <p>{detail}</p>
+      <span className="stat-card-label">{label}</span>
+      <strong className="stat-card-value">{value}</strong>
+      <p className="stat-card-detail">{detail}</p>
     </article>
   );
 }

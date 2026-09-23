@@ -6,11 +6,15 @@ export const apiEndpoints = {
     logout: '/api/auth/logout'
   },
   users: {
-    me: '/api/users/me'
+    me: '/api/users/me',
+    doctorNames: '/api/users/doctors/names',
+    adminById: (id: string) => `/api/users/admin/${encodeURIComponent(id)}`
   },
   patients: {
     profile: '/api/patients/profile',
     reception: '/api/patients/reception',
+    receptionList: '/api/patients/reception/list',
+    receptionByCode: (code: string) => `/api/patients/reception/code/${encodeURIComponent(code)}`,
     receptionById: (id: string) => `/api/patients/reception/${encodeURIComponent(id)}`
   },
   doctors: {
@@ -59,9 +63,12 @@ export const apiEndpoints = {
   medicalRecords: {
     collection: '/api/medical-records',
     my: '/api/medical-records/my',
+    doctorMy: '/api/medical-records/doctor/my',
+    doctorPatientByCode: (code: string) => `/api/medical-records/doctor/patients/code/${encodeURIComponent(code)}`,
     byId: (id: string) => `/api/medical-records/${id}`,
     byPatient: (patientId: string) => `/api/medical-records/patients/${encodeURIComponent(patientId)}`,
     labOrders: (recordId: string) => `/api/medical-records/${encodeURIComponent(recordId)}/lab-orders`,
+    labBillingStatus: (recordId: string) => `/api/medical-records/${encodeURIComponent(recordId)}/lab-orders/billing-status`,
     labOrderStatus: (orderId: string, action: 'sample' | 'processing' | 'result' | 'release') =>
       `/api/medical-records/lab-orders/${encodeURIComponent(orderId)}/${action}`,
     labBillable: (appointmentId: string) => `/api/medical-records/appointments/${encodeURIComponent(appointmentId)}/billable-items`,
@@ -69,6 +76,7 @@ export const apiEndpoints = {
   },
   invoices: {
     collection: '/api/invoices',
+    staff: '/api/invoices/staff',
     my: '/api/invoices/my',
     byId: (id: string) => `/api/invoices/${id}`,
     byPatient: (patientId: string) => `/api/invoices/patients/${patientId}`,

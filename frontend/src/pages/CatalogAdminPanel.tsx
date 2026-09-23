@@ -24,7 +24,7 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
   async function execute(action: () => Promise<void>, label: string) {
     setBusy(true); setError(null); setNotice(null);
     try { await action(); setNotice(label); onChanged(); }
-    catch (cause) { setError(cause instanceof Error ? cause.message : 'Catalog rejected the operation'); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : 'Thao tác chưa được chấp nhận.'); }
     finally { setBusy(false); }
   }
 
@@ -34,10 +34,10 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
     await execute(async () => {
       const response = await createCatalogService({ ...service, active: true });
       if (!response.id || response.code.toUpperCase() !== service.code.toUpperCase() || !response.active) {
-        throw new Error('Catalog did not confirm the service');
+        throw new Error('Chưa xác nhận được dịch vụ vừa tạo.');
       }
       setService({ code: '', name: '', description: '' });
-    }, 'Dịch vụ đã được Catalog ghi nhận; cần công bố đơn giá để tính phí.');
+    }, 'Đã thêm dịch vụ. Hãy công bố đơn giá để tính phí.');
   }
 
   async function addMedicine(event: FormEvent<HTMLFormElement>) {
@@ -46,10 +46,10 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
     await execute(async () => {
       const response = await createCatalogMedicine({ ...medicine, active: true });
       if (!response.id || response.code.toUpperCase() !== medicine.code.toUpperCase() || !response.active) {
-        throw new Error('Catalog did not confirm the medicine');
+        throw new Error('Chưa xác nhận được thuốc vừa tạo.');
       }
       setMedicine({ code: '', name: '', unit: '', description: '' });
-    }, 'Thuốc đã được Catalog ghi nhận.');
+    }, 'Đã thêm thuốc.');
   }
 
   async function publishPrice(event: FormEvent<HTMLFormElement>) {
@@ -62,15 +62,15 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
         { amount, currency: 'VND', effectiveFrom, effectiveUntil: null });
       if (response.serviceId !== serviceId || response.currency !== 'VND' ||
           response.effectiveFrom !== effectiveFrom || String(response.amount) !== String(Number(amount))) {
-        throw new Error('Catalog did not confirm the service price; refresh to verify');
+        throw new Error('Chưa xác nhận được đơn giá; hãy tải lại để kiểm tra.');
       }
       setAmount(''); setEffectiveFrom('');
-    }, 'Đơn giá đã được Catalog công bố.');
+    }, 'Đã công bố đơn giá.');
   }
 
-  return <section className="panel settings-form catalog-admin-panel" aria-label="Admin quản lý Catalog">
-    <h3>Quản lý Catalog · Chỉ Admin</h3>
-    <p>Không có dữ liệu mẫu. Các biểu mẫu chỉ ghi thay đổi khi bạn xác nhận và Catalog API trả về kết quả hợp lệ. Chỉ nhập thông tin đã được phòng khám phê duyệt.</p>
+  return <section className="panel settings-form catalog-admin-panel" aria-label="Quản lý danh mục dành cho quản trị viên">
+    <h3>Quản lý danh mục</h3>
+    <p>Thêm dịch vụ, thuốc và công bố đơn giá đã được phòng khám phê duyệt.</p>
     {error && <Alert tone="error">{error}</Alert>}
     {notice && <Alert tone="info">{notice}</Alert>}
     <form onSubmit={(event) => void addService(event)}>
@@ -113,7 +113,7 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
         if (!window.confirm(`Ngừng sử dụng dịch vụ ${item.code}?`)) return;
         void execute(async () => {
           const response = await deactivateCatalogService(item.id);
-          if (response.id !== item.id || response.active) throw new Error('Catalog did not confirm deactivation');
+          if (response.id !== item.id || response.active) throw new Error('Chưa xác nhận được trạng thái ngừng sử dụng.');
         }, 'Dịch vụ đã ngừng sử dụng.');
       }}>Ngừng dịch vụ</button></div>)}
     {medicines.map((item) => <div key={item.id} className="person-row"><span>{item.code} — {item.name}</span>
@@ -121,7 +121,7 @@ export default function CatalogAdminPanel({ services, medicines, onChanged }: {
         if (!window.confirm(`Ngừng sử dụng thuốc ${item.code}?`)) return;
         void execute(async () => {
           const response = await deactivateCatalogMedicine(item.id);
-          if (response.id !== item.id || response.active) throw new Error('Catalog did not confirm deactivation');
+          if (response.id !== item.id || response.active) throw new Error('Chưa xác nhận được trạng thái ngừng sử dụng.');
         }, 'Thuốc đã ngừng sử dụng.');
       }}>Ngừng thuốc</button></div>)}
   </section>;

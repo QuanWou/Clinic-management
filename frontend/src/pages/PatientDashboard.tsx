@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarCheck2, CalendarDays, Clock3, FileText, HeartPulse, ReceiptText, ShieldCheck, Stethoscope } from 'lucide-react';
+import { ArrowRight, CalendarCheck2, CalendarDays, Clock3, FileText, HeartPulse, ReceiptText, Stethoscope } from 'lucide-react';
 import Badge from '../components/Badge';
 import type { CurrentUser, DashboardResponse } from '../types/domain';
 import type { AppView } from '../types/view';
@@ -19,17 +19,12 @@ export default function PatientDashboard({ data, user, onNavigate }: { data: Das
     { label: 'Bệnh án', description: 'Xem hồ sơ của chính bạn', view: 'medical-records', icon: FileText },
     { label: 'Hóa đơn', description: 'Theo dõi chi phí và trạng thái', view: 'invoices', icon: ReceiptText }
   ];
-  return <div className="patient-portal patient-dashboard" aria-label="Tổng quan bệnh nhân">
-    <section className="patient-hero"><div><span className="patient-kicker"><ShieldCheck size={15} /> CỔNG THÔNG TIN BỆNH NHÂN · DỮ LIỆU CÁ NHÂN</span>
-      <h3>Chủ động theo dõi sức khỏe của bạn.</h3><p>Xin chào {user.fullName || user.email}. Lịch khám, bệnh án và chi phí dưới đây được tổng hợp riêng từ tài khoản đang đăng nhập.</p>
-      <div className="patient-hero-tags"><span><CalendarDays size={15} /> {formatDate(today)}</span><span><CalendarCheck2 size={15} /> {upcoming.length} lịch sắp tới</span></div></div>
-      {onNavigate && <button type="button" className="patient-hero-action" onClick={() => onNavigate('appointments')}>Xem lịch khám <ArrowRight size={17} /></button>}
-    </section>
+  return <div className="patient-portal patient-dashboard" aria-label={`Tổng quan bệnh nhân của ${user.fullName || user.email}`}>
     <section className="patient-metrics" aria-label="Số liệu cá nhân">{[
       { label: 'Lịch khám của tôi', value: data.appointments.length, hint: 'Tất cả trạng thái', icon: CalendarDays, tone: 'green' },
-      { label: 'Lịch sắp tới', value: upcoming.length, hint: 'Chờ hoặc đã xác nhận', icon: Clock3, tone: 'blue' },
+      { label: 'Lịch sắp tới', value: upcoming.length, hint: `${upcoming.length} lịch sắp tới · Chờ hoặc đã xác nhận`, icon: Clock3, tone: 'blue' },
       { label: 'Hồ sơ bệnh án', value: data.medicalRecords.length, hint: 'Trong hồ sơ của tôi', icon: FileText, tone: 'purple' },
-      { label: 'Hóa đơn chưa thanh toán', value: unpaid, hint: 'Trạng thái từ Billing', icon: ReceiptText, tone: 'orange' }
+      { label: 'Hóa đơn chưa thanh toán', value: unpaid, hint: 'Cần thanh toán', icon: ReceiptText, tone: 'orange' }
     ].map(({ label, value, hint, icon: Icon, tone }) => <article key={label}><span className={`patient-metric-icon ${tone}`}><Icon size={21} /></span><strong>{value}</strong><h4>{label}</h4><p>{hint}</p></article>)}</section>
     <div className="patient-dashboard-layout"><section className="panel patient-panel"><div className="patient-section-head"><div><span>LỊCH KHÁM CỦA TÔI</span><h3>Lịch khám sắp tới</h3><p>{upcoming.length ? 'Những lịch khám cần theo dõi.' : 'Chưa có lịch khám sắp tới.'}</p></div>
         {onNavigate && <button type="button" className="soft-button" onClick={() => onNavigate('appointments')}>Tất cả lịch <ArrowRight size={15} /></button>}</div>

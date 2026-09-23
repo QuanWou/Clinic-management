@@ -15,6 +15,9 @@ public interface LabOrderService {
 
     List<LabOrderResponse> list(CurrentUserPrincipal principal, String authorization, UUID recordId);
 
+    /** Read-only billing lock state for the authenticated treating doctor; no billing item details. */
+    boolean isBillingFinalized(CurrentUserPrincipal principal, String authorization, UUID recordId);
+
     LabOrderResponse get(CurrentUserPrincipal principal, String authorization, UUID orderId);
 
     LabOrderResponse collect(CurrentUserPrincipal principal, String authorization, UUID orderId, CollectLabSampleRequest request);

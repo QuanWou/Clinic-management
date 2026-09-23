@@ -1,0 +1,32 @@
+.doctor-picker { position: relative; min-width: 0; width: 100%; font-weight: 400; }
+.doctor-picker .doctor-picker-trigger { box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: .75rem; width: 100%; min-height: 51px; padding: .55rem .85rem; border: 1px solid #d8e5ec; border-radius: 12px; background: #fff; box-shadow: none; color: #253e4b; text-align: left; }
+.doctor-picker .doctor-picker-trigger:hover:not(:disabled) { border-color: #56ae8d; background: #fafefc; color: #253e4b; box-shadow: none; }
+.doctor-picker .doctor-picker-trigger:disabled { cursor: not-allowed; opacity: .65; }
+.doctor-picker .doctor-picker-trigger[aria-invalid="true"] { border-color: #d36666; }
+/* Only the focused control gets a ring; opening the list must not highlight the inactive trigger. */
+.doctor-picker .doctor-picker-trigger:focus-visible { outline: 2px solid #218463; outline-offset: 1px; }
+.doctor-picker.is-open .doctor-picker-trigger:not(:focus-visible) { outline: none; border-color: #c3dbd2; }
+.doctor-picker-trigger-copy, .doctor-picker-option-text { display: grid; min-width: 0; gap: .18rem; }
+.doctor-picker-trigger-copy strong, .doctor-picker-option-text strong { color: #273f4d; font-size: .82rem; font-weight: 750; overflow-wrap: anywhere; }
+.doctor-picker-trigger-copy small, .doctor-picker-option-text small { font-size: .74rem; color: #617989; line-height: 1.4; }
+.doctor-picker-placeholder { color: #738692; font-size: .82rem; }
+.doctor-picker-chevron { flex: none; color: #6e8290; transition: transform .16s ease; }
+.doctor-picker.is-open .doctor-picker-chevron { transform: rotate(180deg); }
+.doctor-picker-popover { box-sizing: border-box; position: absolute; top: calc(100% + .45rem); left: 0; right: 0; z-index: 35; padding: .7rem; border: 1px solid #cce4d9; border-radius: 13px; background: #fff; box-shadow: 0 15px 42px #183f3b24; }
+.doctor-picker-search { display: flex; align-items: center; gap: .55rem; border: 1px solid #c9ddd6; border-radius: 9px; padding: 0 .65rem; color: #247c64; background: #f8fcfa; }
+.doctor-picker .doctor-picker-search input { box-sizing: border-box; flex: 1 1 0; width: 0; min-width: 0; height: 41px; margin: 0; padding: .45rem 0; border: 0; border-radius: 0; background: transparent; outline: none; box-shadow: none; color: #253e4b; font: inherit; font-size: .82rem; }
+.doctor-picker .doctor-picker-search input:focus-visible { border: 0; outline: none; box-shadow: none; }
+/* A single focus indicator on the search group, not another rectangle around the input. */
+.doctor-picker .doctor-picker-search:focus-within { border: 2px solid #218463; padding-inline: calc(.65rem - 1px); box-shadow: none; background: #fff; }
+.doctor-picker-count { margin: .7rem .25rem .5rem; color: #607987; font-size: .7rem; font-weight: 500; line-height: 1.4; }
+.doctor-picker-options { max-height: 238px; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid #edf2f0; }
+.doctor-picker .doctor-picker-option { box-sizing: border-box; display: flex; align-items: center; gap: .65rem; width: 100%; min-height: 55px; padding: .53rem .5rem; background: #fff; border: none; border-bottom: 1px solid #eff3f2; border-radius: 7px; color: #253e4b; text-align: left; box-shadow: none; }
+.doctor-picker .doctor-picker-option:last-child { border-bottom: none; }
+.doctor-picker .doctor-picker-option:hover, .doctor-picker .doctor-picker-option.is-active { background: #eaf8f1; color: #253e4b; box-shadow: none; }
+.doctor-picker .doctor-picker-option[aria-selected="true"] { background: #e5f5ec; }
+.doctor-picker-avatar { display: grid; place-items: center; flex: none; width: 37px; height: 37px; border-radius: 10px; background: #e5f5ee; color: #188362; }
+.doctor-picker-option-text { flex: 1; }
+.doctor-picker-check { flex: none; color: #15835f; }
+.doctor-picker-empty { padding: 1rem .4rem; margin: 0; color: #667d88; font-size: .8rem; font-weight: 400; line-height: 1.5; }
+@media (max-width: 600px) { .doctor-picker-popover { padding: .5rem; } .doctor-picker-options { max-height: min(210px, 35dvh); } }
+@media (prefers-reduced-motion: reduce) { .doctor-picker-chevron { transition: none; } }

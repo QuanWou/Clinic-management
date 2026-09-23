@@ -12,6 +12,28 @@ import './doctor-dashboard.css';
 type DoctorData = Extract<StaffDashboard, { scope: 'DOCTOR' }>;
 type Props = { data: StaffDashboard; onNavigate?: (view: AppView) => void };
 
+/** Six equal five-day periods keep the entire 30-day report visible without horizontal scrolling. */
+export function groupDoctorHistory(days: NonNullable<DoctorData['history']>['days']) {
+  const periods = [];
+  for (let index = 0; index < days.length; index += 5) {
+    const period = days.slice(index, index + 5);
+    if (!period.length) continue;
+    periods.push({
+      from: period[0].date,
+      to: period[period.length - 1].date,
+      checkIns: period.reduce((total, day) => total + day.checkIns, 0),
+      completedVisits: period.reduce((total, day) => total + day.completedVisits, 0)
+    });
+  }
+  return periods;
+}
+
+function periodLabel(from: string, to: string) {
+  const start = `${from.slice(8, 10)}/${from.slice(5, 7)}`;
+  const end = `${to.slice(8, 10)}/${to.slice(5, 7)}`;
+  return from.slice(5, 7) === to.slice(5, 7) ? `${from.slice(8, 10)}–${end}` : `${start}–${end}`;
+}
+
 const statuses: { code: QueueStatus; label: string; className: string }[] = [
   { code: 'WAITING', label: 'Đang chờ', className: 'waiting' },
   { code: 'CALLED', label: 'Đã gọi', className: 'called' },
@@ -53,7 +75,8 @@ function DoctorOverview({ data, onNavigate }: { data: DoctorData; onNavigate?: (
     ? data.history : null;
   const checkIns = history?.days.reduce((sum, day) => sum + day.checkIns, 0) ?? 0;
   const completedHistory = history?.days.reduce((sum, day) => sum + day.completedVisits, 0) ?? 0;
-  const maxDay = Math.max(1, ...(history?.days.map((day) => Math.max(day.checkIns, day.completedVisits)) ?? []));
+  const periods = history ? groupDoctorHistory(history.days) : [];
+  const maxPeriod = Math.max(2, ...periods.map((period) => Math.max(period.checkIns, period.completedVisits)));
   const cards = [
     { label: 'Lượt check-in của tôi', value: queue.length, note: 'Lượt khám đã tiếp nhận hôm nay', icon: UsersRound, color: 'teal' },
     { label: 'Đang chờ khám', value: waiting, note: `${count('CALLED')} lượt đã được gọi`, icon: Clock3, color: 'amber' },
@@ -62,11 +85,11 @@ function DoctorOverview({ data, onNavigate }: { data: DoctorData; onNavigate?: (
   ] as const;
 
   return <div className="doctor-dashboard" aria-label="Tổng quan làm việc của bác sĩ">
-    <section className="doctor-dashboard-hero" aria-label="Ca khám hôm nay">
+    <section className="doctor-dashboard-hero doctor-dashboard-compact-hero" aria-label="Ca khám hôm nay">
       <div className="doctor-dashboard-hero-content">
-        <span className="doctor-dashboard-eyebrow"><HeartPulse size={15} aria-hidden="true" /> KHÔNG GIAN BÁC SĨ · DỮ LIỆU CÁ NHÂN</span>
+        <span className="doctor-dashboard-eyebrow"><HeartPulse size={15} aria-hidden="true" /> CA KHÁM HÔM NAY</span>
         <h3>Ca khám của bạn hôm nay</h3>
-        <p>Tiến độ tiếp nhận và khám bệnh trong phạm vi được hệ thống phân công. Danh sách chỉ bao gồm bệnh nhân đã check-in.</p>
+        <p>Tiến độ tiếp nhận và khám bệnh của các lượt đã check-in trong ca hôm nay.</p>
         <div className="doctor-dashboard-hero-tags"><span><CalendarDays size={15} aria-hidden="true" /> {formatDate(data.date)}</span>
           <span><ClipboardList size={15} aria-hidden="true" /> {queue.length} lượt trong hàng đợi</span></div>
       </div>
@@ -85,27 +108,30 @@ function DoctorOverview({ data, onNavigate }: { data: DoctorData; onNavigate?: (
     <section className="doctor-dashboard-insights" aria-label="Tiến độ khám và lịch sử">
       <article className="panel doctor-dashboard-chart-panel">
         <div className="doctor-dashboard-heading"><div><span className="doctor-dashboard-section-tag">PHÂN TÍCH CA KHÁM</span><h3>Hoạt động 30 ngày của tôi</h3>
-          <p>{history ? `${formatDate(history.from)} – ${formatDate(history.to)}` : 'Chưa có báo cáo lịch sử được xác minh'}</p></div>
-          {history && <span className="doctor-dashboard-source">Dữ liệu API</span>}
+          <p>{history ? `${formatDate(history.from)} – ${formatDate(history.to)}` : 'Chưa có thống kê trong khoảng thời gian này'}</p></div>
+          {history && <span className="doctor-dashboard-source">30 ngày</span>}
         </div>
         {history ? <>
           <div className="doctor-dashboard-chart-summary"><div><span className="doctor-dashboard-chart-dot checkins" /> Lượt check-in <strong>{checkIns.toLocaleString('vi-VN')}</strong></div>
             <div><span className="doctor-dashboard-chart-dot finished" /> Khám hoàn tất <strong>{completedHistory.toLocaleString('vi-VN')}</strong></div></div>
           {history.days.every((day) => day.checkIns === 0 && day.completedVisits === 0)
             ? <div className="doctor-dashboard-empty" role="status">Không có lượt khám được ghi nhận trong khoảng thời gian này.</div>
-            : <div className="doctor-dashboard-chart-scroll" tabIndex={0} aria-label="Biểu đồ 30 ngày, cuộn ngang để xem toàn bộ">
-              <div className="doctor-dashboard-chart" role="img" aria-label={`Từ ${formatDate(history.from)} đến ${formatDate(history.to)}: ${checkIns} lượt check-in và ${completedHistory} lượt khám hoàn tất`}>
-                {history.days.map((day, index) => <div className="doctor-dashboard-chart-day" key={day.date} title={`${formatDate(day.date)}: ${day.checkIns} lượt check-in, ${day.completedVisits} hoàn tất`}>
+            : <div className="doctor-dashboard-chart-layout">
+              <div className="doctor-dashboard-chart-scale" aria-hidden="true"><span>{maxPeriod}</span><span>{Math.round(maxPeriod / 2)}</span><span>0</span></div>
+              <div className="doctor-dashboard-chart" role="group" aria-label={`Sáu giai đoạn, mỗi giai đoạn 5 ngày, từ ${formatDate(history.from)} đến ${formatDate(history.to)}: ${checkIns} lượt check-in và ${completedHistory} lượt khám hoàn tất`}>
+                {periods.map((period) => <div className="doctor-dashboard-chart-day" key={period.from} tabIndex={0}
+                  aria-label={`${formatDate(period.from)} đến ${formatDate(period.to)}: ${period.checkIns} lượt check-in, ${period.completedVisits} lượt khám hoàn tất`}
+                  title={`${formatDate(period.from)} – ${formatDate(period.to)}: ${period.checkIns} lượt check-in, ${period.completedVisits} hoàn tất`}>
                   <div className="doctor-dashboard-chart-bars" aria-hidden="true">
-                    <span className="checkins" style={{ height: `${day.checkIns ? Math.max(3, day.checkIns / maxDay * 100) : 0}%` }} />
-                    <span className="finished" style={{ height: `${day.completedVisits ? Math.max(3, day.completedVisits / maxDay * 100) : 0}%` }} />
-                  </div><small>{index % 5 === 0 || index === history.days.length - 1 ? day.date.slice(8) : ''}</small>
+                    <span className="checkins" style={{ height: `${period.checkIns ? Math.max(3, period.checkIns / maxPeriod * 100) : 0}%` }} />
+                    <span className="finished" style={{ height: `${period.completedVisits ? Math.max(3, period.completedVisits / maxPeriod * 100) : 0}%` }} />
+                  </div><small>{periodLabel(period.from, period.to)}</small>
                 </div>)}
               </div>
             </div>}
-          <p className="doctor-dashboard-data-note">Thống kê theo phạm vi bác sĩ được backend cấp quyền; có thể bao gồm dữ liệu thử nghiệm đã nhập.</p>
+          <p className="doctor-dashboard-data-note">6 giai đoạn, mỗi giai đoạn 5 ngày · Di chuột hoặc dùng Tab để xem số liệu từng giai đoạn.</p>
         </> : <div className="doctor-dashboard-empty" role="status">{data.historyError
-          ? `Không tải được báo cáo 30 ngày: ${data.historyError}` : 'Báo cáo 30 ngày chưa khả dụng.'} Các chỉ số hôm nay vẫn lấy từ API hàng đợi.</div>}
+          ? `Không tải được báo cáo 30 ngày: ${data.historyError}` : 'Báo cáo 30 ngày chưa khả dụng.'} Các chỉ số hôm nay vẫn được hiển thị.</div>}
       </article>
 
       <article className="panel doctor-dashboard-status-panel">
@@ -128,27 +154,25 @@ function DoctorOverview({ data, onNavigate }: { data: DoctorData; onNavigate?: (
         {onNavigate && integrations.appointmentOwnership && <button className="doctor-dashboard-list-action" type="button" onClick={() => onNavigate('appointments')}>
           Xem danh sách lịch hẹn <ArrowRight size={16} aria-hidden="true" />
         </button>}
-        {!integrations.appointmentOwnership && <p className="doctor-dashboard-hint">Danh sách chi tiết đang chờ xác minh quyền truy cập của API lịch hẹn.</p>}
+        {!integrations.appointmentOwnership && <p className="doctor-dashboard-hint">Danh sách chi tiết sẽ hiển thị khi quyền lịch hẹn được bật.</p>}
       </article>
 
-      <div className="doctor-dashboard-work-side">
-        <article className="panel doctor-dashboard-next-panel">
+      <article className="panel doctor-dashboard-next-panel">
           <div className="doctor-dashboard-heading"><div><span className="doctor-dashboard-section-tag">THEO DÕI CA KHÁM</span><h3>Lượt cần chú ý</h3><p>Ưu tiên lượt đang khám hoặc đã gọi.</p></div></div>
           {next ? <div className="doctor-dashboard-next-visit"><span className="doctor-dashboard-next-number">#{next.queueNumber}</span>
             <div><strong>Mã bệnh nhân {shortId(next.patientId)}</strong><span>Mã lịch {shortId(next.appointmentId)}</span>
               <small>Check-in: {checkInTime(next.checkedInAt)}</small></div><Badge tone={next.status}>{statusLabel(next.status)}</Badge></div>
             : <p className="doctor-dashboard-empty-queue">Hiện không có lượt đang khám hoặc chờ khám.</p>}
           {next?.status === 'WAITING' && <p className="doctor-dashboard-hint">Lượt này đang chờ lễ tân gọi trước khi bác sĩ bắt đầu khám.</p>}
-        </article>
-        <article className="doctor-dashboard-shortcuts" aria-label="Truy cập nhanh dành cho bác sĩ">
-          <span className="doctor-dashboard-section-tag">TIẾP TỤC CÔNG VIỆC</span><h3>Truy cập nhanh</h3><p>Mở các chức năng theo quyền tài khoản.</p>
+      </article>
+      <article className="doctor-dashboard-shortcuts" aria-label="Truy cập nhanh dành cho bác sĩ">
+          <span className="doctor-dashboard-section-tag">TIẾP TỤC CÔNG VIỆC</span><h3>Truy cập nhanh</h3><p>Mở hàng đợi hoặc hồ sơ cần xử lý.</p>
           {onNavigate && <div className="doctor-dashboard-shortcut-links">
             {integrations.appointmentOwnership && <button type="button" onClick={() => onNavigate('appointments')}><CalendarDays size={18} aria-hidden="true" /> Hàng đợi / Lịch hẹn <ArrowRight size={16} aria-hidden="true" /></button>}
             <button type="button" onClick={() => onNavigate('medical-records')}><ClipboardList size={18} aria-hidden="true" /> Hồ sơ bệnh án <ArrowRight size={16} aria-hidden="true" /></button>
             <button type="button" onClick={() => onNavigate('doctor-profile')}><UserRound size={18} aria-hidden="true" /> Hồ sơ bác sĩ <ArrowRight size={16} aria-hidden="true" /></button>
           </div>}
-        </article>
-      </div>
+      </article>
     </section>
   </div>;
 }

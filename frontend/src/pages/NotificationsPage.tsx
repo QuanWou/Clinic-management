@@ -22,9 +22,9 @@ const PAGE_SIZE = 7;
 const channels: InboxChannelFilter[] = ['ALL', 'IN_APP', 'EMAIL', 'SMS', 'PUSH'];
 const preferenceDescriptions: Record<NotificationType, string> = {
   IN_APP: 'Nhận thông báo cá nhân ngay trong hộp thư này.',
-  EMAIL: 'Tùy chọn nhận Email. Việc gửi thực tế còn phụ thuộc cấu hình máy chủ.',
-  SMS: 'Tùy chọn nhận SMS. Việc gửi thực tế còn phụ thuộc cấu hình máy chủ.',
-  PUSH: 'Chưa có nhà cung cấp Push; không thể bật trong phiên bản này.'
+  EMAIL: 'Nhận thông báo qua thư điện tử.',
+  SMS: 'Nhận thông báo qua tin nhắn điện thoại.',
+  PUSH: 'Kênh này hiện chưa khả dụng.'
 };
 
 function message(cause: unknown): string {
@@ -40,8 +40,8 @@ export default function NotificationsPage({ role }: { role?: ClinicRole }) {
       <section className="notifications-unavailable panel" aria-label="Thông báo chưa được kích hoạt">
         <span className="notifications-unavailable-icon"><Bell size={32} /></span>
         <h3>Hộp thư cá nhân chưa được bật</h3>
-        <p>Tính năng Thông báo chưa được xác nhận sẵn sàng trong cấu hình triển khai này. Không hiển thị dữ liệu mẫu hoặc thông báo của người khác.</p>
-        <Alert tone="info">Hộp thư cá nhân chưa được bật trong cấu hình triển khai này.</Alert>
+        <p>Hộp thư cá nhân hiện chưa khả dụng.</p>
+        <Alert tone="info">Thông báo chưa được bật.</Alert>
       </section>
     </div>;
   }
@@ -111,9 +111,9 @@ function ActiveNotificationsPage({ isDoctor, isPatient }: { isDoctor: boolean; i
     setBusyId(id); setActionError(null); setNotice(null);
     try {
       const confirmed = await markNotificationRead(id);
-      if (confirmed.id !== id || !confirmed.readAt) throw new Error('Máy chủ chưa xác nhận trạng thái đã đọc.');
+      if (confirmed.id !== id || !confirmed.readAt) throw new Error('Chưa xác nhận được trạng thái đã đọc.');
       setItems((previous) => previous?.map((item) => item.id === id ? confirmed : item) ?? null);
-      setNotice('Máy chủ đã xác nhận thông báo được đánh dấu đã đọc.');
+      setNotice('Đã đánh dấu thông báo đã đọc.');
     } catch (cause) { setActionError(message(cause)); }
     finally { setBusyId(null); }
   }
@@ -123,9 +123,9 @@ function ActiveNotificationsPage({ isDoctor, isPatient }: { isDoctor: boolean; i
     setSavingType(type); setActionError(null); setNotice(null);
     try {
       const confirmed = await updateNotificationPreference(type, enabled);
-      if (confirmed.type !== type || confirmed.enabled !== enabled) throw new Error('Máy chủ chưa xác nhận tùy chọn thông báo.');
+      if (confirmed.type !== type || confirmed.enabled !== enabled) throw new Error('Chưa xác nhận được tùy chọn thông báo.');
       setPreferences((previous) => previous?.map((item) => item.type === type ? confirmed : item) ?? null);
-      setNotice(`Đã lưu tùy chọn ${channelLabel(type)} theo xác nhận của máy chủ.`);
+      setNotice(`Đã lưu tùy chọn ${channelLabel(type)}.`);
     } catch (cause) { setActionError(message(cause)); }
     finally { setSavingType(null); }
   }
@@ -151,7 +151,7 @@ function ActiveNotificationsPage({ isDoctor, isPatient }: { isDoctor: boolean; i
         <span className="notifications-kicker"><ShieldCheck size={15} aria-hidden="true" /> {isDoctor ? 'KHÔNG GIAN BÁC SĨ · HỘP THƯ CÁ NHÂN' : isPatient ? 'KHÔNG GIAN BỆNH NHÂN · HỘP THƯ CỦA TÔI' : 'HỘP THƯ CÁ NHÂN'}</span>
         <h3>{isDoctor ? 'Cập nhật dành riêng cho bác sĩ' : isPatient ? 'Theo dõi thông tin chăm sóc của bạn.' : 'Không bỏ lỡ thông tin quan trọng.'}</h3>
         <p>{isDoctor ? 'Theo dõi thông báo được gửi đến tài khoản của bạn, xem các mục chưa đọc và quản lý kênh nhận tin. Không hiển thị hộp thư của người khác.' : isPatient ? 'Xem thông báo được gửi riêng cho bạn, đánh dấu đã đọc và điều chỉnh kênh nhận tin. Không hiển thị hộp thư của người khác.' : 'Thông báo từ hệ thống được gửi theo quyền của tài khoản. Kiểm tra các cập nhật và quản lý tùy chọn nhận tin tại một nơi.'}</p>
-        <span className="notifications-hero-tag"><BellRing size={15} aria-hidden="true" /> Chỉ dữ liệu từ API /my</span>
+        <span className="notifications-hero-tag"><BellRing size={15} aria-hidden="true" /> Hộp thư riêng tư</span>
       </div>
       <div className="notifications-hero-art" aria-hidden="true">{isDoctor ? <Stethoscope size={69} strokeWidth={1.45} /> : <Bell size={69} strokeWidth={1.45} />}</div>
     </section>
@@ -164,8 +164,8 @@ function ActiveNotificationsPage({ isDoctor, isPatient }: { isDoctor: boolean; i
       {[
         { title: 'Tổng thông báo', value: counts?.total, icon: Inbox, tone: 'blue', note: 'Trong hộp thư đã tải' },
         { title: 'Chưa đọc', value: counts?.unread, icon: BellRing, tone: 'orange', note: 'Cần bạn xem' },
-        { title: 'Đã đọc', value: counts?.read, icon: CheckCheck, tone: 'green', note: 'Máy chủ đã ghi nhận' },
-        { title: 'Gửi thất bại', value: counts?.failed, icon: CircleAlert, tone: 'purple', note: 'Trạng thái gửi từ API' }
+        { title: 'Đã đọc', value: counts?.read, icon: CheckCheck, tone: 'green', note: 'Đã xem' },
+        { title: 'Gửi thất bại', value: counts?.failed, icon: CircleAlert, tone: 'purple', note: 'Cần kiểm tra' }
       ].map(({ title, value, icon: Icon, tone, note }) => <article className={`notifications-metric notifications-metric-${tone}`} key={title}>
         <span className="notifications-metric-icon"><Icon size={21} aria-hidden="true" /></span>
         <strong>{value === undefined ? '—' : value.toLocaleString('vi-VN')}</strong><h4>{title}</h4><p>{note}</p>
@@ -249,7 +249,7 @@ function ActiveNotificationsPage({ isDoctor, isPatient }: { isDoctor: boolean; i
             <input type="checkbox" aria-label={`Bật ${channelLabel(preference.type)}`} checked={preference.enabled} disabled={busy || loadingPreferences || preference.type === 'PUSH'}
               onChange={(event) => void savePreference(preference.type, event.target.checked)} />
           </label>)}
-          <p className="notifications-preference-note"><ShieldCheck size={15} aria-hidden="true" /> Chỉ trạng thái từ máy chủ được ghi nhận. Bật Email/SMS không xác nhận rằng nhà cung cấp đã được cấu hình.</p>
+          <p className="notifications-preference-note"><ShieldCheck size={15} aria-hidden="true" /> Khả năng nhận tin còn tùy thuộc cấu hình dịch vụ.</p>
         </section>
       </aside>
     </div>

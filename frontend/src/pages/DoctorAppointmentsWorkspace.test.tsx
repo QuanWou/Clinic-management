@@ -26,8 +26,8 @@ describe('doctor-owned appointments UI', () => {
     expect(html).toContain('doctor-appointments-workspace');
     expect(html).toContain('Lịch hẹn của tôi');
     expect(html).toContain('Hàng đợi được phân công'.toLocaleUpperCase('vi-VN'));
-    expect(html).toContain('Appointment UUID');
-    expect(html).toContain('API chưa cấp danh sách lịch hẹn chưa check-in');
+    expect(html).toContain('Mã lịch hẹn');
+    expect(html).toContain('Hàng đợi chỉ hiển thị lượt đã check-in được phân công cho bạn.');
     expect(html).not.toContain('Đặt lịch cho bệnh nhân');
     expect(html).not.toContain('New Appointment');
     expect(html).not.toContain('Doanh thu');
@@ -38,7 +38,7 @@ describe('doctor-owned appointments UI', () => {
     expect(html).toContain('Đang tải hàng đợi đã check-in');
     expect(html).not.toContain('doctor-appointments-metrics');
     expect(html).not.toContain('Sarah Lee');
-    expect(html).not.toContain('Đã hoàn tất theo xác nhận');
+    expect(html).not.toContain('Lượt khám đã hoàn tất.');
     expect(html).not.toContain('Xác nhận lịch hẹn');
   });
 

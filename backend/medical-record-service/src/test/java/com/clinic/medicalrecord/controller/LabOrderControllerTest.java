@@ -130,4 +130,30 @@ class LabOrderControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value(ErrorCode.CONFLICT));
     }
+
+    @Test
+    void billingStatusReturnsOnlyRecordIdAndFinalizedFlagForAuthorizedDoctor() throws Exception {
+        UUID recordId = UUID.randomUUID();
+        when(service.isBillingFinalized(any(), eq("Bearer token"), eq(recordId))).thenReturn(true);
+
+        mvc.perform(get("/api/medical-records/{recordId}/lab-orders/billing-status", recordId)
+                        .header("Authorization", "Bearer token"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.medicalRecordId").value(recordId.toString()))
+                .andExpect(jsonPath("$.data.finalizedForBilling").value(true))
+                .andExpect(jsonPath("$.data.items").doesNotExist())
+                .andExpect(jsonPath("$.data.patientId").doesNotExist());
+    }
+
+    @Test
+    void billingStatusRejectsDoctorWithoutRecordOwnership() throws Exception {
+        UUID recordId = UUID.randomUUID();
+        when(service.isBillingFinalized(any(), eq("Bearer token"), eq(recordId)))
+                .thenThrow(new BusinessException(ErrorCode.FORBIDDEN, "No treating-doctor relationship"));
+
+        mvc.perform(get("/api/medical-records/{recordId}/lab-orders/billing-status", recordId)
+                        .header("Authorization", "Bearer token"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.errorCode").value(ErrorCode.FORBIDDEN));
+    }
 }

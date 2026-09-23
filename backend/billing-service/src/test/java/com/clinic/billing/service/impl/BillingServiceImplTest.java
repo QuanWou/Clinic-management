@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -97,6 +99,29 @@ class BillingServiceImplTest {
     private BusinessException createFailure() {
         return assertThrows(BusinessException.class,
                 () -> billing.create(user, AUTH, cashier, new CreateInvoiceRequest(appointmentId)));
+    }
+
+    @Test void staffDirectoryIsRoleBoundedPagedAndSortedWithoutExposingPatientInvoices() {
+        var record = invoice(UUID.randomUUID(), InvoiceStatus.UNPAID);
+        when(invoices.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(record)));
+        var result = billing.getStaffInvoices(cashier, 0, 20);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(record.getId(), result.getContent().get(0).id());
+        var pageable = org.mockito.ArgumentCaptor.forClass(Pageable.class);
+        verify(invoices).findAll(pageable.capture());
+        assertEquals(0, pageable.getValue().getPageNumber());
+        assertEquals(20, pageable.getValue().getPageSize());
+        assertEquals("createdAt: DESC,id: DESC", pageable.getValue().getSort().toString());
+        clearInvocations(invoices);
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> billing.getStaffInvoices(patient, 0, 20)).getErrorCode());
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> billing.getStaffInvoices(principal("DOCTOR"), 0, 20)).getErrorCode());
+        assertEquals(ErrorCode.VALIDATION_ERROR, assertThrows(BusinessException.class,
+                () -> billing.getStaffInvoices(admin, -1, 20)).getErrorCode());
+        assertEquals(ErrorCode.VALIDATION_ERROR, assertThrows(BusinessException.class,
+                () -> billing.getStaffInvoices(admin, 0, 51)).getErrorCode());
+        verifyNoInteractions(invoices);
     }
 
     @Test void createsInvoiceFromVerifiedServerItemsAndVersions() {

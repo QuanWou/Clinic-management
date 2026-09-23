@@ -59,7 +59,7 @@ describe('role-aware pages and empty states', () => {
     const invoices = renderToStaticMarkup(<InvoicesPage invoices={[]} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
     const records = renderToStaticMarkup(<MedicalRecordsPage records={[]} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
     expect(appointments).toContain('Không có lịch hẹn phù hợp.');
-    expect(invoices).toContain('No invoices found.');
+    expect(invoices).toContain('Bạn chưa có hóa đơn.');
     expect(records).toContain('Chưa có hồ sơ bệnh án.');
     expect(invoices).not.toContain('December 12, 2024');
     expect(records).not.toContain('December 26, 2024');
@@ -71,7 +71,7 @@ describe('role-aware pages and empty states', () => {
       expect(html).not.toContain('Hồ sơ bệnh án');
       const role = user.roles?.[0] === 'ROLE_ADMIN' ? 'ADMIN' : 'RECEPTIONIST';
       const records = renderToStaticMarkup(<MedicalRecordsPage records={[]} role={role} error={null} loading={false} onRefresh={noop} />);
-      expect(records).toContain('restricted to patients');
+      expect(records).toContain('Trang hồ sơ bệnh án dành cho bệnh nhân và bác sĩ điều trị.');
       expect(records).not.toContain('Patient UUID');
       expect(records).not.toContain('Diagnosis');
     }
@@ -95,11 +95,11 @@ describe('role-aware pages and empty states', () => {
     const reception = renderToStaticMarkup(<ReceptionAppointmentsPage role="RECEPTIONIST" />);
     const patients = renderToStaticMarkup(<ReceptionPatientsPage role="RECEPTIONIST" />);
     const doctors = renderToStaticMarkup(<DoctorsPage role="ADMIN" />);
-    expect(catalog).toContain('not enabled');
+    expect(catalog).toContain('Danh mục hiện chưa khả dụng.');
     expect(notifications).toContain('chưa được bật');
     expect(notifications).not.toContain('Task 06 is merged');
-    expect(reception).toContain('unavailable');
-    expect(patients).toContain('unavailable');
+    expect(reception).toContain('chưa khả dụng');
+    expect(patients).toContain('chưa khả dụng');
     expect(doctors).toContain('not enabled');
     expect([catalog, notifications, reception, patients, doctors].join(' ')).not.toContain('Loading catalog');
   });
@@ -109,10 +109,10 @@ describe('role-aware pages and empty states', () => {
     expect(doctorQueue).toContain('Hàng đợi của tôi');
     expect(doctorQueue).not.toContain('ClinicDemo@2026');
     const cashier = renderToStaticMarkup(<BillingWorkflowPanel onCreated={noop} />);
-    expect(cashier).toContain('Xuất hóa đơn từ dữ liệu thực tế');
+    expect(cashier).toContain('Xuất hóa đơn');
     expect(cashier).not.toContain('Thanh toán thành công');
     const catalog = renderToStaticMarkup(<CatalogAdminPanel services={[]} medicines={[]} onChanged={noop} />);
-    expect(catalog).toContain('Quản lý Catalog');
+    expect(catalog).toContain('Quản lý danh mục');
     expect(catalog).not.toContain('DỮ LIỆU MẪU');
     const lab = renderToStaticMarkup(<LabOrdersPanel doctor={false} record={{
       id: 'record', appointmentId: 'appointment', patientId: 'patient', doctorId: 'doctor', diagnosis: 'Sample',
@@ -232,7 +232,7 @@ describe('role-aware pages and empty states', () => {
       items: [{ id: 'item', sourceType: 'SERVICE', sourceId: 'source', serviceId: 'service', serviceCode: 'CONSULT', serviceName: 'Consultation',
         priceId: 'version-1', serviceDate: '2026-09-20', unitPrice: '100000', quantity: 1, lineAmount: '100000', currency: 'VND' }] };
     const html = renderToStaticMarkup(<InvoicesPage invoices={[invoice]} role="PATIENT" error={null} loading={false} onRefresh={noop} />);
-    expect(html).toContain('Online payment is unavailable');
+    expect(html).toContain('Vui lòng thanh toán tại quầy thu ngân.');
     expect(html).toContain('VND');
     expect(html).toContain('Consultation');
     expect(html).toContain('version-1');

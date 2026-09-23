@@ -36,3 +36,138 @@
 @media (max-width: 620px) { .reception-dashboard-hero { flex-direction: column; align-items: stretch; }.reception-dashboard-hero-action { align-self: flex-start; }.reception-dashboard-priority-row { grid-template-columns: 48px minmax(0, 1fr); }.reception-dashboard-stage { grid-column: 2; justify-self: start; }.reception-dashboard-queue-row { grid-template-columns: 45px minmax(0, 1fr); }.reception-dashboard-queue-row .badge { grid-column: 2; justify-self: start; }.reception-dashboard-chart-summary { gap: .7rem; } }
 @media (max-width: 400px) { .reception-dashboard-metrics { gap: .65rem; }.reception-dashboard-metric { padding: .85rem; }.reception-dashboard-metric-icon { width: 38px; height: 38px; }.reception-dashboard-metric h4 { font-size: .75rem; }.reception-dashboard-hero { padding: 1.2rem; } }
 @media (prefers-reduced-motion: reduce) { .reception-dashboard * { scroll-behavior: auto; } }
+
+/* Dashboard refinement: calm operational surfaces with visible focus states. */
+.reception-dashboard .panel,
+.reception-dashboard-metric {
+  border-color: #e5edef;
+  box-shadow: 0 10px 28px rgba(22, 49, 71, .045);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.reception-dashboard .panel:hover,
+.reception-dashboard-metric:hover {
+  border-color: #cfe6de;
+  box-shadow: 0 14px 34px rgba(22, 49, 71, .07);
+}
+
+.reception-dashboard-hero {
+  min-height: 184px;
+  background: linear-gradient(125deg, #0e514d 0%, #117a68 58%, #1ca477 100%);
+  box-shadow: 0 15px 35px rgba(10, 95, 77, .15);
+}
+
+.reception-dashboard-metric {
+  min-height: 160px;
+}
+
+.reception-dashboard-hero-action,
+.reception-dashboard-panel-action,
+.reception-dashboard-shortcuts button {
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.reception-dashboard-hero-action:focus-visible,
+.reception-dashboard-panel-action:focus-visible,
+.reception-dashboard-shortcuts button:focus-visible,
+.reception-dashboard-chart-scroll:focus-visible {
+  outline: 3px solid #5fd5ae;
+  outline-offset: 3px;
+}
+
+.reception-dashboard-chart-summary {
+  background: #fbfefd;
+  border-radius: 11px;
+  padding: .8rem .9rem;
+}
+
+.reception-dashboard-permission {
+  background: #f7fbfa;
+  border-radius: 10px;
+  padding: .75rem .8rem;
+}
+
+.reception-dashboard .reception-dashboard-metric-top small,
+.reception-dashboard .reception-dashboard-heading p,
+.reception-dashboard .reception-dashboard-chart-day small,
+.reception-dashboard .reception-dashboard-note {
+  color: #526874;
+}
+
+.reception-dashboard .reception-dashboard-metric-top small,
+.reception-dashboard .reception-dashboard-chart-day small {
+  font-size: .6875rem;
+}
+
+.reception-dashboard .reception-dashboard-heading p,
+.reception-dashboard .reception-dashboard-note {
+  font-size: .75rem;
+}
+
+/* Keep role context visible without repeating the greeting in PageHeader. */
+.reception-dashboard-compact-hero {
+  min-height: 0;
+  padding: 1.05rem 1.2rem;
+  border: 1px solid #cfeade;
+  color: #244b4e;
+  background: linear-gradient(115deg, #effbf5 0%, #e5f7ef 100%);
+  box-shadow: none;
+}
+
+.reception-dashboard-compact-hero::after {
+  border-color: #99d9c0;
+  box-shadow: 0 0 0 58px #bdebd633, 0 0 0 120px #ccefe244;
+}
+
+.reception-dashboard-compact-hero .reception-dashboard-eyebrow {
+  color: #087c61;
+}
+
+.reception-dashboard-compact-hero h3 {
+  color: #173f46;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  margin: .35rem 0 .3rem;
+}
+
+.reception-dashboard-compact-hero p {
+  color: #5b7776;
+  font-size: .78rem;
+  line-height: 1.5;
+  display: none;
+}
+
+.reception-dashboard-compact-hero .reception-dashboard-hero-tags {
+  margin-top: .55rem;
+}
+
+.reception-dashboard-compact-hero .reception-dashboard-hero-tags span {
+  color: #216557;
+  border-color: #cbe9db;
+  background: #ffffffaa;
+}
+
+.reception-dashboard-compact-hero .reception-dashboard-hero-action {
+  color: #087359;
+  border: 1px solid #cde7db;
+}
+
+@media (max-width: 620px) {
+  .reception-dashboard-compact-hero {
+    padding: .9rem 1rem;
+  }
+
+  .reception-dashboard .panel {
+    padding: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reception-dashboard .panel,
+  .reception-dashboard-metric,
+  .reception-dashboard-hero-action,
+  .reception-dashboard-panel-action,
+  .reception-dashboard-shortcuts button {
+    transition: none;
+  }
+}

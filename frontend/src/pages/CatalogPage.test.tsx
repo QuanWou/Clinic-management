@@ -34,7 +34,7 @@ describe('catalog workspace', () => {
     expect(doctor).toContain('doctor-catalog');
     expect(doctor).toContain('Danh mục chuyên môn');
     expect(doctor).toContain('CHỈ TRA CỨU');
-    expect(doctor).toContain('Đang tải danh mục từ API');
+    expect(doctor).toContain('Đang tải danh mục...');
     expect(doctor).not.toContain('Quản lý danh mục');
     expect(doctor).not.toContain('Mục ngừng hoạt động');
     expect(doctor).not.toContain('Công bố đơn giá');
@@ -57,9 +57,9 @@ describe('catalog workspace', () => {
 
   it('keeps admin forms separate and never reports a successful write before a server response', () => {
     const html = renderToStaticMarkup(<CatalogAdminPanel services={services.filter((item) => item.active)} medicines={medicines} onChanged={() => {}} />);
-    expect(html).toContain('Quản lý Catalog');
+    expect(html).toContain('Quản lý danh mục');
     expect(html).toContain('Công bố đơn giá');
-    expect(html).not.toContain('Đơn giá đã được Catalog công bố.');
+    expect(html).not.toContain('Đã công bố đơn giá');
     expect(html).not.toContain('PostgreSQL thật');
   });
 });

@@ -12,10 +12,10 @@ export const authConfig = {
     loadingLabel: 'Đang đăng nhập...'
   },
   register: {
-    eyebrow: 'Create patient account',
-    title: 'Start managing your care',
-    subtitle: 'Create an account, then complete your patient profile to access the clinic workspace.',
-    submitLabel: 'Create account',
-    loadingLabel: 'Creating account...'
+    eyebrow: 'Đăng ký tài khoản',
+    title: 'Bắt đầu quản lý lịch khám',
+    subtitle: 'Tạo tài khoản rồi hoàn thiện hồ sơ bệnh nhân để sử dụng không gian phòng khám.',
+    submitLabel: 'Tạo tài khoản',
+    loadingLabel: 'Đang tạo tài khoản...'
   }
 } as const;

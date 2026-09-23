@@ -22,7 +22,7 @@ export default function PatientMedicalRecordsWorkspace({ records, error, loading
     {error && <Alert tone="error">{error} <button type="button" disabled={loading} onClick={onRefresh}>Thử lại</button></Alert>}
     {loading && <p role="status">Đang tải bệnh án cá nhân...</p>}
     {!loading && !error && records == null && <Alert tone="info">Chưa tải được dữ liệu bệnh án, vui lòng làm mới.</Alert>}
-    <div className="patient-two-columns"><section className="panel patient-panel"><div className="patient-section-head"><div><span>DANH SÁCH BỆNH ÁN</span><h3>Lần khám được ghi nhận</h3><p>{rows.length} hồ sơ từ API.</p></div><FileText size={22} /></div>
+      <div className="patient-two-columns"><section className="panel patient-panel"><div className="patient-section-head"><div><span>DANH SÁCH BỆNH ÁN</span><h3>Lần khám được ghi nhận</h3><p>{rows.length} hồ sơ trong tài khoản.</p></div><FileText size={22} /></div>
       {!loading && records != null && rows.length === 0 && <div className="patient-empty"><FileText size={29} /><strong>Chưa có hồ sơ bệnh án.</strong><p>Hồ sơ sẽ được hiển thị sau khi bác sĩ hoàn tất và ghi nhận lần khám.</p></div>}
       <div className="patient-worklist">{rows.map((record) => <button type="button" key={record.id} className={selected?.id === record.id ? 'is-active' : ''} aria-pressed={selected?.id === record.id} onClick={() => setSelectedId(record.id)}>
         <span className="patient-row-icon"><ClipboardList size={19} /></span><div><strong>{formatDate(record.createdAt)}</strong><small>Bệnh án #{shortId(record.id)} · Bác sĩ #{shortId(record.doctorId)}</small></div></button>)}</div></section>

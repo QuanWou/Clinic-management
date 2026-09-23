@@ -16,9 +16,9 @@ type Section = 'account' | 'notifications' | 'workflow';
 const channels: NotificationType[] = ['IN_APP', 'EMAIL', 'SMS', 'PUSH'];
 const channelDetails: Record<NotificationType, { label: string; description: string; icon: typeof Bell }> = {
   IN_APP: { label: 'Trong ứng dụng', description: 'Nhận thông báo trong hộp thư cá nhân.', icon: Bell },
-  EMAIL: { label: 'Email', description: 'Chỉ nhận email khi máy chủ đã cấu hình dịch vụ gửi.', icon: Mail },
-  SMS: { label: 'SMS', description: 'Chỉ nhận tin nhắn khi máy chủ đã cấu hình dịch vụ gửi.', icon: MessageSquare },
-  PUSH: { label: 'Push', description: 'Chưa có nhà cung cấp Push; không thể bật từ giao diện này.', icon: Smartphone }
+  EMAIL: { label: 'Email', description: 'Nhận thông báo qua thư điện tử.', icon: Mail },
+  SMS: { label: 'SMS', description: 'Nhận thông báo qua tin nhắn điện thoại.', icon: MessageSquare },
+  PUSH: { label: 'Push', description: 'Kênh này hiện chưa khả dụng.', icon: Smartphone }
 };
 
 function errorMessage(cause: unknown): string {
@@ -71,10 +71,10 @@ export default function ReceptionSettingsPage({ user }: { user: CurrentUser }) {
     try {
       const confirmed = await updateNotificationPreference(type, enabled);
       if (!confirmed || confirmed.type !== type || confirmed.enabled !== enabled) {
-        throw new Error('Máy chủ chưa xác nhận thay đổi. Hãy tải lại để kiểm tra.');
+        throw new Error('Thay đổi chưa được xác nhận. Hãy tải lại để kiểm tra.');
       }
       setPreferences((current) => current?.map((item) => item.type === type ? confirmed : item) ?? null);
-      setNotice(`Máy chủ đã xác nhận ${enabled ? 'bật' : 'tắt'} kênh ${channelDetails[type].label}.`);
+      setNotice(`Đã ${enabled ? 'bật' : 'tắt'} kênh ${channelDetails[type].label}.`);
     } catch (cause) { setError(errorMessage(cause)); }
     finally { setSavingType(null); }
   }
@@ -102,8 +102,8 @@ export default function ReceptionSettingsPage({ user }: { user: CurrentUser }) {
 
     <section className="reception-settings-highlights" aria-label="Tổng quan tài khoản lễ tân">
       <article><span className="reception-settings-highlight-icon"><UserRound size={21} aria-hidden="true" /></span><small>Vai trò hiện tại</small><strong>Lễ tân</strong><p>Quyền từ phiên đăng nhập</p></article>
-      <article><span className="reception-settings-highlight-icon blue"><Bell size={21} aria-hidden="true" /></span><small>Thông báo cá nhân</small><strong>{integrations.notifications ? 'Đã bật tích hợp' : 'Chưa bật tích hợp'}</strong><p>Chưa xác nhận dịch vụ gửi tin hoạt động</p></article>
-      <article><span className="reception-settings-highlight-icon violet"><ShieldCheck size={21} aria-hidden="true" /></span><small>Trạng thái tài khoản</small><strong>{statusLabel(user.status)}</strong><p>Theo thông tin Identity</p></article>
+      <article><span className="reception-settings-highlight-icon blue"><Bell size={21} aria-hidden="true" /></span><small>Thông báo cá nhân</small><strong>{integrations.notifications ? 'Đang bật' : 'Chưa bật'}</strong><p>Tùy chọn nhận tin</p></article>
+      <article><span className="reception-settings-highlight-icon violet"><ShieldCheck size={21} aria-hidden="true" /></span><small>Trạng thái tài khoản</small><strong>{statusLabel(user.status)}</strong><p>Trạng thái hiện tại</p></article>
     </section>
 
     <div className="reception-settings-layout">
@@ -115,28 +115,28 @@ export default function ReceptionSettingsPage({ user }: { user: CurrentUser }) {
           <span className="reception-settings-nav-icon"><Icon size={19} aria-hidden="true" /></span>
           <span><strong>{label}</strong><small>{description}</small></span>
         </button>)}
-        <p className="reception-settings-nav-note"><ShieldCheck size={17} aria-hidden="true" /> Chỉ thay đổi được lưu theo xác nhận từ API.</p>
+        <p className="reception-settings-nav-note"><ShieldCheck size={17} aria-hidden="true" /> Thay đổi chỉ được báo đã lưu sau khi hoàn tất.</p>
       </nav>
 
       <div className="reception-settings-content">
         {section === 'account' && <>
           <section className="panel reception-settings-panel"><header className="reception-settings-heading"><div><span>THÔNG TIN TÀI KHOẢN</span>
-            <h3>Hồ sơ lễ tân</h3><p>Thông tin do Identity cung cấp, chỉ xem tại đây.</p></div>
+            <h3>Hồ sơ lễ tân</h3><p>Thông tin tài khoản chỉ xem tại đây.</p></div>
             <span className="reception-settings-readonly"><LockKeyhole size={14} aria-hidden="true" /> Chỉ xem</span></header>
             <div className="reception-settings-person"><Avatar label={user.fullName || user.email} size="lg" />
               <div><strong>{user.fullName || user.email}</strong><span>Lễ tân · Tài khoản hiện tại</span></div></div>
             <dl className="reception-settings-fields"><div><dt>Họ và tên</dt><dd>{user.fullName || 'Chưa được cung cấp'}</dd></div>
               <div><dt>Email</dt><dd>{user.email}</dd></div>
               <div><dt>Số điện thoại</dt><dd>{user.phone || 'Chưa được cung cấp'}</dd></div>
-              <div><dt>Mã tài khoản</dt><dd>{user.userId || user.id || 'Chưa có thông tin'}</dd></div>
+              <div><dt>Mã tài khoản</dt><dd>{user.accountCode || 'Chưa có thông tin'}</dd></div>
               <div><dt>Vai trò đang sử dụng</dt><dd>Lễ tân</dd></div>
               <div><dt>Trạng thái</dt><dd>{statusLabel(user.status)}</dd></div></dl>
-            <p className="reception-settings-note"><ShieldCheck size={17} aria-hidden="true" /> Trang không gửi yêu cầu tự sửa tên, email hoặc quyền tài khoản. Hãy liên hệ quản trị viên khi cần cập nhật.</p>
+            <p className="reception-settings-note"><ShieldCheck size={17} aria-hidden="true" /> Liên hệ quản trị viên để cập nhật tên, email hoặc quyền tài khoản.</p>
           </section>
           <section className="panel reception-settings-panel"><header className="reception-settings-heading"><div><span>BẢO MẬT CÁ NHÂN</span>
             <h3>Phiên đăng nhập và mật khẩu</h3><p>Trạng thái hỗ trợ hiện tại.</p></div><KeyRound size={21} aria-hidden="true" /></header>
             <div className="reception-settings-info"><LockKeyhole size={19} aria-hidden="true" /><div><strong>Đăng xuất</strong><p>Sử dụng nút Đăng xuất trong thanh điều hướng để kết thúc phiên.</p></div><span>Khả dụng</span></div>
-            <div className="reception-settings-info"><KeyRound size={19} aria-hidden="true" /><div><strong>Đổi mật khẩu</strong><p>Chưa có API đổi mật khẩu cá nhân được tích hợp vào giao diện.</p></div><span>Chưa hỗ trợ</span></div>
+            <div className="reception-settings-info"><KeyRound size={19} aria-hidden="true" /><div><strong>Đổi mật khẩu</strong><p>Tính năng đổi mật khẩu hiện chưa khả dụng.</p></div><span>Chưa hỗ trợ</span></div>
           </section>
         </>}
 
@@ -145,12 +145,12 @@ export default function ReceptionSettingsPage({ user }: { user: CurrentUser }) {
           {integrations.notifications && <button type="button" className="soft-button" disabled={loading || savingType !== null}
             onClick={() => setRevision((value) => value + 1)}><RefreshCw size={15} aria-hidden="true" /> Tải lại</button>}</header>
           {!integrations.notifications ? <div className="reception-settings-empty"><Bell size={28} aria-hidden="true" />
-            <strong>Tích hợp thông báo chưa được bật</strong><p>Không thể tải hoặc lưu tùy chọn khi API chưa được kích hoạt.</p></div> : <>
+            <strong>Tích hợp thông báo chưa được bật</strong><p>Chưa thể tải hoặc lưu tùy chọn lúc này.</p></div> : <>
             {error && <Alert tone="error">{error} <button type="button" className="soft-button" disabled={loading || savingType !== null}
               onClick={() => setRevision((value) => value + 1)}>Thử lại</button></Alert>}
             {notice && <div role="status"><Alert tone="info">{notice}</Alert></div>}
-            {loading && <p className="reception-settings-loading" role="status">Đang tải tùy chọn từ máy chủ...</p>}
-            {!loading && preferences?.length === 0 && <p className="reception-settings-loading">Máy chủ chưa trả về tùy chọn nào.</p>}
+            {loading && <p className="reception-settings-loading" role="status">Đang tải tùy chọn...</p>}
+            {!loading && preferences?.length === 0 && <p className="reception-settings-loading">Chưa có tùy chọn nào.</p>}
             {!loading && preferences && <div className="reception-settings-channels">{channels.filter((type) => preferences.some((item) => item.type === type)).map((type) => {
               const preference = preferences.find((item) => item.type === type)!;
               const Icon = channelDetails[type].icon;
@@ -160,22 +160,22 @@ export default function ReceptionSettingsPage({ user }: { user: CurrentUser }) {
                   disabled={loading || savingType !== null || type === 'PUSH'} onChange={(event) => void savePreference(type, event.target.checked)} />
               </label>;
             })}</div>}
-            <p className="reception-settings-footnote"><CircleHelp size={16} aria-hidden="true" /> Bật Email/SMS không đồng nghĩa máy chủ đã cấu hình nhà cung cấp gửi tin. Chỉ hiện thành công khi API xác nhận.</p>
+            <p className="reception-settings-footnote"><CircleHelp size={16} aria-hidden="true" /> Khả năng nhận tin còn tùy thuộc cấu hình dịch vụ.</p>
           </>}
         </section>}
 
         {section === 'workflow' && <>
           <section className="panel reception-settings-panel"><header className="reception-settings-heading"><div><span>QUY TRÌNH TIẾP NHẬN</span>
-            <h3>Phạm vi công việc lễ tân</h3><p>Hướng dẫn quyền thao tác, không phải nút cài đặt hệ thống.</p></div><Fingerprint size={21} aria-hidden="true" /></header>
-            <div className="reception-settings-capabilities"><article><CalendarCheck2 size={21} aria-hidden="true" /><div><strong>Đặt và quản lý lịch hẹn</strong><p>Đặt lịch, xác nhận, đổi hoặc hủy lịch hợp lệ theo API phòng khám.</p></div><span>{integrations.reception ? 'Đã bật tích hợp' : 'Chưa bật tích hợp'}</span></article>
+            <h3>Phạm vi công việc lễ tân</h3><p>Các thao tác bạn có thể thực hiện trong công việc tiếp đón.</p></div><Fingerprint size={21} aria-hidden="true" /></header>
+            <div className="reception-settings-capabilities"><article><CalendarCheck2 size={21} aria-hidden="true" /><div><strong>Đặt và quản lý lịch hẹn</strong><p>Đặt lịch, xác nhận, đổi hoặc hủy lịch hợp lệ.</p></div><span>{integrations.reception ? 'Đang bật' : 'Chưa bật'}</span></article>
               <article><UsersRound size={21} aria-hidden="true" /><div><strong>Tiếp nhận bệnh nhân</strong><p>Tìm kiếm bệnh nhân, đăng ký bệnh nhân vãng lai và check-in lịch được xác nhận.</p></div><span>{integrations.reception ? 'Đã bật tích hợp' : 'Chưa bật tích hợp'}</span></article>
               <article><ClipboardCheck size={21} aria-hidden="true" /><div><strong>Quản lý hàng đợi</strong><p>Gọi, bỏ qua hoặc đưa lượt trở lại chờ theo trạng thái được phép.</p></div><span>{integrations.reception ? 'Đã bật tích hợp' : 'Chưa bật tích hợp'}</span></article></div>
-            <p className="reception-settings-note"><ShieldCheck size={17} aria-hidden="true" /> Lễ tân không được bắt đầu hoặc hoàn tất khám, chỉnh sửa bệnh án hay thay đổi quyền tài khoản. Máy chủ quyết định quyền thực tế của mỗi yêu cầu.</p>
+            <p className="reception-settings-note"><ShieldCheck size={17} aria-hidden="true" /> Lễ tân không bắt đầu hoặc hoàn tất khám, chỉnh sửa bệnh án hay thay đổi quyền tài khoản.</p>
           </section>
           <section className="panel reception-settings-panel"><header className="reception-settings-heading"><div><span>GIỚI HẠN TRUY CẬP</span>
             <h3>Cài đặt hệ thống</h3><p>Chỉ quản trị viên được quản lý cấu hình toàn phòng khám.</p></div><LockKeyhole size={20} aria-hidden="true" /></header>
             <div className="reception-settings-info"><Settings2 size={19} aria-hidden="true" /><div><strong>Cấu hình dịch vụ và phân quyền</strong><p>Không khả dụng trong Cài đặt lễ tân.</p></div><span>Chỉ quản trị</span></div>
-            <div className="reception-settings-info"><CheckCircle2 size={19} aria-hidden="true" /><div><strong>Dữ liệu hiện hành</strong><p>Trạng thái tích hợp phản ánh cấu hình frontend; không xác nhận API đang trực tuyến.</p></div><span>Chỉ xem</span></div>
+            <div className="reception-settings-info"><CheckCircle2 size={19} aria-hidden="true" /><div><strong>Tính năng hiện có</strong><p>Trạng thái hiển thị theo cấu hình hiện tại.</p></div><span>Chỉ xem</span></div>
           </section>
         </>}
       </div>

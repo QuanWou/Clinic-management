@@ -51,11 +51,11 @@ function PatientProfileWorkspace({ user }: { user: CurrentUser }) {
     {loading && <p role="status">Đang tải hồ sơ bệnh nhân...</p>}
     {error && <Alert tone="error">{error} <button type="button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Thử lại</button></Alert>}
     {missing && <div className="panel patient-panel patient-empty"><IdCard size={31} /><strong>Chưa có hồ sơ bệnh nhân</strong><p>Hãy vào Cài đặt để hoàn thiện ngày sinh và giới tính, sau đó quay lại xem hồ sơ.</p></div>}
-    {profile && <div className="patient-two-columns"><section className="panel patient-panel"><div className="patient-section-head"><div><span>THÔNG TIN ĐĂNG KÝ</span><h3>Thông tin bệnh nhân</h3><p>Hồ sơ chỉ đọc từ Patient Service.</p></div><IdCard size={22} /></div>
+    {profile && <div className="patient-two-columns"><section className="panel patient-panel"><div className="patient-section-head"><div><span>THÔNG TIN ĐĂNG KÝ</span><h3>Thông tin bệnh nhân</h3><p>Hồ sơ chỉ xem trong trang này.</p></div><IdCard size={22} /></div>
       <div className="patient-info-row"><Avatar label={user.fullName || user.email} size="lg" /><div><strong>{user.fullName || user.email}</strong><p>{user.email}</p></div></div>
       <dl className="patient-fields"><div><dt>Mã bệnh nhân</dt><dd>{profile.id}</dd></div><div><dt>Ngày sinh</dt><dd>{formatDate(profile.dob)}</dd></div>
         <div><dt>Giới tính</dt><dd>{genderLabel(profile.gender)}</dd></div><div><dt>Nhóm máu</dt><dd>{profile.bloodType || 'Chưa cung cấp'}</dd></div>
-        <div><dt>Số điện thoại Identity</dt><dd>{user.phone || 'Chưa cung cấp'}</dd></div><div><dt>Email</dt><dd>{user.email}</dd></div>
+        <div><dt>Số điện thoại</dt><dd>{user.phone || 'Chưa cung cấp'}</dd></div><div><dt>Email</dt><dd>{user.email}</dd></div>
         <div className="patient-field-wide"><dt>Địa chỉ</dt><dd>{profile.address || 'Chưa cung cấp'}</dd></div></dl>
     </section><aside className="panel patient-panel"><div className="patient-section-head"><div><span>TÀI KHOẢN</span><h3>Quyền riêng tư</h3></div><ShieldCheck size={22} /></div>
       <div className="patient-info-row"><ShieldCheck size={21} /><div><strong>Hồ sơ thuộc tài khoản của bạn</strong><p>Thông tin hiển thị được kiểm tra theo mã tài khoản đang đăng nhập.</p></div></div>

@@ -400,6 +400,39 @@ class LabOrderServiceImplTest {
         verify(outbox, never()).save(any());
     }
 
+    @Test
+    void treatingDoctorCanReadFinalizedStatusWithoutChangingClosure() {
+        when(records.findById(record.getId())).thenReturn(Optional.of(record));
+        authorizeDoctor(doctorId);
+        when(billingClosures.findById(record.getAppointmentId())).thenReturn(Optional.of(
+                LabBillingClosure.builder().appointmentId(record.getAppointmentId()).finalized(true).build()));
+
+        assertEquals(true, service.isBillingFinalized(doctor, AUTH, record.getId()));
+        verify(billingClosures, never()).save(any());
+        verify(billingClosures, never()).saveAndFlush(any());
+        verify(labOrders, never()).findByMedicalRecordIdOrderByCreatedAtDesc(any());
+    }
+
+    @Test
+    void treatingDoctorWithoutClosureSeesOpenStateWithoutCreatingClosure() {
+        when(records.findById(record.getId())).thenReturn(Optional.of(record));
+        authorizeDoctor(doctorId);
+
+        assertFalse(service.isBillingFinalized(doctor, AUTH, record.getId()));
+        verify(billingClosures, never()).save(any());
+    }
+
+    @Test
+    void unrelatedDoctorAndPatientCannotReadBillingLockState() {
+        when(records.findById(record.getId())).thenReturn(Optional.of(record));
+        authorizeDoctor(UUID.randomUUID());
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> service.isBillingFinalized(doctor, AUTH, record.getId())).getErrorCode());
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> service.isBillingFinalized(patient, AUTH, record.getId())).getErrorCode());
+        verify(billingClosures, never()).findById(any());
+    }
+
     private void authorizeDoctor(UUID profileId) {
         when(doctors.getCurrentDoctorProfile(AUTH)).thenReturn(
                 new DoctorProfileResponse(profileId, doctor.id(), UUID.randomUUID(), "General", null, BigDecimal.ZERO));

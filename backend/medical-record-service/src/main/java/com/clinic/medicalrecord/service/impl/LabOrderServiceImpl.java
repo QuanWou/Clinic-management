@@ -90,6 +90,15 @@ public class LabOrderServiceImpl implements LabOrderService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean isBillingFinalized(CurrentUserPrincipal principal, String authorization, UUID recordId) {
+        MedicalRecord record = findRecord(recordId);
+        requireTreatingDoctor(principal, authorization, record);
+        return billingClosures.findById(record.getAppointmentId())
+                .map(LabBillingClosure::isFinalized).orElse(false);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public LabOrderResponse get(CurrentUserPrincipal principal, String authorization, UUID orderId) {
         LabOrder order = findOrder(orderId);
         if (!isTreatingDoctor(principal, authorization, order.getMedicalRecord())

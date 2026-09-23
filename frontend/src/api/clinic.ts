@@ -7,9 +7,14 @@ import type {
   ReceptionVisitResponse, QueueStatus, AdminDoctorResponse, PageResponse, SpecialtyResponse,
   CatalogServiceResponse, MedicineResponse, PriceResponse, PaymentTransactionResponse,
   NotificationPreferenceResponse, NotificationType, ReceptionHistoryResponse,
-  PerformedServicesResponse, LabBillableItemsResponse, LabOrderResponse, AppointmentAvailabilityResponse,
-  CreateAdminDoctorRequest, UpdateAdminDoctorRequest, AdminDoctorSchedule, DoctorSchedule
+  PerformedServicesResponse, LabBillableItemsResponse, LabBillingStatusResponse, LabOrderResponse, AppointmentAvailabilityResponse,
+  CreateAdminDoctorRequest, UpdateAdminDoctorRequest, AdminDoctorSchedule, DoctorSchedule, AdminUserResponse
 } from '../types/domain';
+
+/** Resolve a doctor's linked account by userId. Identity authorizes ADMIN on this route. */
+export function getAdminUser(id: string): Promise<AdminUserResponse> {
+  return apiRequest<AdminUserResponse>(apiEndpoints.users.adminById(id));
+}
 
 export function getPatientProfile(): Promise<PatientProfileResponse> {
   return apiRequest<PatientProfileResponse>(apiEndpoints.patients.profile);
@@ -29,8 +34,21 @@ export function getMyDoctorSchedules(): Promise<DoctorSchedule[]> {
 }
 
 /** Active public directory: available to authenticated patients and receptionists. */
-export function getDoctors(): Promise<DoctorProfileResponse[]> {
-  return apiRequest<DoctorProfileResponse[]>(apiEndpoints.doctors.collection);
+export async function getDoctors(): Promise<DoctorProfileResponse[]> {
+  // Identity returns only names + account IDs of active doctors. Never call its
+  // administrator endpoint with a receptionist or patient token.
+  const [doctors, accounts] = await Promise.all([
+    apiRequest<DoctorProfileResponse[]>(apiEndpoints.doctors.collection),
+    apiRequest<Array<{ id: string; fullName: string }>>(apiEndpoints.users.doctorNames)
+  ]);
+  if (!Array.isArray(doctors) || !Array.isArray(accounts)
+    || doctors.some((doctor) => !doctor?.id || !doctor.userId)
+    || accounts.some((account) => !account?.id || typeof account.fullName !== 'string')) {
+    throw new Error('Danh sách bác sĩ hoặc họ tên từ Identity không hợp lệ.');
+  }
+  const names = new Map(accounts.filter((account) => account.fullName.trim())
+    .map((account) => [account.id, account.fullName.trim()]));
+  return doctors.map((doctor) => ({ ...doctor, fullName: names.get(doctor.userId) }));
 }
 
 /** Weekly shifts are read-only and do not prove that an appointment slot is available. */
@@ -122,6 +140,23 @@ export function searchReceptionPatients(filters: { name?: string; phone?: string
   return apiRequest<ReceptionPatientResponse[]>(`${apiEndpoints.patients.reception}${query.size ? `?${query}` : ''}`);
 }
 
+/** Admin/reception-only, bounded patient directory with names and server pagination. */
+export function getReceptionPatientDirectory(page = 0, size = 20): Promise<PageResponse<ReceptionPatientResponse>> {
+  return apiRequest<PageResponse<ReceptionPatientResponse>>(
+    `${apiEndpoints.patients.receptionList}?${new URLSearchParams({ page: String(page), size: String(size) })}`
+  );
+}
+
+/** Role-scoped receptionist/admin lookup for the exact patient referenced by a selected appointment. */
+export function getReceptionPatientById(id: string): Promise<ReceptionPatientResponse> {
+  return apiRequest<ReceptionPatientResponse>(apiEndpoints.patients.receptionById(id));
+}
+
+/** Staff-only lookup: the visible BN code resolves to an internal UUID before billing lookup. */
+export function getReceptionPatientByCode(code: string): Promise<ReceptionPatientResponse> {
+  return apiRequest<ReceptionPatientResponse>(apiEndpoints.patients.receptionByCode(code));
+}
+
 export function registerReceptionPatient(request: RegisterWalkInPatientRequest): Promise<ReceptionPatientResponse> {
   return apiRequest<ReceptionPatientResponse>(apiEndpoints.patients.reception, { method: 'POST', body: JSON.stringify(request) });
 }
@@ -197,6 +232,11 @@ export function getLabOrders(recordId: string): Promise<LabOrderResponse[]> {
   return apiRequest<LabOrderResponse[]>(apiEndpoints.medicalRecords.labOrders(recordId));
 }
 
+/** Status-only lookup scoped to the authenticated treating doctor; billing details are not exposed. */
+export function getDoctorLabBillingStatus(recordId: string): Promise<LabBillingStatusResponse> {
+  return apiRequest<LabBillingStatusResponse>(apiEndpoints.medicalRecords.labBillingStatus(recordId));
+}
+
 export function createLabOrder(recordId: string, request: { testCode: string; testName: string; serviceId: string; performedOn: string }): Promise<LabOrderResponse> {
   return apiRequest<LabOrderResponse>(apiEndpoints.medicalRecords.labOrders(recordId), { method: 'POST', body: JSON.stringify(request) });
 }
@@ -245,12 +285,30 @@ export function getMyMedicalRecords(): Promise<MedicalRecordResponse[]> {
   return apiRequest<MedicalRecordResponse[]>(apiEndpoints.medicalRecords.my);
 }
 
+/** Server-paginated records owned by the currently authenticated doctor only. */
+export function getMyDoctorMedicalRecords(page = 0, size = 8): Promise<PageResponse<MedicalRecordResponse>> {
+  return apiRequest<PageResponse<MedicalRecordResponse>>(
+    `${apiEndpoints.medicalRecords.doctorMy}?${new URLSearchParams({ page: String(page), size: String(size) })}`);
+}
+
+/** Resolve public BN number within the treating doctor's authorized records. */
+export function getDoctorPatientMedicalRecordsByCode(code: string): Promise<MedicalRecordResponse[]> {
+  return apiRequest<MedicalRecordResponse[]>(apiEndpoints.medicalRecords.doctorPatientByCode(code));
+}
+
 export function getPatientMedicalRecords(patientId: string): Promise<MedicalRecordResponse[]> {
   return apiRequest<MedicalRecordResponse[]>(apiEndpoints.medicalRecords.byPatient(encodeURIComponent(patientId)));
 }
 
 export function getMyInvoices(): Promise<InvoiceResponse[]> {
   return apiRequest<InvoiceResponse[]>(apiEndpoints.invoices.my);
+}
+
+/** ADMIN/RECEPTIONIST only. Actual invoices, most recent first, bounded at the server. */
+export function getStaffInvoiceDirectory(page = 0, size = 20): Promise<PageResponse<InvoiceResponse>> {
+  return apiRequest<PageResponse<InvoiceResponse>>(
+    `${apiEndpoints.invoices.staff}?${new URLSearchParams({ page: String(page), size: String(size) })}`
+  );
 }
 
 export function getPatientInvoices(patientId: string): Promise<InvoiceResponse[]> {

@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import {
-  BadgeCheck, CalendarClock, CheckCircle2, Clock3, FileText, IdCard,
-  LockKeyhole, Mail, Pencil, Phone, RefreshCw, ShieldCheck, Stethoscope, X
+  CalendarClock, CheckCircle2, Clock3, FileText, IdCard,
+  LockKeyhole, Mail, Pencil, Phone, RefreshCw, Stethoscope, X
 } from 'lucide-react';
 import { getDoctorProfile, getMyDoctorSchedules, updateDoctorProfile } from '../api/clinic';
 import { HttpApiError } from '../api/client';
@@ -9,7 +9,7 @@ import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import PageHeader from '../components/PageHeader';
 import type { CurrentUser, DoctorProfileResponse, DoctorSchedule } from '../types/domain';
-import { formatMoney } from '../utils/format';
+import { formatVnd } from '../utils/format';
 import { integrations } from '../config/integrations.config';
 import './doctorProfile.css';
 
@@ -76,12 +76,12 @@ export default function DoctorProfilePage({ user }: { user: CurrentUser }) {
       // Never send specialtyId, consultationFee or account details from this self-service page.
       const result = await updateDoctorProfile({ biography: form.biography });
       if (!result || result.id !== doctor.id || result.userId !== doctor.userId) {
-        throw new Error('Máy chủ chưa xác nhận cập nhật đúng hồ sơ bác sĩ. Vui lòng tải lại.');
+        throw new Error('Chưa xác nhận được cập nhật hồ sơ bác sĩ. Vui lòng tải lại.');
       }
       setDoctor(result);
       setForm({ biography: result.biography ?? '' });
       setEditing(false);
-      setNotice('Máy chủ đã xác nhận lưu tiểu sử bác sĩ.');
+      setNotice('Đã lưu tiểu sử bác sĩ.');
     } catch (cause) { setError(apiMessage(cause)); }
     finally { setSaving(false); }
   }
@@ -96,41 +96,34 @@ export default function DoctorProfilePage({ user }: { user: CurrentUser }) {
         <RefreshCw size={16} aria-hidden="true" /> Làm mới
       </button>} />
 
-    <section className="doctor-profile-banner" aria-label="Tổng quan hồ sơ">
-      <div className="doctor-profile-banner-copy">
-        <span className="doctor-profile-kicker"><ShieldCheck size={16} aria-hidden="true" /> KHÔNG GIAN BÁC SĨ · HỒ SƠ CÁ NHÂN</span>
-        <h3>Thông tin của bạn, cập nhật minh bạch.</h3>
-        <p>Hồ sơ chuyên môn được tải từ hệ thống phòng khám. Chỉ tiểu sử có thể tự chỉnh sửa khi API được kích hoạt.</p>
-        <span className="doctor-profile-banner-tag"><LockKeyhole size={14} aria-hidden="true" /> Chỉ hồ sơ của tài khoản đang đăng nhập</span>
-      </div>
-      <span className="doctor-profile-banner-icon" aria-hidden="true"><Stethoscope size={61} strokeWidth={1.5} /></span>
-    </section>
-
     {loading && <div className="panel doctor-profile-state" role="status"><RefreshCw size={23} aria-hidden="true" /> Đang tải hồ sơ bác sĩ...</div>}
     {error && <Alert tone="error">{error} {!doctor && <button type="button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Thử lại</button>}</Alert>}
     {notice && <div role="status"><Alert tone="info">{notice}</Alert></div>}
     {!doctor && !loading && !error && <div className="panel doctor-profile-state"><IdCard size={27} aria-hidden="true" />
-      {profileNotFound ? 'Chưa được cấp hồ sơ bác sĩ. Vui lòng liên hệ quản trị viên.' : 'API chưa trả về hồ sơ bác sĩ.'}</div>}
+      {profileNotFound ? 'Chưa được cấp hồ sơ bác sĩ. Vui lòng liên hệ quản trị viên.' : 'Chưa có hồ sơ bác sĩ để hiển thị.'}</div>}
 
     {doctor && <>
       <section className="doctor-profile-summary" aria-label="Thông tin hồ sơ">
         <article className="panel doctor-profile-identity">
-          <div className="doctor-profile-identity-top"><Avatar label={name} size="lg" />
-            <span className="doctor-profile-verified"><BadgeCheck size={14} aria-hidden="true" /> Dữ liệu Identity / Doctor API</span></div>
-          <h3>{name}</h3><p className="doctor-profile-specialty"><Stethoscope size={17} aria-hidden="true" /> {doctor.specialtyName || 'Chưa được gán chuyên khoa'}</p>
+          <div className="doctor-profile-identity-main">
+            <Avatar label={name} size="lg" />
+            <div className="doctor-profile-identity-name"><span className="doctor-profile-kicker">HỒ SƠ CÁ NHÂN</span>
+              <h3>{name}</h3><p className="doctor-profile-specialty"><Stethoscope size={17} aria-hidden="true" /> {doctor.specialtyName || 'Chưa được gán chuyên khoa'}</p></div>
+            <span className="doctor-profile-verified"><LockKeyhole size={14} aria-hidden="true" /> Hồ sơ của tài khoản đang đăng nhập</span>
+          </div>
           <dl className="doctor-profile-contact">
             <div><dt><Mail size={16} aria-hidden="true" /> Email</dt><dd>{user.email}</dd></div>
             <div><dt><Phone size={16} aria-hidden="true" /> Số điện thoại</dt><dd>{user.phone || 'Chưa được cung cấp'}</dd></div>
-            <div><dt><IdCard size={16} aria-hidden="true" /> Mã bác sĩ</dt><dd>{doctor.id}</dd></div>
+            <div><dt><IdCard size={16} aria-hidden="true" /> Mã bác sĩ</dt><dd>{doctor.doctorCode || 'Chưa có'}</dd></div>
           </dl>
         </article>
         <div className="doctor-profile-summary-side">
           <article className="panel doctor-profile-fact"><span className="doctor-profile-fact-icon"><Stethoscope size={23} aria-hidden="true" /></span>
             <small>CHUYÊN KHOA</small><strong>{doctor.specialtyName || 'Chưa cập nhật'}</strong><p>Do quản trị viên phòng khám quản lý.</p></article>
           <article className="panel doctor-profile-fact doctor-profile-fact-blue"><span className="doctor-profile-fact-icon"><FileText size={23} aria-hidden="true" /></span>
-            <small>GIÁ KHÁM</small><strong>{doctor.consultationFee == null ? 'Chưa cập nhật' : formatMoney(doctor.consultationFee)}</strong><p>API chưa cung cấp đơn vị tiền tệ; giá do quản trị viên quản lý.</p></article>
+            <small>GIÁ KHÁM</small><strong>{doctor.consultationFee == null ? 'Chưa cập nhật' : formatVnd(doctor.consultationFee)}</strong><p>Đơn vị VND; giá do quản trị viên quản lý.</p></article>
           <article className="panel doctor-profile-fact doctor-profile-fact-violet"><span className="doctor-profile-fact-icon"><CalendarClock size={23} aria-hidden="true" /></span>
-            <small>LỊCH LÀM VIỆC</small><strong>{totalDays === null ? 'Chưa tải' : `${totalDays} ngày/tuần`}</strong><p>Thống kê trên lịch thực tế API trả về.</p></article>
+            <small>LỊCH LÀM VIỆC</small><strong>{totalDays === null ? 'Chưa tải' : `${totalDays} ngày/tuần`}</strong><p>Số ngày trong lịch làm việc hiện tại.</p></article>
         </div>
       </section>
 
@@ -149,11 +142,11 @@ export default function DoctorProfilePage({ user }: { user: CurrentUser }) {
               <button type="button" className="soft-button" disabled={saving} onClick={() => { setEditing(false); setForm({ biography: doctor.biography ?? '' }); setError(null); }}>
                 <X size={16} aria-hidden="true" /> Hủy</button></div>
           </form> : <div className="doctor-profile-bio-text">{doctor.biography?.trim() || 'Chưa cập nhật tiểu sử. Bạn có thể bổ sung nội dung khi chức năng chỉnh sửa được bật.'}</div>}
-          {!canEdit && <div className="doctor-profile-readonly"><LockKeyhole size={17} aria-hidden="true" /> Chỉnh sửa tiểu sử chưa được bật trong cấu hình triển khai.</div>}
+          {!canEdit && <div className="doctor-profile-readonly"><LockKeyhole size={17} aria-hidden="true" /> Chỉnh sửa tiểu sử hiện chưa khả dụng.</div>}
         </article>
 
         <aside className="panel doctor-profile-section" aria-label="Lịch làm việc của tôi">
-          <header className="doctor-profile-section-head"><div><span>THỜI GIAN</span><h3>Lịch làm việc trong tuần</h3><p>Chỉ hiển thị các ca do API cung cấp.</p></div><CalendarClock size={21} aria-hidden="true" /></header>
+          <header className="doctor-profile-section-head"><div><span>THỜI GIAN</span><h3>Lịch làm việc trong tuần</h3><p>Các ca làm việc hiện tại.</p></div><CalendarClock size={21} aria-hidden="true" /></header>
           {scheduleLoading && <p className="doctor-profile-schedule-state" role="status">Đang tải lịch làm việc...</p>}
           {scheduleError && <Alert tone="error">Không tải được lịch: {scheduleError} <button type="button" disabled={loading || saving || editing} onClick={() => setRevision((value) => value + 1)}>Thử lại</button></Alert>}
           {!scheduleLoading && schedules?.length === 0 && <p className="doctor-profile-schedule-state">Chưa có ca làm việc nào được ghi nhận.</p>}
@@ -161,7 +154,7 @@ export default function DoctorProfilePage({ user }: { user: CurrentUser }) {
             <span className="doctor-profile-schedule-day">{weekdays[schedule.dayOfWeek - 1]}</span>
             <strong><Clock3 size={15} aria-hidden="true" /> {scheduleTime(schedule.startTime)} – {scheduleTime(schedule.endTime)}</strong>
           </div>)}</div>}
-          <p className="doctor-profile-schedule-note"><LockKeyhole size={15} aria-hidden="true" /> Đây là lịch từ API của chính bác sĩ; trang này không tự thay đổi lịch làm việc.</p>
+          <p className="doctor-profile-schedule-note"><LockKeyhole size={15} aria-hidden="true" /> Lịch này chỉ xem tại đây.</p>
         </aside>
       </section>
     </>}

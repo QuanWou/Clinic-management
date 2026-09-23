@@ -69,6 +69,8 @@ public class AuthService {
         user.getRoles().add(patientRole);
 
         userRepository.save(user);
+        // Flush before returning DB-generated accountCode in the registration response.
+        userRepository.flush();
 
         return buildAuthResponse(user);
     }
@@ -142,7 +144,8 @@ public class AuthService {
                 user.getStatus(),
                 user.getRoles().stream()
                         .map(role -> role.getCode().name())
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toSet()),
+                user.getAccountCode()
         );
     }
 
@@ -169,7 +172,8 @@ public class AuthService {
                 user.getFullName(),
                 roles,
                 accessToken,
-                refreshTokenValue
+                refreshTokenValue,
+                user.getAccountCode()
         );
     }
 }

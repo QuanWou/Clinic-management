@@ -1,6 +1,8 @@
 package com.clinic.medicalrecord.repository;
 
 import com.clinic.medicalrecord.entity.MedicalRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +20,7 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, UU
     List<MedicalRecord> findByPatientIdOrderByCreatedAtDesc(UUID patientId);
 
     List<MedicalRecord> findByPatientIdAndDoctorIdOrderByCreatedAtDesc(UUID patientId, UUID doctorId);
+
+    /** Database-level ownership filter with a bounded result. */
+    Page<MedicalRecord> findByDoctorId(UUID doctorId, Pageable pageable);
 }

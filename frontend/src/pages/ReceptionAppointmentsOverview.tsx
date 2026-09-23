@@ -4,6 +4,7 @@ import Badge from '../components/Badge';
 import type { AppointmentResponse, DoctorProfileResponse, ReceptionVisitResponse } from '../types/domain';
 import { formatDate, formatTime, shortId } from '../utils/format';
 import { statusLabel } from '../utils/locale';
+import { doctorName as verifiedDoctorName } from '../utils/doctorNames';
 
 type Props = {
   date: string;
@@ -62,7 +63,7 @@ function changeMonth(month: string, offset: number): string {
 
 function doctorName(id: string, doctors: DoctorProfileResponse[] | null) {
   const doctor = doctors?.find((item) => item.id === id);
-  return { name: `BS #${shortId(id)}`, specialty: doctor?.specialtyName || 'Chưa có chuyên khoa' };
+  return { name: verifiedDoctorName(doctor), specialty: doctor?.specialtyName || 'Chưa có chuyên khoa' };
 }
 
 export default function ReceptionAppointmentsOverview({ date, appointments, queue, doctors, selectedId, onDateChange, onSelect }: Props) {
@@ -157,7 +158,7 @@ export default function ReceptionAppointmentsOverview({ date, appointments, queu
 
     <section className="panel reception-table-panel" aria-label="Danh sách lịch hẹn trong ngày">
       <div className="reception-table-heading"><div><h3>Tất cả lịch hẹn</h3><p>Ngày {formatDate(date)} · {filtered.length} trên {appointments.length} lịch phù hợp</p></div>
-        <span className="reception-table-source">Dữ liệu từ API theo ngày</span></div>
+        <span className="reception-table-source">Theo ngày đang chọn</span></div>
       <div className="reception-table-scroll" tabIndex={0} aria-label="Bảng lịch hẹn, cuộn ngang trên màn hình nhỏ">
         <table className="reception-table"><thead><tr><th scope="col">Bệnh nhân</th><th scope="col">Bác sĩ</th><th scope="col">Chuyên khoa</th><th scope="col">Ngày</th><th scope="col">Giờ</th><th scope="col">Trạng thái</th><th scope="col">Thao tác</th></tr></thead>
           <tbody>{visible.map((item) => {
@@ -179,7 +180,7 @@ export default function ReceptionAppointmentsOverview({ date, appointments, queu
         <div><button type="button" disabled={currentPage === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Trước</button><span>Trang {currentPage}/{maxPage}</span>
           <button type="button" disabled={currentPage >= maxPage} onClick={() => setPage((value) => Math.min(maxPage, value + 1))}>Sau</button></div>
       </nav>}
-      <p className="reception-data-note">Tên bệnh nhân chưa có trong hợp đồng danh sách lịch hẹn; hiển thị mã định danh thực, không dùng dữ liệu mẫu. Số liệu chỉ thuộc ngày đang chọn.</p>
+      <p className="reception-data-note">Danh sách và số liệu thuộc ngày đang chọn.</p>
     </section>
   </div>;
 }

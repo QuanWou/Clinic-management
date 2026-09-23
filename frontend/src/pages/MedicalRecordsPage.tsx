@@ -26,11 +26,11 @@ export default function MedicalRecordsPage({ records, role, error, loading, onRe
   // Defense in depth: the view must never expose records to administrative staff.
   // Task 04 authorizes only the patient and their treating doctor.
   if (role !== 'PATIENT' && role !== 'DOCTOR') {
-    return <Alert tone="error">Medical records are restricted to patients and their authorized treating doctors.</Alert>;
+    return <Alert tone="error">Trang hồ sơ bệnh án dành cho bệnh nhân và bác sĩ điều trị.</Alert>;
   }
   if (role === 'DOCTOR' && !integrations.laboratory) {
-    return <><PageHeader title="Medical Records" subtitle="Treating doctor records" />
-      <Alert tone="info">Doctor record lookup is unavailable until Task 04 ownership checks are merged, running and verified.</Alert></>;
+    return <><PageHeader title="Hồ sơ bệnh án" subtitle="Hồ sơ của bác sĩ điều trị" />
+      <Alert tone="info">Tra cứu hồ sơ bác sĩ hiện chưa khả dụng.</Alert></>;
   }
   if (role === 'DOCTOR') return <DoctorMedicalRecordsWorkspace />;
   if (role === 'PATIENT') return <PatientMedicalRecordsWorkspace records={records} error={error} loading={loading} onRefresh={onRefresh} />;
@@ -53,11 +53,11 @@ function AuthorizedMedicalRecordsPage({ records, role, error, loading, onRefresh
   async function search(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setQueryError(null); setStaffRecords(null); setSelectedId(null);
     try {
-      if (!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i.test(patientId.trim())) throw new Error('Enter a valid patient UUID.');
+      if (!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i.test(patientId.trim())) throw new Error('Nhập mã bệnh nhân hợp lệ.');
       const result = await getPatientMedicalRecords(patientId.trim());
-      if (!Array.isArray(result)) throw new Error('Unexpected medical record response');
+      if (!Array.isArray(result)) throw new Error('Dữ liệu bệnh án không hợp lệ.');
       setStaffRecords(result);
-    } catch (cause) { setQueryError(cause instanceof Error ? cause.message : 'Unable to load medical records'); }
+    } catch (cause) { setQueryError(cause instanceof Error ? cause.message : 'Không thể tải hồ sơ bệnh án.'); }
     finally { setBusy(false); }
   }
 
@@ -65,46 +65,46 @@ function AuthorizedMedicalRecordsPage({ records, role, error, loading, onRefresh
     event.preventDefault(); setBusy(true); setQueryError(null); setNotice(null);
     try {
       if (!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i.test(newRecord.appointmentId)) {
-        throw new Error('Appointment UUID is invalid');
+        throw new Error('Mã lịch hẹn không hợp lệ.');
       }
       const created = await createMedicalRecord({ ...newRecord, prescriptionItems: [] });
       if (created.appointmentId !== newRecord.appointmentId || !created.id) {
-        throw new Error('Medical record creation was not confirmed by the server');
+        throw new Error('Chưa xác nhận được việc tạo bệnh án.');
       }
       setStaffRecords((previous) => [created, ...(previous ?? []).filter((record) => record.id !== created.id)]);
       setSelectedId(created.id);
       setNewRecord({ appointmentId: '', symptoms: '', diagnosis: '', notes: '' });
       setNotice('Hồ sơ bệnh án đã được ghi nhận. Chỉ định xét nghiệm có thể tạo phía dưới.');
-    } catch (cause) { setQueryError(cause instanceof Error ? cause.message : 'Unable to create medical record'); }
+    } catch (cause) { setQueryError(cause instanceof Error ? cause.message : 'Không thể tạo bệnh án.'); }
     finally { setBusy(false); }
   }
 
   return <>
-    <PageHeader title="Medical Records" subtitle={isPatient ? 'Your medical records and prescriptions.' : 'Search records by patient ID. The backend enforces record access.'}
-      actions={isPatient ? <button type="button" className="soft-button" onClick={onRefresh} disabled={loading}>Refresh</button> : undefined} />
-    {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Retry</button></Alert>}
+    <PageHeader title="Hồ sơ bệnh án" subtitle={isPatient ? 'Hồ sơ bệnh án và đơn thuốc của bạn.' : 'Tra cứu hồ sơ theo mã bệnh nhân.'}
+      actions={isPatient ? <button type="button" className="soft-button" onClick={onRefresh} disabled={loading}>Làm mới</button> : undefined} />
+    {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Thử lại</button></Alert>}
     {queryError && <Alert tone="error">{queryError}</Alert>}
     {notice && <Alert tone="info">{notice}</Alert>}
     {!isPatient && <form className="panel settings-form" onSubmit={(event) => void create(event)}>
       <h3>Tạo bệnh án sau khi khám hoàn thành</h3>
-      <p>Chỉ bác sĩ được phân công có thể tạo bệnh án; backend kiểm tra appointment COMPLETED.</p>
-      <label>Appointment UUID<input required value={newRecord.appointmentId} onChange={(event) => setNewRecord({ ...newRecord, appointmentId: event.target.value })} /></label>
+      <p>Chỉ bác sĩ được phân công có thể tạo bệnh án sau khi lịch khám hoàn tất.</p>
+      <label>Mã lịch hẹn<input required value={newRecord.appointmentId} onChange={(event) => setNewRecord({ ...newRecord, appointmentId: event.target.value })} /></label>
       <label>Chẩn đoán<textarea required maxLength={4000} value={newRecord.diagnosis} onChange={(event) => setNewRecord({ ...newRecord, diagnosis: event.target.value })} /></label>
       <label>Triệu chứng<textarea maxLength={4000} value={newRecord.symptoms} onChange={(event) => setNewRecord({ ...newRecord, symptoms: event.target.value })} /></label>
       <label>Ghi chú bác sĩ<textarea maxLength={4000} value={newRecord.notes} onChange={(event) => setNewRecord({ ...newRecord, notes: event.target.value })} /></label>
-      <p>Đơn thuốc chỉ được ghi khi đã chọn thuốc từ Catalog qua luồng được kiểm chứng; biểu mẫu này chưa tạo đơn thuốc.</p>
+      <p>Biểu mẫu này chỉ lưu bệnh án; đơn thuốc được ghi ở bước tiếp theo.</p>
       <button type="submit" disabled={busy || !newRecord.diagnosis.trim()}>Lưu bệnh án</button>
     </form>}
     {!isPatient && <form className="inline-search" onSubmit={(event) => void search(event)}>
-      <Search size={16} /><input aria-label="Patient UUID" required placeholder="Patient UUID" value={patientId} onChange={(event) => setPatientId(event.target.value)} />
-      <button type="submit" disabled={busy}>Search records</button>
+      <Search size={16} /><input aria-label="Mã bệnh nhân" required placeholder="Mã bệnh nhân" value={patientId} onChange={(event) => setPatientId(event.target.value)} />
+      <button type="submit" disabled={busy}>Tra cứu hồ sơ</button>
     </form>}
-    {loading && isPatient && <p role="status">Loading records...</p>}
+    {loading && isPatient && <p role="status">Đang tải hồ sơ bệnh án...</p>}
     <section className="split-page">
       <article className="panel table-panel">
-        {rows.length === 0 && <p>{busy ? 'Loading records...' : !isPatient && !staffRecords ? 'Enter a patient UUID to load records.' : isPatient && !records ? 'No medical record data loaded.' : 'No medical records found.'}</p>}
+        {rows.length === 0 && <p>{busy ? 'Đang tải hồ sơ...' : !isPatient && !staffRecords ? 'Nhập mã bệnh nhân để tải hồ sơ.' : isPatient && !records ? 'Chưa tải được hồ sơ bệnh án.' : 'Chưa có hồ sơ bệnh án.'}</p>}
         {rows.length > 0 && <div className="data-table">
-          <div className="table-row table-head records-grid"><span>Patient ID</span><span>Record Type</span><span>Date</span><span>Doctor ID</span><span>Status</span></div>
+          <div className="table-row table-head records-grid"><span>Mã bệnh nhân</span><span>Loại hồ sơ</span><span>Ngày tạo</span><span>Mã bác sĩ</span><span>Trạng thái</span></div>
           {rows.map((record) => <button type="button" className="table-row records-grid" key={record.id} aria-pressed={selected?.id === record.id} onClick={() => setSelectedId(record.id)}>
             <span className="person-cell"><Avatar label={record.patientName} size="sm" />{record.patientName}</span>
             <span>{record.recordType}</span><span>{formatDate(record.createdAt)}</span><span>{record.doctorName}</span>
@@ -114,15 +114,15 @@ function AuthorizedMedicalRecordsPage({ records, role, error, loading, onRefresh
       </article>
       {selected && <article className="panel detail-panel">
         <div className="panel-heading"><h3>{selected.patientName}</h3><Badge tone={selected.status}>{selected.status}</Badge></div>
-        <p>Record ID: MR-{shortId(selected.id)}</p>
+        <p>Mã hồ sơ: MR-{shortId(selected.id)}</p>
         <dl className="details-list compact">
-          <div><dt>Appointment</dt><dd>{selected.appointmentId}</dd></div>
-          <div><dt>Diagnosis</dt><dd>{selected.diagnosis}</dd></div>
-          <div><dt>Symptoms</dt><dd>{selected.symptoms ?? 'Not recorded'}</dd></div>
-          <div><dt>Doctor notes</dt><dd>{selected.notes ?? 'Not recorded'}</dd></div>
+          <div><dt>Lịch hẹn</dt><dd>{selected.appointmentId}</dd></div>
+          <div><dt>Chẩn đoán</dt><dd>{selected.diagnosis}</dd></div>
+          <div><dt>Triệu chứng</dt><dd>{selected.symptoms ?? 'Chưa ghi nhận'}</dd></div>
+          <div><dt>Ghi chú bác sĩ</dt><dd>{selected.notes ?? 'Chưa ghi nhận'}</dd></div>
         </dl>
         <h4>Prescriptions</h4>
-        {!selected.prescriptions?.length ? <p>No prescriptions recorded.</p> : selected.prescriptions.map((prescription) =>
+        {!selected.prescriptions?.length ? <p>Chưa có đơn thuốc.</p> : selected.prescriptions.map((prescription) =>
           <div key={prescription.id}>
             <p>Prescription {shortId(prescription.id)} · {formatDate(prescription.createdAt)}</p>
             <ul>{prescription.items.map((item) => <li key={item.id}>

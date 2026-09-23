@@ -52,6 +52,17 @@ public class LabOrderController {
         return ApiResponse.success("Lab order created", labOrders.create(principal, authorization, recordId, request));
     }
 
+    /** Only the treating doctor may read the lock state; billing amounts and item details stay staff-only. */
+    @GetMapping("/{recordId}/lab-orders/billing-status")
+    public ApiResponse<LabBillingStatus> billingStatus(@AuthenticationPrincipal CurrentUserPrincipal principal,
+                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+                                                       @PathVariable UUID recordId) {
+        return ApiResponse.success("Lab billing status fetched", new LabBillingStatus(
+                recordId, labOrders.isBillingFinalized(principal, authorization, recordId)));
+    }
+
+    public record LabBillingStatus(UUID medicalRecordId, boolean finalizedForBilling) {}
+
     @GetMapping("/{recordId}/lab-orders")
     public ApiResponse<List<LabOrderResponse>> list(@AuthenticationPrincipal CurrentUserPrincipal principal,
                                                     @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,

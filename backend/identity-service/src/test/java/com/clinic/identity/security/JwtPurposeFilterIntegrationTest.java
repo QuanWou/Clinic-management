@@ -1,6 +1,7 @@
 package com.clinic.identity.security;
 
 import com.clinic.identity.controller.AdminUserController;
+import com.clinic.identity.controller.DoctorDirectoryController;
 import com.clinic.identity.controller.AuthController;
 import com.clinic.identity.controller.UserController;
 import com.clinic.identity.entity.RefreshToken;
@@ -8,6 +9,7 @@ import com.clinic.identity.entity.Role;
 import com.clinic.identity.entity.RoleCode;
 import com.clinic.identity.entity.User;
 import com.clinic.identity.entity.UserStatus;
+import com.clinic.identity.dto.DoctorNameResponse;
 import com.clinic.identity.repository.RefreshTokenRepository;
 import com.clinic.identity.repository.RoleRepository;
 import com.clinic.identity.repository.UserRepository;
@@ -47,7 +49,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /** Exercises the actual JwtAuthenticationFilter and Spring Security filter chain, not addFilters=false. */
-@WebMvcTest(controllers = {AdminUserController.class, UserController.class, AuthController.class})
+@WebMvcTest(controllers = {AdminUserController.class, UserController.class, AuthController.class, DoctorDirectoryController.class})
 @AutoConfigureMockMvc(addFilters = true)
 @Import({SecurityConfig.class, JwtAuthenticationFilter.class, JwtService.class, AuthService.class})
 @TestPropertySource(properties = {
@@ -67,6 +69,33 @@ class JwtPurposeFilterIntegrationTest {
     @MockBean RefreshTokenRepository refreshTokens;
     @MockBean AdminUserService adminService;
     @MockBean CustomUserDetailsService userDetails;
+
+    @Test
+    void doctorNameDirectoryRequiresAccessTokenAndOnlyExposesActiveDoctorNameProjection() throws Exception {
+        UUID doctorAccount = UUID.randomUUID();
+        when(users.findActiveDoctorAccounts()).thenReturn(List.of(new DoctorNameResponse(doctorAccount, "Nguyễn Minh Khôi")));
+        mvc.perform(get("/api/users/doctors/names"))
+                .andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/users/doctors/names").header("Authorization", "Bearer " + jwt.generateRefreshToken(UUID.randomUUID())))
+                .andExpect(status().isUnauthorized());
+        for (RoleCode roleCode : List.of(RoleCode.ROLE_ADMIN, RoleCode.ROLE_RECEPTIONIST, RoleCode.ROLE_PATIENT)) {
+            User actor = user(UserStatus.ACTIVE);
+            Role role = new Role();
+            role.setCode(roleCode);
+            actor.setRoles(Set.of(role));
+            when(users.findById(actor.getId())).thenReturn(Optional.of(actor));
+            String access = jwt.generateAccessToken(actor.getId(), actor.getEmail(), Set.of(roleCode.name()));
+            String response = mvc.perform(get("/api/users/doctors/names").header("Authorization", "Bearer " + access))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data[0].id").value(doctorAccount.toString()))
+                    .andExpect(jsonPath("$.data[0].fullName").value("Nguyễn Minh Khôi"))
+                    .andReturn().getResponse().getContentAsString();
+            assertFalse(response.contains("passwordHash"));
+            assertFalse(response.contains("phone"));
+            assertFalse(response.contains("email"));
+        }
+        verify(users, times(3)).findActiveDoctorAccounts();
+    }
 
     @Test
     void signedAdminRefreshTokenCannotAccessAdminOrMeThroughRealFilter() throws Exception {

@@ -19,7 +19,7 @@ describe('personal notification workspace', () => {
     expect(html).toContain('HỘP THƯ CÁ NHÂN');
     expect(html).toContain('Đang tải thông báo');
     expect(html).toContain('Tùy chọn nhận tin');
-    expect(html).toContain('Chỉ dữ liệu từ API /my');
+    expect(html).toContain('Hộp thư riêng tư');
     expect(html).not.toContain('Đánh dấu tất cả đã đọc');
     expect(html).not.toContain('Danh sách thông báo toàn hệ thống');
     expect(html).not.toContain('Hóa đơn đã thanh toán thành công');
@@ -33,7 +33,7 @@ describe('personal notification workspace', () => {
     expect(doctorHtml).toContain('KHÔNG GIAN BÁC SĨ');
     expect(doctorHtml).toContain('Thông báo chưa đọc của tôi');
     expect(doctorHtml).toContain('Đang tải thông báo cá nhân');
-    expect(doctorHtml).toContain('Chỉ dữ liệu từ API /my');
+    expect(doctorHtml).toContain('Hộp thư riêng tư');
     expect(doctorHtml).not.toContain('Đánh dấu tất cả đã đọc');
     expect(doctorHtml).not.toContain('Danh sách thông báo toàn hệ thống');
     expect(adminHtml).not.toContain('doctor-notifications');

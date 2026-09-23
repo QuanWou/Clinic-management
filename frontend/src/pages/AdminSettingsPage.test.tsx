@@ -8,7 +8,7 @@ vi.mock('../config/integrations.config', () => ({ integrations: flags }));
 import SettingsPage from './SettingsPage';
 
 const admin: CurrentUser = {
-  id: 'identity-admin-uuid', fullName: 'Nguyễn Quản Trị', email: 'admin@clinic.test',
+  id: 'identity-admin-uuid', accountCode: 'TK000059', fullName: 'Nguyễn Quản Trị', email: 'admin@clinic.test',
   phone: '0900000000', status: 'ACTIVE', roles: ['ROLE_ADMIN']
 };
 const patient: CurrentUser = { id: 'patient-id', fullName: 'Người bệnh', email: 'patient@clinic.test', roles: ['ROLE_PATIENT'] };
@@ -21,7 +21,8 @@ describe('administrator settings workspace', () => {
     expect(html).toContain('admin-settings-workspace');
     expect(html).toContain('Nguyễn Quản Trị');
     expect(html).toContain('admin@clinic.test');
-    expect(html).toContain('identity-admin-uuid');
+    expect(html).toContain('TK000059');
+    expect(html).not.toContain('identity-admin-uuid');
     expect(html).toContain('Đang hoạt động');
     expect(html).toContain('Thông báo');
     expect(html).toContain('Hệ thống');
@@ -40,7 +41,7 @@ describe('administrator settings workspace', () => {
   it('shows disabled notification integration without pretending API preferences were loaded', () => {
     flags.notifications = false;
     const html = renderToStaticMarkup(<SettingsPage user={admin} role="ADMIN" />);
-    expect(html).toContain('Chưa bật tích hợp');
+    expect(html).toContain('Chưa bật');
     expect(html).not.toContain('Đã lưu tùy chọn');
   });
 

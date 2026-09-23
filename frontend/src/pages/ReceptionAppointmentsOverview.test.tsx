@@ -37,7 +37,7 @@ describe('reception appointments visual overview', () => {
 
   it('renders real daily counts, accessible date/filter controls and an actual empty state', () => {
     const html = renderToStaticMarkup(<ReceptionAppointmentsOverview date="2026-09-20" appointments={appointments}
-      queue={queue} doctors={[{ id: 'doctor-1', userId: 'identity-1', specialtyName: 'Tim mạch' }]}
+      queue={queue} doctors={[{ id: 'doctor-1', userId: 'identity-1', specialtyName: 'Tim mạch', fullName: 'Nguyễn Minh Khôi' }]}
       selectedId="" onDateChange={noop} onSelect={noop} />);
     expect(html).toContain('Tất cả lịch hẹn');
     expect(html).toContain('Lịch ngày đã chọn');
@@ -46,6 +46,7 @@ describe('reception appointments visual overview', () => {
     expect(html).toContain('aria-label="Tháng sau"');
     expect(html).toContain('BN #PATIENT-');
     expect(html).toContain('Tim mạch');
+    expect(html).toContain('BS. Nguyễn Minh Khôi');
     expect(html).toContain('Đang chờ');
     expect(html).toContain('3 trên 3 lịch phù hợp');
     expect(html).not.toContain('Sarah Lee');
@@ -63,6 +64,6 @@ describe('reception appointments visual overview', () => {
       queue={[]} doctors={[]} selectedId="" onDateChange={noop} onSelect={noop} />);
     expect(html).toContain('Hiển thị 1–10 / 14');
     expect(html).toContain('Trang 1/2');
-    expect(html).toContain('Số liệu chỉ thuộc ngày đang chọn');
+    expect(html).toContain('Danh sách và số liệu thuộc ngày đang chọn.');
   });
 });

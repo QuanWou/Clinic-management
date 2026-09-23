@@ -1,0 +1,181 @@
+/* Admin dashboard polish stays page-scoped so the shared shell can evolve independently. */
+.admin-overview .panel.admin-chart-panel,
+.admin-overview .panel.admin-status-panel,
+.admin-overview .panel.admin-appointments-panel,
+.admin-overview .panel.admin-doctors-panel,
+.admin-overview .admin-metric {
+  border-color: #e7edf0;
+  box-shadow: 0 10px 28px rgba(22, 49, 71, .045);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.admin-overview .panel.admin-chart-panel:hover,
+.admin-overview .panel.admin-status-panel:hover,
+.admin-overview .panel.admin-appointments-panel:hover,
+.admin-overview .panel.admin-doctors-panel:hover,
+.admin-overview .admin-metric:hover {
+  border-color: #d3e6df;
+  box-shadow: 0 14px 34px rgba(22, 49, 71, .07);
+}
+
+.admin-list-action,
+.admin-shortcut-buttons button {
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.admin-list-action:focus-visible,
+.admin-shortcut-buttons button:focus-visible,
+.admin-volume-scroll:focus-visible,
+.admin-volume-switch button:focus-visible {
+  outline: 3px solid #5fd5ae;
+  outline-offset: 3px;
+}
+
+.admin-overview .admin-metrics {
+  gap: .85rem;
+}
+
+.admin-overview .admin-metric {
+  min-height: 164px;
+  padding: 1.15rem 1.2rem;
+}
+
+.admin-overview .admin-metric-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+}
+
+.admin-overview .admin-metric > strong {
+  color: #162f3e;
+  font-size: clamp(1.7rem, 2.4vw, 2.3rem);
+}
+
+.admin-overview .admin-metric p {
+  color: #526874;
+  font-size: .75rem;
+}
+
+.admin-overview .admin-metric-period {
+  color: #526874;
+  font-size: .6875rem;
+}
+
+.admin-overview .admin-section-heading {
+  margin-bottom: 1rem;
+}
+
+.admin-overview .admin-section-heading h3,
+.admin-overview .admin-shortcuts h3 {
+  font-size: 1.16rem;
+}
+
+.admin-overview .admin-section-heading p {
+  color: #526874;
+  font-size: .75rem;
+}
+
+.admin-chart-panel,
+.admin-status-panel,
+.admin-appointments-panel,
+.admin-doctors-panel {
+  background: #fff;
+}
+
+.admin-overview .admin-chart-totals {
+  gap: 1rem 1.5rem;
+  padding-bottom: .9rem;
+}
+
+.admin-overview .admin-chart-totals strong {
+  color: #173847;
+}
+
+.admin-overview .admin-trend-chart { min-width: 0; padding-top: .55rem; }
+.admin-volume-toolbar { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: .65rem; margin-bottom: .5rem; color: #526874; font-size: .77rem; }
+.admin-volume-switch { display: flex; gap: .2rem; padding: .2rem; background: #f0f5f4; border: 1px solid #e2eeea; border-radius: 10px; }
+.admin-volume-switch button { min-height: 31px; padding: .35rem .7rem; border: 0; box-shadow: none; border-radius: 7px; background: transparent; color: #506878; font-size: .72rem; font-weight: 650; cursor: pointer; }
+.admin-volume-switch button[aria-pressed="true"] { background: #fff; color: #087968; box-shadow: 0 1px 4px #183b3b19; }
+.admin-volume-switch button:hover { color: #087968; }
+.admin-overview .admin-volume-scroll { overflow-x: auto; max-width: 100%; scrollbar-width: thin; }
+.admin-overview .admin-volume-svg { display: block; width: 100%; height: auto; }
+.admin-volume-grid line { stroke: #e6edf0; stroke-width: 1; stroke-dasharray: 4 5; }
+.admin-volume-grid text, .admin-volume-date { fill: #69818d; font-size: 12px; font-variant-numeric: tabular-nums; }
+.admin-volume-highlight { fill: transparent; stroke: transparent; stroke-width: 1.5; }
+.admin-volume-bar.bookings { fill: #27af88; }
+.admin-volume-bar.checkins { fill: #6e9dea; }
+.admin-volume-hit { fill: transparent; cursor: pointer; }
+.admin-volume-group:focus { outline: none; }
+.admin-volume-group:hover .admin-volume-highlight,
+.admin-volume-group:focus-visible .admin-volume-highlight,
+.admin-volume-group.is-selected .admin-volume-highlight { fill: #ebf8f4; stroke: #a6dacc; }
+.admin-volume-group:focus-visible .admin-volume-highlight { stroke: #087968; stroke-width: 2.5; }
+.admin-volume-inspector { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; align-items: center; min-height: 39px; margin-top: .1rem; padding: .55rem .8rem; border: 1px solid #e2eee9; border-radius: 10px; background: #f7fcfa; color: #4d6570; font-size: .75rem; font-variant-numeric: tabular-nums; }
+.admin-volume-inspector strong, .admin-volume-inspector b { color: #173847; }
+.admin-volume-note { margin: .65rem 0 0; color: #526874; font-size: .72rem; line-height: 1.5; }
+.admin-trend-details { margin-top: .7rem; font-size: .78rem; color: #285c59; }
+.admin-trend-details summary { width: fit-content; cursor: pointer; font-weight: 700; }
+.admin-trend-details summary:focus-visible { outline: 2px solid #168b79; outline-offset: 3px; }
+.admin-trend-table-scroll { max-height: 300px; overflow: auto; margin-top: .7rem; border: 1px solid #e3ebed; border-radius: 10px; }
+.admin-trend-details table { width: 100%; border-collapse: collapse; color: #243c49; font-variant-numeric: tabular-nums; }
+.admin-trend-details th, .admin-trend-details td { padding: .55rem .75rem; border-bottom: 1px solid #edf2f4; text-align: left; }
+.admin-trend-details thead { background: #f4faf7; }
+.admin-trend-details td { text-align: right; }
+.admin-trend-details thead th:not(:first-child) { text-align: right; }
+
+.admin-overview .admin-data-note {
+  color: #526874;
+  font-size: .75rem;
+}
+
+.admin-overview .admin-status-list {
+  gap: 1.05rem;
+}
+
+.admin-overview .admin-status-footer {
+  background: #f3fbf7;
+  border: 1px solid #e0f1e9;
+  border-radius: 12px;
+  margin-top: auto;
+  padding: .75rem .8rem;
+}
+
+.admin-overview .admin-appointment,
+.admin-overview .admin-doctor-row {
+  transition: background-color 180ms ease;
+}
+
+.admin-overview .admin-appointment:hover,
+.admin-overview .admin-doctor-row:hover {
+  background: #fbfefd;
+}
+
+.admin-overview .admin-appointment-time {
+  border: 1px solid #dceee7;
+}
+
+.admin-overview .admin-shortcuts {
+  box-shadow: 0 10px 26px rgba(22, 49, 71, .035);
+}
+
+@media (max-width: 700px) {
+  .admin-overview .panel.admin-chart-panel,
+  .admin-overview .panel.admin-status-panel,
+  .admin-overview .panel.admin-appointments-panel,
+  .admin-overview .panel.admin-doctors-panel {
+    padding: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-overview .panel.admin-chart-panel,
+  .admin-overview .panel.admin-status-panel,
+  .admin-overview .panel.admin-appointments-panel,
+  .admin-overview .panel.admin-doctors-panel,
+  .admin-metric,
+  .admin-list-action,
+  .admin-shortcut-buttons button {
+    transition: none;
+  }
+}

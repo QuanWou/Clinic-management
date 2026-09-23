@@ -1,0 +1,79 @@
+.appointment-booking-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+  border: 1px solid #d8eee5;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fcfa 100%);
+}
+
+.appointment-booking-form > h3,
+.appointment-booking-form > p,
+.appointment-booking-form > .alert,
+.appointment-booking-form > .patient-section-head,
+.appointment-booking-form > .patient-form-fields,
+.appointment-booking-form > .appointment-form-actions {
+  grid-column: 1 / -1;
+}
+
+.appointment-booking-form > h3 { margin: 0; }
+.appointment-booking-form > p { margin: -.45rem 0 .1rem; color: #617986; font-size: .8rem; line-height: 1.55; }
+
+.appointment-field {
+  display: grid;
+  gap: .42rem;
+  min-width: 0;
+  color: #2b4b5a;
+  font-size: .79rem;
+  font-weight: 750;
+}
+
+.appointment-field-wide { grid-column: 1 / -1; }
+.appointment-field input,
+.appointment-field select,
+.appointment-field textarea { width: 100%; min-width: 0; }
+.appointment-field textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
+
+.appointment-field input[aria-invalid="true"],
+.appointment-field select[aria-invalid="true"],
+.appointment-field textarea[aria-invalid="true"] {
+  border-color: #d36666;
+  box-shadow: 0 0 0 3px #d366661c;
+}
+
+.appointment-field-error {
+  min-height: 1.05rem;
+  color: #b14949;
+  font-size: .72rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.appointment-duration-picker {
+  display: grid;
+  align-content: start;
+  gap: .45rem;
+  min-width: 0;
+  margin: 0;
+  padding: .78rem .85rem .72rem;
+  border: 1px solid #dcebe6;
+  border-radius: 12px;
+  background: #f4fbf7;
+}
+
+.appointment-duration-picker legend { padding: 0 .25rem; color: #2b5b51; font-size: .76rem; font-weight: 800; }
+.appointment-form-hint { color: #6b817c; font-size: .7rem; font-weight: 500; line-height: 1.45; }
+.appointment-duration-options { display: flex; flex-wrap: wrap; gap: .45rem; }
+.appointment-duration-options button { min-height: 36px; padding: .45rem .72rem; border: 1px solid #b9ded0; border-radius: 9px; background: #fff; color: #14785b; font-size: .74rem; }
+.appointment-duration-options button:hover:not(:disabled) { background: #e5f6ed; color: #096a4e; box-shadow: none; transform: none; }
+.appointment-duration-options button.is-selected { border-color: #0d946b; background: #0d946b; color: #fff; box-shadow: 0 5px 12px #0d946b25; }
+.appointment-duration-options button.is-selected:hover:not(:disabled) { background: #087957; color: #fff; }
+
+.appointment-form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .8rem; margin-top: .1rem; }
+.appointment-form-actions > button { min-height: 44px; }
+.appointment-form-actions > button:disabled { cursor: wait; opacity: .75; }
+.appointment-busy-status { color: #397063; font-size: .75rem; font-weight: 650; }
+
+@media (prefers-reduced-motion: reduce) {
+  .appointment-duration-options button { transition: none; }
+}

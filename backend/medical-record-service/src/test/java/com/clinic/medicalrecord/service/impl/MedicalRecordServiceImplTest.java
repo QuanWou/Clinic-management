@@ -12,6 +12,7 @@ import com.clinic.medicalrecord.dto.CreateMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.PrescriptionItemRequest;
 import com.clinic.medicalrecord.entity.MedicalRecord;
 import com.clinic.medicalrecord.repository.MedicalRecordRepository;
+import com.clinic.medicalrecord.repository.MedicalRecordDisplayLookup;
 import com.clinic.medicalrecord.security.CurrentUserPrincipal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,6 +39,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class MedicalRecordServiceImplTest {
@@ -43,6 +48,9 @@ class MedicalRecordServiceImplTest {
 
     @Mock
     private MedicalRecordRepository medicalRecordRepository;
+
+    @Mock
+    private MedicalRecordDisplayLookup displayLookup;
 
     @Mock
     private AppointmentClient appointmentClient;
@@ -213,6 +221,79 @@ class MedicalRecordServiceImplTest {
         assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
                 () -> medicalRecordService.getByPatientId(currentUserId, AUTHORIZATION, receptionist, patientId)).getErrorCode());
         verify(auditService, never()).recordRead(any(), any(), any());
+    }
+
+    @Test
+    void doctorDirectoryIsBoundedAndUsesOnlyAuthenticatedDoctorId() {
+        MedicalRecord owned = medicalRecord();
+        var pageable = PageRequest.of(0, 8, Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id")));
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
+        when(medicalRecordRepository.findByDoctorId(doctorId, pageable))
+                .thenReturn(new PageImpl<>(List.of(owned), pageable, 96));
+        when(displayLookup.forDoctor(doctorId, List.of(owned.getId()))).thenReturn(java.util.Map.of(owned.getId(),
+                new MedicalRecordDisplayLookup.Display("BN000005", "Demo Patient", "BS000001", "Demo Doctor",
+                        LocalDate.of(2026, 9, 18), LocalTime.of(10, 0), LocalTime.of(11, 0))));
+
+        var result = medicalRecordService.getMyDoctorRecords(currentUserId, AUTHORIZATION, doctorPrincipal, 0, 8);
+
+        assertEquals(96, result.getTotalElements());
+        assertEquals(12, result.getTotalPages());
+        assertEquals(doctorId, result.getContent().getFirst().doctorId());
+        assertEquals("BN000005", result.getContent().getFirst().patientCode());
+        assertEquals("BS000001", result.getContent().getFirst().doctorCode());
+        assertEquals(LocalDate.of(2026, 9, 18), result.getContent().getFirst().appointmentDate());
+        verify(medicalRecordRepository).findByDoctorId(doctorId, pageable);
+        verify(auditService).recordRead(currentUserId, "MEDICAL_RECORD_READ", owned.getId());
+    }
+
+    @Test
+    void doctorCanSearchByVisiblePatientCodeOnlyWithinOwnRecords() {
+        MedicalRecord owned = medicalRecord();
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
+        when(displayLookup.patientIdForDoctorCode(doctorId, "BN000005")).thenReturn(patientId);
+        when(medicalRecordRepository.findByPatientIdAndDoctorIdOrderByCreatedAtDesc(patientId, doctorId))
+                .thenReturn(List.of(owned));
+        when(displayLookup.forDoctor(doctorId, List.of(owned.getId()))).thenReturn(java.util.Map.of(owned.getId(),
+                new MedicalRecordDisplayLookup.Display("BN000005", "Demo Patient", "BS000001", "Demo Doctor",
+                        LocalDate.of(2026, 9, 18), LocalTime.of(10, 0), LocalTime.of(11, 0))));
+
+        var result = medicalRecordService.getByPatientCode(currentUserId, AUTHORIZATION, doctorPrincipal, "BN000005");
+        assertEquals(1, result.size());
+        assertEquals("BN000005", result.getFirst().patientCode());
+        verify(auditService).recordRead(currentUserId, "MEDICAL_RECORD_READ", owned.getId());
+    }
+
+    @Test
+    void doctorCodeLookupRejectsOtherRoleAndUnrelatedPatients() {
+        var admin = new CurrentUserPrincipal(currentUserId, "admin@test.com", "Admin", Set.of("ROLE_ADMIN"));
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> medicalRecordService.getByPatientCode(currentUserId, AUTHORIZATION, admin, "BN000005")).getErrorCode());
+        assertEquals(ErrorCode.VALIDATION_ERROR, assertThrows(BusinessException.class,
+                () -> medicalRecordService.getByPatientCode(currentUserId, AUTHORIZATION, doctorPrincipal, "../../etc")).getErrorCode());
+        verifyNoInteractions(displayLookup, doctorClient, medicalRecordRepository);
+
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> medicalRecordService.getByPatientCode(currentUserId, AUTHORIZATION, doctorPrincipal, "BN000005")).getErrorCode());
+        verify(medicalRecordRepository, never()).findByPatientIdAndDoctorIdOrderByCreatedAtDesc(any(), any());
+    }
+
+    @Test
+    void doctorDirectoryRejectsUnrelatedRolesBeforeDoctorLookup() {
+        var admin = new CurrentUserPrincipal(currentUserId, "admin@test.com", "Admin", Set.of("ROLE_ADMIN"));
+        assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
+                () -> medicalRecordService.getMyDoctorRecords(currentUserId, AUTHORIZATION, admin, 0, 8)).getErrorCode());
+        verifyNoInteractions(doctorClient, medicalRecordRepository, auditService);
+    }
+
+    @Test
+    void doctorDirectoryRejectsOversizedOrNegativePaginationBeforeDoctorLookup() {
+        for (int[] requested : new int[][] {{-1, 8}, {0, 0}, {0, 21}, {100001, 8}}) {
+            assertEquals(ErrorCode.VALIDATION_ERROR, assertThrows(BusinessException.class,
+                    () -> medicalRecordService.getMyDoctorRecords(currentUserId, AUTHORIZATION,
+                            doctorPrincipal, requested[0], requested[1])).getErrorCode());
+        }
+        verifyNoInteractions(doctorClient, medicalRecordRepository, auditService);
     }
 
     @Test

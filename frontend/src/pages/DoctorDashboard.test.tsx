@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import DashboardPage from './DashboardPage';
-import DoctorDashboard from './DoctorDashboard';
+import DoctorDashboard, { groupDoctorHistory } from './DoctorDashboard';
 import type { ReceptionVisitResponse } from '../types/domain';
 
 const doctor = { id: 'doctor-user', email: 'doctor@clinic.test', fullName: 'Bác sĩ thử nghiệm', roles: ['ROLE_DOCTOR'] };
@@ -42,6 +42,17 @@ describe('doctor dashboard design and data boundaries', () => {
     expect(html).not.toContain('Hóa đơn');
   });
 
+  it('places the queue and priority visit side by side with shortcuts in their own full-width row', () => {
+    const html = render([visit('WAITING', 1)]);
+    const work = html.split('<section class="doctor-dashboard-work"')[1];
+    expect(work).toBeDefined();
+    expect(work).toMatch(/<\/article><article class="panel doctor-dashboard-next-panel"/);
+    expect(work).toMatch(/<\/article><article class="doctor-dashboard-shortcuts"/);
+    expect(work).not.toContain('doctor-dashboard-work-side');
+    expect(work).toContain('Hồ sơ bệnh án');
+    expect(work).toContain('Hồ sơ bác sĩ');
+  });
+
   it('renders only a verified 30-day doctor scope and distinguishes unavailable history from empty history', () => {
     const days = Array.from({ length: 30 }, (_, index) => ({
       date: new Date(Date.UTC(2026, 7, 22 + index)).toISOString().slice(0, 10),
@@ -51,11 +62,36 @@ describe('doctor dashboard design and data boundaries', () => {
     const html = render([], { from: '2026-08-22', to: '2026-09-20', scope: 'DOCTOR', days });
     expect(html).toContain('Hoạt động 30 ngày của tôi');
     expect(html).toContain('3 lượt check-in và 2 lượt khám hoàn tất');
+    expect(html).toContain('doctor-dashboard-chart-layout');
+    expect(html).toContain('doctor-dashboard-chart-scale');
+    expect(html).toContain('6 giai đoạn, mỗi giai đoạn 5 ngày');
+    expect(html).not.toContain('doctor-dashboard-chart-scroll');
+    expect(html).toContain('22/08/2026 đến 26/08/2026: 3 lượt check-in, 2 lượt khám hoàn tất');
+    expect((html.match(/class="doctor-dashboard-chart-day"/g) ?? [])).toHaveLength(6);
+    expect(groupDoctorHistory(days)).toHaveLength(6);
+    expect(groupDoctorHistory(days)[0]).toEqual({ from: '2026-08-22', to: '2026-08-26', checkIns: 3, completedVisits: 2 });
     expect(html).not.toContain('99 lịch hẹn');
     expect(html).not.toContain('Báo cáo 30 ngày chưa khả dụng');
     const wrongScope = renderToStaticMarkup(<DoctorDashboard data={{ scope: 'DOCTOR', date: '2026-09-20', queue: [],
       history: { from: '2026-08-22', to: '2026-09-20', scope: 'RECEPTION', days } }} />);
     expect(wrongScope).toContain('Báo cáo 30 ngày chưa khả dụng');
+  });
+
+  it('preserves all 30 days and labels periods crossing a month boundary unambiguously', () => {
+    const days = Array.from({ length: 30 }, (_, index) => ({
+      date: new Date(Date.UTC(2026, 7, 24 + index)).toISOString().slice(0, 10),
+      appointments: 0, checkIns: index + 1, completedVisits: index % 2,
+      cancelledAppointments: 0
+    }));
+    const periods = groupDoctorHistory(days);
+    expect(periods).toHaveLength(6);
+    expect(periods.reduce((sum, period) => sum + period.checkIns, 0)).toBe(465);
+    expect(periods.reduce((sum, period) => sum + period.completedVisits, 0)).toBe(15);
+    expect(periods[1]).toEqual({ from: '2026-08-29', to: '2026-09-02', checkIns: 40, completedVisits: 3 });
+    const html = renderToStaticMarkup(<DoctorDashboard data={{ scope: 'DOCTOR', date: '2026-09-22', queue: [],
+      history: { from: '2026-08-24', to: '2026-09-22', scope: 'DOCTOR', days } }} />);
+    expect(html).toContain('29/08–02/09');
+    expect(html).toContain('465 lượt check-in và 15 lượt khám hoàn tất');
   });
 
   it('fails closed for another role’s scope or records from the wrong date', () => {

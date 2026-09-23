@@ -7,6 +7,7 @@ export function filterReceptionDoctors(
   const term = query.trim().toLocaleLowerCase('vi-VN');
   return doctors.filter((doctor) => {
     if (specialtyId && doctor.specialtyId !== specialtyId) return false;
-    return !term || [doctor.id, doctor.specialtyName ?? ''].some((text) => text.toLocaleLowerCase('vi-VN').includes(term));
+    return !term || [doctor.id, doctor.fullName ?? '', doctor.specialtyName ?? '']
+      .some((text) => text.toLocaleLowerCase('vi-VN').includes(term));
   });
 }

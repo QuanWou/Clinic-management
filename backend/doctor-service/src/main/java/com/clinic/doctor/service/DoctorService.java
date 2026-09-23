@@ -215,7 +215,8 @@ public class DoctorService {
                 doctor.getSpecialty() != null ? doctor.getSpecialty().getId() : null,
                 doctor.getSpecialty() != null ? doctor.getSpecialty().getName() : null,
                 doctor.getBiography(),
-                doctor.getConsultationFee()
+                doctor.getConsultationFee(),
+                doctor.getDoctorCode()
         );
     }
 

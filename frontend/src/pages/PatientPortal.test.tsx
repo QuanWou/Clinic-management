@@ -85,7 +85,7 @@ describe('patient portal role isolation and actual data', () => {
     expect(html).toContain('patient-notifications');
     expect(html).toContain('KHÔNG GIAN BỆNH NHÂN');
     expect(html).toContain('Thông báo chưa đọc của tôi');
-    expect(html).toContain('Chỉ dữ liệu từ API /my');
+    expect(html).toContain('Hộp thư riêng tư');
     expect(html).not.toContain('Danh sách thông báo toàn hệ thống');
   });
 
@@ -96,10 +96,21 @@ describe('patient portal role isolation and actual data', () => {
     expect(settings).toContain('patient-settings');
     expect(settings).toContain('Hồ sơ bệnh nhân');
     expect(settings).not.toContain('admin-settings-workspace');
-    expect(sidebar).toContain('KHÔNG GIAN BỆNH NHÂN');
+    expect(sidebar).toContain('BỆNH NHÂN');
     expect(sidebar).toContain('Hồ sơ của tôi');
     expect(sidebar).not.toContain('Hồ sơ bác sĩ');
     expect(topbar).toContain('Clinic / Bệnh nhân');
     expect(topbar).toContain('Hồ sơ của tôi');
+  });
+
+  it('shows the signed-in account in the compact header profile card', () => {
+    const admin = { ...user, fullName: 'Demo Administrator', roles: ['ROLE_ADMIN'] };
+    const topbar = renderToStaticMarkup(<Topbar primaryRole="ADMIN" user={admin} loading={false}
+      onRefresh={noop} activeView="dashboard" menuButton={null} />);
+    expect(topbar).toContain('aria-label="Tài khoản hiện tại"');
+    expect(topbar).toContain('class="user-menu-details"');
+    expect(topbar).toContain('Demo Administrator');
+    expect(topbar).toContain('Quản trị viên');
+    expect(topbar).toContain('>DA</span>');
   });
 });

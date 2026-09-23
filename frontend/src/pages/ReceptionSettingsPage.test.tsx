@@ -7,7 +7,7 @@ vi.mock('../config/integrations.config', () => ({ integrations: flags }));
 import SettingsPage from './SettingsPage';
 
 const receptionist: CurrentUser = {
-  id: 'receptionist-identity', email: 'receptionist@clinic.test', fullName: 'Nhân viên lễ tân',
+  id: 'receptionist-identity', accountCode: 'TK000058', email: 'receptionist@clinic.test', fullName: 'Nhân viên lễ tân',
   phone: '0900000000', status: 'ACTIVE', roles: ['ROLE_RECEPTIONIST']
 };
 
@@ -21,7 +21,8 @@ describe('receptionist settings workspace', () => {
     expect(html).toContain('KHÔNG GIAN LỄ TÂN');
     expect(html).toContain('Nhân viên lễ tân');
     expect(html).toContain('receptionist@clinic.test');
-    expect(html).toContain('receptionist-identity');
+    expect(html).toContain('TK000058');
+    expect(html).not.toContain('receptionist-identity');
     expect(html).toContain('0900000000');
     expect(html).toContain('Đang hoạt động');
     expect(html).toContain('Chỉ xem');
@@ -37,7 +38,7 @@ describe('receptionist settings workspace', () => {
     flags.notifications = false;
     const html = renderToStaticMarkup(<SettingsPage user={{ ...receptionist, status: undefined, fullName: undefined }} role="RECEPTIONIST" />);
     expect(html).toContain('Chưa có thông tin');
-    expect(html).toContain('Chưa bật tích hợp');
+    expect(html).toContain('Chưa bật');
     expect(html).not.toContain('Đang hoạt động');
     expect(html).not.toContain('Đã lưu');
   });

@@ -32,6 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
@@ -58,6 +61,20 @@ public class BillingServiceImpl implements BillingService {
     private final LabBillingClient labBillingClient;
     private final InvoiceItemRepository invoiceItemRepository;
     private final InvoicePaidOutboxRepository paidOutboxRepository;
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<InvoiceResponse> getStaffInvoices(CurrentUserPrincipal principal, int page, int size) {
+        if (principal == null || (!principal.hasRole("ADMIN") && !principal.hasRole("RECEPTIONIST"))) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Only administrators or receptionists can list clinic invoices");
+        }
+        if (page < 0 || size < 1 || size > 50) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR, "Invoice page or size is invalid");
+        }
+        return invoiceRepository.findAll(PageRequest.of(page, size,
+                        Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))))
+                .map(this::toResponse);
+    }
 
     @Override
     @Transactional

@@ -66,6 +66,7 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
                 .active(true)
                 .build();
         doctor = doctors.save(doctor);
+        doctors.flush(); // Make the generated public doctorCode available immediately.
         audit(actorId, "DOCTOR", doctor.getId(), "CREATE");
         return toDoctorResponse(doctor);
     }
@@ -228,7 +229,8 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
     private AdminDoctorResponse toDoctorResponse(Doctor doctor) {
         return new AdminDoctorResponse(doctor.getId(), doctor.getUserId(), doctor.getSpecialty().getId(),
-                doctor.getSpecialty().getName(), doctor.getBiography(), doctor.getConsultationFee(), doctor.isActive());
+                doctor.getSpecialty().getName(), doctor.getBiography(), doctor.getConsultationFee(), doctor.isActive(),
+                doctor.getDoctorCode());
     }
 
     private ScheduleResponse toScheduleResponse(Schedule schedule) {

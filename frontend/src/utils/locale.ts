@@ -1,8 +1,11 @@
 // Presentation-only labels. API role and status codes remain unchanged.
 const statusLabels: Record<string, string> = {
   PENDING: 'Chờ xác nhận', CONFIRMED: 'Đã xác nhận', COMPLETED: 'Hoàn thành',
-  CANCELLED: 'Đã hủy', PAID: 'Đã thanh toán', UNPAID: 'Chưa thanh toán',
+  CANCELLED: 'Đã hủy', PAID: 'Đã thanh toán', UNPAID: 'Chưa thanh toán', REFUNDED: 'Đã hoàn tiền',
+  RECONCILIATION_REQUIRED: 'Cần đối soát',
   WAITING: 'Đang chờ', CALLED: 'Đã gọi', IN_PROGRESS: 'Đang khám', SKIPPED: 'Đã bỏ qua',
+  ORDERED: 'Đã chỉ định', COLLECTED: 'Đã lấy mẫu', PROCESSING: 'Đang xử lý mẫu',
+  RESULTED: 'Đã có kết quả', RELEASED: 'Đã công bố',
   ACTIVE: 'Đang hoạt động', INACTIVE: 'Ngừng hoạt động'
 };
 

@@ -12,7 +12,8 @@ describe('reception doctor read-only API routes', () => {
     await getSpecialties();
     await getDoctorSchedules('doctor/id');
     expect(vi.mocked(fetch).mock.calls.map(([url, options]) => [String(url), options?.method ?? 'GET'])).toEqual([
-      ['/api/doctors', 'GET'], ['/api/specialties', 'GET'], ['/api/doctors/doctor%2Fid/schedules', 'GET']
+      ['/api/doctors', 'GET'], ['/api/users/doctors/names', 'GET'],
+      ['/api/specialties', 'GET'], ['/api/doctors/doctor%2Fid/schedules', 'GET']
     ]);
   });
 });

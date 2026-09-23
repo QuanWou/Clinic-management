@@ -9,7 +9,7 @@ import Alert from '../components/Alert';
 import PageHeader from '../components/PageHeader';
 import type { CatalogServiceResponse, MedicineResponse, PriceResponse, SpecialtyResponse } from '../types/domain';
 import { filterCatalogEntries, type CatalogTab } from '../utils/catalogDirectory';
-import { formatDate, formatMoney, shortId } from '../utils/format';
+import { formatCurrency, formatDate, shortId } from '../utils/format';
 import './doctorCatalog.css';
 
 const PAGE_SIZE = 8;
@@ -108,13 +108,13 @@ export default function DoctorCatalogWorkspace() {
     <section className="doctor-catalog-hero" aria-label="Tra cứu danh mục cho bác sĩ">
       <div><span className="doctor-catalog-eyebrow"><ShieldCheck size={15} aria-hidden="true" /> KHÔNG GIAN BÁC SĨ · CHỈ TRA CỨU</span>
         <h3>Thông tin chuyên môn, trong tầm tay.</h3>
-        <p>Tìm mã dịch vụ, tham khảo danh mục thuốc và chuyên khoa trực tiếp từ dữ liệu đã công bố. Không có thao tác sửa danh mục hoặc giá.</p>
+        <p>Tìm mã dịch vụ, tham khảo danh mục thuốc và chuyên khoa. Bạn chỉ có thể xem thông tin.</p>
         <span className="doctor-catalog-hero-note"><CheckCircle2 size={15} aria-hidden="true" /> Chỉ hiển thị dịch vụ và thuốc đang hoạt động</span>
       </div>
       <span className="doctor-catalog-hero-icon" aria-hidden="true"><HeartPulse size={69} strokeWidth={1.5} /></span>
     </section>
 
-    <section className="doctor-catalog-summary" aria-label="Số mục danh mục được tải từ API">
+    <section className="doctor-catalog-summary" aria-label="Số mục danh mục hiện có">
       {categories.map(({ id, label, icon: Icon, hint }) => {
         const count = id === 'services' ? services?.length : id === 'medicines' ? medicines?.length : specialties?.length;
         return <button key={id} type="button" className={`doctor-catalog-stat ${tab === id ? 'is-active' : ''}`}
@@ -127,7 +127,7 @@ export default function DoctorCatalogWorkspace() {
       })}
     </section>
 
-    {loading && <p className="doctor-catalog-loading" role="status"><RefreshCw size={17} aria-hidden="true" /> Đang tải danh mục từ API...</p>}
+    {loading && <p className="doctor-catalog-loading" role="status"><RefreshCw size={17} aria-hidden="true" /> Đang tải danh mục...</p>}
     {categories.map(({ id, label }) => errors[id] && <Alert key={id} tone="error">Không tải được {label.toLocaleLowerCase('vi-VN')}: {errors[id]}. <button type="button" className="soft-button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Thử lại</button></Alert>)}
 
     <div className="doctor-catalog-layout">
@@ -144,7 +144,7 @@ export default function DoctorCatalogWorkspace() {
             onChange={(event) => { setQuery(event.target.value); setPage(1); setSelectedId(''); }} />
           {query && <button type="button" aria-label="Xóa tìm kiếm" onClick={() => { setQuery(''); setPage(1); setSelectedId(''); }}><X size={16} /></button>}
         </label>
-        <div className="doctor-catalog-list-status" aria-live="polite">{entries ? `${filtered.length} / ${entries.length} mục trong dữ liệu đã tải` : 'Chưa có dữ liệu từ API'}</div>
+        <div className="doctor-catalog-list-status" aria-live="polite">{entries ? `${filtered.length} / ${entries.length} mục trong danh mục` : 'Chưa có dữ liệu'}</div>
         {entries && visible.length > 0 && <div className="doctor-catalog-results">
           {visible.map((entry) => <button type="button" key={entry.id} className={`doctor-catalog-result ${selectedId === entry.id ? 'is-selected' : ''}`}
             aria-pressed={selectedId === entry.id} onClick={() => setSelectedId(entry.id)}>
@@ -153,7 +153,7 @@ export default function DoctorCatalogWorkspace() {
               {entry.description && <span>{entry.description}</span>}</span><ArrowRight size={17} className="doctor-catalog-result-arrow" aria-hidden="true" />
           </button>)}
         </div>}
-        {!loading && entries?.length === 0 && <div className="doctor-catalog-empty"><Package size={25} aria-hidden="true" /><strong>Chưa có dữ liệu được công bố</strong><p>API chưa trả về mục nào trong nhóm này.</p></div>}
+        {!loading && entries?.length === 0 && <div className="doctor-catalog-empty"><Package size={25} aria-hidden="true" /><strong>Chưa có mục nào</strong><p>Nhóm danh mục này hiện chưa có dữ liệu.</p></div>}
         {!loading && entries && entries.length > 0 && !filtered.length && <div className="doctor-catalog-empty"><Search size={25} aria-hidden="true" /><strong>Không tìm thấy kết quả</strong><p>Thử một từ khóa khác.</p></div>}
         {!loading && entries === null && <div className="doctor-catalog-empty"><Info size={25} aria-hidden="true" /><strong>Nhóm danh mục chưa khả dụng</strong><p>Thử nhấn Làm mới để tải dữ liệu.</p></div>}
         {filtered.length > PAGE_SIZE && <nav className="doctor-catalog-pagination" aria-label="Phân trang danh mục bác sĩ">
@@ -175,7 +175,7 @@ export default function DoctorCatalogWorkspace() {
           {selectedService && <section className="doctor-catalog-price" aria-label="Đơn giá dịch vụ hiện hành"><h4><CalendarDays size={17} aria-hidden="true" /> Đơn giá đang hiệu lực</h4>
             {priceLoading && <p role="status">Đang xác minh đơn giá...</p>}
             {priceError && <Alert tone="info">Chưa xác minh được giá dịch vụ: {priceError}. Không sử dụng giá chưa xác minh để tính phí.</Alert>}
-            {!priceLoading && !priceError && price && <div className="doctor-catalog-price-box"><strong>{formatMoney(price.amount)} {price.currency}</strong>
+            {!priceLoading && !priceError && price && <div className="doctor-catalog-price-box"><strong>{formatCurrency(price.amount, price.currency)}</strong>
               <span>Hiệu lực từ {formatDate(price.effectiveFrom)}{price.effectiveUntil ? ` đến trước ${formatDate(price.effectiveUntil)}` : ''}</span>
               <small>Mã phiên bản giá: {price.id}</small></div>}
           </section>}
@@ -184,6 +184,6 @@ export default function DoctorCatalogWorkspace() {
         </div>}
       </aside>
     </div>
-    <p className="doctor-catalog-footer"><ShieldCheck size={15} aria-hidden="true" /> Dữ liệu tra cứu theo API thực. Bác sĩ không thể chỉnh sửa danh mục, giá hoặc tạo đơn thuốc từ màn hình này.</p>
+    <p className="doctor-catalog-footer"><ShieldCheck size={15} aria-hidden="true" /> Bác sĩ chỉ xem danh mục, giá và thông tin thuốc tại đây.</p>
   </div>;
 }

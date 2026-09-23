@@ -34,25 +34,23 @@ export default function DashboardPage({ dashboard, staffDashboard, user, role, e
 
   return (
     <>
-      <PageHeader title={`Xin chào, ${user.fullName || user.email}`}
-        subtitle={isPatient ? 'Cổng thông tin cá nhân · Lịch khám, bệnh án và hóa đơn của bạn.' : `${roleLabel(role)} · Hoạt động trong phạm vi tài khoản được cấp quyền.`}
+      <PageHeader className="dashboard-page-header" title={`Xin chào, ${user.fullName || user.email}`}
+        subtitle={isPatient ? 'Cổng thông tin cá nhân · Lịch khám, bệnh án và hóa đơn của bạn.' : `${roleLabel(role)} · Tổng quan hoạt động hôm nay.`}
         actions={<><span className="soft-button dashboard-date"><CalendarDays size={17} />{formatDate(clinicToday())}</span>
-          {onNavigate && (role !== 'DOCTOR' || integrations.appointmentOwnership) && <button type="button" onClick={() => onNavigate('appointments')}>Xem lịch hẹn</button>}
-          <button className="soft-button" type="button" onClick={onRefresh} disabled={loading}>Làm mới</button></>} />
-      {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Retry</button></Alert>}
+          {onNavigate && (role !== 'DOCTOR' || integrations.appointmentOwnership) && <button type="button" onClick={() => onNavigate('appointments')}>Xem lịch hẹn</button>}</>} />
+      {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Thử lại</button></Alert>}
       {loading && <p role="status">Đang tải dữ liệu tổng quan...</p>}
       {role === 'ADMIN' && staffDashboard && !loading && !error && <AdminDashboard data={staffDashboard} onNavigate={onNavigate} />}
       {role === 'DOCTOR' && staffDashboard && !loading && !error && <DoctorDashboard data={staffDashboard} onNavigate={onNavigate} />}
       {role === 'RECEPTIONIST' && staffDashboard && !loading && !error && <StaffOverview data={staffDashboard} role={role} onNavigate={onNavigate} />}
-      {!isPatient && !staffDashboard && !loading && !error && <Alert tone="info">Chưa tải được lịch khám. Hãy nhấn Làm mới để thử lại.</Alert>}
-      {isPatient && !dashboard && !loading && !error && <Alert tone="info">Chưa tải được dữ liệu cá nhân. Hãy nhấn Làm mới để thử lại.</Alert>}
+      {!isPatient && !staffDashboard && !loading && !error && <Alert tone="info">Chưa tải được lịch khám. Hãy làm mới dữ liệu từ thanh điều hướng để thử lại.</Alert>}
+      {isPatient && !dashboard && !loading && !error && <Alert tone="info">Chưa tải được dữ liệu cá nhân. Hãy làm mới dữ liệu từ thanh điều hướng để thử lại.</Alert>}
       {isPatient && dashboard && <PatientDashboard data={dashboard} user={user} onNavigate={onNavigate} />}
     </>
   );
 }
-
 function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role: ClinicRole; onNavigate?: (view: AppView) => void }) {
-  // Reception has its own dashboard; keep the legacy overview isolated while migrating.
+  // Reception has its own dashboard; keep the legacy overview isolated.
   if (role === 'RECEPTIONIST') return <ReceptionDashboard data={data} onNavigate={onNavigate} />;
   const queue = data.queue;
   const waiting = queue.filter((visit) => visit.status === 'WAITING' || visit.status === 'CALLED').length;
@@ -64,8 +62,7 @@ function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role:
   if ((isDoctor && data.scope !== 'DOCTOR') || (!isDoctor && data.scope !== 'RECEPTION') || role === 'PATIENT') {
     return <Alert tone="error">Phạm vi dashboard không khớp với tài khoản. Vui lòng làm mới.</Alert>;
   }
-  // These rows come only from the role-authorized endpoints. Never use demo charts,
-  // clinic-wide revenue, or patient records to fill missing dashboard metrics.
+  // These rows are limited to the signed-in role and the selected clinic date.
   const appointments: AppointmentResponse[] = data.scope === 'RECEPTION' ? data.appointments : [];
   const activities = data.scope === 'RECEPTION'
     ? appointments.map((item) => ({ time: item.startTime, status: item.status }))
@@ -103,16 +100,13 @@ function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role:
     hourOf(item.time) === hour && item.status === status).length));
   const maxHour = Math.max(1, ...hourBuckets.map((counts) => counts.reduce((sum, count) => sum + count, 0)));
 
-  return <section className="dashboard-layout clinic-preview-dashboard" aria-label="Dashboard theo giao diện UI UX pro max với dữ liệu thật">
+  return <section className="dashboard-layout clinic-preview-dashboard" aria-label="Tổng quan hoạt động hôm nay">
     <div className="dashboard-main">
       <div className="dashboard-history-note" role="status">
-        {history ? <>Thống kê 30 ngày: <strong>{formatDate(history.from)} – {formatDate(history.to)}</strong>.
-          Thống kê có thể bao gồm dữ liệu thử nghiệm đã import; không dùng làm báo cáo y tế hoặc doanh thu.
-          Mục bên phải chỉ hiển thị ngày {formatDate(data.date)}.</>
-          : <>Chưa tải được báo cáo 30 ngày: {data.historyError || 'Dữ liệu lịch sử không hợp lệ'}.
-            Các chỉ số dưới đây chỉ tính ngày {formatDate(data.date)}.</>}
+        {history ? <>Thống kê 30 ngày: <strong>{formatDate(history.from)} – {formatDate(history.to)}</strong>. Mục bên phải hiển thị ngày {formatDate(data.date)}.</>
+          : <>Chưa tải được báo cáo 30 ngày: {data.historyError || 'Dữ liệu lịch sử chưa khả dụng'}. Các chỉ số dưới đây tính theo ngày {formatDate(data.date)}.</>}
       </div>
-      <section className="metric-grid" aria-label="Chỉ số theo phạm vi được cấp quyền">
+      <section className="metric-grid" aria-label="Chỉ số trong ngày">
         {metrics.map((metric) => <LiveMetricCard key={metric.label} {...metric}
           activities={metric.label === 'Lượt đã check-in' || metric.label === 'Đang chờ hoặc đã gọi' || metric.label === 'Lượt khám hoàn thành'
             ? queue.map((item) => ({ time: item.checkedInAt, status: item.status })) : activities} />)}
@@ -121,7 +115,7 @@ function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role:
         <article className="panel patient-status live-status-panel">
           <div className="panel-heading"><div><h3>{history ? 'Hoạt động 30 ngày' : isDoctor ? 'Phân bổ lượt check-in' : 'Phân bổ lịch hẹn'}</h3>
             <strong>{(history ? historyTotal(data.scope === 'RECEPTION' ? 'appointments' : 'checkIns') : activities.length).toLocaleString('vi-VN')}</strong></div>
-            <span>{history ? `${formatDate(history.from)} – ${formatDate(history.to)}` : `07–18 giờ · ${formatDate(data.date)}`} · API thật</span></div>
+            <span>{history ? `${formatDate(history.from)} – ${formatDate(history.to)}` : `07–18 giờ · ${formatDate(data.date)}`}</span></div>
           {history ? (days.every((day) => day.appointments === 0 && day.checkIns === 0)
             ? <p className="dashboard-unavailable">Không có hoạt động trong 30 ngày này.</p>
             : <div className="live-month-chart" role="img" aria-label="Biểu đồ số lượt theo từng ngày trong 30 ngày">
@@ -217,7 +211,7 @@ function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role:
       </article>
       <article className="premium-panel live-dashboard-tip">
         <div><strong>{isDoctor ? 'Không gian bác sĩ' : 'Quản lý phòng khám'}</strong>
-          <p>Chỉ hiển thị dữ liệu được backend cấp quyền. Không dùng số liệu mẫu hoặc doanh thu chưa được xác minh.</p>
+          <p>{isDoctor ? 'Tập trung vào hàng đợi và hồ sơ bệnh án trong ca khám hôm nay.' : 'Tập trung vào lịch hẹn và tiến độ tiếp nhận trong ngày.'}</p>
           {onNavigate && <button type="button" onClick={() => onNavigate('appointments')}>Mở danh sách lịch hẹn</button>}</div>
         <span aria-hidden="true">+</span>
       </article>
@@ -249,9 +243,4 @@ function LiveMetricCard({ icon, label, value, tone, statuses, activities, dailyV
         style={{ height: `${count === 0 ? 0 : 12 + (count / max) * 48}px` }} />)}
     </div> : <span className="metric-chart-unavailable">Chưa có lượt trong phạm vi dữ liệu.</span>}
   </article>;
-}
-
-function MetricCard({ icon, label, value, tone }: { icon: ReactNode; label: string; value: number; tone: string }) {
-  return <article className={`summary-card summary-${tone}`}><span className="summary-icon">{icon}</span><span className="summary-label">{label}</span>
-    <strong>{value.toLocaleString('vi-VN')}</strong><span className="summary-hint">Theo dữ liệu API đã tải</span></article>;
 }

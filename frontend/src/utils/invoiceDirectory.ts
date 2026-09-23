@@ -21,3 +21,14 @@ export function invoiceCounts(invoices: InvoiceResponse[]) {
     attention: invoices.filter((item) => item.status === 'RECONCILIATION_REQUIRED').length
   };
 }
+
+/** Staff directory rows have already been paged by the server; do not paginate them again. */
+export function paginateInvoices(invoices: InvoiceResponse[], requestedPage: number, size: number, serverPaged: boolean) {
+  const pages = serverPaged ? 1 : Math.max(1, Math.ceil(invoices.length / size));
+  const currentPage = Math.min(Math.max(1, requestedPage), pages);
+  return {
+    pages,
+    currentPage,
+    visible: serverPaged ? invoices : invoices.slice((currentPage - 1) * size, currentPage * size)
+  };
+}

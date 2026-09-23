@@ -6,11 +6,14 @@ import com.clinic.billing.dto.CashPaymentRequest;
 import com.clinic.billing.dto.CashRefundRequest;
 import com.clinic.billing.dto.PaymentTransactionResponse;
 import com.clinic.billing.security.CurrentUserPrincipal;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface BillingService {
+
+    Page<InvoiceResponse> getStaffInvoices(CurrentUserPrincipal principal, int page, int size);
 
     InvoiceResponse create(UUID currentUserId, String authorizationHeader, CurrentUserPrincipal principal, CreateInvoiceRequest request);
 

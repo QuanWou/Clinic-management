@@ -87,7 +87,7 @@ export default function App() {
     try {
       await logout();
     } catch {
-      setError('Signed out locally, but the server could not confirm token revocation.');
+      setError('Đã đăng xuất trên thiết bị. Chưa thể xác nhận kết thúc phiên.');
     }
   }
 
@@ -97,7 +97,7 @@ export default function App() {
       setUser(null);
       setDashboard(null);
       setStaffDashboard(null);
-      setError('Your session expired. Please sign in again.');
+      setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
       setLoading(false);
     };
     window.addEventListener('clinic:unauthorized', onUnauthorized);
@@ -108,7 +108,7 @@ export default function App() {
     };
   }, []);
 
-  if (loading && !user) return <main className="auth-shell" role="status">Loading your session...</main>;
+  if (loading && !user) return <main className="auth-shell" role="status">Đang kiểm tra phiên đăng nhập...</main>;
   if (!getAccessToken() || !user) {
     return <LoginPage onLogin={loadSession} sessionError={error} />;
   }
@@ -116,7 +116,7 @@ export default function App() {
   const roles = normalizeRoles(user.roles);
   const primaryRole = getPrimaryRole(roles);
   if (!primaryRole) {
-    return <main className="auth-shell"><Alert tone="error">This account has no supported clinic role.</Alert><button type="button" onClick={() => void handleLogout()}>Sign out</button></main>;
+    return <main className="auth-shell"><Alert tone="error">Tài khoản chưa có vai trò phòng khám được hỗ trợ.</Alert><button type="button" onClick={() => void handleLogout()}>Đăng xuất</button></main>;
   }
   const activeRole: ClinicRole = primaryRole;
   // A multi-role account uses one consistent active role, not the union of
@@ -135,7 +135,7 @@ export default function App() {
 }
 
 function errorMessage(cause: unknown): string {
-  return cause instanceof Error ? cause.message : 'Unable to load data';
+  return cause instanceof Error ? cause.message : 'Không thể tải dữ liệu.';
 }
 
 function renderView(

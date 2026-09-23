@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import type { AdminDoctorResponse } from '../types/domain';
-import { filterAdminDoctorPage } from '../utils/doctorDirectory';
+import type { AdminDoctorResponse, AdminDoctorSchedule } from '../types/domain';
+import { doctorDisplayName, filterAdminDoctorPage } from '../utils/doctorDirectory';
 
 vi.mock('../config/integrations.config', () => ({ integrations: { adminCatalog: true } }));
+import { groupDoctorSchedules } from './AdminDoctorsWorkspace';
 import DoctorsPage from './DoctorsPage';
 
 const doctors: AdminDoctorResponse[] = [
@@ -13,6 +14,20 @@ const doctors: AdminDoctorResponse[] = [
 ];
 
 describe('doctor admin page', () => {
+  it('groups all morning and afternoon shifts under their weekday without losing schedule entries', () => {
+    const schedules: AdminDoctorSchedule[] = [
+      { id: 'tue-afternoon', doctorId: 'doctor-001', dayOfWeek: 2, startTime: '13:00', endTime: '17:00' },
+      { id: 'mon-afternoon', doctorId: 'doctor-001', dayOfWeek: 1, startTime: '13:00', endTime: '17:00' },
+      { id: 'mon-morning', doctorId: 'doctor-001', dayOfWeek: 1, startTime: '08:00', endTime: '12:00' }
+    ];
+    const result = groupDoctorSchedules(schedules);
+    expect(result.map((day) => day.dayOfWeek)).toEqual([1, 2]);
+    expect(result[0].slots.map((slot) => slot.id)).toEqual(['mon-morning', 'mon-afternoon']);
+    expect(result.flatMap((day) => day.slots)).toHaveLength(schedules.length);
+    expect(groupDoctorSchedules([])).toEqual([]);
+    expect(schedules[0].id).toBe('tue-afternoon');
+  });
+
   it('offers real admin directory and explicit create control without fictional staff names', () => {
     const html = renderToStaticMarkup(<DoctorsPage role="ADMIN" />);
     expect(html).toContain('doctors-workspace');
@@ -37,5 +52,14 @@ describe('doctor admin page', () => {
     expect(filterAdminDoctorPage(doctors, '', '', 'INACTIVE').map(({ id }) => id)).toEqual(['doctor-002']);
     expect(filterAdminDoctorPage(doctors, 'user-003', '', 'ALL').map(({ id }) => id)).toEqual(['doctor-003']);
     expect(filterAdminDoctorPage(doctors, 'không có', '', 'ALL')).toEqual([]);
+  });
+
+  it('shows a verified Identity name through userId, searches names, and never invents names from doctor IDs', () => {
+    const names = { 'user-001': 'Nguyễn Văn Minh', 'doctor-002': 'Tên không thuộc tài khoản này' };
+    expect(doctorDisplayName(doctors[0], names)).toBe('Nguyễn Văn Minh');
+    expect(doctorDisplayName(doctors[1], names)).toBe('Chưa có tên bác sĩ');
+    expect(doctorDisplayName(doctors[1], names, true)).toBe('Đang tải tên bác sĩ...');
+    expect(filterAdminDoctorPage(doctors, 'nguyễn văn', '', 'ALL', names)).toEqual([doctors[0]]);
+    expect(filterAdminDoctorPage(doctors, 'bác sĩ #', '', 'ALL', names)).toEqual([]);
   });
 });
