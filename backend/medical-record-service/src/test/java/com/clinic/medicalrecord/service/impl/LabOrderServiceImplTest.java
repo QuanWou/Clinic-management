@@ -2,9 +2,12 @@ package com.clinic.medicalrecord.service.impl;
 
 import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
+import com.clinic.medicalrecord.client.AppointmentClient;
+import com.clinic.medicalrecord.client.AppointmentResponse;
 import com.clinic.medicalrecord.client.DoctorClient;
 import com.clinic.medicalrecord.client.CatalogClient;
 import com.clinic.medicalrecord.client.DoctorProfileResponse;
+import com.clinic.medicalrecord.client.EncounterContextResponse;
 import com.clinic.medicalrecord.client.PatientClient;
 import com.clinic.medicalrecord.client.PatientProfileResponse;
 import com.clinic.medicalrecord.dto.CollectLabSampleRequest;
@@ -15,6 +18,7 @@ import com.clinic.medicalrecord.entity.LabBillingClosure;
 import com.clinic.medicalrecord.entity.LabEventOutbox;
 import com.clinic.medicalrecord.entity.LabOrderStatus;
 import com.clinic.medicalrecord.entity.MedicalRecord;
+import com.clinic.medicalrecord.entity.MedicalRecordStatus;
 import com.clinic.medicalrecord.repository.LabOrderRepository;
 import com.clinic.medicalrecord.repository.LabBillingClosureRepository;
 import com.clinic.medicalrecord.repository.LabEventOutboxRepository;
@@ -59,6 +63,7 @@ class LabOrderServiceImplTest {
     @Mock private LabEventOutboxRepository outbox;
     @Mock private LabBillingClosureRepository billingClosures;
     @Mock private CatalogClient catalog;
+    @Mock private AppointmentClient appointments;
     @InjectMocks private LabOrderServiceImpl service;
 
     private UUID doctorId;
@@ -75,7 +80,7 @@ class LabOrderServiceImplTest {
         doctor = new CurrentUserPrincipal(UUID.randomUUID(), "doctor@test.com", "Doctor", Set.of("ROLE_DOCTOR"));
         patient = new CurrentUserPrincipal(UUID.randomUUID(), "patient@test.com", "Patient", Set.of("ROLE_PATIENT"));
         record = MedicalRecord.builder().id(UUID.randomUUID()).appointmentId(UUID.randomUUID())
-                .doctorId(doctorId).patientId(patientId).build();
+                .doctorId(doctorId).patientId(patientId).status(MedicalRecordStatus.DRAFT).build();
         order = LabOrder.builder().id(UUID.randomUUID()).medicalRecord(record).testCode("CBC")
                 .testName("Complete blood count").serviceId(UUID.randomUUID())
                 .performedOn(LocalDate.now()).status(LabOrderStatus.ORDERED).build();
@@ -85,6 +90,7 @@ class LabOrderServiceImplTest {
     void treatingDoctorCanCreateLabOrder() {
         when(records.findById(record.getId())).thenReturn(Optional.of(record));
         authorizeDoctor(doctorId);
+        activeEncounter();
         UUID serviceId = UUID.randomUUID();
         when(catalog.requireActiveService(AUTH, serviceId, "CBC")).thenReturn(
                 new CatalogClient.CatalogService(serviceId, "CBC", "Complete blood count", null, true));
@@ -120,6 +126,7 @@ class LabOrderServiceImplTest {
         UUID serviceId = UUID.randomUUID();
         when(records.findById(record.getId())).thenReturn(Optional.of(record));
         authorizeDoctor(doctorId);
+        activeEncounter();
         when(catalog.requireActiveService(AUTH, serviceId, "CBC"))
                 .thenThrow(new BusinessException(ErrorCode.CONFLICT, "Catalog mismatch"));
 
@@ -368,20 +375,39 @@ class LabOrderServiceImplTest {
         UUID appointmentId = record.getAppointmentId();
         CurrentUserPrincipal receptionist = new CurrentUserPrincipal(UUID.randomUUID(), "reception@test.com",
                 "Reception", Set.of("ROLE_RECEPTIONIST"));
+        record.setStatus(MedicalRecordStatus.FINAL);
         order.setStatus(LabOrderStatus.RELEASED);
         order.setReleasedAt(LocalDateTime.now());
         LabBillingClosure closure = LabBillingClosure.builder()
                 .appointmentId(appointmentId).finalized(false).build();
         when(records.findByAppointmentId(appointmentId)).thenReturn(Optional.of(record));
+        when(appointments.getById(AUTH, appointmentId)).thenReturn(completedAppointment(appointmentId));
         when(billingClosures.findByAppointmentIdForUpdate(appointmentId)).thenReturn(Optional.of(closure));
         when(labOrders.findByMedicalRecordIdOrderByCreatedAtDesc(record.getId())).thenReturn(List.of(order));
 
-        var response = service.finalizeBilling(receptionist, appointmentId);
+        var response = service.finalizeBilling(receptionist, AUTH, appointmentId);
 
         assertEquals(true, response.finalizedForBilling());
         assertNotNull(response.billableRevision());
         assertEquals(order.getServiceId(), response.items().getFirst().serviceId());
         verify(billingClosures).saveAndFlush(closure);
+    }
+
+    @Test
+    void billingFinalizationRequiresCompletedAppointment() {
+        UUID appointmentId = record.getAppointmentId();
+        CurrentUserPrincipal receptionist = new CurrentUserPrincipal(UUID.randomUUID(), "reception@test.com",
+                "Reception", Set.of("ROLE_RECEPTIONIST"));
+        when(appointments.getById(AUTH, appointmentId)).thenReturn(new AppointmentResponse(
+                appointmentId, patientId, doctorId, LocalDate.now(), java.time.LocalTime.of(9, 0),
+                java.time.LocalTime.of(9, 30), "CONFIRMED", "Checkup", LocalDateTime.now(), LocalDateTime.now()));
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> service.finalizeBilling(receptionist, AUTH, appointmentId));
+
+        assertEquals(ErrorCode.CONFLICT, ex.getErrorCode());
+        verify(billingClosures, never()).findByAppointmentIdForUpdate(any());
+        verify(billingClosures, never()).saveAndFlush(any());
     }
 
     @Test
@@ -441,5 +467,18 @@ class LabOrderServiceImplTest {
     private void authorizePatient(UUID profileId) {
         when(patients.getCurrentPatientProfile(AUTH)).thenReturn(
                 new PatientProfileResponse(profileId, patient.id(), null, null, null, null, LocalDateTime.now()));
+    }
+
+    private void activeEncounter() {
+        when(appointments.getEncounterContext(AUTH, record.getAppointmentId())).thenReturn(
+                new EncounterContextResponse(UUID.randomUUID(), record.getAppointmentId(), patientId, doctorId, 1,
+                        "IN_PROGRESS", LocalDate.now(), java.time.LocalTime.of(9, 0), java.time.LocalTime.of(9, 30),
+                        "Checkup", new EncounterContextResponse.PatientSummary(patientId, "Patient", null, null, null)));
+    }
+
+    private AppointmentResponse completedAppointment(UUID appointmentId) {
+        return new AppointmentResponse(appointmentId, patientId, doctorId, LocalDate.now(),
+                java.time.LocalTime.of(9, 0), java.time.LocalTime.of(9, 30), "COMPLETED", "Checkup",
+                LocalDateTime.now(), LocalDateTime.now());
     }
 }

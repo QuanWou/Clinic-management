@@ -31,8 +31,10 @@ function shiftMonth(month: string, offset: number) {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
 }
 
+type Props = { onOpenEncounter?: (visit: ReceptionVisitResponse) => void };
+
 /** No staff-wide booking API is called here. Queue is ownership-scoped by the backend. */
-export default function DoctorAppointmentsWorkspace() {
+export default function DoctorAppointmentsWorkspace({ onOpenEncounter }: Props) {
   const [date, setDate] = useState(clinicToday());
   const [month, setMonth] = useState(date.slice(0, 7));
   const [visits, setVisits] = useState<ReceptionVisitResponse[] | null>(null);
@@ -148,9 +150,11 @@ export default function DoctorAppointmentsWorkspace() {
           updated.visitDate !== visit.visitDate || updated.status !== target) {
         throw new Error('Chưa xác nhận được thay đổi trạng thái lượt khám.');
       }
-      setVisits((previous) => previous?.map((item) => item.id === updated.id ? updated : item) ?? null);
+      const hydrated = { ...updated, patientName: updated.patientName ?? visit.patientName };
+      setVisits((previous) => previous?.map((item) => item.id === updated.id ? hydrated : item) ?? null);
       setConfirmFinish(false);
       setNotice(`Đã cập nhật lượt #${visit.queueNumber}: ${statusLabel(target)}.`);
+      if (target === 'IN_PROGRESS' && onOpenEncounter) onOpenEncounter(hydrated);
       // Appointment and visit completion are atomic in the backend; reload details, not local success guesses.
       if (appointment?.id === updated.appointmentId) {
         setAppointment(null);
@@ -230,7 +234,7 @@ export default function DoctorAppointmentsWorkspace() {
           <thead><tr><th scope="col">Số thứ tự</th><th scope="col">Bệnh nhân</th><th scope="col">Mã lịch hẹn</th><th scope="col">Trạng thái</th><th scope="col">Thao tác</th></tr></thead>
           <tbody>{visible.map((visit) => <tr key={visit.id} className={selectedVisitId === visit.id ? 'selected' : undefined}>
             <td><strong className="doctor-appointments-queue-number">#{visit.queueNumber}</strong></td>
-            <td>BN #{shortId(visit.patientId)}</td><td className="doctor-appointments-id">{visit.appointmentId}</td>
+            <td>{visit.patientName || `BN #${shortId(visit.patientId)}`}</td><td className="doctor-appointments-id">{visit.appointmentId}</td>
             <td><Badge tone={visit.status}>{visit.status}</Badge></td>
             <td><button type="button" className="doctor-appointments-row-action" disabled={busy} onClick={() => selectVisit(visit)}>Chi tiết <ArrowRight size={14} /></button></td>
           </tr>)}</tbody></table></div>
@@ -265,9 +269,10 @@ export default function DoctorAppointmentsWorkspace() {
       {selectedVisit && <><DoctorVisitTimeline visit={selectedVisit} /><div className="doctor-appointments-action"><div><strong>Thao tác lượt khám #{selectedVisit.queueNumber}</strong>
         <Badge tone={selectedVisit.status}>{statusLabel(selectedVisit.status)}</Badge></div>
         <p>Bác sĩ chỉ cập nhật tiến trình lượt khám; lễ tân phụ trách check-in, đổi hoặc hủy lịch.</p>
-        {selectedVisit.status === 'IN_PROGRESS' && <label className="doctor-appointments-check"><input type="checkbox" checked={confirmFinish} disabled={busy}
+        {selectedVisit.status === 'IN_PROGRESS' && !onOpenEncounter && <label className="doctor-appointments-check"><input type="checkbox" checked={confirmFinish} disabled={busy}
           onChange={(event) => setConfirmFinish(event.target.checked)} /> Tôi xác nhận đã hoàn tất khám cho bệnh nhân này.</label>}
-        <div className="doctor-appointments-actions">{allowedQueueTransitions(selectedVisit.status, 'DOCTOR').map((target) =>
+        {selectedVisit.status === 'IN_PROGRESS' && onOpenEncounter && <button type="button" disabled={busy} onClick={() => onOpenEncounter(selectedVisit)}>Mở không gian khám</button>}
+        <div className="doctor-appointments-actions">{allowedQueueTransitions(selectedVisit.status, 'DOCTOR').filter((target) => target !== 'COMPLETED' || !onOpenEncounter).map((target) =>
           <button key={target} type="button" disabled={busy || (target === 'COMPLETED' && !confirmFinish)}
             onClick={() => void changeStatus(selectedVisit, target)}>{statusLabel(target)}</button>)}
           {selectedVisit.status === 'COMPLETED' && <span className="doctor-appointments-complete"><CheckCircle2 size={16} /> Lượt khám đã hoàn tất.</span>}

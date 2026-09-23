@@ -11,7 +11,7 @@ import type { ClinicRole } from '../utils/roles';
 import { formatDate, formatTime, shortId } from '../utils/format';
 import { roleLabel } from '../utils/locale';
 import type { AppView } from '../types/view';
-import type { AppointmentResponse } from '../types/domain';
+import type { AppointmentResponse, ReceptionVisitResponse } from '../types/domain';
 import AdminDashboard from './AdminDashboard';
 import DoctorDashboard from './DoctorDashboard';
 import ReceptionDashboard from './ReceptionDashboard';
@@ -27,9 +27,10 @@ export type DashboardPageProps = {
   loading: boolean;
   onRefresh: () => void;
   onNavigate?: (view: AppView) => void;
+  onOpenEncounter?: (visit: ReceptionVisitResponse) => void;
 };
 
-export default function DashboardPage({ dashboard, staffDashboard, user, role, error, loading, onRefresh, onNavigate }: DashboardPageProps) {
+export default function DashboardPage({ dashboard, staffDashboard, user, role, error, loading, onRefresh, onNavigate, onOpenEncounter }: DashboardPageProps) {
   const isPatient = role === 'PATIENT';
 
   return (
@@ -41,7 +42,7 @@ export default function DashboardPage({ dashboard, staffDashboard, user, role, e
       {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Thử lại</button></Alert>}
       {loading && <p role="status">Đang tải dữ liệu tổng quan...</p>}
       {role === 'ADMIN' && staffDashboard && !loading && !error && <AdminDashboard data={staffDashboard} onNavigate={onNavigate} />}
-      {role === 'DOCTOR' && staffDashboard && !loading && !error && <DoctorDashboard data={staffDashboard} onNavigate={onNavigate} />}
+      {role === 'DOCTOR' && staffDashboard && !loading && !error && <DoctorDashboard data={staffDashboard} onNavigate={onNavigate} onOpenEncounter={onOpenEncounter} />}
       {role === 'RECEPTIONIST' && staffDashboard && !loading && !error && <StaffOverview data={staffDashboard} role={role} onNavigate={onNavigate} />}
       {!isPatient && !staffDashboard && !loading && !error && <Alert tone="info">Chưa tải được lịch khám. Hãy làm mới dữ liệu từ thanh điều hướng để thử lại.</Alert>}
       {isPatient && !dashboard && !loading && !error && <Alert tone="info">Chưa tải được dữ liệu cá nhân. Hãy làm mới dữ liệu từ thanh điều hướng để thử lại.</Alert>}

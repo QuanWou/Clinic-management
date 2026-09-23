@@ -11,7 +11,7 @@ import DoctorScheduleTimeFields from '../components/DoctorScheduleTimeFields';
 import PageHeader from '../components/PageHeader';
 import { integrations } from '../config/integrations.config';
 import type {
-  DoctorProfileResponse, AppointmentResponse, QueueStatus, ReceptionPatientResponse,
+  DoctorProfileResponse, AppointmentResponse, QueueStatus, ReceptionPatientResponse, ReceptionAppointmentResponse,
   ReceptionRescheduleRequest, ReceptionVisitResponse
 } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
@@ -42,17 +42,25 @@ export function allowedQueueTransitions(status: QueueStatus, role: ClinicRole): 
     !['IN_PROGRESS', 'COMPLETED'].includes(target) || role === 'ADMIN' || role === 'DOCTOR');
 }
 
-export default function ReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
+export default function ReceptionAppointmentsPage({ role, preselectedPatient, onPatientConsumed }: {
+  role: ClinicRole;
+  preselectedPatient?: ReceptionPatientResponse | null;
+  onPatientConsumed?: () => void;
+}) {
   if (role !== 'ADMIN' && role !== 'RECEPTIONIST') return <Alert tone="error">Bạn không có quyền truy cập lịch hẹn lễ tân.</Alert>;
   if (!integrations.reception) return <><PageHeader title="Lịch hẹn" subtitle="Đặt lịch và quản lý hàng đợi" />
     <Alert tone="info">Tính năng đặt lịch, check-in và quản lý hàng đợi hiện chưa khả dụng.</Alert></>;
-  return <ActiveReceptionAppointmentsPage role={role} />;
+  return <ActiveReceptionAppointmentsPage role={role} preselectedPatient={preselectedPatient} onPatientConsumed={onPatientConsumed} />;
 }
 
-function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
+function ActiveReceptionAppointmentsPage({ role, preselectedPatient, onPatientConsumed }: {
+  role: ClinicRole;
+  preselectedPatient?: ReceptionPatientResponse | null;
+  onPatientConsumed?: () => void;
+}) {
   const todayKey = clinicToday();
   const [date, setDate] = useState(todayKey);
-  const [appointments, setAppointments] = useState<AppointmentResponse[] | null>(null);
+  const [appointments, setAppointments] = useState<ReceptionAppointmentResponse[] | null>(null);
   const [queue, setQueue] = useState<ReceptionVisitResponse[] | null>(null);
   const [patients, setPatients] = useState<ReceptionPatientResponse[] | null>(null);
   const [searchingPatients, setSearchingPatients] = useState(false);
@@ -84,6 +92,13 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
   const selectedVisit = queue?.find((visit) => visit.appointmentId === selected?.id);
   const selectedDoctor = doctors?.find((doctor) => doctor.id === selected?.doctorId);
   const selectedPatientId = selected?.patientId;
+  useEffect(() => {
+    if (!preselectedPatient?.id) return;
+    setPatients([preselectedPatient]);
+    setPatientSearch(preselectedPatient.fullName);
+    setBooking((current) => ({ ...current, patientId: preselectedPatient.id }));
+    setShowBooking(true);
+  }, [preselectedPatient?.id]);
   useEffect(() => {
     setDetailPatient(null);
     setDetailPatientError(null);
@@ -243,6 +258,7 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
       setBooking(blankBooking);
       setPatientSearch('');
       setPatients(null);
+      onPatientConsumed?.();
     } catch (cause) {
       const reason = message(cause);
       setBookingError(reason.includes('Invalid appointment date or time range')
@@ -251,6 +267,7 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
     } finally {
       setBusy(false);
     }
+
   }
 
   async function reschedule(event: FormEvent<HTMLFormElement>) {
@@ -333,7 +350,7 @@ function ActiveReceptionAppointmentsPage({ role }: { role: ClinicRole }) {
       {queue?.length === 0 && <p className="reception-desk-empty">Chưa có bệnh nhân check-in trong ngày đã chọn.</p>}
       {queue?.filter((visit) => visit.visitDate === date).sort((a, b) => a.queueNumber - b.queueNumber).map((visit) => <article className="reception-desk-queue-row" key={visit.id}>
         <span className="reception-desk-ticket">#{visit.queueNumber}</span>
-        <div className="reception-desk-queue-person"><strong>BN #{shortId(visit.patientId)}</strong><span>Lịch #{shortId(visit.appointmentId)}</span></div>
+        <div className="reception-desk-queue-person"><strong>{visit.patientName || `BN #${shortId(visit.patientId)}`}</strong><span>Lịch #{shortId(visit.appointmentId)}</span></div>
         <Badge tone={visit.status}>{statusLabel(visit.status)}</Badge>
         <div className="reception-desk-queue-actions">{allowedQueueTransitions(visit.status, role).map((status) => <button key={status} type="button" disabled={busy}
           onClick={() => void execute(() => updateReceptionQueue(visit.id, status), `Đã cập nhật: ${statusLabel(status)}.`,

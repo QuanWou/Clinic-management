@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import ReceptionAppointmentsOverview, { appointmentQueueStatus, calendarDays, filterReceptionAppointments } from './ReceptionAppointmentsOverview';
-import type { AppointmentResponse, ReceptionVisitResponse } from '../types/domain';
+import type { ReceptionAppointmentResponse, ReceptionVisitResponse } from '../types/domain';
 
-const appointments: AppointmentResponse[] = [
-  { id: 'booking-a', patientId: 'patient-a', doctorId: 'doctor-1', appointmentDate: '2026-09-20', startTime: '08:30', endTime: '09:00', status: 'CONFIRMED', reason: 'Khám định kỳ' },
-  { id: 'booking-b', patientId: 'patient-b', doctorId: 'doctor-2', appointmentDate: '2026-09-20', startTime: '09:30', endTime: '10:00', status: 'PENDING', reason: 'Đau đầu' },
-  { id: 'booking-c', patientId: 'patient-c', doctorId: 'doctor-1', appointmentDate: '2026-09-20', startTime: '10:30', endTime: '11:00', status: 'CANCELLED' }
+const appointments: ReceptionAppointmentResponse[] = [
+  { id: 'booking-a', patientId: 'patient-a', patientName: 'Nguyễn An', doctorId: 'doctor-1', appointmentDate: '2026-09-20', startTime: '08:30', endTime: '09:00', status: 'CONFIRMED', reason: 'Khám định kỳ' },
+  { id: 'booking-b', patientId: 'patient-b', patientName: 'Trần Bình', doctorId: 'doctor-2', appointmentDate: '2026-09-20', startTime: '09:30', endTime: '10:00', status: 'PENDING', reason: 'Đau đầu' },
+  { id: 'booking-c', patientId: 'patient-c', patientName: 'Lê Chi', doctorId: 'doctor-1', appointmentDate: '2026-09-20', startTime: '10:30', endTime: '11:00', status: 'CANCELLED' }
 ];
 const queue: ReceptionVisitResponse[] = [{
-  id: 'visit-a', appointmentId: 'booking-a', patientId: 'patient-a', doctorId: 'doctor-1', visitDate: '2026-09-20',
+  id: 'visit-a', appointmentId: 'booking-a', patientId: 'patient-a', patientName: 'Nguyễn An', doctorId: 'doctor-1', visitDate: '2026-09-20',
   queueNumber: 1, status: 'WAITING', checkedInAt: '2026-09-20T08:00:00', startedAt: null, completedAt: null
 }];
 const noop = () => undefined;
@@ -44,7 +44,7 @@ describe('reception appointments visual overview', () => {
     expect(html).toContain('aria-label="Ngày lịch hẹn"');
     expect(html).toContain('aria-label="Lọc theo trạng thái"');
     expect(html).toContain('aria-label="Tháng sau"');
-    expect(html).toContain('BN #PATIENT-');
+    expect(html).toContain('Nguyễn An');
     expect(html).toContain('Tim mạch');
     expect(html).toContain('BS. Nguyễn Minh Khôi');
     expect(html).toContain('Đang chờ');
@@ -59,7 +59,7 @@ describe('reception appointments visual overview', () => {
   });
 
   it('paginates a populated day without claiming a monthly total', () => {
-    const many = Array.from({ length: 14 }, (_, i): AppointmentResponse => ({ ...appointments[0], id: `booking-${i}`, patientId: `patient-${i}` }));
+    const many = Array.from({ length: 14 }, (_, i): ReceptionAppointmentResponse => ({ ...appointments[0], id: `booking-${i}`, patientId: `patient-${i}`, patientName: `Bệnh nhân ${i}` }));
     const html = renderToStaticMarkup(<ReceptionAppointmentsOverview date="2026-09-20" appointments={many}
       queue={[]} doctors={[]} selectedId="" onDateChange={noop} onSelect={noop} />);
     expect(html).toContain('Hiển thị 1–10 / 14');

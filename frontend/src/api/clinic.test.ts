@@ -11,7 +11,9 @@ import {
   getServicePriceHistory, getServicePrice, getDoctors,
   getAppointmentAvailability, getPerformedServices, addPerformedService, finalizePerformedServices,
   getLabBillableItems, finalizeLabBillableItems, createInvoice, getLabOrders, getDoctorLabBillingStatus, changeLabOrder,
-  createCatalogService, publishCatalogPrice
+  createCatalogService, publishCatalogPrice, getEncounterContext, getMedicalRecordByAppointment,
+  saveMedicalRecordDraft, finalizeMedicalRecord, getPrescriptions, savePrescriptionDraft,
+  signPrescription, createLabOrder
 } from './clinic';
 import { apiEndpoints } from './endpoints';
 import { logout } from './auth';
@@ -254,6 +256,39 @@ describe('verified business API routes', () => {
       ['appointments/reception/queue/visit', 'PATCH']
     ]);
     expect(JSON.parse(String(calls[2][1]?.body))).toEqual({ status: 'CALLED' });
+  });
+
+  it('uses encounter-scoped clinical routes with optimistic versions and lab idempotency', async () => {
+    await getEncounterContext('appointment/1');
+    await getMedicalRecordByAppointment('appointment/1');
+    await saveMedicalRecordDraft('appointment/1', { symptoms: 'Fever', diagnosis: '', notes: '', version: 2 });
+    await finalizeMedicalRecord('record/1', 3);
+    await getPrescriptions('record/1');
+    await savePrescriptionDraft('record/1', {
+      version: 1,
+      items: [{ medicineId: 'medicine-1', dosage: '500 mg', frequency: '2/day', duration: '5 days' }]
+    });
+    await signPrescription('record/1', 'prescription/1', 2);
+    await createLabOrder('record/1', {
+      serviceId: 'service-1', testCode: 'CBC', testName: 'Blood count', performedOn: '2026-09-23',
+      allowDuplicate: false, duplicateReason: null
+    }, 'request-key-1');
+
+    const calls = vi.mocked(fetch).mock.calls;
+    expect(calls.map(([url, options]) => [String(url), options?.method ?? 'GET'])).toEqual([
+      ['/api/appointments/appointment%2F1/encounter', 'GET'],
+      ['/api/medical-records/appointments/appointment%2F1', 'GET'],
+      ['/api/medical-records/appointments/appointment%2F1/draft', 'PUT'],
+      ['/api/medical-records/record%2F1/finalize', 'POST'],
+      ['/api/medical-records/record%2F1/prescriptions', 'GET'],
+      ['/api/medical-records/record%2F1/prescriptions/draft', 'PUT'],
+      ['/api/medical-records/record%2F1/prescriptions/prescription%2F1/sign', 'POST'],
+      ['/api/medical-records/record%2F1/lab-orders', 'POST']
+    ]);
+    expect(JSON.parse(String(calls[2][1]?.body))).toEqual({ symptoms: 'Fever', diagnosis: '', notes: '', version: 2 });
+    expect(JSON.parse(String(calls[3][1]?.body))).toEqual({ version: 3 });
+    expect(JSON.parse(String(calls[6][1]?.body))).toEqual({ version: 2 });
+    expect(new Headers(calls[7][1]?.headers).get('Idempotency-Key')).toBe('request-key-1');
   });
 
   it('removes the old invoice pay endpoint and uses cashier-only cash receipt DTO', async () => {

@@ -4,7 +4,8 @@ import type {
   AppointmentStatus,
   InvoiceResponse,
   InvoiceStatus,
-  MedicalRecordResponse
+  MedicalRecordResponse,
+  MedicalRecordStatus
 } from './domain';
 
 export type AppView =
@@ -13,6 +14,7 @@ export type AppView =
   | 'patients'
   | 'doctors'
   | 'doctor-profile'
+  | 'encounter'
   | 'medical-records'
   | 'invoices'
   | 'catalog'
@@ -71,11 +73,11 @@ export type UiAppointment = AppointmentResponse & {
   doctorAvatar: string;
 };
 
-export type UiMedicalRecord = MedicalRecordResponse & {
+export type UiMedicalRecord = Omit<MedicalRecordResponse, 'status'> & {
   patientName: string;
   doctorName: string;
   recordType: string;
-  status: 'Recorded';
+  status: MedicalRecordStatus;
 };
 
 export type UiInvoice = InvoiceResponse & {

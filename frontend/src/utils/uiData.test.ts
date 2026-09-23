@@ -30,7 +30,7 @@ describe('live API presentation', () => {
     const invoice: InvoiceResponse = {
       id: 'i', appointmentId: 'a', patientId: 'p', totalAmount: '0', status: 'UNPAID'
     };
-    expect(getUiMedicalRecords([record])[0].status).toBe('Recorded');
+    expect(getUiMedicalRecords([record])[0].status).toBe('FINAL');
     expect(getUiInvoices([invoice])[0].status).toBe('UNPAID');
     expect(getUiInvoices([invoice])[0].totalAmount).toBe('0');
   });

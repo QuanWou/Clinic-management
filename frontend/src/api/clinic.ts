@@ -8,7 +8,8 @@ import type {
   CatalogServiceResponse, MedicineResponse, PriceResponse, PaymentTransactionResponse,
   NotificationPreferenceResponse, NotificationType, ReceptionHistoryResponse,
   PerformedServicesResponse, LabBillableItemsResponse, LabBillingStatusResponse, LabOrderResponse, AppointmentAvailabilityResponse,
-  CreateAdminDoctorRequest, UpdateAdminDoctorRequest, AdminDoctorSchedule, DoctorSchedule, AdminUserResponse
+  CreateAdminDoctorRequest, UpdateAdminDoctorRequest, AdminDoctorSchedule, DoctorSchedule, AdminUserResponse,
+  EncounterContextResponse, PrescriptionResponse, PrescriptionItemDraftRequest, ReceptionAppointmentResponse
 } from '../types/domain';
 
 /** Resolve a doctor's linked account by userId. Identity authorizes ADMIN on this route. */
@@ -161,11 +162,11 @@ export function registerReceptionPatient(request: RegisterWalkInPatientRequest):
   return apiRequest<ReceptionPatientResponse>(apiEndpoints.patients.reception, { method: 'POST', body: JSON.stringify(request) });
 }
 
-export function getReceptionAppointments(filters: { date?: string; doctorId?: string } = {}): Promise<AppointmentResponse[]> {
+export function getReceptionAppointments(filters: { date?: string; doctorId?: string } = {}): Promise<ReceptionAppointmentResponse[]> {
   const query = new URLSearchParams();
   if (filters.date) query.set('date', filters.date);
   if (filters.doctorId) query.set('doctorId', filters.doctorId);
-  return apiRequest<AppointmentResponse[]>(`${apiEndpoints.appointments.receptionBookings}${query.size ? `?${query}` : ''}`);
+  return apiRequest<ReceptionAppointmentResponse[]>(`${apiEndpoints.appointments.receptionBookings}${query.size ? `?${query}` : ''}`);
 }
 
 export function bookReceptionAppointment(request: ReceptionBookingRequest): Promise<AppointmentResponse> {
@@ -193,6 +194,10 @@ export function getReceptionQueue(filters: { date?: string; doctorId?: string } 
 
 export function getReceptionHistory(from: string, to: string): Promise<ReceptionHistoryResponse> {
   return apiRequest<ReceptionHistoryResponse>(`${apiEndpoints.appointments.receptionHistory}?${new URLSearchParams({ from, to })}`);
+}
+
+export function getEncounterContext(appointmentId: string): Promise<EncounterContextResponse> {
+  return apiRequest<EncounterContextResponse>(apiEndpoints.appointments.encounter(appointmentId));
 }
 
 export function getAppointmentAvailability(doctorId: string, date: string, startTime: string, endTime: string): Promise<AppointmentAvailabilityResponse> {
@@ -228,6 +233,38 @@ export function createMedicalRecord(request: { appointmentId: string; symptoms: 
   return apiRequest<MedicalRecordResponse>(apiEndpoints.medicalRecords.collection, { method: 'POST', body: JSON.stringify(request) });
 }
 
+export function getMedicalRecordByAppointment(appointmentId: string): Promise<MedicalRecordResponse> {
+  return apiRequest<MedicalRecordResponse>(apiEndpoints.medicalRecords.byAppointment(appointmentId));
+}
+
+export function saveMedicalRecordDraft(appointmentId: string, request: { symptoms: string; diagnosis: string; notes: string; version: number | null }): Promise<MedicalRecordResponse> {
+  return apiRequest<MedicalRecordResponse>(apiEndpoints.medicalRecords.draft(appointmentId), {
+    method: 'PUT', body: JSON.stringify(request)
+  });
+}
+
+export function finalizeMedicalRecord(recordId: string, version: number): Promise<MedicalRecordResponse> {
+  return apiRequest<MedicalRecordResponse>(apiEndpoints.medicalRecords.finalize(recordId), {
+    method: 'POST', body: JSON.stringify({ version })
+  });
+}
+
+export function getPrescriptions(recordId: string): Promise<PrescriptionResponse[]> {
+  return apiRequest<PrescriptionResponse[]>(apiEndpoints.medicalRecords.prescriptions(recordId));
+}
+
+export function savePrescriptionDraft(recordId: string, request: { version: number | null; items: PrescriptionItemDraftRequest[] }): Promise<PrescriptionResponse> {
+  return apiRequest<PrescriptionResponse>(apiEndpoints.medicalRecords.prescriptionDraft(recordId), {
+    method: 'PUT', body: JSON.stringify(request)
+  });
+}
+
+export function signPrescription(recordId: string, prescriptionId: string, version: number): Promise<PrescriptionResponse> {
+  return apiRequest<PrescriptionResponse>(apiEndpoints.medicalRecords.prescriptionSign(recordId, prescriptionId), {
+    method: 'POST', body: JSON.stringify({ version })
+  });
+}
+
 export function getLabOrders(recordId: string): Promise<LabOrderResponse[]> {
   return apiRequest<LabOrderResponse[]>(apiEndpoints.medicalRecords.labOrders(recordId));
 }
@@ -237,8 +274,12 @@ export function getDoctorLabBillingStatus(recordId: string): Promise<LabBillingS
   return apiRequest<LabBillingStatusResponse>(apiEndpoints.medicalRecords.labBillingStatus(recordId));
 }
 
-export function createLabOrder(recordId: string, request: { testCode: string; testName: string; serviceId: string; performedOn: string }): Promise<LabOrderResponse> {
-  return apiRequest<LabOrderResponse>(apiEndpoints.medicalRecords.labOrders(recordId), { method: 'POST', body: JSON.stringify(request) });
+export function createLabOrder(recordId: string, request: { testCode: string; testName: string; serviceId: string; performedOn: string; allowDuplicate?: boolean; duplicateReason?: string | null }, idempotencyKey?: string): Promise<LabOrderResponse> {
+  return apiRequest<LabOrderResponse>(apiEndpoints.medicalRecords.labOrders(recordId), {
+    method: 'POST',
+    headers: idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : undefined,
+    body: JSON.stringify(request)
+  });
 }
 
 export function changeLabOrder(orderId: string, action: 'sample' | 'processing' | 'result' | 'release', body?: object): Promise<LabOrderResponse> {

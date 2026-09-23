@@ -6,11 +6,15 @@ import com.clinic.medicalrecord.client.AppointmentClient;
 import com.clinic.medicalrecord.client.AppointmentResponse;
 import com.clinic.medicalrecord.client.DoctorClient;
 import com.clinic.medicalrecord.client.DoctorProfileResponse;
+import com.clinic.medicalrecord.client.EncounterContextResponse;
 import com.clinic.medicalrecord.client.PatientClient;
 import com.clinic.medicalrecord.client.PatientProfileResponse;
 import com.clinic.medicalrecord.dto.CreateMedicalRecordRequest;
+import com.clinic.medicalrecord.dto.FinalizeMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.PrescriptionItemRequest;
+import com.clinic.medicalrecord.dto.SaveMedicalRecordDraftRequest;
 import com.clinic.medicalrecord.entity.MedicalRecord;
+import com.clinic.medicalrecord.entity.MedicalRecordStatus;
 import com.clinic.medicalrecord.repository.MedicalRecordRepository;
 import com.clinic.medicalrecord.repository.MedicalRecordDisplayLookup;
 import com.clinic.medicalrecord.security.CurrentUserPrincipal;
@@ -139,6 +143,77 @@ class MedicalRecordServiceImplTest {
     }
 
     @Test
+    void saveDraftShouldCreateDuringInProgressWithoutDiagnosis() {
+        when(appointmentClient.getEncounterContext(AUTHORIZATION, appointmentId)).thenReturn(encounter("IN_PROGRESS"));
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
+        when(medicalRecordRepository.findByAppointmentId(appointmentId)).thenReturn(Optional.empty());
+        when(medicalRecordRepository.saveAndFlush(any(MedicalRecord.class))).thenAnswer(invocation -> {
+            MedicalRecord record = invocation.getArgument(0);
+            record.setId(UUID.randomUUID());
+            record.setVersion(0L);
+            record.setCreatedAt(LocalDateTime.now());
+            record.setUpdatedAt(LocalDateTime.now());
+            return record;
+        });
+
+        var response = medicalRecordService.saveDraft(currentUserId, AUTHORIZATION, doctorPrincipal, appointmentId,
+                new SaveMedicalRecordDraftRequest("Fever", null, "Observe", null));
+
+        assertEquals(MedicalRecordStatus.DRAFT, response.status());
+        assertEquals(null, response.diagnosis());
+        assertEquals(0L, response.version());
+    }
+
+    @Test
+    void saveDraftShouldRejectWhenVisitIsNotInProgress() {
+        when(appointmentClient.getEncounterContext(AUTHORIZATION, appointmentId)).thenReturn(encounter("CALLED"));
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
+
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> medicalRecordService.saveDraft(currentUserId, AUTHORIZATION, doctorPrincipal, appointmentId,
+                        new SaveMedicalRecordDraftRequest("Fever", null, null, null)));
+
+        assertEquals(ErrorCode.CONFLICT, exception.getErrorCode());
+        verify(medicalRecordRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
+    void patientCannotReadDraftMedicalRecord() {
+        UUID recordId = UUID.randomUUID();
+        UUID patientUserId = UUID.randomUUID();
+        CurrentUserPrincipal patientPrincipal = new CurrentUserPrincipal(patientUserId, "patient@test.com", "Patient", Set.of("ROLE_PATIENT"));
+        MedicalRecord draft = medicalRecord();
+        draft.setStatus(MedicalRecordStatus.DRAFT);
+        when(medicalRecordRepository.findById(recordId)).thenReturn(Optional.of(draft));
+
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> medicalRecordService.getById(patientUserId, AUTHORIZATION, patientPrincipal, recordId));
+
+        assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
+        verify(patientClient, never()).getCurrentPatientProfile(AUTHORIZATION);
+    }
+
+    @Test
+    void finalizeDraftShouldRequireDiagnosis() {
+        UUID recordId = UUID.randomUUID();
+        MedicalRecord draft = medicalRecord();
+        draft.setId(recordId);
+        draft.setStatus(MedicalRecordStatus.DRAFT);
+        draft.setDiagnosis(null);
+        draft.setVersion(3L);
+        when(medicalRecordRepository.findById(recordId)).thenReturn(Optional.of(draft));
+        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
+        when(appointmentClient.getEncounterContext(AUTHORIZATION, appointmentId)).thenReturn(encounter("IN_PROGRESS"));
+
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> medicalRecordService.finalizeRecord(currentUserId, AUTHORIZATION, doctorPrincipal, recordId,
+                        new FinalizeMedicalRecordRequest(3L)));
+
+        assertEquals(ErrorCode.VALIDATION_ERROR, exception.getErrorCode());
+        verify(medicalRecordRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
     void getByIdShouldAllowPatientWhoOwnsRecord() {
         UUID medicalRecordId = UUID.randomUUID();
         UUID patientUserId = UUID.randomUUID();
@@ -201,7 +276,7 @@ class MedicalRecordServiceImplTest {
     @Test
     void patientHistoryRejectsUnrelatedDoctor() {
         when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
-        when(medicalRecordRepository.findByPatientIdAndDoctorIdOrderByCreatedAtDesc(patientId, doctorId))
+        when(medicalRecordRepository.findByPatientIdAndDoctorIdAndStatusOrderByCreatedAtDesc(patientId, doctorId, MedicalRecordStatus.FINAL))
                 .thenReturn(List.of());
 
         BusinessException exception = assertThrows(BusinessException.class,
@@ -228,7 +303,7 @@ class MedicalRecordServiceImplTest {
         MedicalRecord owned = medicalRecord();
         var pageable = PageRequest.of(0, 8, Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id")));
         when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
-        when(medicalRecordRepository.findByDoctorId(doctorId, pageable))
+        when(medicalRecordRepository.findByDoctorIdAndStatus(doctorId, MedicalRecordStatus.FINAL, pageable))
                 .thenReturn(new PageImpl<>(List.of(owned), pageable, 96));
         when(displayLookup.forDoctor(doctorId, List.of(owned.getId()))).thenReturn(java.util.Map.of(owned.getId(),
                 new MedicalRecordDisplayLookup.Display("BN000005", "Demo Patient", "BS000001", "Demo Doctor",
@@ -242,7 +317,7 @@ class MedicalRecordServiceImplTest {
         assertEquals("BN000005", result.getContent().getFirst().patientCode());
         assertEquals("BS000001", result.getContent().getFirst().doctorCode());
         assertEquals(LocalDate.of(2026, 9, 18), result.getContent().getFirst().appointmentDate());
-        verify(medicalRecordRepository).findByDoctorId(doctorId, pageable);
+        verify(medicalRecordRepository).findByDoctorIdAndStatus(doctorId, MedicalRecordStatus.FINAL, pageable);
         verify(auditService).recordRead(currentUserId, "MEDICAL_RECORD_READ", owned.getId());
     }
 
@@ -251,7 +326,7 @@ class MedicalRecordServiceImplTest {
         MedicalRecord owned = medicalRecord();
         when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
         when(displayLookup.patientIdForDoctorCode(doctorId, "BN000005")).thenReturn(patientId);
-        when(medicalRecordRepository.findByPatientIdAndDoctorIdOrderByCreatedAtDesc(patientId, doctorId))
+        when(medicalRecordRepository.findByPatientIdAndDoctorIdAndStatusOrderByCreatedAtDesc(patientId, doctorId, MedicalRecordStatus.FINAL))
                 .thenReturn(List.of(owned));
         when(displayLookup.forDoctor(doctorId, List.of(owned.getId()))).thenReturn(java.util.Map.of(owned.getId(),
                 new MedicalRecordDisplayLookup.Display("BN000005", "Demo Patient", "BS000001", "Demo Doctor",
@@ -275,7 +350,7 @@ class MedicalRecordServiceImplTest {
         when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
         assertEquals(ErrorCode.FORBIDDEN, assertThrows(BusinessException.class,
                 () -> medicalRecordService.getByPatientCode(currentUserId, AUTHORIZATION, doctorPrincipal, "BN000005")).getErrorCode());
-        verify(medicalRecordRepository, never()).findByPatientIdAndDoctorIdOrderByCreatedAtDesc(any(), any());
+        verify(medicalRecordRepository, never()).findByPatientIdAndDoctorIdAndStatusOrderByCreatedAtDesc(any(), any(), any());
     }
 
     @Test
@@ -350,6 +425,14 @@ class MedicalRecordServiceImplTest {
                 "Checkup",
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now().minusDays(1)
+        );
+    }
+
+    private EncounterContextResponse encounter(String queueStatus) {
+        return new EncounterContextResponse(
+                UUID.randomUUID(), appointmentId, patientId, doctorId, 7, queueStatus,
+                LocalDate.now(), LocalTime.of(9, 0), LocalTime.of(10, 0), "Checkup",
+                new EncounterContextResponse.PatientSummary(patientId, "Patient Test", null, null, null)
         );
     }
 

@@ -28,14 +28,14 @@ export function validateRegistrationField(field: RegistrationField, value: strin
   return normalized < clinicToday() ? undefined : 'Ngày sinh phải trước ngày hôm nay.';
 }
 
-export default function ReceptionPatientsPage({ role }: { role: ClinicRole }) {
+export default function ReceptionPatientsPage({ role, onBookPatient }: { role: ClinicRole; onBookPatient?: (patient: ReceptionPatientResponse) => void }) {
   if (role !== 'ADMIN' && role !== 'RECEPTIONIST') return <Alert tone="error">Bạn không có quyền truy cập danh sách bệnh nhân lễ tân.</Alert>;
   if (!integrations.reception) return <><PageHeader title="Bệnh nhân" subtitle="Tra cứu bệnh nhân lễ tân" />
     <Alert tone="info">Tìm kiếm và đăng ký bệnh nhân vãng lai hiện chưa khả dụng.</Alert></>;
-  return <ActiveReceptionPatientsPage />;
+  return <ActiveReceptionPatientsPage onBookPatient={onBookPatient} />;
 }
 
-function ActiveReceptionPatientsPage() {
+function ActiveReceptionPatientsPage({ onBookPatient }: { onBookPatient?: (patient: ReceptionPatientResponse) => void }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [patients, setPatients] = useState<ReceptionPatientResponse[] | null>(null);
@@ -323,20 +323,23 @@ function ActiveReceptionPatientsPage() {
       </div>
       {selected && <div className="patients-detail-overlay">
         <button type="button" className="patients-detail-backdrop" tabIndex={-1} aria-hidden="true" onClick={closeDetail} />
-        <PatientDetail patient={selected} detailRef={detailRef} onClose={closeDetail} />
+        <PatientDetail patient={selected} detailRef={detailRef} onClose={closeDetail} onBookPatient={onBookPatient} />
       </div>}
     </>}
   </div>;
 }
 
-export function PatientDetail({ patient, detailRef, onClose }: { patient: ReceptionPatientResponse; detailRef: { current: HTMLElement | null }; onClose: () => void }) {
+export function PatientDetail({ patient, detailRef, onClose, onBookPatient }: { patient: ReceptionPatientResponse; detailRef: { current: HTMLElement | null }; onClose: () => void; onBookPatient?: (patient: ReceptionPatientResponse) => void }) {
   return <section className="panel patients-detail" ref={detailRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="patient-detail-title"
     onKeyDown={(event) => {
       if (event.key === 'Escape') { event.stopPropagation(); onClose(); }
       if (event.key === 'Tab') { event.preventDefault(); event.currentTarget.querySelector('button')?.focus(); }
     }}>
     <div className="patients-section-head"><div><span className="patients-section-kicker">HỒ SƠ HÀNH CHÍNH</span><h3 id="patient-detail-title">Thông tin bệnh nhân</h3></div>
-      <button type="button" className="patients-detail-close" onClick={onClose} aria-label="Đóng chi tiết bệnh nhân" title="Đóng chi tiết"><X size={18} aria-hidden="true" /></button></div>
+      <div className="patients-detail-actions">
+        {onBookPatient && <button type="button" onClick={() => onBookPatient(patient)}><CalendarDays size={16} /> Đặt lịch cho bệnh nhân</button>}
+        <button type="button" className="patients-detail-close" onClick={onClose} aria-label="Đóng chi tiết bệnh nhân" title="Đóng chi tiết"><X size={18} aria-hidden="true" /></button>
+      </div></div>
     <div className="patients-detail-identity"><span className="patients-avatar large">{initials(patient.fullName)}</span><div><h4>{patient.fullName}</h4><p>Mã bệnh nhân: {patient.patientCode || 'Chưa có'}</p>
       <span className={`patients-state ${patient.userId ? 'linked' : 'walk-in'}`}>{patient.userId ? 'Đã liên kết tài khoản' : 'Chưa liên kết tài khoản'}</span></div></div>
     <dl className="patients-detail-fields">

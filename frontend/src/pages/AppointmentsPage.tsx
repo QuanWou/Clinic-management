@@ -5,7 +5,7 @@ import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
 import PageHeader from '../components/PageHeader';
-import type { AppointmentResponse, CreateAppointmentRequest, DoctorProfileResponse } from '../types/domain';
+import type { AppointmentResponse, CreateAppointmentRequest, DoctorProfileResponse, ReceptionPatientResponse, ReceptionVisitResponse } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
 import { formatDate, formatTime, shortId } from '../utils/format';
 import { getUiAppointments } from '../utils/uiData';
@@ -21,6 +21,9 @@ type AppointmentsPageProps = {
   error: string | null;
   loading: boolean;
   onRefresh: () => void;
+  onOpenEncounter?: (visit: ReceptionVisitResponse) => void;
+  preselectedReceptionPatient?: ReceptionPatientResponse | null;
+  onReceptionPatientConsumed?: () => void;
 };
 
 const initialBooking: CreateAppointmentRequest = { doctorId: '', appointmentDate: '', startTime: '', endTime: '', reason: '' };
@@ -70,14 +73,16 @@ function validateBooking(booking: CreateAppointmentRequest, todayKey: string): B
   return errors;
 }
 
-export default function AppointmentsPage({ appointments, role, error, loading, onRefresh }: AppointmentsPageProps) {
-  if (role === 'ADMIN' || role === 'RECEPTIONIST') return <ReceptionAppointmentsPage role={role} />;
+export default function AppointmentsPage({ appointments, role, error, loading, onRefresh, onOpenEncounter,
+  preselectedReceptionPatient, onReceptionPatientConsumed }: AppointmentsPageProps) {
+  if (role === 'ADMIN' || role === 'RECEPTIONIST') return <ReceptionAppointmentsPage role={role}
+    preselectedPatient={preselectedReceptionPatient} onPatientConsumed={onReceptionPatientConsumed} />;
   if (role === 'PATIENT') return <PatientAppointmentsWorkspace appointments={appointments} error={error} loading={loading} onRefresh={onRefresh} />;
   if (role === 'DOCTOR' && !integrations.appointmentOwnership) {
     return <><PageHeader title="Appointments" subtitle="Your assigned appointments" />
       <Alert tone="info">Tính năng lịch hẹn của bác sĩ hiện chưa khả dụng.</Alert></>;
   }
-  if (role === 'DOCTOR') return <DoctorAppointmentsWorkspace />;
+  if (role === 'DOCTOR') return <DoctorAppointmentsWorkspace onOpenEncounter={onOpenEncounter} />;
   return <PersonalAppointmentsPage appointments={appointments} role={role} error={error} loading={loading} onRefresh={onRefresh} />;
 }
 

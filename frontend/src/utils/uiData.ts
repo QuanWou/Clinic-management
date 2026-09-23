@@ -20,7 +20,7 @@ export function getUiMedicalRecords(records?: MedicalRecordResponse[] | null): U
     patientName: `Patient ${shortId(record.patientId)}`,
     doctorName: `Doctor ${shortId(record.doctorId)}`,
     recordType: 'Medical record',
-    status: 'Recorded'
+    status: record.status ?? 'FINAL'
   }));
 }
 

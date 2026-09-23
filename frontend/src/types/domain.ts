@@ -50,6 +50,7 @@ export type CreateAppointmentRequest = {
 
 export type ReceptionBookingRequest = CreateAppointmentRequest & { patientId: string };
 export type ReceptionRescheduleRequest = Omit<CreateAppointmentRequest, 'reason'>;
+export type ReceptionAppointmentResponse = AppointmentResponse & { patientName: string };
 export type ReceptionPatientResponse = {
   id: string;
   patientCode?: string;
@@ -74,6 +75,7 @@ export type ReceptionVisitResponse = {
   id: string;
   appointmentId: string;
   patientId: string;
+  patientName?: string | null;
   doctorId: string;
   visitDate: string;
   queueNumber: number;
@@ -81,6 +83,26 @@ export type ReceptionVisitResponse = {
   checkedInAt: string;
   startedAt: string | null;
   completedAt: string | null;
+};
+
+export type EncounterContextResponse = {
+  visitId: string;
+  appointmentId: string;
+  patientId: string;
+  doctorId: string;
+  queueNumber: number;
+  queueStatus: QueueStatus;
+  appointmentDate: string;
+  startTime: string;
+  endTime: string;
+  reason: string | null;
+  patient: {
+    id: string;
+    fullName: string;
+    dob: string | null;
+    gender: string | null;
+    bloodType: string | null;
+  };
 };
 
 /** Aggregated by the appointment service, scoped to the authenticated staff role. */
@@ -214,12 +236,19 @@ export type AppointmentResponse = {
   updatedAt?: string | null;
 };
 
+export type PrescriptionStatus = 'DRAFT' | 'SIGNED';
+
 export type PrescriptionItemResponse = {
   id: string;
+  medicineId?: string | null;
+  medicineCode?: string | null;
   medicineName: string;
+  medicineUnit?: string | null;
   dosage: string;
   frequency: string;
   duration: string;
+  route?: string | null;
+  quantity?: number | null;
   note?: string | null;
 };
 
@@ -227,7 +256,23 @@ export type PrescriptionResponse = {
   id: string;
   items: PrescriptionItemResponse[];
   createdAt?: string | null;
+  status?: PrescriptionStatus;
+  version?: number | null;
+  signedAt?: string | null;
+  signedBy?: string | null;
 };
+
+export type PrescriptionItemDraftRequest = {
+  medicineId: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  route?: string | null;
+  quantity?: number | null;
+  note?: string | null;
+};
+
+export type MedicalRecordStatus = 'DRAFT' | 'FINAL';
 
 export type MedicalRecordResponse = {
   id: string;
@@ -243,11 +288,15 @@ export type MedicalRecordResponse = {
   startTime?: string | null;
   endTime?: string | null;
   symptoms?: string | null;
-  diagnosis: string;
+  diagnosis?: string | null;
   notes?: string | null;
   prescriptions: PrescriptionResponse[];
   createdAt?: string | null;
   updatedAt?: string | null;
+  status?: MedicalRecordStatus;
+  version?: number | null;
+  finalizedAt?: string | null;
+  finalizedBy?: string | null;
 };
 
 export type InvoiceResponse = {

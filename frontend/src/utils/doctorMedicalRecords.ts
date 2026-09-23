@@ -5,7 +5,7 @@ export function filterDoctorMedicalRecords(records: MedicalRecordResponse[], tex
   const query = text.trim().toLocaleLowerCase('vi-VN');
   return [...records].filter((record) => !query || [record.recordCode ?? '', record.patientCode ?? '',
     record.patientName ?? '', record.id, record.appointmentId, record.patientId,
-    record.diagnosis, record.createdAt ?? ''].some((part) => part.toLocaleLowerCase('vi-VN').includes(query)))
+    record.diagnosis, record.createdAt ?? ''].some((part) => (part ?? '').toLocaleLowerCase('vi-VN').includes(query)))
     .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? '') || a.id.localeCompare(b.id));
 }
 

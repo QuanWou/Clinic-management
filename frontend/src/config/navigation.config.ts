@@ -1,6 +1,7 @@
 import {
   CalendarDays,
   FileText,
+  HeartPulse,
   LayoutDashboard,
   ReceiptText,
   Bell,
@@ -18,6 +19,7 @@ export const mainNavigation: NavigationItem[] = [
   { id: 'patients', label: 'Bệnh nhân', icon: UsersRound },
   { id: 'doctors', label: 'Bác sĩ', icon: Stethoscope },
   { id: 'doctor-profile', label: 'Hồ sơ bác sĩ', icon: UserRound, roles: ['ROLE_DOCTOR'] },
+  { id: 'encounter', label: 'Khám bệnh', icon: HeartPulse, roles: ['ROLE_DOCTOR'] },
   { id: 'medical-records', label: 'Hồ sơ bệnh án', icon: FileText },
   { id: 'invoices', label: 'Hóa đơn', icon: ReceiptText },
   { id: 'catalog', label: 'Danh mục', icon: ClipboardList },
