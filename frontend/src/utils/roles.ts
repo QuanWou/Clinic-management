@@ -10,6 +10,7 @@ const access: Record<AppView, ClinicRole[]> = {
   patients: ['ADMIN', 'RECEPTIONIST', 'PATIENT'],
   doctors: ['ADMIN', 'RECEPTIONIST', 'PATIENT'],
   'doctor-profile': ['DOCTOR'],
+  encounter: ['DOCTOR'],
   'medical-records': ['DOCTOR', 'PATIENT'],
   invoices: ['ADMIN', 'RECEPTIONIST', 'PATIENT'],
   catalog: ['ADMIN', 'DOCTOR'],

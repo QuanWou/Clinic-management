@@ -1,14 +1,17 @@
 package com.clinic.appointment.service;
 
 import com.clinic.appointment.client.DoctorClient;
-import com.clinic.appointment.dto.ReceptionVisitResponse;
+import com.clinic.appointment.client.InternalPatientSummaryResponse;
+import com.clinic.appointment.client.PatientClient;
+import com.clinic.appointment.dto.EncounterContextResponse;
 import com.clinic.appointment.dto.ReceptionHistoryResponse;
+import com.clinic.appointment.dto.ReceptionVisitResponse;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
 import com.clinic.appointment.entity.QueueStatus;
 import com.clinic.appointment.entity.ReceptionVisit;
-import com.clinic.appointment.repository.ReceptionAppointmentRepository;
 import com.clinic.appointment.repository.AppointmentRepository;
+import com.clinic.appointment.repository.ReceptionAppointmentRepository;
 import com.clinic.appointment.repository.ReceptionVisitRepository;
 import com.clinic.appointment.security.CurrentUserPrincipal;
 import com.clinic.common.constants.ErrorCode;
@@ -23,8 +26,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.UUID;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,10 +41,10 @@ public class ReceptionQueueService {
     private final ReceptionVisitRepository visitRepository;
     private final QueueDayLock dayLock;
     private final DoctorClient doctorClient;
+    private final PatientClient patientClient;
 
     @Transactional
     public ReceptionVisitResponse checkIn(UUID appointmentId) {
-        // Lock the appointment first: two check-ins for the same booking cannot allocate two tickets.
         Appointment appointment = appointmentRepository.lockById(appointmentId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Appointment not found"));
         ReceptionVisit existing = visitRepository.findByAppointmentId(appointmentId).orElse(null);
@@ -56,7 +59,6 @@ public class ReceptionQueueService {
             throw new BusinessException(ErrorCode.CONFLICT, "Only confirmed appointments can be checked in");
         }
 
-        // This transaction lock works across processes, not just synchronized threads in one JVM.
         dayLock.lock(appointment.getDoctorId(), today);
         int nextNumber = visitRepository.lastQueueNumber(appointment.getDoctorId(), today) + 1;
         ReceptionVisit visit = ReceptionVisit.builder()
@@ -88,10 +90,58 @@ public class ReceptionQueueService {
         List<ReceptionVisit> visits = doctorId == null
                 ? visitRepository.findByVisitDateOrderByDoctorIdAscQueueNumberAsc(visitDate)
                 : visitRepository.findByDoctorIdAndVisitDateOrderByQueueNumberAsc(doctorId, visitDate);
-        return visits.stream().map(this::toResponse).toList();
+        if (visits.isEmpty()) {
+            return List.of();
+        }
+        Map<UUID, String> patientNames = patientClient.getInternalSummaries(
+                        visits.stream().map(ReceptionVisit::getPatientId).distinct().toList())
+                .stream()
+                .collect(Collectors.toMap(InternalPatientSummaryResponse::patientId,
+                        InternalPatientSummaryResponse::fullName));
+        return visits.stream().map(visit -> toResponse(visit, patientNames.get(visit.getPatientId()))).toList();
     }
 
-    /** A single bounded read for history, with the same doctor ownership check as list(). */
+    @Transactional(readOnly = true)
+    public EncounterContextResponse getEncounterContext(UUID appointmentId, CurrentUserPrincipal principal,
+                                                        String authorization) {
+        if (principal == null || (!principal.hasRole("DOCTOR") && !principal.hasRole("ADMIN"))) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Doctor or administrator role required");
+        }
+        ReceptionVisit visit = visitRepository.findByAppointmentId(appointmentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Checked-in visit not found"));
+        Appointment appointment = appointments.findById(appointmentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Appointment not found"));
+        if (!visit.getAppointmentId().equals(appointment.getId())
+                || !visit.getDoctorId().equals(appointment.getDoctorId())
+                || !visit.getPatientId().equals(appointment.getPatientId())) {
+            throw new BusinessException(ErrorCode.CONFLICT, "Visit and appointment do not match");
+        }
+        UUID allowedDoctorId = ownedDoctorId(principal, authorization);
+        if (allowedDoctorId != null && !visit.getDoctorId().equals(allowedDoctorId)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "Cannot open another doctor's encounter");
+        }
+
+        InternalPatientSummaryResponse patient = patientClient.getInternalSummary(visit.getPatientId());
+        return new EncounterContextResponse(
+                visit.getId(),
+                appointment.getId(),
+                appointment.getPatientId(),
+                appointment.getDoctorId(),
+                visit.getQueueNumber(),
+                visit.getStatus(),
+                appointment.getAppointmentDate(),
+                appointment.getStartTime(),
+                appointment.getEndTime(),
+                appointment.getReason(),
+                new EncounterContextResponse.PatientSummary(
+                        patient.patientId(),
+                        patient.fullName(),
+                        patient.dob(),
+                        patient.gender(),
+                        patient.bloodType())
+        );
+    }
+
     @Transactional(readOnly = true)
     public ReceptionHistoryResponse history(LocalDate from, LocalDate to,
                                             CurrentUserPrincipal principal, String authorization) {
@@ -103,7 +153,6 @@ public class ReceptionQueueService {
             throw new BusinessException(ErrorCode.FORBIDDEN, "Staff role required");
         }
         UUID doctorId = ownedDoctorId(principal, authorization);
-        // A doctor never queries even an aggregated clinic-wide appointment list.
         var appointmentRows = doctorId == null
                 ? appointmentRepository.findByAppointmentDateBetweenOrderByAppointmentDateAscStartTimeAsc(from, to)
                 : List.<Appointment>of();
@@ -128,8 +177,6 @@ public class ReceptionQueueService {
     @Transactional
     public boolean completeCheckedInAppointment(UUID appointmentId, CurrentUserPrincipal principal,
                                                 String authorization) {
-        // Called by the legacy completion flow AFTER its appointment row lock and ownership check.
-        // Appointments without a reception visit retain the legacy completion flow.
         return visitRepository.findByAppointmentId(appointmentId)
                 .map(visit -> {
                     changeStatus(visit.getId(), QueueStatus.COMPLETED, principal, authorization);
@@ -141,7 +188,6 @@ public class ReceptionQueueService {
     @Transactional
     public ReceptionVisitResponse changeStatus(UUID visitId, QueueStatus target,
                                                CurrentUserPrincipal principal, String authorization) {
-        // All visit/appointment writers acquire the appointment row before the visit row.
         ReceptionVisit identified = visitRepository.findById(visitId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Visit not found"));
         Appointment appointment = appointmentRepository.lockById(identified.getAppointmentId())
@@ -174,8 +220,6 @@ public class ReceptionQueueService {
         }
         if (target == QueueStatus.COMPLETED) {
             visit.setCompletedAt(LocalDateTime.now(CLINIC_ZONE));
-            // Same local PostgreSQL transaction: Medical/Billing never see a completed visit
-            // without the appointment being COMPLETED after commit.
             appointment.setStatus(AppointmentStatus.COMPLETED);
             appointments.saveAndFlush(appointment);
         }
@@ -205,8 +249,12 @@ public class ReceptionQueueService {
     }
 
     private ReceptionVisitResponse toResponse(ReceptionVisit visit) {
+        return toResponse(visit, null);
+    }
+
+    private ReceptionVisitResponse toResponse(ReceptionVisit visit, String patientName) {
         return new ReceptionVisitResponse(visit.getId(), visit.getAppointmentId(), visit.getPatientId(),
-                visit.getDoctorId(), visit.getVisitDate(), visit.getQueueNumber(), visit.getStatus(),
+                patientName, visit.getDoctorId(), visit.getVisitDate(), visit.getQueueNumber(), visit.getStatus(),
                 visit.getCheckedInAt(), visit.getStartedAt(), visit.getCompletedAt());
     }
 }

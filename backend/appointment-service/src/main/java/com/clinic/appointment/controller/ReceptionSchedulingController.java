@@ -2,6 +2,7 @@ package com.clinic.appointment.controller;
 
 import com.clinic.appointment.dto.AppointmentResponse;
 import com.clinic.appointment.dto.CreateReceptionAppointmentRequest;
+import com.clinic.appointment.dto.ReceptionAppointmentResponse;
 import com.clinic.appointment.dto.RescheduleReceptionAppointmentRequest;
 import com.clinic.appointment.service.ReceptionSchedulingService;
 import com.clinic.common.dto.ApiResponse;
@@ -42,7 +43,7 @@ public class ReceptionSchedulingController {
     }
 
     @GetMapping("/bookings")
-    public ApiResponse<List<AppointmentResponse>> list(
+    public ApiResponse<List<ReceptionAppointmentResponse>> list(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) UUID doctorId) {
         return ApiResponse.success("Appointments retrieved", service.list(date, doctorId));

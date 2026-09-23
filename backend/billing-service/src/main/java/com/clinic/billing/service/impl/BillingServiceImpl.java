@@ -104,6 +104,7 @@ public class BillingServiceImpl implements BillingService {
 
         List<InvoiceItem> snapshots = new ArrayList<>();
         Set<UUID> serviceSources = new HashSet<>();
+        Set<UUID> performedServiceIds = new HashSet<>();
         for (PerformedServicesClient.PerformedItem item : performed.items()) {
             if (item == null || item.performedItemId() == null || item.serviceId() == null
                     || item.quantity() <= 0 || item.serviceDate() == null
@@ -111,6 +112,7 @@ public class BillingServiceImpl implements BillingService {
                     || !serviceSources.add(item.performedItemId())) {
                 throw new BusinessException(ErrorCode.CONFLICT, "Performed service is incomplete or duplicated");
             }
+            performedServiceIds.add(item.serviceId());
             snapshots.add(snapshot("SERVICE", item.performedItemId(), item.quantity(),
                     pricingClient.byServiceId(authorizationHeader, item.serviceId(), item.serviceDate())));
         }
@@ -124,6 +126,10 @@ public class BillingServiceImpl implements BillingService {
                     || lab.quantity() <= 0 || !"RELEASED".equals(lab.status()) || lab.billableAt() == null
                     || lab.billableAt().isAfter(LocalDateTime.now())) {
                 throw new BusinessException(ErrorCode.CONFLICT, "Lab order is pending, invalid or duplicated; cannot invoice");
+            }
+            if (performedServiceIds.contains(lab.serviceId())) {
+                throw new BusinessException(ErrorCode.CONFLICT,
+                        "Service appears in both performed-service and laboratory sources");
             }
             snapshots.add(snapshot("LAB", lab.orderId(), lab.quantity(),
                     verifiedLabPrice(authorizationHeader, lab)));

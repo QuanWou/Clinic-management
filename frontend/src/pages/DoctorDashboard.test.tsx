@@ -8,6 +8,7 @@ const doctor = { id: 'doctor-user', email: 'doctor@clinic.test', fullName: 'Bác
 const noop = () => undefined;
 const visit = (status: ReceptionVisitResponse['status'], number: number): ReceptionVisitResponse => ({
   id: `visit-${number}`, appointmentId: `appointment-${number}`, patientId: `patient-${number}`,
+  patientName: `Bệnh nhân số ${number}`,
   doctorId: 'doctor-current', visitDate: '2026-09-20', queueNumber: number,
   status, checkedInAt: '2026-09-20T08:30:00', startedAt: null, completedAt: null
 });
@@ -30,14 +31,14 @@ describe('doctor dashboard design and data boundaries', () => {
     expect(html).not.toContain('Lịch hẹn hôm nay');
   });
 
-  it('counts actual queue status, prioritizes in-progress visits, and shows real identifiers only', () => {
+  it('counts actual queue status, prioritizes in-progress visits, and shows verified patient names', () => {
     const html = render([visit('WAITING', 9), visit('COMPLETED', 1), visit('CALLED', 7), visit('IN_PROGRESS', 3), visit('SKIPPED', 8)]);
     expect(html).toContain('5 lượt trong hàng đợi');
     expect(html).toContain('2 lượt đang chờ hoặc đã gọi vào khám');
-    expect(html).toContain('Mã bệnh nhân PATIENT-');
+    expect(html).toContain('Bệnh nhân số 3');
     expect(html).toContain('Check-in 08:30');
     expect(html.indexOf('Mã lịch APPOINTM')).toBeGreaterThan(0);
-    expect(html.indexOf('Bệnh nhân PATIENT-')).toBeGreaterThan(0);
+    expect(html).not.toContain('Mã bệnh nhân PATIENT-');
     expect(html).not.toContain('private-staff-appointment');
     expect(html).not.toContain('Hóa đơn');
   });
@@ -61,9 +62,9 @@ describe('doctor dashboard design and data boundaries', () => {
   it('fails closed for another role’s scope or records from the wrong date', () => {
     const reception = renderToStaticMarkup(<DoctorDashboard data={{ scope: 'RECEPTION', date: '2026-09-20', appointments: [], queue: [visit('WAITING', 9)] }} />);
     expect(reception).toContain('Phạm vi dashboard không khớp');
-    expect(reception).not.toContain('Bệnh nhân PATIENT-');
+    expect(reception).not.toContain('Bệnh nhân số 9');
     const wrongDate = renderToStaticMarkup(<DoctorDashboard data={{ scope: 'DOCTOR', date: '2026-09-19', queue: [visit('WAITING', 9)] }} />);
     expect(wrongDate).toContain('Hàng đợi không khớp ngày khám');
-    expect(wrongDate).not.toContain('Bệnh nhân PATIENT-');
+    expect(wrongDate).not.toContain('Bệnh nhân số 9');
   });
 });

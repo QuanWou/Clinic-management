@@ -3,6 +3,7 @@ package com.clinic.appointment.service;
 import com.clinic.appointment.client.DoctorAvailabilityResponse;
 import com.clinic.appointment.client.DoctorClient;
 import com.clinic.appointment.client.PatientClient;
+import com.clinic.appointment.client.InternalPatientSummaryResponse;
 import com.clinic.appointment.client.ReceptionPatientLookupResponse;
 import com.clinic.appointment.client.RecipientDirectoryClient;
 import com.clinic.appointment.dto.CreateReceptionAppointmentRequest;
@@ -29,6 +30,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.LocalTime;
 import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -167,5 +169,38 @@ class ReceptionSchedulingServiceTest {
         assertEquals(ErrorCode.CONFLICT, assertThrows(BusinessException.class,
                 () -> service.book("Bearer token", request)).getErrorCode());
         verify(appointments).saveAndFlush(any());
+    }
+
+    @Test
+    void listEnrichesAppointmentsWithVerifiedPatientNamesUsingOneBatchLookup() {
+        UUID secondPatient = UUID.randomUUID();
+        Appointment first = Appointment.builder().id(UUID.randomUUID()).patientId(patientId).doctorId(doctorId)
+                .appointmentDate(date).startTime(LocalTime.of(9, 0)).endTime(LocalTime.of(9, 30))
+                .status(AppointmentStatus.CONFIRMED).build();
+        Appointment second = Appointment.builder().id(UUID.randomUUID()).patientId(secondPatient).doctorId(doctorId)
+                .appointmentDate(date).startTime(LocalTime.of(10, 0)).endTime(LocalTime.of(10, 30))
+                .status(AppointmentStatus.PENDING).build();
+        when(receptionAppointments.findByAppointmentDateOrderByStartTimeAsc(date)).thenReturn(List.of(first, second));
+        when(patientClient.getInternalSummaries(List.of(patientId, secondPatient))).thenReturn(List.of(
+                new InternalPatientSummaryResponse(patientId, "Nguyễn An", null, null, null),
+                new InternalPatientSummaryResponse(secondPatient, "Trần Bình", null, null, null)));
+
+        var result = service.list(date, null);
+
+        assertEquals(List.of("Nguyễn An", "Trần Bình"), result.stream().map(item -> item.patientName()).toList());
+        verify(patientClient).getInternalSummaries(List.of(patientId, secondPatient));
+    }
+
+    @Test
+    void listFailsClosedWhenPatientIdentityIsMissing() {
+        Appointment first = Appointment.builder().id(UUID.randomUUID()).patientId(patientId).doctorId(doctorId)
+                .appointmentDate(date).startTime(LocalTime.of(9, 0)).endTime(LocalTime.of(9, 30))
+                .status(AppointmentStatus.CONFIRMED).build();
+        when(receptionAppointments.findByAppointmentDateOrderByStartTimeAsc(date)).thenReturn(List.of(first));
+        when(patientClient.getInternalSummaries(List.of(patientId))).thenReturn(List.of());
+
+        BusinessException exception = assertThrows(BusinessException.class, () -> service.list(date, null));
+
+        assertEquals(ErrorCode.CONFLICT, exception.getErrorCode());
     }
 }

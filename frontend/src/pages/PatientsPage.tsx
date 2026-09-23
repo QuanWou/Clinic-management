@@ -5,14 +5,14 @@ import { HttpApiError } from '../api/client';
 import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import PageHeader from '../components/PageHeader';
-import type { CurrentUser, PatientProfileResponse } from '../types/domain';
+import type { CurrentUser, PatientProfileResponse, ReceptionPatientResponse } from '../types/domain';
 import type { ClinicRole } from '../utils/roles';
 import { formatDate } from '../utils/format';
 import ReceptionPatientsPage from './ReceptionPatientsPage';
 import './patientPortal.css';
 
-export default function PatientsPage({ role, user }: { role: ClinicRole; user: CurrentUser }) {
-  if (role !== 'PATIENT') return <ReceptionPatientsPage role={role} />;
+export default function PatientsPage({ role, user, onBookPatient }: { role: ClinicRole; user: CurrentUser; onBookPatient?: (patient: ReceptionPatientResponse) => void }) {
+  if (role !== 'PATIENT') return <ReceptionPatientsPage role={role} onBookPatient={onBookPatient} />;
   return <PatientProfileWorkspace key={user.userId || user.id || user.email} user={user} />;
 }
 

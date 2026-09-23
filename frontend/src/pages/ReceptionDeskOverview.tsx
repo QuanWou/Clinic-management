@@ -1,11 +1,11 @@
 import { ArrowRight, CalendarCheck2, CalendarDays, ClipboardCheck, Clock3, ShieldCheck, UserRoundCheck } from 'lucide-react';
-import type { AppointmentResponse, ReceptionVisitResponse } from '../types/domain';
+import type { ReceptionAppointmentResponse, ReceptionVisitResponse } from '../types/domain';
 import { formatDate, formatTime, shortId } from '../utils/format';
 
 type Props = {
   date: string;
   today: string;
-  appointments: AppointmentResponse[];
+  appointments: ReceptionAppointmentResponse[];
   queue: ReceptionVisitResponse[];
   onSelect: (appointmentId: string) => void;
   onBooking: () => void;
@@ -46,7 +46,7 @@ export default function ReceptionDeskOverview({ date, today, appointments, queue
         <div className="reception-desk-priority-head"><div><span>CÔNG VIỆC ƯU TIÊN</span><h3>Lịch chờ xác nhận</h3><p>Mở chi tiết để xác nhận lịch hoặc liên hệ bệnh nhân.</p></div><strong>{pending.length}</strong></div>
         {pending.length === 0 && <p className="reception-desk-empty">Không có lịch chờ xác nhận trong ngày.</p>}
         {pending.slice(0, 4).map((item) => <button type="button" className="reception-desk-priority-row" key={item.id} onClick={() => onSelect(item.id)}>
-          <span className="reception-desk-time">{formatTime(item.startTime)}</span><span><strong>BN #{shortId(item.patientId)}</strong><small>Lịch #{shortId(item.id)}</small></span><ArrowRight size={16} aria-hidden="true" />
+          <span className="reception-desk-time">{formatTime(item.startTime)}</span><span><strong>{item.patientName}</strong><small>Lịch #{shortId(item.id)}</small></span><ArrowRight size={16} aria-hidden="true" />
         </button>)}
         {pending.length > 4 && <p className="reception-desk-more">Hiển thị 4/{pending.length} lịch; xem toàn bộ trong bảng lịch hẹn.</p>}
       </article>
@@ -54,7 +54,7 @@ export default function ReceptionDeskOverview({ date, today, appointments, queue
         <div className="reception-desk-priority-head"><div><span>QUẦY TIẾP NHẬN</span><h3>Lịch đã xác nhận</h3><p>{todayView ? 'Chọn bệnh nhân đã có mặt để mở thao tác check-in.' : 'Chỉ có thể check-in cho lịch diễn ra hôm nay.'}</p></div><strong>{arriving.length}</strong></div>
         {arriving.length === 0 && <p className="reception-desk-empty">Không có lịch đã xác nhận đang chờ tiếp nhận.</p>}
         {arriving.slice(0, 4).map((item) => <button type="button" className="reception-desk-priority-row" key={item.id} onClick={() => onSelect(item.id)}>
-          <span className="reception-desk-time">{formatTime(item.startTime)}</span><span><strong>BN #{shortId(item.patientId)}</strong><small>Lịch #{shortId(item.id)}</small></span><ArrowRight size={16} aria-hidden="true" />
+          <span className="reception-desk-time">{formatTime(item.startTime)}</span><span><strong>{item.patientName}</strong><small>Lịch #{shortId(item.id)}</small></span><ArrowRight size={16} aria-hidden="true" />
         </button>)}
         {arriving.length > 4 && <p className="reception-desk-more">Hiển thị 4/{arriving.length} lịch; xem toàn bộ trong bảng lịch hẹn.</p>}
       </article>

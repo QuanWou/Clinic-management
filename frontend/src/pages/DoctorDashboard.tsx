@@ -10,7 +10,7 @@ import { statusLabel } from '../utils/locale';
 import './doctor-dashboard.css';
 
 type DoctorData = Extract<StaffDashboard, { scope: 'DOCTOR' }>;
-type Props = { data: StaffDashboard; onNavigate?: (view: AppView) => void };
+type Props = { data: StaffDashboard; onNavigate?: (view: AppView) => void; onOpenEncounter?: (visit: ReceptionVisitResponse) => void };
 
 const statuses: { code: QueueStatus; label: string; className: string }[] = [
   { code: 'WAITING', label: 'Đang chờ', className: 'waiting' },
@@ -29,7 +29,7 @@ function checkInTime(value: string | null): string {
   return value?.match(/T(\d{2}:\d{2})/)?.[1] ?? '--:--';
 }
 
-export default function DoctorDashboard({ data, onNavigate }: Props) {
+export default function DoctorDashboard({ data, onNavigate, onOpenEncounter }: Props) {
   // Do not show a receptionist's clinic-wide queue if state survives a role switch.
   if (data.scope !== 'DOCTOR') {
     return <Alert tone="error">Phạm vi dashboard không khớp với tài khoản bác sĩ. Vui lòng làm mới.</Alert>;
@@ -37,10 +37,10 @@ export default function DoctorDashboard({ data, onNavigate }: Props) {
   if (!Array.isArray(data.queue) || data.queue.some((visit) => visit.visitDate !== data.date)) {
     return <Alert tone="error">Hàng đợi không khớp ngày khám. Vui lòng làm mới.</Alert>;
   }
-  return <DoctorOverview data={data} onNavigate={onNavigate} />;
+  return <DoctorOverview data={data} onNavigate={onNavigate} onOpenEncounter={onOpenEncounter} />;
 }
 
-function DoctorOverview({ data, onNavigate }: { data: DoctorData; onNavigate?: (view: AppView) => void }) {
+function DoctorOverview({ data, onNavigate, onOpenEncounter }: { data: DoctorData; onNavigate?: (view: AppView) => void; onOpenEncounter?: (visit: ReceptionVisitResponse) => void }) {
   const queue = [...data.queue].sort((a, b) => priority[a.status] - priority[b.status] || a.queueNumber - b.queueNumber);
   const count = (status: QueueStatus) => queue.filter((visit) => visit.status === status).length;
   const waiting = count('WAITING') + count('CALLED');
@@ -122,7 +122,7 @@ function DoctorOverview({ data, onNavigate }: { data: DoctorData; onNavigate?: (
       <article className="panel doctor-dashboard-queue-panel">
         <div className="doctor-dashboard-heading"><div><span className="doctor-dashboard-section-tag">LỊCH KHÁM HÔM NAY</span><h3>Hàng đợi của bác sĩ hôm nay</h3><p>Sắp xếp theo trạng thái và số thứ tự, chỉ hiển thị lượt đã check-in.</p></div>
           <span className="doctor-dashboard-count">{queue.length} lượt</span></div>
-        {queue.length ? <div className="doctor-dashboard-queue-list">{queue.slice(0, 6).map((visit) => <QueueRow key={visit.id} visit={visit} />)}</div>
+        {queue.length ? <div className="doctor-dashboard-queue-list">{queue.slice(0, 6).map((visit) => <QueueRow key={visit.id} visit={visit} onOpenEncounter={onOpenEncounter} />)}</div>
           : <p className="doctor-dashboard-empty-queue">Chưa có lượt check-in hôm nay. Lịch chưa check-in không nằm trong danh sách này.</p>}
         {queue.length > 6 && <p className="doctor-dashboard-more">Đang hiển thị 6/{queue.length} lượt.{integrations.appointmentOwnership ? ' Mở danh sách để xem đầy đủ.' : ''}</p>}
         {onNavigate && integrations.appointmentOwnership && <button className="doctor-dashboard-list-action" type="button" onClick={() => onNavigate('appointments')}>
@@ -135,10 +135,11 @@ function DoctorOverview({ data, onNavigate }: { data: DoctorData; onNavigate?: (
         <article className="panel doctor-dashboard-next-panel">
           <div className="doctor-dashboard-heading"><div><span className="doctor-dashboard-section-tag">THEO DÕI CA KHÁM</span><h3>Lượt cần chú ý</h3><p>Ưu tiên lượt đang khám hoặc đã gọi.</p></div></div>
           {next ? <div className="doctor-dashboard-next-visit"><span className="doctor-dashboard-next-number">#{next.queueNumber}</span>
-            <div><strong>Mã bệnh nhân {shortId(next.patientId)}</strong><span>Mã lịch {shortId(next.appointmentId)}</span>
+            <div><strong>{next.patientName || `Bệnh nhân ${shortId(next.patientId)}`}</strong><span>Mã lịch {shortId(next.appointmentId)}</span>
               <small>Check-in: {checkInTime(next.checkedInAt)}</small></div><Badge tone={next.status}>{statusLabel(next.status)}</Badge></div>
             : <p className="doctor-dashboard-empty-queue">Hiện không có lượt đang khám hoặc chờ khám.</p>}
           {next?.status === 'WAITING' && <p className="doctor-dashboard-hint">Lượt này đang chờ lễ tân gọi trước khi bác sĩ bắt đầu khám.</p>}
+          {next && onOpenEncounter && (next.status === 'CALLED' || next.status === 'IN_PROGRESS') && <button type="button" className="doctor-dashboard-list-action" onClick={() => onOpenEncounter(next)}>Mở không gian khám <ArrowRight size={16} /></button>}
         </article>
         <article className="doctor-dashboard-shortcuts" aria-label="Truy cập nhanh dành cho bác sĩ">
           <span className="doctor-dashboard-section-tag">TIẾP TỤC CÔNG VIỆC</span><h3>Truy cập nhanh</h3><p>Mở các chức năng theo quyền tài khoản.</p>
@@ -153,11 +154,13 @@ function DoctorOverview({ data, onNavigate }: { data: DoctorData; onNavigate?: (
   </div>;
 }
 
-function QueueRow({ visit }: { visit: ReceptionVisitResponse }) {
+function QueueRow({ visit, onOpenEncounter }: { visit: ReceptionVisitResponse; onOpenEncounter?: (visit: ReceptionVisitResponse) => void }) {
+  const canOpen = visit.status === 'CALLED' || visit.status === 'IN_PROGRESS';
   return <div className="doctor-dashboard-queue-row">
     <span className="doctor-dashboard-queue-number">#{visit.queueNumber}</span>
-    <div className="doctor-dashboard-queue-info"><strong>Bệnh nhân {shortId(visit.patientId)}</strong>
+    <div className="doctor-dashboard-queue-info"><strong>{visit.patientName || `Bệnh nhân ${shortId(visit.patientId)}`}</strong>
       <span>Mã lịch {shortId(visit.appointmentId)} · Check-in {checkInTime(visit.checkedInAt)}</span></div>
     <Badge tone={visit.status}>{statusLabel(visit.status)}</Badge>
+    {canOpen && onOpenEncounter && <button type="button" className="soft-button" onClick={() => onOpenEncounter(visit)}>Khám</button>}
   </div>;
 }

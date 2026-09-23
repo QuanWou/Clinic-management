@@ -14,14 +14,14 @@ const initialForm: RegisterWalkInPatientRequest = { fullName: '', phone: '', dob
 const phonePattern = /^[+0-9() .-]{7,20}$/;
 const pageSize = 8;
 
-export default function ReceptionPatientsPage({ role }: { role: ClinicRole }) {
+export default function ReceptionPatientsPage({ role, onBookPatient }: { role: ClinicRole; onBookPatient?: (patient: ReceptionPatientResponse) => void }) {
   if (role !== 'ADMIN' && role !== 'RECEPTIONIST') return <Alert tone="error">You cannot access the receptionist patient directory.</Alert>;
   if (!integrations.reception) return <><PageHeader title="Patients" subtitle="Reception patient search" />
     <Alert tone="info">Patient search and walk-in registration are unavailable until Task 03 is merged, running and routed.</Alert></>;
-  return <ActiveReceptionPatientsPage />;
+  return <ActiveReceptionPatientsPage onBookPatient={onBookPatient} />;
 }
 
-function ActiveReceptionPatientsPage() {
+function ActiveReceptionPatientsPage({ onBookPatient }: { onBookPatient?: (patient: ReceptionPatientResponse) => void }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [patients, setPatients] = useState<ReceptionPatientResponse[] | null>(null);
@@ -160,7 +160,10 @@ function ActiveReceptionPatientsPage() {
       </section>
       {selected && <section className="panel patients-detail" aria-label="Thông tin chi tiết bệnh nhân">
         <div className="patients-section-head"><div><span className="patients-section-kicker">HỒ SƠ HÀNH CHÍNH</span><h3>Thông tin bệnh nhân</h3></div>
-          <button type="button" className="soft-button" onClick={() => setSelectedId('')}><X size={16} /> Đóng chi tiết</button></div>
+          <div className="patients-detail-actions">
+            {onBookPatient && <button type="button" onClick={() => onBookPatient(selected)}><CalendarDays size={16} /> Đặt lịch cho bệnh nhân</button>}
+            <button type="button" className="soft-button" onClick={() => setSelectedId('')}><X size={16} /> Đóng chi tiết</button>
+          </div></div>
         <div className="patients-detail-identity"><span className="patients-avatar large">{initials(selected.fullName)}</span><div><h4>{selected.fullName}</h4><p>Mã bệnh nhân: {selected.id}</p>
           <span className={`patients-state ${selected.userId ? 'linked' : 'walk-in'}`}>{selected.userId ? 'Đã liên kết tài khoản' : 'Chưa liên kết tài khoản'}</span></div></div>
         <dl className="patients-detail-fields">

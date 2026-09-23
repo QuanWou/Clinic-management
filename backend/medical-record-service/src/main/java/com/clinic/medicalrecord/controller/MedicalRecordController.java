@@ -2,20 +2,16 @@ package com.clinic.medicalrecord.controller;
 
 import com.clinic.common.dto.ApiResponse;
 import com.clinic.medicalrecord.dto.CreateMedicalRecordRequest;
+import com.clinic.medicalrecord.dto.FinalizeMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.MedicalRecordResponse;
+import com.clinic.medicalrecord.dto.SaveMedicalRecordDraftRequest;
 import com.clinic.medicalrecord.security.CurrentUserPrincipal;
 import com.clinic.medicalrecord.service.MedicalRecordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +35,44 @@ public class MedicalRecordController {
         );
     }
 
+    @GetMapping("/appointments/{appointmentId}")
+    public ApiResponse<MedicalRecordResponse> getByAppointment(
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @PathVariable UUID appointmentId
+    ) {
+        return ApiResponse.success(
+                "Medical record fetched successfully",
+                medicalRecordService.getByAppointment(principal.id(), authorizationHeader, principal, appointmentId)
+        );
+    }
+
+    @PutMapping("/appointments/{appointmentId}/draft")
+    public ApiResponse<MedicalRecordResponse> saveDraft(
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @PathVariable UUID appointmentId,
+            @Valid @RequestBody SaveMedicalRecordDraftRequest request
+    ) {
+        return ApiResponse.success(
+                "Medical record draft saved",
+                medicalRecordService.saveDraft(principal.id(), authorizationHeader, principal, appointmentId, request)
+        );
+    }
+
+    @PostMapping("/{id}/finalize")
+    public ApiResponse<MedicalRecordResponse> finalizeRecord(
+            @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @PathVariable UUID id,
+            @Valid @RequestBody FinalizeMedicalRecordRequest request
+    ) {
+        return ApiResponse.success(
+                "Medical record finalized",
+                medicalRecordService.finalizeRecord(principal.id(), authorizationHeader, principal, id, request)
+        );
+    }
+
     @GetMapping("/my")
     public ApiResponse<List<MedicalRecordResponse>> getMyRecords(
             @AuthenticationPrincipal CurrentUserPrincipal principal,
@@ -54,7 +88,7 @@ public class MedicalRecordController {
     public ApiResponse<List<MedicalRecordResponse>> getByPatientId(
             @AuthenticationPrincipal CurrentUserPrincipal principal,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
-            @PathVariable("patientId") UUID patientId
+            @PathVariable UUID patientId
     ) {
         return ApiResponse.success(
                 "Patient medical records fetched successfully",
@@ -66,7 +100,7 @@ public class MedicalRecordController {
     public ApiResponse<MedicalRecordResponse> getById(
             @AuthenticationPrincipal CurrentUserPrincipal principal,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
-            @PathVariable("id") UUID id
+            @PathVariable UUID id
     ) {
         return ApiResponse.success(
                 "Medical record fetched successfully",

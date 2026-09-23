@@ -4,7 +4,7 @@ import type { MedicalRecordResponse } from '../types/domain';
 export function filterDoctorMedicalRecords(records: MedicalRecordResponse[], text: string): MedicalRecordResponse[] {
   const query = text.trim().toLocaleLowerCase('vi-VN');
   return [...records].filter((record) => !query || [record.id, record.appointmentId, record.patientId,
-    record.diagnosis, record.createdAt ?? ''].some((part) => part.toLocaleLowerCase('vi-VN').includes(query)))
+    record.diagnosis, record.createdAt].some((part) => (part ?? '').toLocaleLowerCase('vi-VN').includes(query)))
     .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? '') || a.id.localeCompare(b.id));
 }
 

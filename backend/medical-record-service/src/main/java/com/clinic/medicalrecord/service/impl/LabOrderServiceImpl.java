@@ -2,8 +2,10 @@ package com.clinic.medicalrecord.service.impl;
 
 import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
+import com.clinic.medicalrecord.client.AppointmentClient;
 import com.clinic.medicalrecord.client.DoctorClient;
 import com.clinic.medicalrecord.client.CatalogClient;
+import com.clinic.medicalrecord.client.EncounterContextResponse;
 import com.clinic.medicalrecord.client.PatientClient;
 import com.clinic.medicalrecord.dto.CollectLabSampleRequest;
 import com.clinic.medicalrecord.dto.CreateLabOrderRequest;
@@ -16,6 +18,7 @@ import com.clinic.medicalrecord.entity.LabBillingClosure;
 import com.clinic.medicalrecord.entity.LabOrderStatus;
 import com.clinic.medicalrecord.entity.LabEventOutbox;
 import com.clinic.medicalrecord.entity.MedicalRecord;
+import com.clinic.medicalrecord.entity.MedicalRecordStatus;
 import com.clinic.medicalrecord.repository.LabOrderRepository;
 import com.clinic.medicalrecord.repository.LabBillingClosureRepository;
 import com.clinic.medicalrecord.repository.LabEventOutboxRepository;
@@ -24,6 +27,7 @@ import com.clinic.medicalrecord.security.CurrentUserPrincipal;
 import com.clinic.medicalrecord.service.LabOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,32 +47,81 @@ public class LabOrderServiceImpl implements LabOrderService {
     private final LabEventOutboxRepository outbox;
     private final LabBillingClosureRepository billingClosures;
     private final CatalogClient catalog;
+    private final AppointmentClient appointments;
 
     @Override
     @Transactional
-    public LabOrderResponse create(CurrentUserPrincipal principal, String authorization, UUID recordId, CreateLabOrderRequest request) {
-        MedicalRecord record = findRecord(recordId);
+    public LabOrderResponse create(CurrentUserPrincipal principal, String authorization, UUID recordId,
+                                   CreateLabOrderRequest request) {
+        return create(principal, authorization, recordId, null, request);
+    }
+
+    @Override
+    @Transactional
+    public LabOrderResponse create(CurrentUserPrincipal principal, String authorization, UUID recordId,
+                                   String idempotencyKey, CreateLabOrderRequest request) {
+        MedicalRecord record = lockRecord(recordId);
         requireTreatingDoctor(principal, authorization, record);
+        requireActiveEncounterForOrder(authorization, record);
+        if (record.getStatus() != MedicalRecordStatus.DRAFT) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "Lab orders can only be added while the medical record is still a draft");
+        }
         if (request.serviceId() == null || request.performedOn() == null
                 || request.performedOn().isAfter(java.time.LocalDate.now())) {
             throw new BusinessException(ErrorCode.VALIDATION_ERROR,
                     "Lab order requires a catalog service and a non-future performed date");
         }
+
+        String requestKey = normalizeIdempotencyKey(idempotencyKey);
+        if (requestKey != null) {
+            var existing = labOrders.findByMedicalRecordIdAndIdempotencyKey(recordId, requestKey);
+            if (existing.isPresent()) {
+                return requireSameIdempotentRequest(existing.get(), request);
+            }
+        }
+
         CatalogClient.CatalogService catalogService = catalog.requireActiveService(
                 authorization, request.serviceId(), request.testCode().trim());
         ensureBillingOpen(record.getAppointmentId());
+
+        boolean duplicate = labOrders.existsByMedicalRecordIdAndServiceId(recordId, catalogService.id());
+        String duplicateReason = normalizeNullable(request.duplicateReason());
+        if (duplicate && !request.allowDuplicate()) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "A matching lab service is already ordered; confirm an intentional repeat before creating another order");
+        }
+        if (duplicate && duplicateReason == null) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR,
+                    "A reason is required when confirming a repeated lab order");
+        }
+
         LabOrder order = LabOrder.builder()
                 .medicalRecord(record)
                 .testCode(catalogService.code())
                 .testName(catalogService.name())
                 .serviceId(catalogService.id())
                 .performedOn(request.performedOn())
+                .idempotencyKey(requestKey)
+                .orderedByUserId(principal.id())
+                .duplicateConfirmed(duplicate && request.allowDuplicate())
+                .duplicateReason(duplicate ? duplicateReason : null)
                 .status(LabOrderStatus.ORDERED)
                 .build();
-        LabOrder saved = labOrders.save(order);
-        audit.recordMutation(principal.id(), "LAB_ORDER_CREATED", saved.getId());
-        log.info("Lab order {} created for medical record {}", saved.getId(), recordId);
-        return toResponse(saved);
+        try {
+            LabOrder saved = requestKey == null ? labOrders.save(order) : labOrders.saveAndFlush(order);
+            audit.recordMutation(principal.id(), "LAB_ORDER_CREATED", saved.getId());
+            log.info("Lab order {} created for medical record {}", saved.getId(), recordId);
+            return toResponse(saved);
+        } catch (DataIntegrityViolationException ex) {
+            if (requestKey != null) {
+                var existing = labOrders.findByMedicalRecordIdAndIdempotencyKey(recordId, requestKey);
+                if (existing.isPresent()) {
+                    return requireSameIdempotentRequest(existing.get(), request);
+                }
+            }
+            throw ex;
+        }
     }
 
     @Override
@@ -165,10 +218,22 @@ public class LabOrderServiceImpl implements LabOrderService {
 
     @Override
     @Transactional
-    public LabBillableItemsResponse finalizeBilling(CurrentUserPrincipal principal, UUID appointmentId) {
+    public LabBillableItemsResponse finalizeBilling(CurrentUserPrincipal principal, String authorization, UUID appointmentId) {
         requireBillingStaff(principal);
-        MedicalRecord record = records.findByAppointmentId(appointmentId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Medical record not found"));
+        var appointment = appointments.getById(authorization, appointmentId);
+        if (!"COMPLETED".equals(appointment.status())) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "Lab billing can only be finalized after the appointment is completed");
+        }
+        MedicalRecord record = lockRecordByAppointment(appointmentId);
+        if (record.getStatus() != MedicalRecordStatus.FINAL) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "Lab billing can only be finalized after the medical record is finalized");
+        }
+        if (!record.getPatientId().equals(appointment.patientId()) || !record.getDoctorId().equals(appointment.doctorId())) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "Appointment and medical record do not describe the same encounter");
+        }
         LabBillingClosure closure = getOrCreateClosureForUpdate(appointmentId);
         if (closure.isFinalized()) {
             return billableItemsResponse(principal, appointmentId, closure);
@@ -211,13 +276,16 @@ public class LabOrderServiceImpl implements LabOrderService {
 
     private LabOrder authorizedOrder(CurrentUserPrincipal principal, String authorization, UUID orderId) {
         LabOrder order = findOrder(orderId);
-        requireTreatingDoctor(principal, authorization, order.getMedicalRecord());
-        ensureBillingOpen(order.getMedicalRecord().getAppointmentId());
+        MedicalRecord record = lockRecord(order.getMedicalRecord().getId(), order.getMedicalRecord());
+        order.setMedicalRecord(record);
+        requireTreatingDoctor(principal, authorization, record);
+        ensureBillingOpen(record.getAppointmentId());
         return order;
     }
 
     private void ensureBillingOpen(UUID appointmentId) {
-        if (getOrCreateClosureForUpdate(appointmentId).isFinalized()) {
+        LabBillingClosure closure = billingClosures.findByAppointmentIdForUpdate(appointmentId).orElse(null);
+        if (closure != null && closure.isFinalized()) {
             throw new BusinessException(ErrorCode.CONFLICT, "Lab billing items are already finalized");
         }
     }
@@ -226,9 +294,37 @@ public class LabOrderServiceImpl implements LabOrderService {
         return billingClosures.findByAppointmentIdForUpdate(appointmentId).orElseGet(() -> {
             LabBillingClosure created = LabBillingClosure.builder()
                     .appointmentId(appointmentId).finalized(false).build();
-            billingClosures.save(created);
-            return created;
+            return billingClosures.saveAndFlush(created);
         });
+    }
+
+    private MedicalRecord lockRecord(UUID id) {
+        return records.findByIdForUpdate(id).orElseGet(() -> findRecord(id));
+    }
+
+    private MedicalRecord lockRecord(UUID id, MedicalRecord attachedRecord) {
+        return records.findByIdForUpdate(id).orElse(attachedRecord);
+    }
+
+    private MedicalRecord lockRecordByAppointment(UUID appointmentId) {
+        return records.findByAppointmentIdForUpdate(appointmentId)
+                .orElseGet(() -> records.findByAppointmentId(appointmentId)
+                        .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND,
+                                "Medical record not found")));
+    }
+
+    private void requireActiveEncounterForOrder(String authorization, MedicalRecord record) {
+        EncounterContextResponse encounter = appointments.getEncounterContext(authorization, record.getAppointmentId());
+        if (!record.getAppointmentId().equals(encounter.appointmentId())
+                || !record.getPatientId().equals(encounter.patientId())
+                || !record.getDoctorId().equals(encounter.doctorId())) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "Lab order encounter does not match the medical record");
+        }
+        if (!"IN_PROGRESS".equals(encounter.queueStatus())) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "Lab orders can only be added while the visit is in progress");
+        }
     }
 
     private void requireBillingStaff(CurrentUserPrincipal principal) {
@@ -272,6 +368,36 @@ public class LabOrderServiceImpl implements LabOrderService {
             throw new BusinessException(ErrorCode.CONFLICT,
                     "Lab order must be in " + expected + " state for this operation");
         }
+    }
+
+    private String normalizeIdempotencyKey(String key) {
+        if (key == null) {
+            return null;
+        }
+        String normalized = key.trim();
+        if (normalized.isEmpty() || normalized.length() > 100) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR,
+                    "Idempotency-Key must contain 1 to 100 characters");
+        }
+        return normalized;
+    }
+
+    private String normalizeNullable(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
+    }
+
+    private LabOrderResponse requireSameIdempotentRequest(LabOrder existing, CreateLabOrderRequest request) {
+        boolean same = existing.getServiceId() != null
+                && existing.getServiceId().equals(request.serviceId())
+                && existing.getPerformedOn() != null
+                && existing.getPerformedOn().equals(request.performedOn())
+                && existing.getTestCode() != null
+                && existing.getTestCode().equalsIgnoreCase(request.testCode().trim());
+        if (!same) {
+            throw new BusinessException(ErrorCode.CONFLICT,
+                    "Idempotency-Key was already used for a different lab order request");
+        }
+        return toResponse(existing);
     }
 
     private LabOrderResponse toResponse(LabOrder order) {

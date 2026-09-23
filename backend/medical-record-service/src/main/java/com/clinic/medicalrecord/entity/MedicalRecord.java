@@ -3,12 +3,15 @@ package com.clinic.medicalrecord.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,11 +50,26 @@ public class MedicalRecord {
     @Column(name = "symptoms", columnDefinition = "TEXT")
     private String symptoms;
 
-    @Column(name = "diagnosis", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "diagnosis", columnDefinition = "TEXT")
     private String diagnosis;
 
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 16)
+    private MedicalRecordStatus status = MedicalRecordStatus.FINAL;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
+
+    @Column(name = "finalized_at")
+    private LocalDateTime finalizedAt;
+
+    @Column(name = "finalized_by")
+    private UUID finalizedBy;
 
     @Builder.Default
     @OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

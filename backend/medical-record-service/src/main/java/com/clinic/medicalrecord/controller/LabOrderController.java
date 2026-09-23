@@ -12,14 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,17 +32,20 @@ public class LabOrderController {
     @PostMapping("/appointments/{appointmentId}/billable-items/finalize")
     public ApiResponse<LabBillableItemsResponse> finalizeBilling(
             @AuthenticationPrincipal CurrentUserPrincipal principal,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
             @PathVariable UUID appointmentId) {
         return ApiResponse.success("Lab billing items finalized",
-                labOrders.finalizeBilling(principal, appointmentId));
+                labOrders.finalizeBilling(principal, authorization, appointmentId));
     }
 
     @PostMapping("/{recordId}/lab-orders")
     public ApiResponse<LabOrderResponse> create(@AuthenticationPrincipal CurrentUserPrincipal principal,
                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+                                                @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
                                                 @PathVariable UUID recordId,
                                                 @Valid @RequestBody CreateLabOrderRequest request) {
-        return ApiResponse.success("Lab order created", labOrders.create(principal, authorization, recordId, request));
+        return ApiResponse.success("Lab order created",
+                labOrders.create(principal, authorization, recordId, idempotencyKey, request));
     }
 
     @GetMapping("/{recordId}/lab-orders")

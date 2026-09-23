@@ -175,6 +175,24 @@ class BillingServiceImplTest {
             return count == 2 && labFound;
         }));
     }
+    @Test void sameCatalogServiceInPerformedAndLabSourcesFailsClosed() {
+        UUID orderId = UUID.randomUUID();
+        when(appointments.getById(AUTH, appointmentId)).thenReturn(appointment("COMPLETED"));
+        when(performed.get(AUTH, appointmentId)).thenReturn(new PerformedServicesClient.PerformedServices(appointmentId,
+                true, "svc-r1", List.of(new PerformedServicesClient.PerformedItem(itemId, serviceId, 1, visit))));
+        when(laboratory.get(AUTH, appointmentId)).thenReturn(new LabBillingClient.LabItems(appointmentId,
+                List.of(new LabBillingClient.LabItem(orderId, "CONSULT", 1, "RELEASED",
+                        visit.atStartOfDay(), serviceId, visit)), true, "lab-v1"));
+        priced();
+
+        BusinessException exception = createFailure();
+
+        assertEquals(ErrorCode.CONFLICT, exception.getErrorCode());
+        assertTrue(exception.getMessage().contains("performed-service and laboratory"));
+        verify(invoices, never()).saveAndFlush(any());
+        verify(items, never()).saveAllAndFlush(any());
+        verify(pricing, times(1)).byServiceId(AUTH, serviceId, visit);
+    }
     @Test void missingPriceFailsWithoutInvoice() {
         sources();
         when(pricing.byServiceId(AUTH, serviceId, visit)).thenThrow(new BusinessException(ErrorCode.CONFLICT, "No price"));

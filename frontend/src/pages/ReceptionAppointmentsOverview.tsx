@@ -1,13 +1,13 @@
 import { CalendarDays, ChevronLeft, ChevronRight, CheckCircle2, Clock3, Search, Stethoscope, UsersRound } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import Badge from '../components/Badge';
-import type { AppointmentResponse, DoctorProfileResponse, ReceptionVisitResponse } from '../types/domain';
+import type { AppointmentResponse, DoctorProfileResponse, ReceptionAppointmentResponse, ReceptionVisitResponse } from '../types/domain';
 import { formatDate, formatTime, shortId } from '../utils/format';
 import { statusLabel } from '../utils/locale';
 
 type Props = {
   date: string;
-  appointments: AppointmentResponse[];
+  appointments: ReceptionAppointmentResponse[];
   queue: ReceptionVisitResponse[];
   doctors: DoctorProfileResponse[] | null;
   selectedId: string;
@@ -42,14 +42,14 @@ export function appointmentQueueStatus(
 }
 
 export function filterReceptionAppointments(
-  appointments: AppointmentResponse[], queue: ReceptionVisitResponse[],
+  appointments: ReceptionAppointmentResponse[], queue: ReceptionVisitResponse[],
   doctorId: string, status: StatusFilter, search: string
-): AppointmentResponse[] {
+): ReceptionAppointmentResponse[] {
   const term = search.trim().toLocaleLowerCase('vi-VN');
   return appointments.filter((appointment) => {
     if (doctorId && appointment.doctorId !== doctorId) return false;
     if (status !== 'ALL' && appointmentQueueStatus(appointment, queue) !== status) return false;
-    return !term || [appointment.id, appointment.patientId, appointment.doctorId, appointment.reason ?? '']
+    return !term || [appointment.id, appointment.patientId, appointment.patientName, appointment.doctorId, appointment.reason ?? '']
       .some((value) => value.toLocaleLowerCase('vi-VN').includes(term));
   }).sort((a, b) => a.startTime.localeCompare(b.startTime) || a.id.localeCompare(b.id));
 }
@@ -147,7 +147,7 @@ export default function ReceptionAppointmentsOverview({ date, appointments, queu
           const doctor = doctorName(item.doctorId, doctors);
           return <button type="button" className="reception-schedule-item" key={item.id} onClick={() => onSelect(item.id)} aria-label={`Xem chi tiết lịch ${shortId(item.id)}`}>
             <span className="reception-schedule-time">{formatTime(item.startTime)}</span>
-            <span className="reception-schedule-body"><strong>BN #{shortId(item.patientId)}</strong><small>{doctor.name} · {doctor.specialty}</small></span>
+            <span className="reception-schedule-body"><strong>{item.patientName}</strong><small>{doctor.name} · {doctor.specialty}</small></span>
             <Badge tone={visit?.status ?? item.status}>{visit?.status ?? item.status}</Badge>
           </button>;
         })}
@@ -164,7 +164,7 @@ export default function ReceptionAppointmentsOverview({ date, appointments, queu
             const doctor = doctorName(item.doctorId, doctors);
             const visit = visitsByAppointment.get(item.id);
             return <tr key={item.id} className={selectedId === item.id ? 'is-selected' : ''}>
-              <td><div className="reception-person"><span className="reception-initial">BN</span><div><strong>BN #{shortId(item.patientId)}</strong><small>Lịch #{shortId(item.id)}</small></div></div></td>
+              <td><div className="reception-person"><span className="reception-initial">BN</span><div><strong>{item.patientName}</strong><small>Lịch #{shortId(item.id)}</small></div></div></td>
               <td><div className="reception-person"><span className="reception-initial doctor"><Stethoscope size={16} /></span><strong>{doctor.name}</strong></div></td>
               <td>{doctor.specialty}</td><td><span className="reception-no-wrap">{formatDate(item.appointmentDate)}</span></td>
               <td><span className="reception-no-wrap">{formatTime(item.startTime)}</span></td>
@@ -179,7 +179,7 @@ export default function ReceptionAppointmentsOverview({ date, appointments, queu
         <div><button type="button" disabled={currentPage === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Trước</button><span>Trang {currentPage}/{maxPage}</span>
           <button type="button" disabled={currentPage >= maxPage} onClick={() => setPage((value) => Math.min(maxPage, value + 1))}>Sau</button></div>
       </nav>}
-      <p className="reception-data-note">Tên bệnh nhân chưa có trong hợp đồng danh sách lịch hẹn; hiển thị mã định danh thực, không dùng dữ liệu mẫu. Số liệu chỉ thuộc ngày đang chọn.</p>
+      <p className="reception-data-note">Tên bệnh nhân được xác minh từ Patient Service theo danh sách lịch hẹn; số liệu chỉ thuộc ngày đang chọn.</p>
     </section>
   </div>;
 }

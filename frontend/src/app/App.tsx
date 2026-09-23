@@ -7,6 +7,7 @@ import Alert from '../components/Alert';
 import AppShell from '../layouts/AppShell';
 import AppointmentsPage from '../pages/AppointmentsPage';
 import DashboardPage from '../pages/DashboardPage';
+import DoctorEncounterWorkspace from '../pages/DoctorEncounterWorkspace';
 import DoctorProfilePage from '../pages/DoctorProfilePage';
 import DoctorsPage from '../pages/DoctorsPage';
 import InvoicesPage from '../pages/InvoicesPage';
@@ -16,9 +17,19 @@ import NotificationsPage from '../pages/NotificationsPage';
 import CatalogPage from '../pages/CatalogPage';
 import PatientsPage from '../pages/PatientsPage';
 import SettingsPage from '../pages/SettingsPage';
-import type { CurrentUser, DashboardResponse } from '../types/domain';
+import type { CurrentUser, DashboardResponse, ReceptionPatientResponse, ReceptionVisitResponse } from '../types/domain';
 import type { AppView } from '../types/view';
 import { canAccess, getPrimaryRole, normalizeRoles, type ClinicRole } from '../utils/roles';
+
+const ENCOUNTER_SESSION_KEY = 'clinic:active-encounter-appointment';
+
+function initialEncounterId(): string | null {
+  try {
+    return sessionStorage.getItem(ENCOUNTER_SESSION_KEY);
+  } catch {
+    return null;
+  }
+}
 
 export default function App() {
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -27,7 +38,19 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<AppView>('dashboard');
+  const [encounterAppointmentId, setEncounterAppointmentId] = useState<string | null>(initialEncounterId);
+  const [receptionBookingPatient, setReceptionBookingPatient] = useState<ReceptionPatientResponse | null>(null);
   const requestId = useRef(0);
+
+  function persistEncounter(id: string | null) {
+    setEncounterAppointmentId(id);
+    try {
+      if (id) sessionStorage.setItem(ENCOUNTER_SESSION_KEY, id);
+      else sessionStorage.removeItem(ENCOUNTER_SESSION_KEY);
+    } catch {
+      // Session persistence is optional; server state remains authoritative.
+    }
+  }
 
   async function loadSession() {
     const currentRequest = ++requestId.current;
@@ -35,6 +58,7 @@ export default function App() {
       setUser(null);
       setDashboard(null);
       setStaffDashboard(null);
+      setReceptionBookingPatient(null);
       setLoading(false);
       return;
     }
@@ -48,6 +72,8 @@ export default function App() {
       setStaffDashboard(null);
       const roles = normalizeRoles(currentUser.roles);
       const role = getPrimaryRole(roles);
+      if (role !== 'DOCTOR') persistEncounter(null);
+      if (role !== 'ADMIN' && role !== 'RECEPTIONIST') setReceptionBookingPatient(null);
       // The gateway /dashboard/me aggregates patient-only endpoints. Staff use
       // their own role-authorized appointment and queue controllers instead.
       if (role === 'PATIENT') {
@@ -82,6 +108,8 @@ export default function App() {
     setUser(null);
     setDashboard(null);
     setStaffDashboard(null);
+    persistEncounter(null);
+    setReceptionBookingPatient(null);
     setActiveView('dashboard');
     setError(null);
     try {
@@ -97,6 +125,8 @@ export default function App() {
       setUser(null);
       setDashboard(null);
       setStaffDashboard(null);
+      persistEncounter(null);
+      setReceptionBookingPatient(null);
       setError('Your session expired. Please sign in again.');
       setLoading(false);
     };
@@ -119,17 +149,48 @@ export default function App() {
     return <main className="auth-shell"><Alert tone="error">This account has no supported clinic role.</Alert><button type="button" onClick={() => void handleLogout()}>Sign out</button></main>;
   }
   const activeRole: ClinicRole = primaryRole;
-  // A multi-role account uses one consistent active role, not the union of
-  // patient and administrative navigation permissions.
   const allowedView = canAccess(activeView, [activeRole]) ? activeView : 'dashboard';
+
   function navigate(view: AppView) {
     if (canAccess(view, [activeRole])) setActiveView(view);
+  }
+
+  function openEncounter(visit: ReceptionVisitResponse) {
+    if (activeRole !== 'DOCTOR') return;
+    persistEncounter(visit.appointmentId);
+    setActiveView('encounter');
+  }
+
+  function bookReceptionPatient(patient: ReceptionPatientResponse) {
+    if (activeRole !== 'RECEPTIONIST' && activeRole !== 'ADMIN') return;
+    setReceptionBookingPatient(patient);
+    setActiveView('appointments');
+  }
+
+  function completeEncounterNavigation() {
+    persistEncounter(null);
   }
 
   return (
     <AppShell activeItemId={allowedView} user={user} loading={loading} primaryRole={primaryRole}
       onNavigate={navigate} onRefresh={() => void loadSession()} onLogout={() => void handleLogout()}>
-      {renderView(allowedView, user, dashboard, staffDashboard, error, loading, primaryRole, () => void loadSession(), navigate)}
+      {renderView(
+        allowedView,
+        user,
+        dashboard,
+        staffDashboard,
+        error,
+        loading,
+        primaryRole,
+        () => void loadSession(),
+        navigate,
+        encounterAppointmentId,
+        openEncounter,
+        completeEncounterNavigation,
+        receptionBookingPatient,
+        bookReceptionPatient,
+        () => setReceptionBookingPatient(null)
+      )}
     </AppShell>
   );
 }
@@ -147,14 +208,30 @@ function renderView(
   loading: boolean,
   role: ClinicRole,
   refresh: () => void,
-  navigate: (view: AppView) => void
+  navigate: (view: AppView) => void,
+  encounterAppointmentId: string | null,
+  openEncounter: (visit: ReceptionVisitResponse) => void,
+  clearEncounter: () => void,
+  receptionBookingPatient: ReceptionPatientResponse | null,
+  bookReceptionPatient: (patient: ReceptionPatientResponse) => void,
+  clearReceptionBookingPatient: () => void
 ) {
   switch (activeView) {
     case 'appointments':
       return <AppointmentsPage appointments={role === 'PATIENT' ? dashboard?.appointments : null}
-        role={role} error={role === 'PATIENT' ? error : null} loading={loading} onRefresh={refresh} />;
+        role={role} error={role === 'PATIENT' ? error : null} loading={loading} onRefresh={refresh}
+        onOpenEncounter={role === 'DOCTOR' ? openEncounter : undefined}
+        preselectedReceptionPatient={role === 'RECEPTIONIST' || role === 'ADMIN' ? receptionBookingPatient : null}
+        onReceptionPatientConsumed={clearReceptionBookingPatient} />;
+    case 'encounter':
+      return role === 'DOCTOR'
+        ? <DoctorEncounterWorkspace appointmentId={encounterAppointmentId}
+            onBack={() => navigate('appointments')}
+            onCompleted={() => { clearEncounter(); refresh(); navigate('appointments'); }} />
+        : <Alert tone="error">Không có quyền truy cập không gian khám.</Alert>;
     case 'patients':
-      return <PatientsPage role={role} user={user} />;
+      return <PatientsPage role={role} user={user}
+        onBookPatient={role === 'RECEPTIONIST' || role === 'ADMIN' ? bookReceptionPatient : undefined} />;
     case 'doctors':
       return <DoctorsPage role={role} onNavigate={navigate} />;
     case 'doctor-profile':
@@ -168,12 +245,13 @@ function renderView(
     case 'catalog':
       return <CatalogPage role={role} />;
     case 'notifications':
-      // A different signed-in user or primary role must never retain the previous inbox state.
-      return <NotificationsPage key={`${user.id ?? user.userId ?? user.email}:${role}`} role={role} />;
+      return <NotificationsPage key={(user.id ?? user.userId ?? user.email) + ':' + role} role={role} />;
     case 'settings':
       return <SettingsPage user={user} role={role} />;
     case 'dashboard':
     default:
-      return <DashboardPage dashboard={dashboard} staffDashboard={staffDashboard} user={user} role={role} error={error} loading={loading} onRefresh={refresh} onNavigate={navigate} />;
+      return <DashboardPage dashboard={dashboard} staffDashboard={staffDashboard} user={user} role={role}
+        error={error} loading={loading} onRefresh={refresh} onNavigate={navigate}
+        onOpenEncounter={role === 'DOCTOR' ? openEncounter : undefined} />;
   }
 }

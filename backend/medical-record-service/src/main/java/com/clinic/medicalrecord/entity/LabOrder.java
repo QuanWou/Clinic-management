@@ -20,8 +20,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -51,6 +51,19 @@ public class LabOrder {
 
     @Column(name = "performed_on")
     private LocalDate performedOn;
+
+    @Column(name = "idempotency_key", length = 100)
+    private String idempotencyKey;
+
+    @Column(name = "ordered_by_user_id")
+    private UUID orderedByUserId;
+
+    @Builder.Default
+    @Column(name = "duplicate_confirmed", nullable = false)
+    private boolean duplicateConfirmed = false;
+
+    @Column(name = "duplicate_reason", length = 500)
+    private String duplicateReason;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)

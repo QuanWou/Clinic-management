@@ -6,6 +6,7 @@ import com.clinic.appointment.client.PatientClient;
 import com.clinic.appointment.client.RecipientDirectoryClient;
 import com.clinic.appointment.dto.AppointmentResponse;
 import com.clinic.appointment.dto.CreateReceptionAppointmentRequest;
+import com.clinic.appointment.dto.ReceptionAppointmentResponse;
 import com.clinic.appointment.dto.RescheduleReceptionAppointmentRequest;
 import com.clinic.appointment.entity.Appointment;
 import com.clinic.appointment.entity.AppointmentStatus;
@@ -28,7 +29,10 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -103,12 +107,20 @@ public class ReceptionSchedulingService {
     }
 
     @Transactional(readOnly = true)
-    public List<AppointmentResponse> list(LocalDate date, UUID doctorId) {
+    public List<ReceptionAppointmentResponse> list(LocalDate date, UUID doctorId) {
         LocalDate target = date == null ? LocalDate.now(CLINIC_ZONE) : date;
         List<Appointment> result = doctorId == null
                 ? receptionAppointments.findByAppointmentDateOrderByStartTimeAsc(target)
                 : receptionAppointments.findByDoctorIdAndAppointmentDateOrderByStartTimeAsc(doctorId, target);
-        return result.stream().map(this::toResponse).toList();
+        List<UUID> patientIds = result.stream().map(Appointment::getPatientId).distinct().toList();
+        Map<UUID, com.clinic.appointment.client.InternalPatientSummaryResponse> patients = patientClient
+                .getInternalSummaries(patientIds).stream()
+                .collect(Collectors.toMap(com.clinic.appointment.client.InternalPatientSummaryResponse::patientId,
+                        Function.identity(), (left, right) -> left));
+        if (patients.size() != patientIds.size() || patientIds.stream().anyMatch(id -> !patients.containsKey(id))) {
+            throw new BusinessException(ErrorCode.CONFLICT, "Patient identities for receptionist appointments are incomplete");
+        }
+        return result.stream().map(appointment -> toReceptionResponse(appointment, patients.get(appointment.getPatientId()))).toList();
     }
 
     private Appointment lockedAppointment(UUID appointmentId) {
@@ -166,6 +178,18 @@ public class ReceptionSchedulingService {
     private AppointmentResponse toResponse(Appointment a) {
         return new AppointmentResponse(a.getId(), a.getPatientId(), a.getDoctorId(), a.getAppointmentDate(),
                 a.getStartTime(), a.getEndTime(), a.getStatus(), a.getReason(), a.getCreatedAt(), a.getUpdatedAt());
+    }
+
+    private ReceptionAppointmentResponse toReceptionResponse(
+            Appointment appointment,
+            com.clinic.appointment.client.InternalPatientSummaryResponse patient) {
+        if (patient == null || patient.fullName() == null || patient.fullName().isBlank()) {
+            throw new BusinessException(ErrorCode.CONFLICT, "Patient display name is unavailable for receptionist appointment");
+        }
+        return new ReceptionAppointmentResponse(
+                appointment.getId(), appointment.getPatientId(), patient.fullName().trim(), appointment.getDoctorId(),
+                appointment.getAppointmentDate(), appointment.getStartTime(), appointment.getEndTime(),
+                appointment.getStatus(), appointment.getReason(), appointment.getCreatedAt(), appointment.getUpdatedAt());
     }
 
     private void recordNotification(String eventType, Appointment appointment) {
