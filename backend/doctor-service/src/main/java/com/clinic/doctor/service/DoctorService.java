@@ -6,18 +6,15 @@ import com.clinic.doctor.dto.DoctorAvailabilityResponse;
 import com.clinic.doctor.dto.DoctorProfileResponse;
 import com.clinic.doctor.dto.DoctorScheduleRequest;
 import com.clinic.doctor.dto.ScheduleResponse;
-import com.clinic.doctor.dto.UpdateDoctorRequest;
+import com.clinic.doctor.dto.UpdateDoctorProfileRequest;
 import com.clinic.doctor.dto.UpdateDoctorSchedulesRequest;
 import com.clinic.doctor.entity.Doctor;
 import com.clinic.doctor.entity.Schedule;
-import com.clinic.doctor.entity.Specialty;
 import com.clinic.doctor.repository.DoctorRepository;
 import com.clinic.doctor.repository.ScheduleRepository;
-import com.clinic.doctor.repository.SpecialtyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -28,17 +25,22 @@ import java.util.UUID;
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
-    private final SpecialtyRepository specialtyRepository;
     private final ScheduleRepository scheduleRepository;
 
     public DoctorService(
             DoctorRepository doctorRepository,
-            SpecialtyRepository specialtyRepository,
             ScheduleRepository scheduleRepository
     ) {
         this.doctorRepository = doctorRepository;
-        this.specialtyRepository = specialtyRepository;
         this.scheduleRepository = scheduleRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<DoctorProfileResponse> listDoctors() {
+        return doctorRepository.findAll().stream()
+                .filter(Doctor::isActive)
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +57,7 @@ public class DoctorService {
                 : doctorRepository.findBySpecialtyId(specialtyId);
 
         return doctors.stream()
+                .filter(Doctor::isActive)
                 .sorted(Comparator
                         .comparing((Doctor doctor) -> doctor.getSpecialty().getName(), String.CASE_INSENSITIVE_ORDER)
                         .thenComparing(Doctor::getId))
@@ -68,20 +71,13 @@ public class DoctorService {
     }
 
     @Transactional
-    public DoctorProfileResponse updateProfile(UUID userId, UpdateDoctorRequest request) {
-        Specialty specialty = specialtyRepository.findById(request.specialtyId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Specialty not found"));
-
+    public DoctorProfileResponse updateProfile(UUID userId, UpdateDoctorProfileRequest request) {
         Doctor doctor = doctorRepository.findByUserId(userId)
-                .orElseGet(() -> Doctor.builder()
-                        .userId(userId)
-                        .consultationFee(BigDecimal.ZERO)
-                        .build());
-
-        doctor.setSpecialty(specialty);
+                .orElseThrow(() -> new BusinessException(
+                        ErrorCode.RESOURCE_NOT_FOUND,
+                        "Doctor profile must be created by an administrator"
+                ));
         doctor.setBiography(normalizeNullable(request.biography()));
-        doctor.setConsultationFee(request.consultationFee());
-
         return toResponse(doctorRepository.save(doctor));
     }
 
@@ -126,6 +122,9 @@ public class DoctorService {
     public DoctorAvailabilityResponse getAvailability(UUID doctorId, Integer dayOfWeek, LocalTime startTime, LocalTime endTime) {
         validateTimeRange(dayOfWeek, startTime, endTime);
         Doctor doctor = findDoctor(doctorId);
+        if (!doctor.isActive()) {
+            return new DoctorAvailabilityResponse(doctor.getId(), false, dayOfWeek, startTime, endTime);
+        }
 
         Schedule matchingSchedule = scheduleRepository.findByDoctorIdOrderByDayOfWeekAscStartTimeAsc(doctor.getId())
                 .stream()
@@ -216,7 +215,8 @@ public class DoctorService {
                 doctor.getSpecialty() != null ? doctor.getSpecialty().getId() : null,
                 doctor.getSpecialty() != null ? doctor.getSpecialty().getName() : null,
                 doctor.getBiography(),
-                doctor.getConsultationFee()
+                doctor.getConsultationFee(),
+                doctor.getDoctorCode()
         );
     }
 

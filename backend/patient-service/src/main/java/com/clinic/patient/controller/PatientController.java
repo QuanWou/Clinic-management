@@ -6,12 +6,14 @@ import com.clinic.patient.dto.UpdatePatientRequest;
 import com.clinic.patient.security.CurrentUserPrincipal;
 import com.clinic.patient.service.PatientService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/patients")
@@ -21,6 +23,12 @@ public class PatientController {
 
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_RECEPTIONIST')")
+    public ApiResponse<List<PatientProfileResponse>> listPatients() {
+        return ApiResponse.success("Patients retrieved successfully", patientService.listPatients());
     }
 
     @GetMapping("/profile")

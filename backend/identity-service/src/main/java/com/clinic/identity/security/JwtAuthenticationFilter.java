@@ -1,6 +1,7 @@
 package com.clinic.identity.security;
 
 import com.clinic.identity.repository.UserRepository;
+import com.clinic.identity.entity.UserStatus;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,14 +40,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        SecurityContextHolder.clearContext();
         String token = authHeader.substring(7);
 
-        if (!jwtService.isTokenValid(token)) {
+        if (!jwtService.isAccessTokenValid(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        UUID userId = jwtService.extractUserId(token);
+        UUID userId;
+        try {
+            userId = jwtService.extractUserId(token);
+        } catch (RuntimeException invalidSubject) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         var userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
@@ -55,6 +63,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         var user = userOpt.get();
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         Set<String> roleNames = user.getRoles().stream()
                 .map(role -> role.getCode().name())

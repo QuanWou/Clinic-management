@@ -1,160 +1,257 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getCurrentUser, logout } from '../api/auth';
-import { ApiError } from '../api/client';
-import { getPatientProfile } from '../api/clinic';
 import { getDashboard } from '../api/dashboard';
+import { loadStaffDashboard, type StaffDashboard } from '../api/staffDashboard';
 import { getAccessToken } from '../api/token';
-import { appConfig } from '../config/app.config';
+import Alert from '../components/Alert';
 import AppShell from '../layouts/AppShell';
 import AppointmentsPage from '../pages/AppointmentsPage';
 import DashboardPage from '../pages/DashboardPage';
+import DoctorEncounterWorkspace from '../pages/DoctorEncounterWorkspace';
 import DoctorProfilePage from '../pages/DoctorProfilePage';
 import DoctorsPage from '../pages/DoctorsPage';
 import InvoicesPage from '../pages/InvoicesPage';
 import LoginPage from '../pages/LoginPage';
 import MedicalRecordsPage from '../pages/MedicalRecordsPage';
+import NotificationsPage from '../pages/NotificationsPage';
+import CatalogPage from '../pages/CatalogPage';
 import PatientsPage from '../pages/PatientsPage';
-import PatientOnboardingPage from '../pages/PatientOnboardingPage';
 import SettingsPage from '../pages/SettingsPage';
-import type { CurrentUser, DashboardResponse, PatientProfileResponse } from '../types/domain';
+import type { CurrentUser, DashboardResponse, ReceptionPatientResponse, ReceptionVisitResponse } from '../types/domain';
 import type { AppView } from '../types/view';
-import { getPrimaryRole, normalizeRoles } from '../utils/roles';
+import { canAccess, getPrimaryRole, normalizeRoles, type ClinicRole } from '../utils/roles';
+
+const ENCOUNTER_SESSION_KEY = 'clinic:active-encounter-appointment';
+
+function initialEncounterId(): string | null {
+  try {
+    return sessionStorage.getItem(ENCOUNTER_SESSION_KEY);
+  } catch {
+    return null;
+  }
+}
 
 export default function App() {
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
-  const [patientProfile, setPatientProfile] = useState<PatientProfileResponse | null | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
+  const [staffDashboard, setStaffDashboard] = useState<StaffDashboard | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<AppView>('dashboard');
+  const [encounterAppointmentId, setEncounterAppointmentId] = useState<string | null>(initialEncounterId);
+  const [receptionBookingPatient, setReceptionBookingPatient] = useState<ReceptionPatientResponse | null>(null);
+  const requestId = useRef(0);
+
+  function persistEncounter(id: string | null) {
+    setEncounterAppointmentId(id);
+    try {
+      if (id) sessionStorage.setItem(ENCOUNTER_SESSION_KEY, id);
+      else sessionStorage.removeItem(ENCOUNTER_SESSION_KEY);
+    } catch {
+      // Session persistence is optional; server state remains authoritative.
+    }
+  }
 
   async function loadSession() {
+    const currentRequest = ++requestId.current;
     if (!getAccessToken()) {
       setUser(null);
       setDashboard(null);
-      setPatientProfile(undefined);
+      setStaffDashboard(null);
+      setReceptionBookingPatient(null);
+      setLoading(false);
       return;
     }
-
     setLoading(true);
     setError(null);
-    setDashboard(null);
-    setPatientProfile(undefined);
-
     try {
       const currentUser = await getCurrentUser();
+      if (currentRequest !== requestId.current) return;
       setUser(currentUser);
-      const warnings: string[] = [];
+      setDashboard(null);
+      setStaffDashboard(null);
       const roles = normalizeRoles(currentUser.roles);
-
-      if (roles.includes('ROLE_PATIENT')) {
+      const role = getPrimaryRole(roles);
+      if (role !== 'DOCTOR') persistEncounter(null);
+      if (role !== 'ADMIN' && role !== 'RECEPTIONIST') setReceptionBookingPatient(null);
+      // The gateway /dashboard/me aggregates patient-only endpoints. Staff use
+      // their own role-authorized appointment and queue controllers instead.
+      if (role === 'PATIENT') {
         try {
-          setPatientProfile(await getPatientProfile());
-        } catch (err) {
-          if (err instanceof ApiError && err.status === 404) {
-            setPatientProfile(null);
-          } else {
-            const detail = err instanceof Error ? err.message : 'Unknown error';
-            warnings.push(`Unable to load patient profile: ${detail}`);
-          }
+          const result = await getDashboard();
+          if (currentRequest === requestId.current) setDashboard(result);
+        } catch (cause) {
+          if (currentRequest === requestId.current) setError(errorMessage(cause));
+        }
+      } else if (role) {
+        try {
+          const result = await loadStaffDashboard(role);
+          if (currentRequest === requestId.current) setStaffDashboard(result);
+        } catch (cause) {
+          if (currentRequest === requestId.current) setError(errorMessage(cause));
         }
       }
-
-      try {
-        const dashboardResponse = await getDashboard();
-        setDashboard(dashboardResponse);
-      } catch (err) {
-        const detail = err instanceof Error ? `: ${err.message}` : '';
-        warnings.push(`${appConfig.dashboardLoadError}${detail}`);
+    } catch (cause) {
+      if (currentRequest === requestId.current) {
+        setUser(null);
+        setDashboard(null);
+        setStaffDashboard(null);
+        setError(errorMessage(cause));
       }
-
-      setError(warnings.length > 0 ? warnings.join(' ') : null);
-    } catch (err) {
-      setUser(null);
-      setDashboard(null);
-      setPatientProfile(undefined);
-      setError(err instanceof Error ? err.message : appConfig.dashboardLoadError);
     } finally {
-      setLoading(false);
+      if (currentRequest === requestId.current) setLoading(false);
     }
   }
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    ++requestId.current;
     setUser(null);
     setDashboard(null);
-    setPatientProfile(undefined);
+    setStaffDashboard(null);
+    persistEncounter(null);
+    setReceptionBookingPatient(null);
+    setActiveView('dashboard');
+    setError(null);
+    try {
+      await logout();
+    } catch {
+      setError('Đã đăng xuất trên thiết bị. Chưa thể xác nhận kết thúc phiên.');
+    }
   }
 
   useEffect(() => {
+    const onUnauthorized = () => {
+      ++requestId.current;
+      setUser(null);
+      setDashboard(null);
+      setStaffDashboard(null);
+      persistEncounter(null);
+      setReceptionBookingPatient(null);
+      setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+      setLoading(false);
+    };
+    window.addEventListener('clinic:unauthorized', onUnauthorized);
     void loadSession();
+    return () => {
+      ++requestId.current;
+      window.removeEventListener('clinic:unauthorized', onUnauthorized);
+    };
   }, []);
 
+  if (loading && !user) return <main className="auth-shell" role="status">Đang kiểm tra phiên đăng nhập...</main>;
   if (!getAccessToken() || !user) {
-    return <LoginPage onLogin={loadSession} />;
+    return <LoginPage onLogin={loadSession} sessionError={error} />;
   }
 
   const roles = normalizeRoles(user.roles);
   const primaryRole = getPrimaryRole(roles);
+  if (!primaryRole) {
+    return <main className="auth-shell"><Alert tone="error">Tài khoản chưa có vai trò phòng khám được hỗ trợ.</Alert><button type="button" onClick={() => void handleLogout()}>Đăng xuất</button></main>;
+  }
+  const activeRole: ClinicRole = primaryRole;
+  const allowedView = canAccess(activeView, [activeRole]) ? activeView : 'dashboard';
 
-  if (roles.includes('ROLE_PATIENT') && patientProfile === null) {
-    return (
-      <PatientOnboardingPage
-        user={user}
-        onComplete={setPatientProfile}
-        onLogout={handleLogout}
-      />
-    );
+  function navigate(view: AppView) {
+    if (canAccess(view, [activeRole])) setActiveView(view);
+  }
+
+  function openEncounter(visit: ReceptionVisitResponse) {
+    if (activeRole !== 'DOCTOR') return;
+    persistEncounter(visit.appointmentId);
+    setActiveView('encounter');
+  }
+
+  function bookReceptionPatient(patient: ReceptionPatientResponse) {
+    if (activeRole !== 'RECEPTIONIST' && activeRole !== 'ADMIN') return;
+    setReceptionBookingPatient(patient);
+    setActiveView('appointments');
+  }
+
+  function completeEncounterNavigation() {
+    persistEncounter(null);
   }
 
   return (
-    <AppShell
-      activeItemId={activeView}
-      user={user}
-      loading={loading}
-      primaryRole={primaryRole}
-      onNavigate={setActiveView}
-      onRefresh={loadSession}
-      onLogout={handleLogout}
-    >
-      {renderView(activeView, user, dashboard, patientProfile, error, setPatientProfile)}
+    <AppShell activeItemId={allowedView} user={user} loading={loading} primaryRole={primaryRole}
+      onNavigate={navigate} onRefresh={() => void loadSession()} onLogout={() => void handleLogout()}>
+      {renderView(
+        allowedView,
+        user,
+        dashboard,
+        staffDashboard,
+        error,
+        loading,
+        primaryRole,
+        () => void loadSession(),
+        navigate,
+        encounterAppointmentId,
+        openEncounter,
+        completeEncounterNavigation,
+        receptionBookingPatient,
+        bookReceptionPatient,
+        () => setReceptionBookingPatient(null)
+      )}
     </AppShell>
   );
+}
+
+function errorMessage(cause: unknown): string {
+  return cause instanceof Error ? cause.message : 'Không thể tải dữ liệu.';
 }
 
 function renderView(
   activeView: AppView,
   user: CurrentUser,
   dashboard: DashboardResponse | null,
-  patientProfile: PatientProfileResponse | null | undefined,
+  staffDashboard: StaffDashboard | null,
   error: string | null,
-  onPatientProfileSaved: (profile: PatientProfileResponse) => void
+  loading: boolean,
+  role: ClinicRole,
+  refresh: () => void,
+  navigate: (view: AppView) => void,
+  encounterAppointmentId: string | null,
+  openEncounter: (visit: ReceptionVisitResponse) => void,
+  clearEncounter: () => void,
+  receptionBookingPatient: ReceptionPatientResponse | null,
+  bookReceptionPatient: (patient: ReceptionPatientResponse) => void,
+  clearReceptionBookingPatient: () => void
 ) {
   switch (activeView) {
     case 'appointments':
-      return <AppointmentsPage appointments={dashboard?.appointments} />;
+      return <AppointmentsPage appointments={role === 'PATIENT' ? dashboard?.appointments : null}
+        role={role} error={role === 'PATIENT' ? error : null} loading={loading} onRefresh={refresh}
+        onOpenEncounter={role === 'DOCTOR' ? openEncounter : undefined}
+        preselectedReceptionPatient={role === 'RECEPTIONIST' || role === 'ADMIN' ? receptionBookingPatient : null}
+        onReceptionPatientConsumed={clearReceptionBookingPatient} />;
+    case 'encounter':
+      return role === 'DOCTOR'
+        ? <DoctorEncounterWorkspace appointmentId={encounterAppointmentId}
+            onBack={() => navigate('appointments')}
+            onCompleted={() => { clearEncounter(); refresh(); navigate('appointments'); }} />
+        : <Alert tone="error">Không có quyền truy cập không gian khám.</Alert>;
     case 'patients':
-      return <PatientsPage />;
+      return <PatientsPage role={role} user={user}
+        onBookPatient={role === 'RECEPTIONIST' || role === 'ADMIN' ? bookReceptionPatient : undefined} />;
     case 'doctors':
-      return <DoctorsPage />;
+      return <DoctorsPage role={role} onNavigate={navigate} />;
     case 'doctor-profile':
-      return normalizeRoles(user.roles).includes('ROLE_DOCTOR')
-        ? <DoctorProfilePage user={user} />
-        : <DashboardPage dashboard={dashboard} error="Doctor profile access requires the doctor role." />;
+      return <DoctorProfilePage user={user} />;
     case 'medical-records':
-      return <MedicalRecordsPage records={dashboard?.medicalRecords} />;
+      return <MedicalRecordsPage records={role === 'PATIENT' ? dashboard?.medicalRecords : null}
+        role={role} loading={loading} error={role === 'PATIENT' ? error : null} onRefresh={refresh} />;
     case 'invoices':
-      return <InvoicesPage invoices={dashboard?.invoices} />;
+      return <InvoicesPage invoices={role === 'PATIENT' ? dashboard?.invoices : null}
+        role={role} loading={loading} error={role === 'PATIENT' ? error : null} onRefresh={refresh} />;
+    case 'catalog':
+      return <CatalogPage role={role} />;
+    case 'notifications':
+      return <NotificationsPage key={(user.id ?? user.userId ?? user.email) + ':' + role} role={role} />;
     case 'settings':
-      return (
-        <SettingsPage
-          user={user}
-          patientProfile={patientProfile}
-          onPatientProfileSaved={onPatientProfileSaved}
-        />
-      );
+      return <SettingsPage user={user} role={role} />;
     case 'dashboard':
     default:
-      return <DashboardPage dashboard={dashboard} error={error} />;
+      return <DashboardPage dashboard={dashboard} staffDashboard={staffDashboard} user={user} role={role}
+        error={error} loading={loading} onRefresh={refresh} onNavigate={navigate}
+        onOpenEncounter={role === 'DOCTOR' ? openEncounter : undefined} />;
   }
 }

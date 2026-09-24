@@ -46,12 +46,45 @@
 - `PATCH /api/appointments/{id}/cancel`: Hủy lịch hẹn.
 - `PATCH /api/appointments/{id}/confirm`: Xác nhận lịch hẹn.
 - `PATCH /api/appointments/{id}/complete`: Hoàn tất lịch hẹn.
+- `POST /api/appointments/{id}/performed-services`: Ghi nhận dịch vụ catalog đã thực hiện (`serviceId`, `quantity`, `serviceDate`).
+- `DELETE /api/appointments/{id}/performed-services/{itemId}`: Xóa dịch vụ trước khi chốt.
+- `POST /api/appointments/{id}/performed-services/finalize`: Chốt danh sách dịch vụ bất biến để xuất hóa đơn; appointment phải `COMPLETED` và có ít nhất một dịch vụ.
+- `GET /api/appointments/{id}/performed-services`: Lễ tân/admin đọc hợp đồng billing gồm `finalized`, `revision` và danh sách item.
+
+#### Appointment authorization and booking integrity (Security & Booking Integrity P0)
+
+All appointment endpoints require an access JWT with a `token_type=access` claim and canonical roles (`ROLE_PATIENT`, `ROLE_DOCTOR`, `ROLE_RECEPTIONIST`, `ROLE_ADMIN`). A refresh JWT (`token_type=refresh`) cannot authenticate these APIs. The appointment service checks object ownership even when the user is authenticated.
+
+| Endpoint | Allowed caller | Object-level rule |
+| --- | --- | --- |
+| `POST /api/appointments` | Patient | Patient profile `userId` must equal JWT subject; doctor must have a matching work schedule; database rejects all overlapping non-cancelled bookings. |
+| `GET /api/appointments/my` | Patient (profile endpoint authorization) | Only records for the authenticated patient's profile. |
+| `GET /api/appointments/{id}` | Patient / Doctor / Receptionist / Admin | Patient owns booking; doctor must be the assigned doctor (`doctor.id = appointment.doctorId` and `doctor.userId = JWT subject`); receptionist/admin may view. |
+| `PATCH /api/appointments/{id}/cancel` | Patient / Receptionist / Admin | Patient owns booking; receptionist/admin may cancel bookings. Only PENDING/CONFIRMED may be cancelled. |
+| `PATCH /api/appointments/{id}/confirm` | Assigned doctor / Receptionist / Admin | Only PENDING can become CONFIRMED. |
+| `PATCH /api/appointments/{id}/complete` | Assigned doctor / Admin | Only CONFIRMED can become COMPLETED; receptionist cannot complete. |
+| `GET /api/appointments/doctors/{doctorId}/availability?date=YYYY-MM-DD&startTime=HH:mm&endTime=HH:mm` | Authenticated | Returns `data: { doctorId, date, startTime, endTime, available }`. Checks weekly doctor schedule **and** existing non-cancelled appointments. This is a read-time snapshot, not a reservation; `POST` remains authoritative. |
+
+Invalid date/time values yield HTTP 400 `VALIDATION_ERROR`; forbidden access yields 403 `FORBIDDEN`; overlapping slots or invalid state transitions yield 409 `CONFLICT`. Adjacent slots are valid. CANCELLED bookings release their slot; COMPLETED bookings retain their historical interval. A booking must start in the future according to the appointment service's local clock.
+
+PostgreSQL migration `appointment/V2__prevent_overlapping_appointments.sql` requires the `btree_gist` extension and adds a partial GiST exclusion constraint; a pre-existing invalid or overlapping active booking must be resolved before applying the migration. Do not attempt to work around conflicts by disabling the constraint. `GET /api/doctors/{doctorId}/availability` remains **weekly working-schedule availability only** and must not be interpreted as a free booking slot.
+
+Identity issues access JWTs with `token_type=access`, refresh JWTs with `token_type=refresh` and distinct JWT IDs. Refresh rotation locks the stored token row before revocation; an already revoked, mismatched-user, expired or wrong-purpose token is rejected. Existing tokens without a `token_type` claim will need to be reissued on deployment.
+
+`POST /api/auth/logout` also requires a valid refresh-purpose JWT matching the stored token's user; an access JWT cannot be substituted even if a row for it exists. Logout revokes the refresh token, **not** already issued access tokens. The identity `/api/users/me` endpoint is the authoritative source of current account status and roles: its own filter reads both from the database and rejects locked/inactive accounts.
+
+**Immediate account/role changes in appointment-service:** each authenticated appointment request now calls identity's `GET /api/users/me` with the user's bearer access token, verifies the returned subject is identical, account is `ACTIVE`, and returned roles exactly match the signed token roles. Mismatch, HTTP 401/403, invalid response or identity outage fail closed (no authentication, HTTP 401 on protected endpoints). This deliberately requires a new login after role changes and adds a synchronous identity dependency (~1.5-second connect/read timeouts). Configure `SERVICES_IDENTITY_URL=http://identity-service:8083` (default) in Docker, or `SERVICES_IDENTITY_URL=http://localhost:8083` when running appointment-service on the host. Do not enable a cache for positive authorization results without explicit revocation invalidation.
+
+**Unresolved cross-service security:** patient, medical-record and billing bearer filters still accept any signature-valid JWT and use potentially stale role claims; notification also requires a separate review. They may continue to authorize an old access token until its current 60-minute expiration, and some may accept a refresh JWT as a bearer token. Gateway routing does not currently impose central authorization and container services may be accessed directly. Roll out the same fail-closed identity validation or a shared token-introspection/revocation facility to each service with its task owner; test all service-to-service calls and failure behavior before changing the global token contract, shortening expiry or claiming immediate system-wide revocation.
 
 ### Medical Record Service
 - `POST /api/medical-records`: Tạo hồ sơ bệnh án cho appointment đã hoàn tất.
 - `GET /api/medical-records/my`: Bệnh nhân xem hồ sơ bệnh án của mình.
 - `GET /api/medical-records/patients/{patientId}`: Bác sĩ/lễ tân/admin xem hồ sơ theo bệnh nhân.
 - `GET /api/medical-records/{id}`: Xem chi tiết hồ sơ bệnh án theo quyền truy cập.
+- `POST /api/medical-records/{recordId}/lab-orders`: Bác sĩ phụ trách tạo chỉ định lab với `serviceId` catalog và `performedOn` rõ ràng.
+- `GET /api/medical-records/appointments/{appointmentId}/billable-items`: Lễ tân/admin đọc metadata lab dành cho billing (không trả dữ liệu kết quả lâm sàng).
+- `POST /api/medical-records/appointments/{appointmentId}/billable-items/finalize`: Chốt danh sách lab; mọi order hiện có phải `RELEASED` và có catalog mapping. Sau khi chốt, không thể thêm hay chuyển trạng thái lab order.
 
 ### Billing Service
 - `POST /api/invoices`: Tạo hóa đơn cho appointment đã hoàn tất.
@@ -59,7 +92,10 @@
 - `GET /api/invoices/patients/{patientId}`: Lễ tân/admin xem hóa đơn theo bệnh nhân.
 - `GET /api/invoices/appointments/{appointmentId}`: Xem hóa đơn theo appointment.
 - `GET /api/invoices/{id}`: Xem chi tiết hóa đơn theo quyền truy cập.
-- `PATCH /api/invoices/{id}/pay`: Đánh dấu hóa đơn đã thanh toán.
+- `POST /api/invoices/{id}/cash-payment`: Lễ tân/admin xác nhận khoản tiền mặt đã thực nhận với mã biên lai duy nhất.
+- `GET /api/invoices/{id}/transactions`: Lễ tân/admin xem các giao dịch đã ghi nhận.
+
+`POST /api/invoices` chỉ tạo hóa đơn từ hai nguồn đã chốt: performed-services của appointment và billable-items của lab. Billing kiểm tra revision hai lần, định giá từng `serviceId` theo ngày thực hiện, từ chối dữ liệu pending/thiếu/đổi giữa chừng, và lưu snapshot giá bất biến.
 
 ### Notification Service
 - `POST /api/notifications`: Tạo và gửi thông báo.

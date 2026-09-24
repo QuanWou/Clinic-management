@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record NotificationRabbitProperties(
         String exchange,
         String queue,
-        String routingKey
-) {
-}
+        String routingKey,
+        String eventQueue,
+        String eventRoutingKey
+) {}

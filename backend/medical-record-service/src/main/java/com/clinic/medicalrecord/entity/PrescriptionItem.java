@@ -34,8 +34,17 @@ public class PrescriptionItem {
     @JoinColumn(name = "prescription_id", nullable = false)
     private Prescription prescription;
 
+    @Column(name = "medicine_id")
+    private UUID medicineId;
+
+    @Column(name = "medicine_code", length = 100)
+    private String medicineCode;
+
     @Column(name = "medicine_name", nullable = false, length = 255)
     private String medicineName;
+
+    @Column(name = "medicine_unit", length = 100)
+    private String medicineUnit;
 
     @Column(name = "dosage", nullable = false, length = 100)
     private String dosage;
@@ -45,6 +54,12 @@ public class PrescriptionItem {
 
     @Column(name = "duration", nullable = false, length = 100)
     private String duration;
+
+    @Column(name = "route", length = 100)
+    private String route;
+
+    @Column(name = "quantity")
+    private Integer quantity;
 
     @Column(name = "note", length = 500)
     private String note;

@@ -1,0 +1,49 @@
+/* Appointment details: page-scoped layout shared by the admin and reception desks. */
+.reception-appointment-detail { min-width: 0; overflow: hidden; }
+.reception-appointment-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.25rem; padding-bottom: 1.2rem; border-bottom: 1px solid #e6edf0; }
+.reception-appointment-heading { display: grid; gap: .35rem; min-width: 0; }
+.reception-appointment-heading h3 { margin: 0; color: #1c3946; font-size: clamp(1.2rem, 1.7vw, 1.45rem); letter-spacing: -.025em; }
+.reception-appointment-id { display: inline-flex; align-items: center; gap: .35rem; flex-wrap: wrap; min-width: 0; color: #647d89; font-size: .75rem; }
+.reception-appointment-id code { color: #294957; font: inherit; font-weight: 700; overflow-wrap: anywhere; }
+.reception-appointment-header-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: .7rem; flex: none; }
+.reception-appointment-close { display: inline-flex; align-items: center; gap: .4rem; min-height: 38px; font-size: .78rem; }
+.reception-appointment-schedule { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1.1rem; }
+.reception-appointment-schedule-item { display: flex; gap: .85rem; align-items: center; min-width: 0; background: #eef8f4; border: 1px solid #dbeee5; border-radius: 13px; padding: 1rem; }
+.reception-appointment-icon { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 11px; color: #087c66; background: #d9f1e7; }
+.reception-appointment-schedule-item > div { display: grid; min-width: 0; gap: .35rem; }
+.reception-appointment-schedule-item > div > span { color: #567468; font-size: .74rem; }
+.reception-appointment-schedule-item strong { color: #153c39; font-size: clamp(.95rem, 1.4vw, 1.16rem); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.reception-appointment-people { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-top: .85rem; }
+.reception-appointment-person { min-width: 0; border: 1px solid #e5edf0; border-radius: 13px; padding: 1rem; background: #fff; }
+.reception-appointment-person h4, .reception-appointment-reason h4, .reception-appointment-visit h4 { display: flex; gap: .5rem; align-items: center; margin: 0 0 .7rem; font-size: .78rem; font-weight: 800; color: #176e60; }
+.reception-appointment-person-name { display: block; margin-bottom: .85rem; font-size: 1rem; color: #193845; overflow-wrap: anywhere; }
+.reception-appointment-person dl, .reception-appointment-visit dl { display: grid; gap: .7rem; margin: 0; }
+.reception-appointment-person dl > div, .reception-appointment-visit dl > div { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .25rem 1rem; min-width: 0; }
+.reception-appointment-person dt, .reception-appointment-visit dt { display: inline-flex; align-items: center; gap: .35rem; color: #6f8390; font-size: .73rem; }
+.reception-appointment-person dd, .reception-appointment-visit dd { margin: 0; color: #29434e; font-size: .79rem; font-weight: 750; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.reception-appointment-unavailable { margin: .75rem 0 0; color: #8c6470; font-size: .73rem; line-height: 1.5; overflow-wrap: anywhere; }
+.reception-appointment-reason { margin-top: .85rem; padding: 1rem; border-radius: 13px; border: 1px solid #e2ecea; background: #f8fbfa; }
+.reception-appointment-reason p { margin: 0; color: #2c4854; font-size: .86rem; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+.reception-appointment-meta { display: flex; flex-wrap: wrap; gap: .5rem 1.8rem; margin-top: .85rem; color: #6b7f8b; font-size: .75rem; line-height: 1.5; }
+.reception-appointment-meta strong { color: #2c4653; }
+.reception-appointment-visit { margin-top: 1rem; padding: 1rem; background: #f1f8fc; border: 1px solid #dcecf5; border-radius: 13px; }
+.reception-appointment-visit > div:first-child { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .6rem; }
+.reception-appointment-visit h4 { margin: 0 0 .8rem; color: #276a97; }
+.reception-appointment-visit p { margin: .85rem 0 0; color: #456c83; font-size: .76rem; line-height: 1.55; }
+.reception-appointment-footer { display: grid; gap: .85rem; margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid #e6edf0; }
+.reception-appointment-action-area > strong { display: block; margin-bottom: .8rem; color: #3a5662; font-size: .78rem; }
+.reception-appointment-buttons { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.reception-appointment-buttons button { min-height: 41px; font-size: .79rem; }
+.reception-appointment-buttons .danger { margin-left: auto; }
+.reception-appointment-footer .reception-desk-cancel { margin-top: 0; }
+@media (max-width: 760px) {
+  .reception-appointment-header { flex-direction: column; gap: .8rem; }
+  .reception-appointment-header-actions { width: 100%; justify-content: space-between; }
+  .reception-appointment-people { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .reception-appointment-schedule { grid-template-columns: minmax(0, 1fr); }
+  .reception-appointment-buttons .danger { margin-left: 0; }
+  .reception-appointment-buttons button { flex: 1 1 auto; }
+  .reception-appointment-id { font-size: .69rem; }
+}

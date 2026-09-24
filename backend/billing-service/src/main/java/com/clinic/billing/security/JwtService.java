@@ -32,7 +32,8 @@ public class JwtService {
                 .subject(userId.toString())
                 .claims(Map.of(
                         "email", email,
-                        "roles", roles
+                        "roles", roles,
+                        "token_type", "access"
                 ))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))
@@ -52,6 +53,17 @@ public class JwtService {
         try {
             Claims claims = extractAllClaims(token);
             return claims.getExpiration().after(new Date());
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    public boolean isAccessTokenValid(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            UUID.fromString(claims.getSubject());
+            return claims.getExpiration().after(new Date())
+                    && "access".equals(claims.get("token_type", String.class));
         } catch (Exception ex) {
             return false;
         }

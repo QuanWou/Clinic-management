@@ -1,0 +1,145 @@
+/* Receptionist-only workspace accents; Admin keeps its own appointments layout. */
+.receptionist-workspace { gap: 1.15rem; }
+.receptionist-workspace .reception-metrics { display: none; } /* The desk KPI cards replace these duplicate counters for reception only. */
+.receptionist-workspace > *, .reception-desk > *, .reception-desk-priorities > * { min-width: 0; }
+.reception-desk { display: grid; align-content: start; gap: 1rem; min-width: 0; }
+.reception-desk-hero { position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; gap: 1.3rem; padding: clamp(1.35rem, 2.6vw, 2rem); border-radius: 20px; background: linear-gradient(112deg, #103747, #125f62 62%, #179678); color: #fff; }
+.reception-desk-hero::after { content: ''; position: absolute; right: -65px; top: -145px; width: 330px; height: 330px; border-radius: 50%; border: 1px solid #ffffff30; box-shadow: 0 0 0 60px #ffffff08, 0 0 0 120px #ffffff06; pointer-events: none; }
+.reception-desk-intro, .reception-desk-new { position: relative; z-index: 1; }.reception-desk-intro { min-width: 0; max-width: 710px; }
+.reception-desk-kicker { display: inline-flex; align-items: center; gap: .45rem; color: #c3fae6; font-size: .68rem; font-weight: 850; letter-spacing: .09em; }
+.reception-desk-hero h3 { color: #fff; margin: .65rem 0 .5rem; letter-spacing: -.035em; font-size: clamp(1.45rem, 2.6vw, 2.1rem); line-height: 1.2; overflow-wrap: anywhere; }
+.reception-desk-hero p { max-width: 610px; margin: 0; color: #d5ece6; font-size: .83rem; line-height: 1.65; }
+.reception-desk-tags { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1.1rem; }
+.reception-desk-tags span { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid #ffffff30; background: #ffffff19; color: #fff; border-radius: 999px; padding: .43rem .72rem; font-size: .72rem; font-weight: 750; }
+.reception-desk-new { display: inline-flex; align-items: center; gap: .55rem; flex: none; justify-content: center; min-height: 44px; background: #fff; color: #0c715d; font-size: .8rem; }
+.reception-desk-new:hover:not(:disabled) { background: #e8fff4; color: #0c715d; box-shadow: none; }
+.reception-desk-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .85rem; }
+.reception-desk-kpis article { display: grid; align-content: start; gap: .38rem; min-width: 0; border: 1px solid #e3ebef; border-radius: 16px; background: #fff; padding: 1.1rem; box-shadow: 0 7px 24px #193a4b08; }
+.reception-desk-kpis article > strong { color: #1b3542; font-size: clamp(1.6rem, 2.2vw, 2.2rem); font-weight: 850; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.reception-desk-kpis h4 { color: #2c4551; font-size: .84rem; margin: 0; }.reception-desk-kpis p { margin: 0; color: #718792; font-size: .72rem; line-height: 1.5; }
+.reception-desk-kpi-icon { display: grid; place-items: center; width: 43px; height: 43px; margin-bottom: .4rem; border-radius: 12px; }
+.reception-desk-kpi-icon.amber { background: #fff1df; color: #b67a20; }.reception-desk-kpi-icon.blue { background: #e7f1ff; color: #3472ba; }.reception-desk-kpi-icon.teal { background: #e1f7eb; color: #138665; }.reception-desk-kpi-icon.violet { background: #f1ebff; color: #7b57b3; }
+.reception-desk-priorities { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.reception-desk-priority { min-width: 0; padding: 1.2rem !important; overflow: hidden; }
+.reception-desk-priority-head, .reception-desk-queue-head { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: .75rem; margin-bottom: .9rem; }
+.reception-desk-priority-head > div, .reception-desk-queue-head > div { min-width: 0; }
+.reception-desk-priority-head div > span, .reception-desk-section-kicker { color: #0a8568; font-size: .66rem; font-weight: 850; letter-spacing: .1em; }
+.reception-desk-priority-head h3, .reception-desk-queue-head h3, .reception-desk-form h3 { color: #203b49; font-size: 1.1rem; margin: .3rem 0 .25rem; letter-spacing: -.02em; }
+.reception-desk-priority-head p, .reception-desk-queue-head p, .reception-desk-form-head p { color: #708693; font-size: .75rem; line-height: 1.55; margin: 0; }
+.reception-desk-priority-head > strong, .reception-desk-queue-head > strong { flex: none; padding: .45rem .7rem; border-radius: 999px; color: #08795e; background: #e8f7ef; font-size: .75rem; font-variant-numeric: tabular-nums; }
+.reception-desk-priority-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem; width: 100%; min-width: 0; min-height: 63px; text-align: left; padding: .65rem .2rem; border-radius: 0; border-bottom: 1px solid #e9eff0; color: #284350; background: transparent; }
+.reception-desk-priority-row:last-of-type { border-bottom: 0; }.reception-desk-priority-row:hover { color: #0c705d; background: #f2faf6; box-shadow: none; }
+.reception-desk-priority-row > span:nth-child(2) { display: grid; min-width: 0; gap: .25rem; overflow-wrap: anywhere; }
+.reception-desk-priority-row strong { color: #253e4d; font-size: .79rem; }.reception-desk-priority-row small { color: #768b94; font-size: .71rem; }
+.reception-desk-time { font-size: .78rem; font-weight: 850; color: #0a7963; font-variant-numeric: tabular-nums; }
+.reception-desk-empty, .reception-desk-more { color: #6d8490; font-size: .78rem; line-height: 1.6; margin: 0; padding: .85rem 0; }
+.reception-desk-more { border-top: 1px solid #e8edf0; }
+.receptionist-workspace .reception-desk-detail, .receptionist-workspace .reception-desk-queue, .receptionist-workspace .reception-desk-form { min-width: 0; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 17px; }
+.reception-desk-detail-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65rem; margin: 1rem 0; }
+.reception-desk-detail-facts > span { display: grid; gap: .45rem; min-width: 0; padding: .8rem; color: #728692; border-radius: 10px; background: #f5f9fa; font-size: .74rem; overflow-wrap: anywhere; }
+.reception-desk-detail-facts strong { color: #24424c; font-size: .83rem; }.reception-desk-detail-reason { color: #536e7b; font-size: .82rem; line-height: 1.6; }
+.reception-desk-cancel { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; padding: .9rem; margin-top: 1rem; border: 1px solid #efcdcd; border-radius: 12px; background: #fff7f7; }
+.reception-desk-cancel p { flex-basis: 100%; margin: 0; color: #9f3c3c; font-size: .79rem; }
+.reception-desk-form-head { display: grid; gap: .25rem; }.reception-desk-form-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
+.reception-desk-form-fields label, .reception-desk-form form:not(.inline-search) label { display: grid; min-width: 0; gap: .4rem; color: #304a56; font-size: .79rem; font-weight: 750; }
+.reception-desk-form .doctor-picker-field { display: grid; min-width: 0; gap: .4rem; color: #304a56; font-size: .79rem; font-weight: 750; }
+.reception-booking-dialog .doctor-picker-popover { position: relative; top: auto; left: auto; right: auto; margin-top: .45rem; box-shadow: 0 6px 20px #183f3b12; }
+.reception-desk-form :is(input, select, textarea) { min-width: 0; max-width: 100%; }.reception-desk-form-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+
+/* Booking opens in the browser's modal top layer rather than below the worklist. */
+.reception-detail-dialog { box-sizing: border-box; width: min(900px, calc(100vw - 2rem)); max-width: 900px; max-height: 90vh; max-height: 90dvh; margin: auto; padding: 0; overflow-y: auto; overscroll-behavior: contain; border: 1px solid #dce9e4; border-radius: 19px; background: #fff; color: #243d49; box-shadow: 0 22px 76px #102f4055; }
+/* Only the reschedule view needs the wider, easier-to-read form; keep detail compact. */
+.reception-detail-dialog.is-rescheduling { width: min(1100px, calc(100vw - 2rem)); max-width: 1100px; max-height: 92vh; max-height: 92dvh; border-radius: 22px; }
+.reception-detail-dialog::backdrop { background: #0c283c91; }
+.reception-detail-dialog .reception-detail-grid { display: block; min-width: 0; }
+.reception-detail-dialog .reception-appointment-detail { box-sizing: border-box; width: 100%; padding: clamp(1rem, 2vw, 1.5rem); border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
+.reception-detail-dialog .reception-appointment-header { position: sticky; top: 0; z-index: 3; padding: .65rem 0 1rem; background: #fff; }
+.reception-detail-dialog .reception-appointment-footer { position: sticky; bottom: 0; z-index: 2; background: #fff; padding: .85rem 0; box-shadow: 0 -8px 18px #ffffffeb; }
+.reception-detail-message { margin: .75rem clamp(1rem, 2vw, 1.5rem) 0; }
+.reception-detail-dialog .reception-detail-reschedule { padding: clamp(1.35rem, 2.2vw, 2rem); margin: 0; border: 0; border-radius: 0; box-shadow: none; }
+.reception-detail-reschedule .reception-desk-form-head { gap: .45rem; margin-bottom: 1.3rem; }
+.reception-detail-reschedule .reception-desk-form-head h3 { font-size: clamp(1.5rem, 2vw, 1.9rem); line-height: 1.25; margin: 0; }
+.reception-detail-reschedule .reception-desk-form-head p { font-size: .95rem; line-height: 1.6; }
+.reception-detail-reschedule .reception-desk-section-kicker { font-size: .76rem; }
+.reception-detail-reschedule .reception-desk-form-fields { gap: 1.15rem 1.25rem; }
+.reception-detail-reschedule .reception-desk-form-fields > label,
+.reception-detail-reschedule .reception-desk-form-fields > .doctor-picker-field { font-size: .92rem; gap: .5rem; }
+.reception-detail-reschedule .reception-desk-form-fields > label > input,
+.reception-detail-reschedule .doctor-schedule-field > select,
+.reception-detail-reschedule .doctor-picker .doctor-picker-trigger { box-sizing: border-box; min-height: 56px; font-size: 1rem; border-radius: 14px; }
+.reception-detail-reschedule .doctor-picker-trigger-copy strong { font-size: .97rem; }
+.reception-detail-reschedule .doctor-picker-trigger-copy small { font-size: .83rem; }
+.reception-detail-reschedule .doctor-schedule-help { font-size: .86rem; padding: .85rem 1rem; }
+.reception-detail-dialog .reception-desk-form-actions { position: sticky; bottom: 0; z-index: 2; padding: 1rem 0 .4rem; background: #fff; }
+.reception-detail-dialog .reception-detail-reschedule .reception-desk-form-actions { padding: 1.2rem 0 .4rem; gap: .85rem; }
+.reception-detail-reschedule .reception-desk-form-actions button { min-height: 50px; padding: .65rem 1.35rem; font-size: 1rem; border-radius: 14px; }
+/* Keep the reschedule picker out of grid flow so opening it cannot stretch the date input. */
+.reception-detail-dialog .reception-detail-reschedule .reception-desk-form-fields { align-items: start; }
+.reception-detail-dialog .reception-detail-reschedule .doctor-picker-field { align-self: start; }
+.reception-detail-dialog .reception-detail-reschedule .doctor-picker-popover {
+  position: absolute; top: calc(100% + .45rem); left: 0; right: 0; margin: 0;
+  z-index: 5; box-shadow: 0 12px 30px #183f3b21;
+}
+.reception-detail-dialog .reception-detail-reschedule .doctor-picker-options { max-height: min(238px, 32dvh); }
+.reception-booking-dialog { width: min(760px, calc(100vw - 2rem)); max-width: 760px; max-height: 90vh; max-height: 90dvh; margin: auto; padding: 0; border: 1px solid #dce9e4; border-radius: 19px; background: #fff; box-shadow: 0 22px 76px #102f4055; overflow: hidden; color: #243d49; }
+.reception-booking-dialog::backdrop { background: #0c283c91; }
+.reception-booking-dialog .reception-booking-content { box-sizing: border-box; max-height: 90vh; max-height: 90dvh; overflow-y: auto; overscroll-behavior: contain; padding: clamp(1rem, 2vw, 1.5rem); }
+.reception-booking-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e5edeb; }
+.reception-booking-head h3 { margin: .25rem 0; font-size: 1.3rem; color: #1c3946; }
+.reception-booking-close { flex: none; display: grid; place-items: center; width: 39px; height: 39px; padding: 0; border-radius: 10px; }
+.reception-booking-error { margin-top: .8rem; }
+.reception-booking-step { display: grid; gap: .25rem; margin: 1.15rem 0 .65rem; }
+.reception-booking-step strong { color: #136e5c; font-size: .87rem; }
+.reception-booking-step span { color: #6b808a; font-size: .76rem; }
+.reception-booking-dialog .reception-booking-search { display: flex; flex-wrap: wrap; gap: .55rem; margin: 0; }
+.reception-booking-search input { flex: 1 1 200px; min-width: 0; }
+.reception-booking-search button { flex: none; }
+.reception-patient-results { margin-top: .8rem; padding: .75rem; border: 1px solid #cfe5dc; border-radius: 12px; background: #f7fcfa; }
+.reception-patient-results > p { margin: 0 0 .65rem; color: #315b51; font-size: .76rem; font-weight: 700; }
+.reception-patient-results ul { display: grid; gap: .35rem; max-height: 205px; overflow-y: auto; margin: 0; padding: 0; list-style: none; }
+.reception-patient-results li { min-width: 0; }
+.reception-booking-dialog .reception-patient-choice { display: flex; align-items: center; justify-content: space-between; gap: .75rem; width: 100%; min-height: 55px; padding: .6rem .7rem; border: 1px solid #e0eae7; border-radius: 9px; background: #fff; color: #263e4a; text-align: left; cursor: pointer; }
+.reception-booking-dialog .reception-patient-choice:hover { border-color: #67bda0; background: #edf8f2; box-shadow: none; }
+.reception-booking-dialog .reception-patient-choice[aria-pressed="true"] { border-color: #15936c; background: #e5f7ed; }
+.reception-patient-choice > span:first-child { display: grid; gap: .25rem; min-width: 0; }
+.reception-patient-choice strong { font-size: .8rem; overflow-wrap: anywhere; }
+.reception-patient-choice small { color: #637b86; font-size: .7rem; overflow-wrap: anywhere; }
+.reception-patient-choice-state { flex: none; font-size: .73rem; font-weight: 800; color: #0a7859; }
+.reception-selected-patient { margin: .65rem 0 0; border-radius: 9px; padding: .7rem; background: #e5f7ed; color: #245e4f; font-size: .8rem; overflow-wrap: anywhere; }
+.reception-booking-time-note { margin: .7rem 0 0; color: #637b86; font-size: .74rem; line-height: 1.55; }
+.reception-booking-dialog .reception-booking-error { margin: .7rem 0 0; padding: .7rem .85rem; border: 1px solid #f0c8c8; border-radius: 9px; background: #fff4f4; color: #a12d2d; font-size: .79rem; line-height: 1.5; }
+.reception-booking-form { display: grid; gap: .1rem; }
+.reception-booking-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.reception-booking-fields > * { min-width: 0; }
+.reception-booking-wide { grid-column: 1 / -1; }
+.reception-booking-fields label { display: grid; gap: .4rem; min-width: 0; color: #304a56; font-size: .79rem; font-weight: 750; }
+.reception-booking-fields :is(input, select, textarea) { box-sizing: border-box; width: 100%; min-width: 0; }
+.reception-booking-fields textarea { resize: vertical; }
+.reception-booking-footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .65rem; margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid #e5edeb; }
+.reception-booking-footer button { min-height: 42px; }
+.reception-booking-dialog :is(button, input, select, textarea):focus-visible { outline: 3px solid #45b98e; outline-offset: 2px; }
+/* The booking picker owns its focus treatment. Do not apply the form-wide ring to its nested search input. */
+.reception-booking-dialog .doctor-picker .doctor-picker-search input,
+.reception-booking-dialog .doctor-picker .doctor-picker-search input:focus-visible {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  padding: .45rem 0;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
+.reception-booking-dialog .doctor-picker .doctor-picker-trigger:focus-visible {
+  outline: 2px solid #218463;
+  outline-offset: 1px;
+}
+.reception-desk-queue-head { margin-bottom: 1.1rem; }.reception-desk-queue-row { display: grid; grid-template-columns: 49px minmax(0, 1fr) auto minmax(190px, auto); gap: .8rem; align-items: center; padding: .95rem 0; border-bottom: 1px solid #e8eef0; }
+.reception-desk-queue-row:last-of-type { border-bottom: 0; }.reception-desk-ticket { display: grid; place-items: center; min-height: 45px; color: #08775e; background: #e6f7ee; border-radius: 11px; font-size: .85rem; font-weight: 850; }
+.reception-desk-queue-person { display: grid; gap: .25rem; min-width: 0; overflow-wrap: anywhere; }.reception-desk-queue-person strong { color: #254350; font-size: .82rem; }.reception-desk-queue-person span { color: #7a8f98; font-size: .71rem; }
+.reception-desk-queue-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .45rem; }.reception-desk-queue-actions button { min-height: 36px; padding: .45rem .65rem; border-radius: 9px; font-size: .73rem; color: #0a735c; background: #e9f7ef; }.reception-desk-queue-actions button:hover:not(:disabled) { color: #08664f; background: #d5f0e3; box-shadow: none; }
+.reception-desk-permission { border-top: 1px solid #e8eef0; padding-top: .9rem; margin: .8rem 0 0; color: #6e8590; font-size: .73rem; line-height: 1.6; }
+@media (max-width: 1200px) { .reception-desk-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }.reception-desk-queue-row { grid-template-columns: 49px minmax(0, 1fr) auto; }.reception-desk-queue-actions { grid-column: 2 / -1; justify-content: flex-start; } }
+@media (max-width: 760px) { .reception-desk-hero { flex-direction: column; align-items: stretch; }.reception-desk-new { align-self: flex-start; }.reception-desk-priorities { grid-template-columns: minmax(0, 1fr); }.reception-desk-detail-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }.reception-desk-form-fields { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) { .reception-detail-dialog, .reception-booking-dialog { width: 100%; max-width: 100%; max-height: 94vh; max-height: 94dvh; margin: auto 0 0; border-radius: 18px 18px 0 0; }.reception-booking-dialog .reception-booking-content { max-height: 94vh; max-height: 94dvh; }.reception-booking-fields { grid-template-columns: minmax(0, 1fr); }.reception-booking-search button { flex: 1 1 auto; }.reception-booking-footer button { flex: 1 1 auto; } }
+@media (max-width: 600px) { .reception-detail-dialog.is-rescheduling { width: 100%; max-width: 100%; max-height: 94vh; max-height: 94dvh; border-radius: 18px 18px 0 0; }.reception-detail-reschedule .reception-desk-form-actions button { flex: 1 1 auto; } }
+@media (max-width: 420px) { .reception-desk-kpis { gap: .65rem; }.reception-desk-kpis article { padding: .85rem; }.reception-desk-kpis h4 { font-size: .76rem; }.reception-desk-queue-row { grid-template-columns: 43px minmax(0, 1fr); }.reception-desk-queue-row > .badge, .reception-desk-queue-actions { grid-column: 2; justify-self: start; }.reception-desk-detail-facts { gap: .4rem; } }

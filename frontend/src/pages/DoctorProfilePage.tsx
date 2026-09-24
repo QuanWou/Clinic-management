@@ -1,289 +1,162 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { CalendarDays, Plus, Save, Trash2 } from 'lucide-react';
+import { type FormEvent, useEffect, useState } from 'react';
 import {
-  getDoctorProfile,
-  getMyDoctorSchedules,
-  getSpecialties,
-  updateDoctorProfile,
-  updateMyDoctorSchedules
-} from '../api/clinic';
-import { ApiError } from '../api/client';
+  CalendarClock, CheckCircle2, Clock3, FileText, IdCard,
+  LockKeyhole, Mail, Pencil, Phone, RefreshCw, Stethoscope, X
+} from 'lucide-react';
+import { getDoctorProfile, getMyDoctorSchedules, updateDoctorProfile } from '../api/clinic';
+import { HttpApiError } from '../api/client';
 import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
-import Badge from '../components/Badge';
 import PageHeader from '../components/PageHeader';
-import type {
-  CurrentUser,
-  DoctorProfileResponse,
-  DoctorSchedule,
-  SpecialtyResponse
-} from '../types/domain';
-import { formatMoney, formatTime, shortId } from '../utils/format';
+import type { CurrentUser, DoctorProfileResponse, DoctorSchedule } from '../types/domain';
+import { formatVnd } from '../utils/format';
+import { integrations } from '../config/integrations.config';
+import './doctorProfile.css';
 
-type DoctorProfilePageProps = {
-  user: CurrentUser;
-};
+const weekdays = ['Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Chủ nhật'];
+const MAX_BIO = 10000; // Matches UpdateDoctorProfileRequest's backend validation.
 
-const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+function apiMessage(cause: unknown): string {
+  return cause instanceof Error ? cause.message : 'Không thể hoàn tất yêu cầu. Vui lòng thử lại.';
+}
 
-export default function DoctorProfilePage({ user }: DoctorProfilePageProps) {
-  const [profile, setProfile] = useState<DoctorProfileResponse | null | undefined>(undefined);
-  const [specialties, setSpecialties] = useState<SpecialtyResponse[]>([]);
-  const [schedules, setSchedules] = useState<DoctorSchedule[]>([]);
-  const [specialtyId, setSpecialtyId] = useState('');
-  const [biography, setBiography] = useState('');
-  const [consultationFee, setConsultationFee] = useState('0');
+function scheduleTime(value: string): string {
+  return /^\d{2}:\d{2}/.test(value) ? value.slice(0, 5) : 'Chưa rõ';
+}
+
+export default function DoctorProfilePage({ user }: { user: CurrentUser }) {
+  const [doctor, setDoctor] = useState<DoctorProfileResponse | null>(null);
+  const [schedules, setSchedules] = useState<DoctorSchedule[] | null>(null);
+  const [form, setForm] = useState({ biography: '' });
+  const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [savingProfile, setSavingProfile] = useState(false);
-  const [savingSchedules, setSavingSchedules] = useState(false);
+  const [scheduleLoading, setScheduleLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
+  const [profileNotFound, setProfileNotFound] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [revision, setRevision] = useState(0);
 
   useEffect(() => {
     let active = true;
-
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const specialtyResult = await getSpecialties();
-        if (!active) return;
-        setSpecialties(specialtyResult);
-
-        try {
-          const doctorProfile = await getDoctorProfile();
-          const doctorSchedules = await getMyDoctorSchedules();
-          if (!active) return;
-          setProfile(doctorProfile);
-          setSchedules(doctorSchedules);
-          setSpecialtyId(doctorProfile.specialtyId ?? '');
-          setBiography(doctorProfile.biography ?? '');
-          setConsultationFee(String(doctorProfile.consultationFee ?? 0));
-        } catch (err) {
-          if (err instanceof ApiError && err.status === 404) {
-            setProfile(null);
-          } else {
-            throw err;
-          }
-        }
-      } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : 'Unable to load doctor profile');
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-
-    void load();
+    setLoading(true); setScheduleLoading(true); setError(null); setScheduleError(null);
+    setDoctor(null); setSchedules(null); setProfileNotFound(false); setEditing(false); setNotice(null);
+    void getDoctorProfile().then((response) => {
+      if (!active) return;
+      if (!response || !response.id || !response.userId) throw new Error('Phản hồi hồ sơ bác sĩ không hợp lệ.');
+      setDoctor(response);
+      setForm({ biography: response.biography ?? '' });
+    }).catch((cause: unknown) => {
+      if (!active) return;
+      if (cause instanceof HttpApiError && cause.status === 404) setProfileNotFound(true);
+      else setError(apiMessage(cause));
+    }).finally(() => { if (active) setLoading(false); });
+    // Schedule failure should not hide an otherwise valid personal profile.
+    void getMyDoctorSchedules().then((items) => {
+      if (!active) return;
+      if (!Array.isArray(items) || items.some((item) => !Number.isInteger(item.dayOfWeek)
+        || item.dayOfWeek < 1 || item.dayOfWeek > 7 || typeof item.startTime !== 'string'
+        || typeof item.endTime !== 'string')) throw new Error('Dữ liệu lịch làm việc không hợp lệ.');
+      setSchedules([...items].sort((a, b) => a.dayOfWeek - b.dayOfWeek || a.startTime.localeCompare(b.startTime)));
+    }).catch((cause: unknown) => { if (active) setScheduleError(apiMessage(cause)); })
+      .finally(() => { if (active) setScheduleLoading(false); });
     return () => { active = false; };
-  }, []);
+  }, [revision, user.id, user.userId]);
 
-  async function handleProfileSubmit(event: FormEvent<HTMLFormElement>) {
+  async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError(null);
-    setMessage(null);
-
-    const fee = Number(consultationFee);
-    if (!specialtyId) {
-      setError('Please select a specialty.');
+    if (saving || !doctor || !integrations.adminCatalog) return;
+    if (form.biography.length > MAX_BIO) {
+      setError(`Tiểu sử không được vượt quá ${MAX_BIO.toLocaleString('vi-VN')} ký tự.`);
       return;
     }
-    if (!Number.isFinite(fee) || fee < 0) {
-      setError('Consultation fee must be zero or greater.');
-      return;
-    }
-
-    setSavingProfile(true);
+    setSaving(true); setError(null); setNotice(null);
     try {
-      const saved = await updateDoctorProfile({ specialtyId, biography, consultationFee: fee });
-      setProfile(saved);
-      setMessage('Doctor profile saved successfully.');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to save doctor profile');
-    } finally {
-      setSavingProfile(false);
-    }
+      // Never send specialtyId, consultationFee or account details from this self-service page.
+      const result = await updateDoctorProfile({ biography: form.biography });
+      if (!result || result.id !== doctor.id || result.userId !== doctor.userId) {
+        throw new Error('Chưa xác nhận được cập nhật hồ sơ bác sĩ. Vui lòng tải lại.');
+      }
+      setDoctor(result);
+      setForm({ biography: result.biography ?? '' });
+      setEditing(false);
+      setNotice('Đã lưu tiểu sử bác sĩ.');
+    } catch (cause) { setError(apiMessage(cause)); }
+    finally { setSaving(false); }
   }
 
-  function updateSchedule(index: number, field: 'dayOfWeek' | 'startTime' | 'endTime', value: string) {
-    setSchedules((current) => current.map((schedule, scheduleIndex) => (
-      scheduleIndex === index
-        ? { ...schedule, [field]: field === 'dayOfWeek' ? Number(value) : value }
-        : schedule
-    )));
-  }
+  const name = user.fullName?.trim() || user.email;
+  const canEdit = integrations.adminCatalog;
+  const totalDays = schedules ? new Set(schedules.map((item) => item.dayOfWeek)).size : null;
 
-  function addSchedule() {
-    setSchedules((current) => [
-      ...current,
-      { dayOfWeek: 1, startTime: '08:00', endTime: '12:00' }
-    ]);
-  }
+  return <div className="doctor-profile-workspace" aria-label="Hồ sơ bác sĩ cá nhân">
+    <PageHeader title="Hồ sơ bác sĩ" subtitle="Thông tin chuyên môn và lịch làm việc của tài khoản đang đăng nhập."
+      actions={<button type="button" className="soft-button" disabled={loading || saving || editing} onClick={() => setRevision((value) => value + 1)}>
+        <RefreshCw size={16} aria-hidden="true" /> Làm mới
+      </button>} />
 
-  async function saveSchedules() {
-    setError(null);
-    setMessage(null);
-    const invalid = schedules.some((schedule) => !schedule.startTime || !schedule.endTime || schedule.endTime <= schedule.startTime);
-    if (invalid) {
-      setError('Every schedule must end after it starts.');
-      return;
-    }
+    {loading && <div className="panel doctor-profile-state" role="status"><RefreshCw size={23} aria-hidden="true" /> Đang tải hồ sơ bác sĩ...</div>}
+    {error && <Alert tone="error">{error} {!doctor && <button type="button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Thử lại</button>}</Alert>}
+    {notice && <div role="status"><Alert tone="info">{notice}</Alert></div>}
+    {!doctor && !loading && !error && <div className="panel doctor-profile-state"><IdCard size={27} aria-hidden="true" />
+      {profileNotFound ? 'Chưa được cấp hồ sơ bác sĩ. Vui lòng liên hệ quản trị viên.' : 'Chưa có hồ sơ bác sĩ để hiển thị.'}</div>}
 
-    setSavingSchedules(true);
-    try {
-      const saved = await updateMyDoctorSchedules({
-        schedules: schedules.map(({ dayOfWeek, startTime, endTime }) => ({ dayOfWeek, startTime, endTime }))
-      });
-      setSchedules(saved);
-      setMessage('Weekly schedule saved successfully.');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to save doctor schedules');
-    } finally {
-      setSavingSchedules(false);
-    }
-  }
-
-  return (
-    <>
-      <PageHeader
-        title="Doctor Profile"
-        subtitle="Maintain your clinical profile and recurring weekly schedule."
-      />
-
-      {error && <Alert tone="error">{error}</Alert>}
-      {message && <Alert>{message}</Alert>}
-
-      {loading ? (
-        <article className="panel"><p className="empty-state">Loading doctor profile...</p></article>
-      ) : (
-        <section className="doctor-workspace">
-          <div className="doctor-profile-grid">
-            <article className="panel profile-card">
-              <div className="profile-hero">
-                <Avatar label={user.fullName ?? user.email} size="lg" />
-                <h3>{user.fullName ?? user.email}</h3>
-                <p>{profile?.specialtyName ?? 'Profile setup required'}</p>
-                <Badge tone={profile ? 'Active' : 'Pending'}>{profile ? 'Configured' : 'Incomplete'}</Badge>
-              </div>
-              <dl className="details-list compact">
-                <div><dt>Email</dt><dd>{user.email}</dd></div>
-                <div><dt>Phone</dt><dd>{user.phone ?? 'Not provided'}</dd></div>
-                <div><dt>Fee</dt><dd>{profile ? formatMoney(profile.consultationFee) : 'Not configured'}</dd></div>
-                <div><dt>Profile ID</dt><dd>{profile ? `DR-${shortId(profile.id)}` : 'Created when saved'}</dd></div>
-              </dl>
-            </article>
-
-            <article className="panel profile-overview">
-              <div>
-                <p className="eyebrow">Clinical details</p>
-                <h3>{profile ? 'Edit profile' : 'Complete your doctor profile'}</h3>
-                <p>Choose a seeded specialty and provide the information patients need before booking.</p>
-              </div>
-              <form className="form-stack doctor-profile-form" onSubmit={handleProfileSubmit}>
-                <label>
-                  Specialty
-                  <select value={specialtyId} onChange={(event) => setSpecialtyId(event.target.value)} required>
-                    <option value="">Select a specialty</option>
-                    {specialties.map((specialty) => (
-                      <option key={specialty.id} value={specialty.id}>{specialty.name}</option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Consultation fee
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={consultationFee}
-                    onChange={(event) => setConsultationFee(event.target.value)}
-                    required
-                  />
-                </label>
-                <label>
-                  Biography <span className="optional-label">Optional</span>
-                  <textarea
-                    rows={5}
-                    maxLength={5000}
-                    value={biography}
-                    onChange={(event) => setBiography(event.target.value)}
-                    placeholder="Clinical focus, qualifications, and care approach"
-                  />
-                </label>
-                <button type="submit" disabled={savingProfile || specialties.length === 0}>
-                  <Save size={17} />{savingProfile ? 'Saving profile...' : 'Save profile'}
-                </button>
-              </form>
-            </article>
+    {doctor && <>
+      <section className="doctor-profile-summary" aria-label="Thông tin hồ sơ">
+        <article className="panel doctor-profile-identity">
+          <div className="doctor-profile-identity-main">
+            <Avatar label={name} size="lg" />
+            <div className="doctor-profile-identity-name"><span className="doctor-profile-kicker">HỒ SƠ CÁ NHÂN</span>
+              <h3>{name}</h3><p className="doctor-profile-specialty"><Stethoscope size={17} aria-hidden="true" /> {doctor.specialtyName || 'Chưa được gán chuyên khoa'}</p></div>
+            <span className="doctor-profile-verified"><LockKeyhole size={14} aria-hidden="true" /> Hồ sơ của tài khoản đang đăng nhập</span>
           </div>
+          <dl className="doctor-profile-contact">
+            <div><dt><Mail size={16} aria-hidden="true" /> Email</dt><dd>{user.email}</dd></div>
+            <div><dt><Phone size={16} aria-hidden="true" /> Số điện thoại</dt><dd>{user.phone || 'Chưa được cung cấp'}</dd></div>
+            <div><dt><IdCard size={16} aria-hidden="true" /> Mã bác sĩ</dt><dd>{doctor.doctorCode || 'Chưa có'}</dd></div>
+          </dl>
+        </article>
+        <div className="doctor-profile-summary-side">
+          <article className="panel doctor-profile-fact"><span className="doctor-profile-fact-icon"><Stethoscope size={23} aria-hidden="true" /></span>
+            <small>CHUYÊN KHOA</small><strong>{doctor.specialtyName || 'Chưa cập nhật'}</strong><p>Do quản trị viên phòng khám quản lý.</p></article>
+          <article className="panel doctor-profile-fact doctor-profile-fact-blue"><span className="doctor-profile-fact-icon"><FileText size={23} aria-hidden="true" /></span>
+            <small>GIÁ KHÁM</small><strong>{doctor.consultationFee == null ? 'Chưa cập nhật' : formatVnd(doctor.consultationFee)}</strong><p>Đơn vị VND; giá do quản trị viên quản lý.</p></article>
+          <article className="panel doctor-profile-fact doctor-profile-fact-violet"><span className="doctor-profile-fact-icon"><CalendarClock size={23} aria-hidden="true" /></span>
+            <small>LỊCH LÀM VIỆC</small><strong>{totalDays === null ? 'Chưa tải' : `${totalDays} ngày/tuần`}</strong><p>Số ngày trong lịch làm việc hiện tại.</p></article>
+        </div>
+      </section>
 
-          <article className="panel schedule-editor">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Availability</p>
-                <h3>Weekly schedule</h3>
-                <p>Add separate entries when a working day has a break.</p>
-              </div>
-              <button className="soft-button" type="button" onClick={addSchedule} disabled={!profile || schedules.length >= 28}>
-                <Plus size={17} />Add hours
-              </button>
-            </div>
+      <section className="doctor-profile-content" aria-label="Tiểu sử và lịch làm việc">
+        <article className="panel doctor-profile-section">
+          <header className="doctor-profile-section-head"><div><span>GIỚI THIỆU</span><h3>Tiểu sử chuyên môn</h3><p>Nội dung do bác sĩ tự cập nhật.</p></div>
+            {!editing && canEdit && <button type="button" className="doctor-profile-edit" onClick={() => { setForm({ biography: doctor.biography ?? '' }); setEditing(true); setError(null); setNotice(null); }}><Pencil size={16} aria-hidden="true" /> Chỉnh sửa</button>}</header>
+          {editing ? <form className="doctor-profile-biography-form" onSubmit={(event) => void save(event)}>
+            <label htmlFor="doctor-biography">Tiểu sử của bạn</label>
+            <textarea id="doctor-biography" value={form.biography} maxLength={MAX_BIO} rows={8} disabled={saving}
+              onChange={(event) => setForm({ biography: event.target.value })} placeholder="Giới thiệu chuyên môn và kinh nghiệm được phép công bố..." />
+            <span className="doctor-profile-character-count">{form.biography.length.toLocaleString('vi-VN')} / {MAX_BIO.toLocaleString('vi-VN')} ký tự</span>
+            <p>Chuyên khoa, giá khám và thông tin tài khoản không thể chỉnh sửa tại đây.</p>
+            <div className="doctor-profile-form-actions"><button type="submit" disabled={saving || form.biography === (doctor.biography ?? '')}>
+              <CheckCircle2 size={16} aria-hidden="true" /> {saving ? 'Đang lưu...' : 'Lưu tiểu sử'}</button>
+              <button type="button" className="soft-button" disabled={saving} onClick={() => { setEditing(false); setForm({ biography: doctor.biography ?? '' }); setError(null); }}>
+                <X size={16} aria-hidden="true" /> Hủy</button></div>
+          </form> : <div className="doctor-profile-bio-text">{doctor.biography?.trim() || 'Chưa cập nhật tiểu sử. Bạn có thể bổ sung nội dung khi chức năng chỉnh sửa được bật.'}</div>}
+          {!canEdit && <div className="doctor-profile-readonly"><LockKeyhole size={17} aria-hidden="true" /> Chỉnh sửa tiểu sử hiện chưa khả dụng.</div>}
+        </article>
 
-            {!profile ? (
-              <p className="empty-state">Save your doctor profile before configuring working hours.</p>
-            ) : (
-              <>
-                {schedules.length === 0 ? (
-                  <p className="empty-state">No working hours configured yet.</p>
-                ) : (
-                  <div className="schedule-list">
-                    {schedules.map((schedule, index) => (
-                      <div className="schedule-row" key={schedule.id ?? `${schedule.dayOfWeek}-${index}`}>
-                        <CalendarDays size={18} />
-                        <select
-                          aria-label={`Day for schedule ${index + 1}`}
-                          value={schedule.dayOfWeek}
-                          onChange={(event) => updateSchedule(index, 'dayOfWeek', event.target.value)}
-                        >
-                          {dayNames.map((day, dayIndex) => (
-                            <option key={day} value={dayIndex + 1}>{day}</option>
-                          ))}
-                        </select>
-                        <input
-                          aria-label={`Start time for schedule ${index + 1}`}
-                          type="time"
-                          value={schedule.startTime.slice(0, 5)}
-                          onChange={(event) => updateSchedule(index, 'startTime', event.target.value)}
-                        />
-                        <span>to</span>
-                        <input
-                          aria-label={`End time for schedule ${index + 1}`}
-                          type="time"
-                          value={schedule.endTime.slice(0, 5)}
-                          onChange={(event) => updateSchedule(index, 'endTime', event.target.value)}
-                        />
-                        <span className="schedule-summary">
-                          {formatTime(schedule.startTime)}–{formatTime(schedule.endTime)}
-                        </span>
-                        <button
-                          className="icon-button danger-icon"
-                          type="button"
-                          aria-label={`Remove schedule ${index + 1}`}
-                          onClick={() => setSchedules((current) => current.filter((_, itemIndex) => itemIndex !== index))}
-                        >
-                          <Trash2 size={17} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <button type="button" onClick={saveSchedules} disabled={savingSchedules}>
-                  <Save size={17} />{savingSchedules ? 'Saving schedule...' : 'Save weekly schedule'}
-                </button>
-              </>
-            )}
-          </article>
-        </section>
-      )}
-    </>
-  );
+        <aside className="panel doctor-profile-section" aria-label="Lịch làm việc của tôi">
+          <header className="doctor-profile-section-head"><div><span>THỜI GIAN</span><h3>Lịch làm việc trong tuần</h3><p>Các ca làm việc hiện tại.</p></div><CalendarClock size={21} aria-hidden="true" /></header>
+          {scheduleLoading && <p className="doctor-profile-schedule-state" role="status">Đang tải lịch làm việc...</p>}
+          {scheduleError && <Alert tone="error">Không tải được lịch: {scheduleError} <button type="button" disabled={loading || saving || editing} onClick={() => setRevision((value) => value + 1)}>Thử lại</button></Alert>}
+          {!scheduleLoading && schedules?.length === 0 && <p className="doctor-profile-schedule-state">Chưa có ca làm việc nào được ghi nhận.</p>}
+          {schedules && schedules.length > 0 && <div className="doctor-profile-schedules">{schedules.map((schedule, index) => <div className="doctor-profile-schedule-row" key={schedule.id || `${schedule.dayOfWeek}-${schedule.startTime}-${index}`}>
+            <span className="doctor-profile-schedule-day">{weekdays[schedule.dayOfWeek - 1]}</span>
+            <strong><Clock3 size={15} aria-hidden="true" /> {scheduleTime(schedule.startTime)} – {scheduleTime(schedule.endTime)}</strong>
+          </div>)}</div>}
+          <p className="doctor-profile-schedule-note"><LockKeyhole size={15} aria-hidden="true" /> Lịch này chỉ xem tại đây.</p>
+        </aside>
+      </section>
+    </>}
+  </div>;
 }

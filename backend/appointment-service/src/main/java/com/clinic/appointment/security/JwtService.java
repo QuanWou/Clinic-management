@@ -21,23 +21,19 @@ public class JwtService {
 
     public JwtService(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
-        this.secretKey = Keys.hmacShaKeyFor(
-                jwtProperties.secret().getBytes(StandardCharsets.UTF_8)
-        );
+        this.secretKey = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateAccessToken(UUID userId, String email, Object roles) {
         Instant now = Instant.now();
-        Instant expiry = now.plus(
-                jwtProperties.accessTokenExpirationMinutes(),
-                ChronoUnit.MINUTES
-        );
+        Instant expiry = now.plus(jwtProperties.accessTokenExpirationMinutes(), ChronoUnit.MINUTES);
 
         return Jwts.builder()
                 .subject(userId.toString())
                 .claims(Map.of(
                         "email", email,
-                        "roles", roles
+                        "roles", roles,
+                        "token_type", "access"
                 ))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))
@@ -47,13 +43,12 @@ public class JwtService {
 
     public String generateRefreshToken(UUID userId) {
         Instant now = Instant.now();
-        Instant expiry = now.plus(
-                jwtProperties.refreshTokenExpirationDays(),
-                ChronoUnit.DAYS
-        );
+        Instant expiry = now.plus(jwtProperties.refreshTokenExpirationDays(), ChronoUnit.DAYS);
 
         return Jwts.builder()
                 .subject(userId.toString())
+                .id(UUID.randomUUID().toString())
+                .claim("token_type", "refresh")
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))
                 .signWith(secretKey)

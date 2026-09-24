@@ -5,9 +5,9 @@ spring:
   application:
     name: notification-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/clinic_db?currentSchema=notification
-    username: postgres
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/clinic_db?currentSchema=notification}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -23,6 +23,8 @@ spring:
     port: ${SPRING_RABBITMQ_PORT:5672}
     username: ${SPRING_RABBITMQ_USERNAME:guest}
     password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    publisher-confirm-type: correlated
+    publisher-returns: true
   mail:
     host: ${SPRING_MAIL_HOST:localhost}
     port: ${SPRING_MAIL_PORT:1025}
@@ -38,17 +40,24 @@ spring:
 app:
   security:
     jwt:
-      secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+      secret: ${APP_SECURITY_JWT_SECRET}
       access-token-expiration-minutes: 60
       refresh-token-expiration-days: 7
   notification:
+    dispatch-interval-ms: ${APP_NOTIFICATION_DISPATCH_INTERVAL_MS:10000}
+    email:
+      enabled: ${APP_NOTIFICATION_EMAIL_ENABLED:false}
+      from: ${APP_NOTIFICATION_EMAIL_FROM:}
     rabbitmq:
       exchange: ${APP_NOTIFICATION_RABBITMQ_EXCHANGE:notification.exchange}
-      queue: ${APP_NOTIFICATION_RABBITMQ_QUEUE:notification.delivery.queue}
-      routing-key: ${APP_NOTIFICATION_RABBITMQ_ROUTING_KEY:notification.delivery}
+      queue: ${APP_NOTIFICATION_RABBITMQ_QUEUE:notification.delivery.v2.queue}
+      routing-key: ${APP_NOTIFICATION_RABBITMQ_ROUTING_KEY:notification.delivery.v2}
+      event-queue: ${APP_NOTIFICATION_RABBITMQ_EVENT_QUEUE:notification.events.v2.queue}
+      event-routing-key: ${APP_NOTIFICATION_RABBITMQ_EVENT_ROUTING_KEY:notification.business}
     sms:
-      endpoint: ${APP_NOTIFICATION_SMS_ENDPOINT:http://localhost:9091/messages}
-      api-key: ${APP_NOTIFICATION_SMS_API_KEY:local-dev-token}
+      enabled: ${APP_NOTIFICATION_SMS_ENABLED:false}
+      endpoint: ${APP_NOTIFICATION_SMS_ENDPOINT:}
+      api-key: ${APP_NOTIFICATION_SMS_API_KEY:}
       sender: ${APP_NOTIFICATION_SMS_SENDER:Clinic}
 
 management:

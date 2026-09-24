@@ -9,4 +9,6 @@ import java.util.UUID;
 @Repository
 public interface SpecialtyRepository extends JpaRepository<Specialty, UUID> {
     boolean existsByName(String name);
+
+    boolean existsByNameIgnoreCase(String name);
 }

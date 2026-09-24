@@ -3,6 +3,8 @@ package com.clinic.medicalrecord.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,6 +44,21 @@ public class Prescription {
     private MedicalRecord medicalRecord;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 16)
+    private PrescriptionStatus status = PrescriptionStatus.SIGNED;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
+
+    @Column(name = "signed_at")
+    private LocalDateTime signedAt;
+
+    @Column(name = "signed_by")
+    private UUID signedBy;
+
+    @Builder.Default
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PrescriptionItem> items = new ArrayList<>();
 
@@ -51,5 +69,10 @@ public class Prescription {
     public void addItem(PrescriptionItem item) {
         items.add(item);
         item.setPrescription(this);
+    }
+
+    public void replaceItems(List<PrescriptionItem> newItems) {
+        items.clear();
+        newItems.forEach(this::addItem);
     }
 }

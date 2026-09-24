@@ -1,6 +1,7 @@
 package com.clinic.identity.security;
 
 import com.clinic.identity.entity.User;
+import com.clinic.identity.entity.UserStatus;
 import com.clinic.identity.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
@@ -25,6 +26,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPasswordHash(),
+                user.getStatus() == UserStatus.ACTIVE,
+                true,
+                true,
+                user.getStatus() != UserStatus.LOCKED,
                 user.getRoles()
                         .stream()
                         .map(role -> new SimpleGrantedAuthority(role.getCode().name()))

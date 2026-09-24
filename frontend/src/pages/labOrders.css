@@ -1,0 +1,97 @@
+/* Role-scoped lab workflow. Keep styles isolated from generic forms and patient records. */
+.lab-workspace { display: grid; align-content: start; gap: 1rem; min-width: 0; color: #294252; }
+.lab-workspace *, .lab-workspace *::before, .lab-workspace *::after { box-sizing: border-box; }
+.lab-workspace-heading, .lab-section-title { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: .75rem; }
+.lab-heading-title { display: flex; align-items: center; min-width: 0; gap: .8rem; }
+.lab-heading-title > div, .lab-section-title > div { min-width: 0; }
+.lab-heading-icon { flex: none; display: grid; place-items: center; width: 45px; height: 45px; border-radius: 12px; color: #14775a; background: #e7f8ef; }
+.lab-eyebrow { font-size: .67rem; font-weight: 850; letter-spacing: .12em; color: #167b60; }
+.lab-workspace h3 { margin: .2rem 0 .25rem; color: #213c4c; font-size: clamp(1.1rem, 2vw, 1.33rem); line-height: 1.3; }
+.lab-workspace h4 { margin: .2rem 0 .28rem; font-size: .97rem; line-height: 1.35; color: #1e3e4e; }
+.lab-workspace p { overflow-wrap: anywhere; }
+.lab-workspace-heading p, .lab-section-title p { font-size: .77rem; line-height: 1.55; margin: 0; color: #718592; }
+.lab-heading-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .5rem; }
+.lab-heading-actions button, .lab-form-actions button { display: inline-flex; gap: .42rem; align-items: center; justify-content: center; min-height: 40px; font-size: .78rem; border-radius: 10px; }
+.lab-new-button { background: #277d62; color: #fff; }
+.lab-new-button:hover:not(:disabled) { background: #17694f; color: #fff; }
+.lab-loading { color: #377f63; font-size: .83rem; }
+.lab-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: .65rem; }
+.lab-overview > div { display: grid; align-content: space-between; min-width: 0; gap: .55rem; padding: .8rem .9rem; border: 1px solid #e0ebe9; border-radius: 12px; background: #fafdfe; }
+.lab-overview span { display: flex; align-items: center; gap: .4rem; min-width: 0; font-size: .73rem; line-height: 1.4; color: #627c89; }
+.lab-overview svg { flex: none; color: #188367; }
+.lab-overview strong { color: #233d4e; font-variant-numeric: tabular-nums; font-size: 1.45rem; line-height: 1; }
+.lab-create-form { display: grid; gap: .9rem; border: 1px solid #bcded0; background: #f7fcf9; padding: 1rem; border-radius: 14px; }
+.lab-icon-button { flex: none; display: grid; place-items: center; height: 34px; width: 34px; min-height: 34px; padding: 0; background: #fff; border: 1px solid #d8e6df; color: #365d55; border-radius: 9px; }
+.lab-field { display: grid; min-width: 0; gap: .4rem; font-size: .78rem; font-weight: 750; color: #365768; }
+.lab-required { color: #c33e47; }
+.lab-workspace .lab-field :is(input, select, textarea) { min-width: 0; width: 100%; border: 1px solid #d7e4e8; border-radius: 10px; background: #fff; padding: .7rem .75rem; min-height: 43px; box-shadow: none; color: #263f4c; font-size: .82rem; }
+.lab-workspace .lab-field textarea { resize: vertical; min-height: 84px; }
+.lab-workspace .lab-field :is(input, select, textarea):focus-visible { outline: 2px solid #1a8a66; outline-offset: 1px; }
+.lab-input-with-icon { display: flex; align-items: center; min-width: 0; gap: .55rem; border: 1px solid #d8e5ea; border-radius: 10px; background: #fff; padding: 0 .75rem; color: #4c7480; }
+.lab-input-with-icon svg { flex: none; }
+.lab-workspace .lab-input-with-icon input, .lab-workspace .lab-field .lab-input-with-icon input { width: 100%; min-width: 0; min-height: 43px; border: 0; padding: .45rem 0; box-shadow: none; outline: none; background: transparent; border-radius: 0; color: #294553; font-size: .82rem; }
+.lab-input-with-icon:focus-within { border-color: #15966a; box-shadow: 0 0 0 2px #15966a18; }
+.lab-selected-service { display: flex; align-items: flex-start; gap: .4rem; color: #186848; font-size: .77rem; margin: 0; line-height: 1.5; }
+.lab-selected-service svg { flex: none; }
+.lab-support-note, .lab-patient-note { display: flex; align-items: flex-start; gap: .5rem; color: #3c765e; font-size: .76rem; line-height: 1.55; background: #edf8f1; border: 1px solid #d9ebe1; padding: .7rem .85rem; border-radius: 10px; margin: 0; }
+.lab-support-note svg, .lab-patient-note svg { flex: none; }
+.lab-billing-locked { display: flex; align-items: flex-start; gap: .7rem; padding: .9rem 1rem; border: 1px solid #e8dab8; background: #fff9ed; border-radius: 11px; color: #6c5426; }
+.lab-billing-locked > svg { flex: none; margin-top: .08rem; }
+.lab-billing-locked strong { display: block; font-size: .84rem; }
+.lab-billing-locked p { margin: .3rem 0 0; font-size: .77rem; line-height: 1.6; }
+.lab-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.lab-form-actions > button:first-child { background: #297d62; color: #fff; }
+.lab-form-actions > button:first-child:hover:not(:disabled) { background: #1d6c54; color: #fff; }
+.lab-list-section { display: grid; min-width: 0; gap: .9rem; }
+.lab-list-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(155px, 195px); gap: .6rem; }
+.lab-list-toolbar > .lab-input-with-icon { min-width: 0; }
+.lab-filter { position: relative; display: flex; align-items: center; min-width: 0; background: #fff; border: 1px solid #d8e5ea; border-radius: 10px; }
+.lab-filter select { appearance: none; min-width: 0; width: 100%; padding: .6rem 2rem .6rem .75rem; background: transparent; color: #345260; border: none; font-size: .79rem; min-height: 43px; box-shadow: none; }
+.lab-filter svg { position: absolute; right: .7rem; pointer-events: none; color: #547280; }
+.lab-filter:focus-within { outline: 2px solid #168a66; outline-offset: 1px; }
+.lab-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; clip: rect(0,0,0,0); overflow: hidden; white-space: nowrap; border: 0; }
+.lab-empty { display: grid; justify-items: center; text-align: center; align-content: center; gap: .55rem; padding: 1.5rem .9rem; border: 1px dashed #cfdfdd; border-radius: 13px; background: #fbfdfc; color: #6d8490; font-size: .79rem; }
+.lab-empty > svg { color: #268a67; }
+.lab-empty strong { color: #355466; font-size: .89rem; }
+.lab-empty p { margin: 0; font-size: .77rem; line-height: 1.55; }
+.lab-order-list { display: grid; gap: .65rem; min-width: 0; }
+.lab-order-card { min-width: 0; overflow: hidden; padding: .85rem; border: 1px solid #e1eaea; border-radius: 13px; background: #fff; }
+.lab-order-card.is-selected { border-color: #90cbb1; box-shadow: 0 0 0 2px #21976b14; }
+.lab-order-top { display: flex; flex-wrap: wrap; align-items: flex-start; gap: .65rem; min-width: 0; }
+.lab-order-icon { display: grid; flex: none; place-items: center; width: 38px; height: 38px; color: #18765a; background: #e6f7ee; border-radius: 10px; }
+.lab-order-main { flex: 1 1 180px; min-width: 0; display: grid; gap: .23rem; }
+.lab-order-main strong { font-size: .85rem; line-height: 1.45; color: #244456; overflow-wrap: anywhere; }
+.lab-order-main small { color: #78909b; font-size: .72rem; line-height: 1.5; overflow-wrap: anywhere; }
+.lab-state { flex: none; max-width: 100%; border-radius: 999px; padding: .35rem .65rem; background: #f2f5f7; color: #506879; font-size: .7rem; font-weight: 800; white-space: nowrap; }
+.lab-state-ordered { background: #fff5e7; color: #a36513; }
+.lab-state-collected { background: #eef4ff; color: #3466b3; }
+.lab-state-processing { background: #f1edfe; color: #7655aa; }
+.lab-state-resulted { background: #fff3df; color: #9a5c13; }
+.lab-state-released { background: #e1f9eb; color: #087651; }
+.lab-order-meta { display: flex; flex-wrap: wrap; gap: .35rem 1.25rem; margin: .65rem 0 0 2.9rem; font-size: .72rem; color: #6b8290; }
+.lab-order-meta strong { color: #3b5866; font-weight: 700; overflow-wrap: anywhere; }
+.lab-result-display { display: grid; gap: .25rem; margin-top: .8rem; padding: .75rem .85rem; background: #f2faf5; border: 1px solid #d9eddf; border-radius: 9px; }
+.lab-result-display > span { color: #247457; font-size: .65rem; font-weight: 850; letter-spacing: .075em; }
+.lab-result-display strong { color: #264c40; font-size: .94rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.lab-result-display small { color: #677c83; font-size: .72rem; line-height: 1.4; }
+.lab-order-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .65rem; padding-top: .75rem; margin-top: .75rem; border-top: 1px solid #e8efed; }
+.lab-order-footer > span { display: inline-flex; align-items: flex-start; gap: .3rem; color: #69808b; font-size: .72rem; line-height: 1.5; }
+.lab-order-footer > span svg { flex: none; }
+.lab-order-action { display: inline-flex; justify-content: center; align-items: center; gap: .35rem; border: 1px solid #cfebdc; border-radius: 9px; background: #e9f8f0; color: #156c51; font-size: .76rem; min-height: 36px; padding: .45rem .65rem; }
+.lab-order-action:hover:not(:disabled) { background: #dcf2e6; color: #0d624a; box-shadow: none; transform: none; }
+.lab-order-action[aria-expanded='true'] svg { transform: rotate(180deg); }
+.lab-action-panel { display: grid; gap: .75rem; min-width: 0; margin-top: .8rem; padding: .85rem; border: 1px solid #cee7da; border-radius: 10px; background: #f8fcf9; }
+.lab-action-heading { display: flex; align-items: center; gap: .65rem; }
+.lab-action-heading > svg { flex: none; color: #147752; }
+.lab-action-heading h5 { color: #2d4c56; font-size: .86rem; margin: .14rem 0 0; }
+.lab-action-panel form, .lab-action-body { display: grid; gap: .75rem; }
+.lab-action-panel .lab-support-note { padding: 0; border: 0; background: transparent; color: #647e88; }
+.lab-action-body > p { font-size: .78rem; color: #4c6774; line-height: 1.6; margin: 0; }
+.lab-result-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+.lab-release-warning { display: flex; align-items: flex-start; gap: .55rem; padding: .75rem; color: #7a5c2d; background: #fff8e9; border: 1px solid #f0e1bd; border-radius: 10px; font-size: .77rem; line-height: 1.6; }
+.lab-release-warning svg { flex: none; }
+.lab-release-confirm { display: flex; align-items: flex-start; gap: .6rem; color: #31564c; font-size: .78rem; font-weight: 750; line-height: 1.6; }
+.lab-release-confirm input { flex: none; width: 18px; height: 18px; margin-top: .15rem; accent-color: #158465; }
+.lab-patient-note { color: #3a7162; }
+@media (max-width: 650px) { .lab-heading-actions { justify-content: flex-start; width: 100%; } .lab-list-toolbar { grid-template-columns: minmax(0, 1fr); } .lab-result-fields { grid-template-columns: minmax(0, 1fr); } .lab-workspace-heading { gap: 1rem; } .lab-order-meta { margin-left: 0; } }
+@media (max-width: 430px) { .lab-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lab-heading-actions button { flex: 1 1 auto; } .lab-order-action { width: 100%; } }

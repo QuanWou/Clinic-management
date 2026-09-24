@@ -1,0 +1,261 @@
+/* Reception patients UX: keep the directory at full width and show detail in
+   a centered modal instead of squeezing the six-column table. */
+.patients-workspace { gap: .85rem; }
+.patients-workspace .patients-hero { min-height: 0; padding: .8rem 1.1rem; }
+.patients-workspace .patients-hero h3 { font-size: 1.17rem; margin: .2rem 0 .2rem; }
+.patients-workspace .patients-hero-tags { margin-top: .35rem; }
+.patients-workspace .patients-hero-symbol { width: 52px; height: 52px; }
+.patients-workspace .patients-hero-symbol svg { width: 36px; height: 36px; }
+.patients-workspace .patients-search-panel { padding: .95rem 1.15rem; }
+.patients-workspace .patients-search-panel .patients-section-head { margin-bottom: .7rem; }
+.patients-workspace .patients-search-note { margin-top: .45rem; }
+.patients-workspace .patients-search-fields { grid-template-columns: minmax(160px, 1.4fr) minmax(140px, 1fr) auto auto; gap: .55rem; }
+
+.patients-results-stack {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.patients-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.patients-detail-backdrop {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: rgb(15 38 48 / 34%);
+  cursor: default;
+}
+
+.patients-detail-backdrop:hover:not(:disabled) {
+  background: rgb(15 38 48 / 34%);
+  box-shadow: none;
+}
+
+.patients-detail-overlay > .patients-detail {
+  position: relative;
+  z-index: 1;
+  width: min(600px, 100%);
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 18px;
+  border-color: #cce9dc;
+  box-shadow: 0 20px 60px #16314738;
+}
+
+.patients-detail-overlay > .patients-detail:focus {
+  outline: none;
+}
+
+.patients-detail-close {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid #dce7ed;
+  border-radius: 10px;
+  background: #fff;
+  color: #304755;
+}
+
+.patients-detail-close:hover:not(:disabled) {
+  border-color: #b5d9cc;
+  background: #edf8f3;
+  color: #0b8061;
+  box-shadow: none;
+}
+
+.patients-detail .patients-section-head {
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: .5rem;
+}
+
+.patients-detail .patients-section-head > div { min-width: 0; }
+.patients-detail .patients-section-head h3 { overflow-wrap: anywhere; }
+.patients-detail .patients-detail-fields dt { flex-wrap: wrap; }
+.patients-detail .patients-detail-fields dd { overflow-wrap: anywhere; }
+.patients-detail .patients-detail-identity { min-width: 0; }
+.patients-detail .patients-detail-identity > div { min-width: 0; }
+.patients-detail .patients-privacy-note { overflow-wrap: anywhere; }
+
+/* Centered registration modal: fixed header/actions with an independently
+   scrolling form so the save button stays available on shorter screens. */
+.patients-registration-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.patients-registration-overlay .patients-detail-backdrop:disabled { opacity: 1; }
+
+.patients-workspace .patients-registration-overlay > .patients-registration {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(720px, 100%);
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 18px;
+  border: 1px solid #cce9dc;
+  box-shadow: 0 20px 60px #16314738;
+}
+
+.patients-registration:focus { outline: none; }
+
+.patients-registration-header {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.3rem 1.5rem 1.1rem;
+  border-bottom: 1px solid #e9eef2;
+}
+
+.patients-registration-header > div { min-width: 0; }
+.patients-registration-header h3 { margin: .28rem 0 .35rem; font-size: 1.3rem; color: #193646; }
+.patients-registration-header p { margin: 0; font-size: .8rem; line-height: 1.55; color: #647c87; }
+
+.patients-registration .patients-registration-form {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.patients-registration-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 1rem;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 1.15rem 1.5rem 1.4rem;
+}
+
+.patients-registration-body > label {
+  display: grid;
+  align-content: start;
+  gap: .45rem;
+  min-width: 0;
+  color: #324b5d;
+  font-size: .8rem;
+  font-weight: 800;
+}
+
+.patients-registration-body > label > span:not(.patients-field-error),
+.patients-registration-hint span { color: #b33f4b; }
+.patients-registration-body .patients-form-wide { grid-column: 1 / -1; }
+.patients-registration-body input,
+.patients-registration-body select { min-width: 0; width: 100%; padding: .76rem .9rem; font-size: .85rem; }
+
+.patients-registration-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: .45rem;
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: .75rem .85rem;
+  border-radius: 10px;
+  background: #edf9f3;
+  color: #386b59;
+  font-size: .75rem;
+  line-height: 1.5;
+}
+.patients-registration-hint svg { flex: none; margin-top: .05rem; }
+.patients-registration-error {
+  grid-column: 1 / -1;
+  padding: .75rem .85rem;
+  border: 1px solid #eac9cd;
+  border-radius: 10px;
+  background: #fff4f4;
+  color: #a43441;
+  font-size: .79rem;
+  overflow-wrap: anywhere;
+}
+
+.patients-registration .patients-form-actions {
+  flex: none;
+  justify-content: flex-end;
+  gap: .65rem;
+  padding: .95rem 1.5rem;
+  border-top: 1px solid #e9eef2;
+  background: #fff;
+}
+.patients-registration .patients-form-actions button { min-height: 40px; padding: .6rem 1rem; }
+
+@media (max-width: 480px) {
+  .patients-detail-overlay { padding: 10px; }
+  .patients-detail-overlay > .patients-detail { max-height: calc(100dvh - 20px); border-radius: 14px; }
+  .patients-detail .patients-detail-fields { grid-template-columns: minmax(0, 1fr); }
+  .patients-detail .patients-detail-wide { grid-column: auto; }
+}
+
+@media (max-width: 630px) {
+  .patients-registration-overlay { padding: 10px; }
+  .patients-workspace .patients-registration-overlay > .patients-registration { max-height: calc(100dvh - 20px); border-radius: 14px; }
+  .patients-registration-header { padding: 1rem; }
+  .patients-registration-body { grid-template-columns: minmax(0, 1fr); gap: .8rem; padding: 1rem; }
+  .patients-registration-body .patients-form-wide { grid-column: auto; }
+  .patients-registration .patients-form-actions { padding: .8rem 1rem; }
+}
+
+.patients-field-error {
+  display: block;
+  margin: -.1rem 0 0;
+  color: #b33f4b !important;
+  font-size: .71rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.patients-registration-form input[aria-invalid='true'] {
+  border-color: #c6535d;
+  box-shadow: 0 0 0 3px #c6535d1c;
+}
+
+.patients-registration-form input[aria-invalid='true']:focus {
+  border-color: #b33f4b;
+  box-shadow: 0 0 0 3px #c6535d2b;
+}
+
+@media (max-width: 1100px) {
+  .patients-workspace .patients-search-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .patients-workspace .patients-hero-symbol { display: none; }
+  .patients-workspace .patients-search-fields { grid-template-columns: minmax(0, 1fr); }
+  .patients-workspace .patients-search-fields > button { width: 100%; }
+}

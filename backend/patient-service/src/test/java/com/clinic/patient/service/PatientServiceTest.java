@@ -92,4 +92,20 @@ class PatientServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("Patient profile not found");
     }
+
+    @Test
+    void recipientLookupDistinguishesWalkInFromMissingProfile() {
+        UUID walkInId = UUID.randomUUID();
+        when(patientRepository.findById(walkInId)).thenReturn(Optional.of(Patient.builder()
+                .id(walkInId).fullName("Walk-in").build()));
+        var recipient = patientService.getRecipient(walkInId);
+        assertThat(recipient.patientId()).isEqualTo(walkInId);
+        assertThat(recipient.userId()).isNull();
+
+        UUID missing = UUID.randomUUID();
+        when(patientRepository.findById(missing)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> patientService.getRecipient(missing))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("Patient profile not found");
+    }
 }

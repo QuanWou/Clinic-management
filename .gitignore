@@ -1,2 +1,9 @@
-
-commit_plan.md
+**/target/
+.idea/
+.claude/settings.local.json
+*.iml
+.DS_Store
+**/node_modules/
+**/dist/
+*.log
+.env

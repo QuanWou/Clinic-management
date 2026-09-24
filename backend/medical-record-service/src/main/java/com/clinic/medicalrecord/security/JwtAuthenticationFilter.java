@@ -38,16 +38,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        if (!jwtService.isTokenValid(token)) {
+        if (!jwtService.isAccessTokenValid(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         Claims claims = jwtService.extractAllClaims(token);
-        UUID userId = UUID.fromString(claims.getSubject());
-        String email = claims.get("email", String.class);
-        List<String> roleNames = claims.get("roles", List.class);
-        Set<String> roles = roleNames == null ? Set.of() : Set.copyOf(roleNames);
+        UUID userId;
+        String email;
+        Set<String> roles;
+        try {
+            userId = UUID.fromString(claims.getSubject());
+            email = claims.get("email", String.class);
+            Object rawRoles = claims.get("roles");
+            // Identity refresh tokens contain no email or roles and must never authenticate APIs.
+            if (email == null || email.isBlank() || !(rawRoles instanceof List<?> roleList)
+                    || roleList.isEmpty() || roleList.stream().anyMatch(role ->
+                    !(role instanceof String value) || !value.matches("ROLE_(ADMIN|RECEPTIONIST|DOCTOR|PATIENT)"))) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            roles = roleList.stream().map(String.class::cast).collect(Collectors.toUnmodifiableSet());
+        } catch (IllegalArgumentException | ClassCastException ex) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         var authorities = roles.stream()
                 .map(SimpleGrantedAuthority::new)

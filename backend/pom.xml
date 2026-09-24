@@ -17,6 +17,7 @@
         <module>identity-service</module>
         <module>patient-service</module>
         <module>doctor-service</module>
+        <module>catalog-service</module>
         <module>appointment-service</module>
         <module>medical-record-service</module>
         <module>billing-service</module>

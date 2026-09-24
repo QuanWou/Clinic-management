@@ -39,15 +39,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        if (!jwtService.isTokenValid(token)) {
+        if (!jwtService.isAccessTokenValid(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         Claims claims = jwtService.extractAllClaims(token);
+        if (!"access".equals(claims.get("token_type", String.class))) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         UUID userId = UUID.fromString(claims.getSubject());
         String email = claims.get("email", String.class);
         Collection<String> roleNames = claims.get("roles", List.class);
+        if (roleNames == null || roleNames.isEmpty() || roleNames.stream().anyMatch(role -> role == null || !role.startsWith("ROLE_"))) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         Set<String> roles = Set.copyOf(roleNames);
 
         var authorities = roles.stream()
