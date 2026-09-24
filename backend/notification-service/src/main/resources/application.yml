@@ -1,0 +1,58 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clinic_db?currentSchema=notification
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: notification
+  flyway:
+    enabled: true
+    schemas: notification
+    locations: classpath:db/migration
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+  mail:
+    host: ${SPRING_MAIL_HOST:localhost}
+    port: ${SPRING_MAIL_PORT:1025}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${SPRING_MAIL_SMTP_AUTH:false}
+          starttls:
+            enable: ${SPRING_MAIL_SMTP_STARTTLS_ENABLE:false}
+
+app:
+  security:
+    jwt:
+      secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+      access-token-expiration-minutes: 60
+      refresh-token-expiration-days: 7
+  notification:
+    rabbitmq:
+      exchange: ${APP_NOTIFICATION_RABBITMQ_EXCHANGE:notification.exchange}
+      queue: ${APP_NOTIFICATION_RABBITMQ_QUEUE:notification.delivery.queue}
+      routing-key: ${APP_NOTIFICATION_RABBITMQ_ROUTING_KEY:notification.delivery}
+    sms:
+      endpoint: ${APP_NOTIFICATION_SMS_ENDPOINT:http://localhost:9091/messages}
+      api-key: ${APP_NOTIFICATION_SMS_API_KEY:local-dev-token}
+      sender: ${APP_NOTIFICATION_SMS_SENDER:Clinic}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
