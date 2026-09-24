@@ -1,6 +1,5 @@
 package com.clinic.medicalrecord.service;
 
-import com.clinic.medicalrecord.dto.CreateMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.FinalizeMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.MedicalRecordResponse;
 import com.clinic.medicalrecord.dto.SaveMedicalRecordDraftRequest;
@@ -11,9 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface MedicalRecordService {
-
-    MedicalRecordResponse create(UUID currentUserId, String authorizationHeader, CurrentUserPrincipal principal,
-                                 CreateMedicalRecordRequest request);
 
     MedicalRecordResponse getById(UUID currentUserId, String authorizationHeader, CurrentUserPrincipal principal,
                                   UUID medicalRecordId);

@@ -3,16 +3,13 @@ package com.clinic.medicalrecord.service.impl;
 import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
 import com.clinic.medicalrecord.client.AppointmentClient;
-import com.clinic.medicalrecord.client.AppointmentResponse;
 import com.clinic.medicalrecord.client.DoctorClient;
 import com.clinic.medicalrecord.client.DoctorProfileResponse;
 import com.clinic.medicalrecord.client.EncounterContextResponse;
 import com.clinic.medicalrecord.client.PatientClient;
 import com.clinic.medicalrecord.client.PatientProfileResponse;
-import com.clinic.medicalrecord.dto.CreateMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.FinalizeMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.MedicalRecordResponse;
-import com.clinic.medicalrecord.dto.PrescriptionItemRequest;
 import com.clinic.medicalrecord.dto.PrescriptionItemResponse;
 import com.clinic.medicalrecord.dto.PrescriptionResponse;
 import com.clinic.medicalrecord.dto.SaveMedicalRecordDraftRequest;
@@ -26,7 +23,6 @@ import com.clinic.medicalrecord.repository.MedicalRecordDisplayLookup;
 import com.clinic.medicalrecord.security.CurrentUserPrincipal;
 import com.clinic.medicalrecord.service.MedicalRecordService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,10 +39,8 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class MedicalRecordServiceImpl implements MedicalRecordService {
 
-    private static final String COMPLETED_STATUS = "COMPLETED";
     private static final String IN_PROGRESS_STATUS = "IN_PROGRESS";
 
     private final MedicalRecordRepository medicalRecordRepository;
@@ -56,61 +50,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     private final PatientClient patientClient;
     private final MedicalAuditService auditService;
 
-    @Override
-    @Transactional
-    public MedicalRecordResponse create(UUID currentUserId, String authorizationHeader,
-                                        CurrentUserPrincipal principal, CreateMedicalRecordRequest request) {
-        log.info("User {} is creating legacy medical record for appointment {}", currentUserId, request.appointmentId());
-
-        requireDoctor(principal);
-        AppointmentResponse appointment = appointmentClient.getById(authorizationHeader, request.appointmentId());
-        DoctorProfileResponse doctorProfile = doctorClient.getCurrentDoctorProfile(authorizationHeader);
-        if (!appointment.doctorId().equals(doctorProfile.id())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN,
-                    "Not authorized to create medical record for this appointment");
-        }
-        if (medicalRecordRepository.existsByAppointmentId(request.appointmentId())) {
-            throw new BusinessException(ErrorCode.CONFLICT, "Medical record already exists for this appointment");
-        }
-        if (!COMPLETED_STATUS.equals(appointment.status())) {
-            throw new BusinessException(ErrorCode.VALIDATION_ERROR,
-                    "Legacy medical record creation requires a completed appointment");
-        }
-
-        MedicalRecord medicalRecord = MedicalRecord.builder()
-                .appointmentId(appointment.id())
-                .patientId(appointment.patientId())
-                .doctorId(appointment.doctorId())
-                .symptoms(normalizeNullable(request.symptoms()))
-                .diagnosis(request.diagnosis().trim())
-                .notes(normalizeNullable(request.notes()))
-                .status(MedicalRecordStatus.FINAL)
-                .finalizedAt(LocalDateTime.now())
-                .finalizedBy(currentUserId)
-                .build();
-
-        if (request.prescriptionItems() != null && !request.prescriptionItems().isEmpty()) {
-            Prescription prescription = Prescription.builder()
-                    .status(PrescriptionStatus.SIGNED)
-                    .signedAt(LocalDateTime.now())
-                    .signedBy(currentUserId)
-                    .build();
-            request.prescriptionItems().stream()
-                    .map(this::toPrescriptionItem)
-                    .forEach(prescription::addItem);
-            medicalRecord.addPrescription(prescription);
-        }
-
-        try {
-            MedicalRecord saved = medicalRecordRepository.save(medicalRecord);
-            auditService.recordMutation(currentUserId, "MEDICAL_RECORD_CREATED", saved.getId());
-            return toResponse(saved);
-        } catch (DataIntegrityViolationException ex) {
-            throw new BusinessException(ErrorCode.CONFLICT, "Medical record already exists for this appointment");
-        }
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public MedicalRecordResponse getById(UUID currentUserId, String authorizationHeader,
                                          CurrentUserPrincipal principal, UUID medicalRecordId) {
@@ -378,16 +317,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         }
 
         throw new BusinessException(ErrorCode.FORBIDDEN, "Not authorized to view this medical record");
-    }
-
-    private PrescriptionItem toPrescriptionItem(PrescriptionItemRequest request) {
-        return PrescriptionItem.builder()
-                .medicineName(request.medicineName())
-                .dosage(request.dosage())
-                .frequency(request.frequency())
-                .duration(request.duration())
-                .note(request.note())
-                .build();
     }
 
     private MedicalRecordResponse toResponse(MedicalRecord medicalRecord) {

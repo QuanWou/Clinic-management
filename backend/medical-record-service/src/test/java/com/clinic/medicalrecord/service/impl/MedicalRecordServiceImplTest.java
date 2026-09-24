@@ -3,15 +3,12 @@ package com.clinic.medicalrecord.service.impl;
 import com.clinic.common.constants.ErrorCode;
 import com.clinic.common.exception.BusinessException;
 import com.clinic.medicalrecord.client.AppointmentClient;
-import com.clinic.medicalrecord.client.AppointmentResponse;
 import com.clinic.medicalrecord.client.DoctorClient;
 import com.clinic.medicalrecord.client.DoctorProfileResponse;
 import com.clinic.medicalrecord.client.EncounterContextResponse;
 import com.clinic.medicalrecord.client.PatientClient;
 import com.clinic.medicalrecord.client.PatientProfileResponse;
-import com.clinic.medicalrecord.dto.CreateMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.FinalizeMedicalRecordRequest;
-import com.clinic.medicalrecord.dto.PrescriptionItemRequest;
 import com.clinic.medicalrecord.dto.SaveMedicalRecordDraftRequest;
 import com.clinic.medicalrecord.entity.MedicalRecord;
 import com.clinic.medicalrecord.entity.MedicalRecordStatus;
@@ -84,62 +81,6 @@ class MedicalRecordServiceImplTest {
         patientId = UUID.randomUUID();
         doctorId = UUID.randomUUID();
         doctorPrincipal = new CurrentUserPrincipal(currentUserId, "doctor@test.com", "Doctor", Set.of("ROLE_DOCTOR"));
-    }
-
-    @Test
-    void createShouldSaveMedicalRecordWhenAppointmentIsCompletedAndDoctorMatches() {
-        CreateMedicalRecordRequest request = createRequest();
-
-        when(medicalRecordRepository.existsByAppointmentId(appointmentId)).thenReturn(false);
-        when(appointmentClient.getById(AUTHORIZATION, appointmentId)).thenReturn(appointment("COMPLETED"));
-        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
-        when(medicalRecordRepository.save(any(MedicalRecord.class))).thenAnswer(invocation -> {
-            MedicalRecord medicalRecord = invocation.getArgument(0);
-            medicalRecord.setId(UUID.randomUUID());
-            medicalRecord.setCreatedAt(LocalDateTime.now());
-            medicalRecord.setUpdatedAt(LocalDateTime.now());
-            medicalRecord.getPrescriptions().forEach(prescription -> {
-                prescription.setId(UUID.randomUUID());
-                prescription.setCreatedAt(LocalDateTime.now());
-                prescription.getItems().forEach(item -> item.setId(UUID.randomUUID()));
-            });
-            return medicalRecord;
-        });
-
-        var response = medicalRecordService.create(currentUserId, AUTHORIZATION, doctorPrincipal, request);
-
-        assertEquals(appointmentId, response.appointmentId());
-        assertEquals(patientId, response.patientId());
-        assertEquals(doctorId, response.doctorId());
-        assertEquals(1, response.prescriptions().size());
-        assertEquals("Amoxicillin", response.prescriptions().getFirst().items().getFirst().medicineName());
-    }
-
-    @Test
-    void createShouldThrowWhenMedicalRecordAlreadyExistsForAppointment() {
-        when(appointmentClient.getById(AUTHORIZATION, appointmentId)).thenReturn(appointment("COMPLETED"));
-        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
-        when(medicalRecordRepository.existsByAppointmentId(appointmentId)).thenReturn(true);
-
-        BusinessException exception = assertThrows(
-                BusinessException.class,
-                () -> medicalRecordService.create(currentUserId, AUTHORIZATION, doctorPrincipal, createRequest())
-        );
-
-        assertEquals(ErrorCode.CONFLICT, exception.getErrorCode());
-    }
-
-    @Test
-    void createShouldThrowWhenAppointmentIsNotCompleted() {
-        when(appointmentClient.getById(AUTHORIZATION, appointmentId)).thenReturn(appointment("CONFIRMED"));
-        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(doctorId));
-
-        BusinessException exception = assertThrows(
-                BusinessException.class,
-                () -> medicalRecordService.create(currentUserId, AUTHORIZATION, doctorPrincipal, createRequest())
-        );
-
-        assertEquals(ErrorCode.VALIDATION_ERROR, exception.getErrorCode());
     }
 
     @Test
@@ -241,14 +182,6 @@ class MedicalRecordServiceImplTest {
     }
 
     @Test
-    void createShouldRejectAdminEvenWhenAppointmentExists() {
-        CurrentUserPrincipal admin = new CurrentUserPrincipal(currentUserId, "admin@test.com", "Admin", Set.of("ROLE_ADMIN"));
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> medicalRecordService.create(currentUserId, AUTHORIZATION, admin, createRequest()));
-        assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
-    }
-
-    @Test
     void getByIdShouldRejectAnotherPatient() {
         UUID recordId = UUID.randomUUID();
         UUID patientUserId = UUID.randomUUID();
@@ -260,17 +193,6 @@ class MedicalRecordServiceImplTest {
         BusinessException exception = assertThrows(BusinessException.class,
                 () -> medicalRecordService.getById(patientUserId, AUTHORIZATION, patient, recordId));
         assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
-    }
-
-    @Test
-    void createShouldHideDuplicateRecordFromUnrelatedDoctor() {
-        when(appointmentClient.getById(AUTHORIZATION, appointmentId)).thenReturn(appointment("COMPLETED"));
-        when(doctorClient.getCurrentDoctorProfile(AUTHORIZATION)).thenReturn(doctorProfile(UUID.randomUUID()));
-
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> medicalRecordService.create(currentUserId, AUTHORIZATION, doctorPrincipal, createRequest()));
-        assertEquals(ErrorCode.FORBIDDEN, exception.getErrorCode());
-        org.mockito.Mockito.verify(medicalRecordRepository, org.mockito.Mockito.never()).existsByAppointmentId(appointmentId);
     }
 
     @Test
@@ -395,37 +317,6 @@ class MedicalRecordServiceImplTest {
 
         assertThrows(org.springframework.dao.DataIntegrityViolationException.class,
                 () -> medicalRecordService.getById(patientUserId, AUTHORIZATION, patient, recordId));
-    }
-
-    private CreateMedicalRecordRequest createRequest() {
-        return new CreateMedicalRecordRequest(
-                appointmentId,
-                "Fever and cough",
-                "Upper respiratory infection",
-                "Follow up if symptoms persist",
-                List.of(new PrescriptionItemRequest(
-                        "Amoxicillin",
-                        "500mg",
-                        "3 times per day",
-                        "7 days",
-                        "After meals"
-                ))
-        );
-    }
-
-    private AppointmentResponse appointment(String status) {
-        return new AppointmentResponse(
-                appointmentId,
-                patientId,
-                doctorId,
-                LocalDate.now().minusDays(1),
-                LocalTime.of(9, 0),
-                LocalTime.of(10, 0),
-                status,
-                "Checkup",
-                LocalDateTime.now().minusDays(1),
-                LocalDateTime.now().minusDays(1)
-        );
     }
 
     private EncounterContextResponse encounter(String queueStatus) {

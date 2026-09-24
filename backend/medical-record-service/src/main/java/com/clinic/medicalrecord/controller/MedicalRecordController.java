@@ -1,7 +1,6 @@
 package com.clinic.medicalrecord.controller;
 
 import com.clinic.common.dto.ApiResponse;
-import com.clinic.medicalrecord.dto.CreateMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.FinalizeMedicalRecordRequest;
 import com.clinic.medicalrecord.dto.MedicalRecordResponse;
 import com.clinic.medicalrecord.dto.SaveMedicalRecordDraftRequest;
@@ -24,18 +23,6 @@ import java.util.UUID;
 public class MedicalRecordController {
 
     private final MedicalRecordService medicalRecordService;
-
-    @PostMapping
-    public ApiResponse<MedicalRecordResponse> create(
-            @AuthenticationPrincipal CurrentUserPrincipal principal,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
-            @Valid @RequestBody CreateMedicalRecordRequest request
-    ) {
-        return ApiResponse.success(
-                "Medical record created successfully",
-                medicalRecordService.create(principal.id(), authorizationHeader, principal, request)
-        );
-    }
 
     @GetMapping("/appointments/{appointmentId}")
     public ApiResponse<MedicalRecordResponse> getByAppointment(
