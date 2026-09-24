@@ -4,67 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="386bb46f-3148-467f-a7bc-bdb47a7002fa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/api-gateway/src/main/resources/application-local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/appointment-service/src/main/resources/application-local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/billing-service/src/main/resources/application-local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/controller/SpecialtyController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/dto/DoctorScheduleRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/dto/ScheduleResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/dto/SpecialtyResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/dto/UpdateDoctorSchedulesRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/service/SpecialtyService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/resources/application-local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/resources/db/migration/V2__seed_specialties_and_schedule_constraints.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/identity-service/src/main/resources/application-local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/medical-record-service/src/main/resources/application-local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/resources/application-local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/test/java/com/clinic/notification/security/JwtServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/patient-service/src/main/resources/application-local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/patient-service/src/test/java/com/clinic/patient/controller/PatientControllerSecurityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/patient-service/src/test/java/com/clinic/patient/dto/UpdatePatientRequestValidationTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/patient-service/src/test/java/com/clinic/patient/service/PatientServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/features/auth/components/RegisterForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api-gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api-gateway/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api-gateway/src/main/java/com/clinic/gateway/controller/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api-gateway/src/main/java/com/clinic/gateway/controller/DashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api-gateway/src/main/java/com/clinic/gateway/service/DashboardAggregationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api-gateway/src/main/java/com/clinic/gateway/service/DashboardAggregationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api-gateway/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api-gateway/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api-gateway/src/test/java/com/clinic/gateway/service/DashboardAggregationServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api-gateway/src/test/java/com/clinic/gateway/service/DashboardAggregationServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/doctor-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctor-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/controller/DoctorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/controller/DoctorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/dto/UpdateDoctorRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/dto/UpdateDoctorRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/repository/DoctorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/repository/DoctorRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/repository/ScheduleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/repository/ScheduleRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/service/DoctorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctor-service/src/main/java/com/clinic/doctor/service/DoctorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/identity-service/src/main/java/com/clinic/identity/security/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/identity-service/src/main/java/com/clinic/identity/security/JwtService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/identity-service/src/main/java/com/clinic/identity/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/identity-service/src/main/java/com/clinic/identity/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/clinic/notification/security/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/clinic/notification/security/JwtService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/clinic/notification/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/clinic/notification/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/patient-service/src/main/java/com/clinic/patient/dto/UpdatePatientRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/patient-service/src/main/java/com/clinic/patient/dto/UpdatePatientRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/patient-service/src/main/java/com/clinic/patient/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/patient-service/src/main/java/com/clinic/patient/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/patient-service/src/main/java/com/clinic/patient/service/PatientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/patient-service/src/main/java/com/clinic/patient/service/PatientService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api-contract.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api-contract.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/architecture-overview.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/architecture-overview.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/roadmap.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/clinic.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/clinic.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/endpoints.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/endpoints.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/config/auth.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/config/auth.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/config/navigation.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/config/navigation.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layouts/Sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layouts/Sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/DoctorProfilePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DoctorProfilePage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/DoctorsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DoctorsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/LoginPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/LoginPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/SettingsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/SettingsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/types/domain.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/types/domain.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/types/view.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/types/view.ts" afterDir="false" />
-    </list>
+    <list default="true" id="386bb46f-3148-467f-a7bc-bdb47a7002fa" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -88,61 +28,61 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Maven.API Gateway - Maven Run.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Backend - Test.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Spring Boot - API Gateway.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Spring Boot - Appointment Service.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Spring Boot - Billing Service.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Spring Boot - Doctor Service.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Spring Boot - Identity Service.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Spring Boot - Medical Record Service.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Spring Boot - Notification Service.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Spring Boot - Patient Service.executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ApiGatewayApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.AppointmentServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.BillingServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.DoctorServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.IdentityServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.MedicalRecordServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.PatientServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.Spring Boot - API Gateway.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.Spring Boot - Appointment Service.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.Spring Boot - Billing Service.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.Spring Boot - Doctor Service.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.Spring Boot - Identity Service.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.Spring Boot - Medical Record Service.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.Spring Boot - Notification Service.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.Spring Boot - Patient Service.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/course-service&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.Frontend - Dev.executor&quot;: &quot;Run&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Maven.API Gateway - Maven Run.executor": "Run",
+    "Maven.Backend - Test.executor": "Run",
+    "Maven.Spring Boot - API Gateway.executor": "Run",
+    "Maven.Spring Boot - Appointment Service.executor": "Run",
+    "Maven.Spring Boot - Billing Service.executor": "Run",
+    "Maven.Spring Boot - Doctor Service.executor": "Run",
+    "Maven.Spring Boot - Identity Service.executor": "Run",
+    "Maven.Spring Boot - Medical Record Service.executor": "Run",
+    "Maven.Spring Boot - Notification Service.executor": "Run",
+    "Maven.Spring Boot - Patient Service.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.ApiGatewayApplication.executor": "Run",
+    "Spring Boot.AppointmentServiceApplication.executor": "Run",
+    "Spring Boot.BillingServiceApplication.executor": "Run",
+    "Spring Boot.DoctorServiceApplication.executor": "Run",
+    "Spring Boot.IdentityServiceApplication.executor": "Run",
+    "Spring Boot.MedicalRecordServiceApplication.executor": "Run",
+    "Spring Boot.NotificationServiceApplication.executor": "Run",
+    "Spring Boot.PatientServiceApplication.executor": "Run",
+    "Spring Boot.Spring Boot - API Gateway.executor": "Run",
+    "Spring Boot.Spring Boot - Appointment Service.executor": "Run",
+    "Spring Boot.Spring Boot - Billing Service.executor": "Run",
+    "Spring Boot.Spring Boot - Doctor Service.executor": "Run",
+    "Spring Boot.Spring Boot - Identity Service.executor": "Run",
+    "Spring Boot.Spring Boot - Medical Record Service.executor": "Run",
+    "Spring Boot.Spring Boot - Notification Service.executor": "Run",
+    "Spring Boot.Spring Boot - Patient Service.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Clinic-managementn",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.Frontend - Dev.executor": "Run",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.configurations.included.in.services": "true",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -252,6 +192,7 @@
       <workItem from="1789107582837" duration="89000" />
       <workItem from="1789476528821" duration="1063000" />
       <workItem from="1789478002478" duration="103000" />
+      <workItem from="1789482525054" duration="41000" />
     </task>
     <servers />
   </component>

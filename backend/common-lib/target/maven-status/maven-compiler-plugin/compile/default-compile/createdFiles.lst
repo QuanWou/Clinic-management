@@ -1,0 +1,4 @@
+com\clinic\common\exception\BusinessException.class
+com\clinic\common\dto\ErrorResponse.class
+com\clinic\common\dto\ApiResponse.class
+com\clinic\common\constants\ErrorCode.class
