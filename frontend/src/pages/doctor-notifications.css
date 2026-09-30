@@ -1,0 +1,26 @@
+/* Doctor inbox accents only; shared notification pages keep their existing appearance. */
+.notifications-workspace.doctor-notifications { gap: 1.1rem; }
+.doctor-notifications .notifications-hero { background: linear-gradient(112deg, #103747, #125f62 62%, #179678); border-radius: 20px; }
+.doctor-notifications .notifications-kicker { color: #c5fae6; }
+.doctor-notifications .notifications-hero-art { border-radius: 28px; }
+.doctor-notifications .notifications-metric { border-color: #e3ebef; border-radius: 17px; }
+.doctor-notifications-focus { display: grid; gap: 1.05rem; min-width: 0; padding: clamp(1rem, 1.8vw, 1.45rem); }
+.doctor-notifications-focus-heading { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: .8rem; }
+.doctor-notifications-focus-heading > div { min-width: 0; }
+.doctor-notifications-focus-heading h3 { margin: .3rem 0 .25rem; color: #203b49; font-size: 1.1rem; letter-spacing: -.025em; }
+.doctor-notifications-focus-heading p { margin: 0; color: #738692; font-size: .77rem; line-height: 1.6; }
+.doctor-notifications-focus-count { flex: none; display: inline-flex; align-items: center; gap: .4rem; border: 1px solid #d9ebdf; border-radius: 999px; padding: .45rem .75rem; color: #0d785f; background: #e7f7f0; font-size: .72rem; font-weight: 800; }
+.doctor-notifications-focus-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; min-width: 0; }
+.doctor-notifications-focus-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .7rem; min-width: 0; min-height: 86px; padding: .8rem; border: 1px solid #deebe6; border-radius: 13px; background: #f7fbf9; text-align: left; color: #1b594c; }
+.doctor-notifications-focus-item:hover:not(:disabled) { background: #eaf8f1; border-color: #a5d7c5; box-shadow: none; color: #08745c; }
+.doctor-notifications-focus-item:focus-visible { outline: 3px solid #14a37c; outline-offset: 2px; }
+.doctor-notifications-focus-item > svg { flex: none; }
+.doctor-notifications-focus-icon { display: grid; place-items: center; flex: none; width: 39px; height: 39px; border-radius: 11px; background: #e2f7eb; color: #0d9671; }
+.doctor-notifications-focus-copy { display: grid; gap: .35rem; min-width: 0; }
+.doctor-notifications-focus-copy strong { color: #244351; font-size: .8rem; line-height: 1.4; overflow-wrap: anywhere; }
+.doctor-notifications-focus-copy small { color: #6b8790; font-size: .69rem; line-height: 1.4; overflow-wrap: anywhere; }
+.doctor-notifications-focus-empty { display: flex; align-items: center; gap: .5rem; min-height: 70px; border-radius: 12px; margin: 0; padding: 1rem; color: #527768; background: #f3faf6; font-size: .79rem; line-height: 1.6; }
+.doctor-notifications-focus-empty svg { flex: none; color: #18a278; }
+.doctor-notifications-focus-more { margin: 0; font-size: .72rem; line-height: 1.5; color: #6b8790; }
+@media (max-width: 1250px) { .doctor-notifications-focus-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .doctor-notifications-focus-list { grid-template-columns: minmax(0, 1fr); }.doctor-notifications-focus-count { flex-shrink: 1; white-space: normal; } }

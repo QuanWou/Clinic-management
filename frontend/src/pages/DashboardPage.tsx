@@ -1,214 +1,247 @@
 import type { ReactNode } from 'react';
-import { CalendarDays, HeartPulse, TrendingDown, TrendingUp, UsersRound } from 'lucide-react';
+import { CalendarDays, FileText, HeartPulse, Stethoscope, UsersRound } from 'lucide-react';
 import Alert from '../components/Alert';
 import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
-import DonutChart from '../components/charts/DonutChart';
-import MiniBars from '../components/charts/MiniBars';
-import Sparkline from '../components/charts/Sparkline';
 import PageHeader from '../components/PageHeader';
-import { chartSeries, demoDoctors, demoPatients } from '../data/demoClinicData';
-import type { DashboardResponse } from '../types/domain';
-import { formatDate, formatMoney, formatTime } from '../utils/format';
-import { getUiAppointments } from '../utils/uiData';
+import type { CurrentUser, DashboardResponse } from '../types/domain';
+import type { StaffDashboard } from '../api/staffDashboard';
+import { clinicToday } from '../api/staffDashboard';
+import type { ClinicRole } from '../utils/roles';
+import { formatDate, formatTime, shortId } from '../utils/format';
+import { roleLabel } from '../utils/locale';
+import type { AppView } from '../types/view';
+import type { AppointmentResponse, ReceptionVisitResponse } from '../types/domain';
+import AdminDashboard from './AdminDashboard';
+import DoctorDashboard from './DoctorDashboard';
+import ReceptionDashboard from './ReceptionDashboard';
+import PatientDashboard from './PatientDashboard';
+import { integrations } from '../config/integrations.config';
 
 export type DashboardPageProps = {
   dashboard: DashboardResponse | null;
+  staffDashboard?: StaffDashboard | null;
+  user: CurrentUser;
+  role: ClinicRole;
   error: string | null;
+  loading: boolean;
+  onRefresh: () => void;
+  onNavigate?: (view: AppView) => void;
+  onOpenEncounter?: (visit: ReceptionVisitResponse) => void;
 };
 
-export default function DashboardPage({ dashboard, error }: DashboardPageProps) {
-  const appointments = getUiAppointments(dashboard?.appointments);
-  const patientCount = demoPatients.length + (dashboard?.medicalRecords.length ?? 0);
-  const invoiceTotal = (dashboard?.invoices ?? []).reduce((total, invoice) => total + Number(invoice.totalAmount ?? 0), 0);
+export default function DashboardPage({ dashboard, staffDashboard, user, role, error, loading, onRefresh, onNavigate, onOpenEncounter }: DashboardPageProps) {
+  const isPatient = role === 'PATIENT';
 
   return (
     <>
-      {error && <Alert tone="error">{error}</Alert>}
-
-      <PageHeader
-        title="Good morning, Olivia"
-        subtitle="Here's what's happening with your clinic today."
-        actions={(
-          <>
-            <button className="soft-button" type="button"><CalendarDays size={17} />8-12 December</button>
-            <button type="button">Export Report</button>
-          </>
-        )}
-      />
-
-      <section className="dashboard-layout">
-        <div className="dashboard-main">
-          <section className="metric-grid">
-            <MetricCard
-              icon={<UsersRound />}
-              label="Overall Visitors"
-              value="748,839"
-              trend="24.8%"
-              direction="up"
-              tone="green"
-              chart={<MiniBars values={chartSeries.visitors} />}
-            />
-            <MetricCard
-              icon={<UsersRound />}
-              label="Total Patients"
-              value={patientCount.toLocaleString()}
-              trend="18.2%"
-              direction="down"
-              tone="purple"
-              chart={<Sparkline values={chartSeries.patients} tone="purple" />}
-            />
-            <MetricCard
-              icon={<CalendarDays />}
-              label="Appointments"
-              value={appointments.length.toLocaleString()}
-              trend="40.3%"
-              direction="up"
-              tone="blue"
-              chart={<Sparkline values={chartSeries.appointments} tone="blue" />}
-            />
-            <MetricCard
-              icon={<HeartPulse />}
-              label="Revenue"
-              value={formatMoney(invoiceTotal || 48258)}
-              trend="28.4%"
-              direction="up"
-              tone="orange"
-              chart={<MiniBars values={[10, 15, 8, 11, 18, 20, 13, 9, 16, 21, 15, 26]} tone="orange" />}
-            />
-          </section>
-
-          <section className="analytics-grid">
-            <article className="panel patient-status">
-              <div className="panel-heading">
-                <div>
-                  <h3>Patient Status</h3>
-                  <strong>421,748 <span>+6.45%</span></strong>
-                </div>
-                <span>Monthly</span>
-              </div>
-              <div className="stacked-chart">
-                {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
-                  <div key={month}>
-                    <span style={{ height: `${38 + chartSeries.patients[index]}px` }} />
-                    <i style={{ height: `${10 + index * 2}px` }} />
-                    <b style={{ height: `${5 + (index % 4) * 5}px` }} />
-                    <small>{month}</small>
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            <article className="panel">
-              <div className="panel-heading">
-                <h3>Top Treatment</h3>
-                <span>Monthly</span>
-              </div>
-              <div className="treatment-list">
-                {[
-                  ['Cardiology Patients', 92, 'green'],
-                  ['Neurology Patients', 32, 'yellow'],
-                  ['Oncology Patients', 24, 'orange']
-                ].map(([label, value, tone]) => (
-                  <div key={label}>
-                    <div><strong>{label}</strong><span>{value}%</span></div>
-                    <progress value={Number(value)} max="100" className={`progress-${tone}`} />
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            <article className="panel">
-              <div className="panel-heading">
-                <h3>Total Visitors</h3>
-                <span>Monthly</span>
-              </div>
-              <DonutChart value={83842} label="Total Visitors" />
-              <div className="legend-list">
-                <span><i className="dot-green" />Total Male <b>56%</b></span>
-                <span><i className="dot-yellow" />Total Female <b>44%</b></span>
-                <span><i className="dot-gray" />Total Children <b>24%</b></span>
-              </div>
-            </article>
-          </section>
-        </div>
-
-        <aside className="dashboard-side">
-          <article className="panel schedule-panel">
-            <div className="panel-heading">
-              <h3>Doctor's Schedule</h3>
-              <span>See all ({demoDoctors.length})</span>
-            </div>
-            {demoDoctors.map((doctor) => (
-              <div className="person-row" key={doctor.id}>
-                <Avatar label={doctor.avatar} />
-                <div>
-                  <strong>{doctor.name}</strong>
-                  <span>{doctor.specialtyName}</span>
-                </div>
-                <Badge tone={doctor.status}>{doctor.status}</Badge>
-              </div>
-            ))}
-          </article>
-
-          <article className="panel today-panel">
-            <div className="panel-heading">
-              <h3>Today Patient's</h3>
-              <span>See all ({appointments.length})</span>
-            </div>
-            <div className="today-grid">
-              {appointments.slice(0, 4).map((appointment) => (
-                <div className="today-card" key={appointment.id}>
-                  <strong>{formatTime(appointment.startTime)}</strong>
-                  <span>{formatDate(appointment.appointmentDate)}</span>
-                  <div>
-                    <Avatar label={appointment.patientAvatar} size="sm" />
-                    <p>{appointment.patientName}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </article>
-
-          <article className="premium-panel">
-            <div>
-              <strong>Upgrade your plan</strong>
-              <button type="button">Go Premium</button>
-            </div>
-            <span>UP</span>
-          </article>
-        </aside>
-      </section>
+      <PageHeader className="dashboard-page-header" title={`Xin chào, ${user.fullName || user.email}`}
+        subtitle={isPatient ? 'Cổng thông tin cá nhân · Lịch khám, bệnh án và hóa đơn của bạn.' : `${roleLabel(role)} · Tổng quan hoạt động hôm nay.`}
+        actions={<><span className="soft-button dashboard-date"><CalendarDays size={17} />{formatDate(clinicToday())}</span>
+          {onNavigate && (role !== 'DOCTOR' || integrations.appointmentOwnership) && <button type="button" onClick={() => onNavigate('appointments')}>Xem lịch hẹn</button>}</>} />
+      {error && <Alert tone="error">{error} <button type="button" onClick={onRefresh} disabled={loading}>Thử lại</button></Alert>}
+      {loading && <p role="status">Đang tải dữ liệu tổng quan...</p>}
+      {role === 'ADMIN' && staffDashboard && !loading && !error && <AdminDashboard data={staffDashboard} onNavigate={onNavigate} />}
+      {role === 'DOCTOR' && staffDashboard && !loading && !error && <DoctorDashboard data={staffDashboard} onNavigate={onNavigate} onOpenEncounter={onOpenEncounter} />}
+      {role === 'RECEPTIONIST' && staffDashboard && !loading && !error && <StaffOverview data={staffDashboard} role={role} onNavigate={onNavigate} />}
+      {!isPatient && !staffDashboard && !loading && !error && <Alert tone="info">Chưa tải được lịch khám. Hãy làm mới dữ liệu từ thanh điều hướng để thử lại.</Alert>}
+      {isPatient && !dashboard && !loading && !error && <Alert tone="info">Chưa tải được dữ liệu cá nhân. Hãy làm mới dữ liệu từ thanh điều hướng để thử lại.</Alert>}
+      {isPatient && dashboard && <PatientDashboard data={dashboard} user={user} onNavigate={onNavigate} />}
     </>
   );
 }
+function StaffOverview({ data, role, onNavigate }: { data: StaffDashboard; role: ClinicRole; onNavigate?: (view: AppView) => void }) {
+  // Reception has its own dashboard; keep the legacy overview isolated.
+  if (role === 'RECEPTIONIST') return <ReceptionDashboard data={data} onNavigate={onNavigate} />;
+  const queue = data.queue;
+  const waiting = queue.filter((visit) => visit.status === 'WAITING' || visit.status === 'CALLED').length;
+  const inProgress = queue.filter((visit) => visit.status === 'IN_PROGRESS').length;
+  const completed = queue.filter((visit) => visit.status === 'COMPLETED').length;
+  const isDoctor = role === 'DOCTOR';
+  // Defense in depth: an unexpected staff scope must never be rendered under
+  // a different role, even if a previous session's state survived a refresh.
+  if ((isDoctor && data.scope !== 'DOCTOR') || (!isDoctor && data.scope !== 'RECEPTION') || role === 'PATIENT') {
+    return <Alert tone="error">Phạm vi dashboard không khớp với tài khoản. Vui lòng làm mới.</Alert>;
+  }
+  // These rows are limited to the signed-in role and the selected clinic date.
+  const appointments: AppointmentResponse[] = data.scope === 'RECEPTION' ? data.appointments : [];
+  const activities = data.scope === 'RECEPTION'
+    ? appointments.map((item) => ({ time: item.startTime, status: item.status }))
+    : queue.map((item) => ({ time: item.checkedInAt, status: item.status }));
+  const chartStatuses = data.scope === 'RECEPTION'
+    ? ['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED']
+    : ['WAITING', 'CALLED', 'IN_PROGRESS', 'COMPLETED', 'SKIPPED'];
+  const history = data.history?.scope === data.scope && data.history.to === data.date ? data.history : null;
+  const days = history?.days ?? [];
+  const historyTotal = (key: 'appointments' | 'checkIns' | 'completedVisits' | 'cancelledAppointments') =>
+    days.reduce((sum, day) => sum + day[key], 0);
+  const doctors = [...new Set(appointments.map((item) => item.doctorId))];
+  const todayMetrics = data.scope === 'RECEPTION' ? [
+    { label: 'Lịch hẹn hôm nay', value: appointments.length, icon: <CalendarDays />, tone: 'green', statuses: chartStatuses },
+    { label: 'Lượt đã check-in', value: queue.length, icon: <UsersRound />, tone: 'purple', statuses: [] },
+    { label: 'Đang chờ hoặc đã gọi', value: waiting, icon: <Stethoscope />, tone: 'blue', statuses: ['WAITING', 'CALLED'] },
+    { label: 'Lượt khám hoàn thành', value: completed, icon: <HeartPulse />, tone: 'orange', statuses: ['COMPLETED'] }
+  ] : [
+    { label: 'Lượt check-in của tôi', value: queue.length, icon: <CalendarDays />, tone: 'green', statuses: [] },
+    { label: 'Đang chờ hoặc đã gọi', value: waiting, icon: <UsersRound />, tone: 'purple', statuses: ['WAITING', 'CALLED'] },
+    { label: 'Đang khám', value: inProgress, icon: <Stethoscope />, tone: 'blue', statuses: ['IN_PROGRESS'] },
+    { label: 'Lượt khám hoàn thành', value: completed, icon: <HeartPulse />, tone: 'orange', statuses: ['COMPLETED'] }
+  ];
+  const metrics = history ? (data.scope === 'RECEPTION' ? [
+    { label: 'Lịch hẹn 30 ngày', value: historyTotal('appointments'), icon: <CalendarDays />, tone: 'green', statuses: [], dailyValues: days.map((day) => day.appointments) },
+    { label: 'Lượt check-in 30 ngày', value: historyTotal('checkIns'), icon: <UsersRound />, tone: 'purple', statuses: [], dailyValues: days.map((day) => day.checkIns) },
+    { label: 'Đã hoàn tất 30 ngày', value: historyTotal('completedVisits'), icon: <HeartPulse />, tone: 'blue', statuses: [], dailyValues: days.map((day) => day.completedVisits) },
+    { label: 'Lịch hủy 30 ngày', value: historyTotal('cancelledAppointments'), icon: <FileText />, tone: 'orange', statuses: [], dailyValues: days.map((day) => day.cancelledAppointments) }
+  ] : [
+    { label: 'Lượt khám 30 ngày', value: historyTotal('checkIns'), icon: <CalendarDays />, tone: 'green', statuses: [], dailyValues: days.map((day) => day.checkIns) },
+    { label: 'Hoàn tất 30 ngày', value: historyTotal('completedVisits'), icon: <HeartPulse />, tone: 'purple', statuses: [], dailyValues: days.map((day) => day.completedVisits) }
+  ]) : todayMetrics;
+  const hours = Array.from({ length: 12 }, (_, index) => index + 7);
+  const hourBuckets = hours.map((hour) => chartStatuses.map((status) => activities.filter((item) =>
+    hourOf(item.time) === hour && item.status === status).length));
+  const maxHour = Math.max(1, ...hourBuckets.map((counts) => counts.reduce((sum, count) => sum + count, 0)));
 
-type MetricCardProps = {
-  icon: ReactNode;
-  label: string;
-  value: string;
-  trend: string;
-  direction: 'up' | 'down';
-  tone: 'green' | 'purple' | 'blue' | 'orange';
-  chart: ReactNode;
-};
-
-function MetricCard({ icon, label, value, trend, direction, tone, chart }: MetricCardProps) {
-  const TrendIcon = direction === 'up' ? TrendingUp : TrendingDown;
-
-  return (
-    <article className={`metric-card metric-${tone}`}>
-      <div className="metric-icon">{icon}</div>
-      <div>
-        <strong>{value}</strong>
-        <span>{label}</span>
+  return <section className="dashboard-layout clinic-preview-dashboard" aria-label="Tổng quan hoạt động hôm nay">
+    <div className="dashboard-main">
+      <div className="dashboard-history-note" role="status">
+        {history ? <>Thống kê 30 ngày: <strong>{formatDate(history.from)} – {formatDate(history.to)}</strong>. Mục bên phải hiển thị ngày {formatDate(data.date)}.</>
+          : <>Chưa tải được báo cáo 30 ngày: {data.historyError || 'Dữ liệu lịch sử chưa khả dụng'}. Các chỉ số dưới đây tính theo ngày {formatDate(data.date)}.</>}
       </div>
-      <p className={direction}>
-        <TrendIcon size={15} />
-        {trend}
-        <small>vs last month</small>
-      </p>
-      {chart}
-    </article>
-  );
+      <section className="metric-grid" aria-label="Chỉ số trong ngày">
+        {metrics.map((metric) => <LiveMetricCard key={metric.label} {...metric}
+          activities={metric.label === 'Lượt đã check-in' || metric.label === 'Đang chờ hoặc đã gọi' || metric.label === 'Lượt khám hoàn thành'
+            ? queue.map((item) => ({ time: item.checkedInAt, status: item.status })) : activities} />)}
+      </section>
+      <section className="analytics-grid" aria-label="Hoạt động trong ngày">
+        <article className="panel patient-status live-status-panel">
+          <div className="panel-heading"><div><h3>{history ? 'Hoạt động 30 ngày' : isDoctor ? 'Phân bổ lượt check-in' : 'Phân bổ lịch hẹn'}</h3>
+            <strong>{(history ? historyTotal(data.scope === 'RECEPTION' ? 'appointments' : 'checkIns') : activities.length).toLocaleString('vi-VN')}</strong></div>
+            <span>{history ? `${formatDate(history.from)} – ${formatDate(history.to)}` : `07–18 giờ · ${formatDate(data.date)}`}</span></div>
+          {history ? (days.every((day) => day.appointments === 0 && day.checkIns === 0)
+            ? <p className="dashboard-unavailable">Không có hoạt động trong 30 ngày này.</p>
+            : <div className="live-month-chart" role="img" aria-label="Biểu đồ số lượt theo từng ngày trong 30 ngày">
+              {days.map((day) => {
+                const count = data.scope === 'RECEPTION' ? day.appointments : day.checkIns;
+                const max = Math.max(1, ...days.map((entry) => data.scope === 'RECEPTION' ? entry.appointments : entry.checkIns));
+                return <div className="live-month-column" key={day.date} title={`${formatDate(day.date)}: ${count} lượt`}>
+                  <span style={{ height: `${count ? Math.max(5, count / max * 170) : 0}px` }} />
+                  <small>{day.date.slice(8)}</small>
+                </div>;
+              })}
+            </div>) : activities.length === 0 ? <p className="dashboard-unavailable">Chưa có dữ liệu để vẽ biểu đồ hôm nay.</p> : <>
+            <div className="stacked-chart live-hourly-chart" role="img" aria-label={`Phân bố ${activities.length} lượt theo từng giờ trong ngày`}>
+              {hours.map((hour, index) => <div className="live-hour-column" key={hour}>
+                <div className="live-hour-stack" title={`${hour}:00 — ${hourBuckets[index].reduce((sum, count) => sum + count, 0)} lượt`}>
+                  {hourBuckets[index].map((count, statusIndex) => <span key={chartStatuses[statusIndex]}
+                    className={`live-segment live-segment-${chartStatuses[statusIndex].toLowerCase()}`}
+                    style={{ height: `${count / maxHour * 150}px` }} />)}
+                </div><small>{String(hour).padStart(2, '0')}h</small>
+              </div>)}
+            </div>
+            <div className="live-chart-legend">{chartStatuses.map((status) => <span key={status}>
+              <i className={`live-segment-${status.toLowerCase()}`} /><Badge tone={status}>{status}</Badge>
+            </span>)}</div>
+          </>}
+        </article>
+        <article className="panel live-detail-panel">
+          <div className="panel-heading"><h3>{isDoctor ? 'Trạng thái lượt khám' : 'Trạng thái lịch hẹn'}</h3><span>Hôm nay</span></div>
+          <div className="status-list">{chartStatuses.map((status) => {
+            const count = activities.filter((item) => item.status === status).length;
+            return <div className="status-item" key={status}>
+              <div><Badge tone={status}>{status}</Badge><strong>{count}</strong></div>
+              <progress className={`status-progress progress-${status.toLowerCase()}`} value={count} max={Math.max(activities.length, 1)} />
+            </div>;
+          })}</div>
+        </article>
+      </section>
+      <article className="panel live-appointments-panel">
+        <div className="panel-heading"><h3>{isDoctor ? 'Hàng đợi của bác sĩ hôm nay' : 'Lịch hẹn hôm nay'}</h3><span>{isDoctor ? queue.length : appointments.length} lượt</span></div>
+        {data.scope === 'RECEPTION'
+          ? (appointments.length === 0 ? <p className="dashboard-unavailable">Hôm nay chưa có lịch hẹn.</p>
+            : <div className="activity-list">{appointments.slice(0, 6).map((item) => <div className="activity-row" key={item.id}>
+              <span className="activity-icon"><CalendarDays size={20} aria-hidden="true" /></span>
+              <div><strong>{formatTime(item.startTime)} · {item.id}</strong><span>Mã bác sĩ: {shortId(item.doctorId)}</span></div>
+              <span className="activity-end"><Badge tone={item.status}>{item.status}</Badge></span>
+            </div>)}</div>)
+          : (queue.length === 0 ? <p className="dashboard-unavailable">Chưa có lượt check-in hôm nay.</p>
+            : <div className="activity-list">{queue.slice(0, 6).map((item) => <div className="activity-row" key={item.id}>
+              <span className="activity-icon"><UsersRound size={20} aria-hidden="true" /></span>
+              <div><strong>Số thứ tự #{item.queueNumber}</strong><span>Mã lịch hẹn: {item.appointmentId}</span></div>
+              <span className="activity-end"><Badge tone={item.status}>{item.status}</Badge></span>
+            </div>)}</div>)}
+        {onNavigate && <button type="button" className="outline-action" onClick={() => onNavigate('appointments')}>Xem danh sách lịch hẹn</button>}
+      </article>
+      {data.scope === 'RECEPTION' && <article className="panel live-appointments-panel">
+        <div className="panel-heading"><h3>Hàng đợi hôm nay</h3><span>{queue.length} lượt</span></div>
+        {queue.length === 0 ? <p className="dashboard-unavailable">Chưa có lượt check-in hôm nay.</p>
+          : <div className="activity-list">{queue.slice(0, 6).map((item) => <div className="activity-row" key={item.id}>
+            <span className="activity-icon"><UsersRound size={20} aria-hidden="true" /></span>
+            <div><strong>Số thứ tự #{item.queueNumber}</strong><span>Mã lịch hẹn: {item.appointmentId}</span></div>
+            <span className="activity-end"><Badge tone={item.status}>{item.status}</Badge></span>
+          </div>)}</div>}
+      </article>}
+    </div>
+    <aside className="dashboard-side">
+      <article className="panel schedule-panel">
+        <div className="panel-heading"><h3>{isDoctor ? 'Hàng đợi được phân công' : 'Lịch bác sĩ'}</h3>
+          <span>{isDoctor ? `${queue.length} lượt` : `${doctors.length} bác sĩ`}</span></div>
+        {data.scope === 'RECEPTION'
+          ? (doctors.length ? doctors.slice(0, 5).map((doctorId) => <div className="person-row" key={doctorId}>
+              <Avatar label={shortId(doctorId)} /><div><strong>Mã bác sĩ {shortId(doctorId)}</strong>
+                <span>{appointments.filter((item) => item.doctorId === doctorId).length} lịch hẹn hôm nay</span></div>
+            </div>) : <p className="dashboard-unavailable">Chưa có lịch bác sĩ hôm nay.</p>)
+          : (queue.length ? queue.slice(0, 5).map((item) => <div className="person-row" key={item.id}>
+              <Avatar label={String(item.queueNumber)} /><div><strong>Số thứ tự #{item.queueNumber}</strong>
+                <span>{shortId(item.appointmentId)}</span></div><Badge tone={item.status}>{item.status}</Badge>
+            </div>) : <p className="dashboard-unavailable">Chưa có lượt khám được phân công.</p>)}
+      </article>
+      <article className="panel today-panel">
+        <div className="panel-heading"><h3>{isDoctor ? 'Lượt khám hôm nay' : 'Bệnh nhân có lịch hôm nay'}</h3>
+          <span>{isDoctor ? queue.length : appointments.length} lượt</span></div>
+        {data.scope === 'RECEPTION'
+          ? (appointments.length ? <div className="today-grid">{appointments.slice(0, 4).map((item) => <div className="today-card" key={item.id}>
+              <strong>{formatTime(item.startTime)}</strong><span>{formatDate(item.appointmentDate)}</span>
+              <div><Avatar label={shortId(item.patientId)} size="sm" /><p>Mã BN: {shortId(item.patientId)}</p></div>
+              <Badge tone={item.status}>{item.status}</Badge>
+            </div>)}</div> : <p className="dashboard-unavailable">Hôm nay chưa có lịch khám.</p>)
+          : (queue.length ? <div className="today-grid">{queue.slice(0, 4).map((item) => <div className="today-card" key={item.id}>
+              <strong>#{item.queueNumber}</strong><span>{formatTime(item.checkedInAt?.split('T')[1])}</span>
+              <div><Avatar label={shortId(item.patientId)} size="sm" /><p>Mã BN: {shortId(item.patientId)}</p></div>
+              <Badge tone={item.status}>{item.status}</Badge>
+            </div>)}</div> : <p className="dashboard-unavailable">Chưa có lượt khám.</p>)}
+      </article>
+      <article className="premium-panel live-dashboard-tip">
+        <div><strong>{isDoctor ? 'Không gian bác sĩ' : 'Quản lý phòng khám'}</strong>
+          <p>{isDoctor ? 'Tập trung vào hàng đợi và hồ sơ bệnh án trong ca khám hôm nay.' : 'Tập trung vào lịch hẹn và tiến độ tiếp nhận trong ngày.'}</p>
+          {onNavigate && <button type="button" onClick={() => onNavigate('appointments')}>Mở danh sách lịch hẹn</button>}</div>
+        <span aria-hidden="true">+</span>
+      </article>
+    </aside>
+  </section>;
+}
+
+function hourOf(time?: string | null): number | null {
+  if (!time) return null;
+  const match = /(?:^|T)(\d{2}):\d{2}/.exec(time);
+  return match ? Number(match[1]) : null;
+}
+
+function LiveMetricCard({ icon, label, value, tone, statuses, activities, dailyValues }: {
+  icon: ReactNode; label: string; value: number; tone: string; statuses: string[];
+  activities: Array<{ time: string | null; status: string }>;
+  dailyValues?: number[];
+}) {
+  const values = dailyValues ?? Array.from({ length: 12 }, (_, index) => activities.filter((item) =>
+    hourOf(item.time) === index + 7 && (statuses.length === 0 || statuses.includes(item.status))).length);
+  const max = Math.max(1, ...values);
+  const hasHourlyData = values.some((item) => item > 0);
+  return <article className={`metric-card metric-${tone} live-metric-card`}>
+    <div className="metric-icon">{icon}</div>
+    <div><strong>{value.toLocaleString('vi-VN')}</strong><span>{label}</span></div>
+    <p className="metric-availability">{dailyValues ? 'Tổng hợp theo ngày · 30 ngày' : 'Theo dữ liệu hôm nay · 07–18h'}</p>
+    {hasHourlyData ? <div className={`mini-bars mini-bars-${tone} live-metric-bars`} role="img" aria-label={`Phân bổ ${dailyValues ? 'theo ngày' : 'theo giờ'} của ${label}`}>
+      {values.map((count, index) => <span key={index} title={`${dailyValues ? `Ngày ${index + 1}` : `${index + 7}:00`} — ${count} lượt`}
+        style={{ height: `${count === 0 ? 0 : 12 + (count / max) * 48}px` }} />)}
+    </div> : <span className="metric-chart-unavailable">Chưa có lượt trong phạm vi dữ liệu.</span>}
+  </article>;
 }

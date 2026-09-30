@@ -1,0 +1,192 @@
+/* Doctor detail matches the centered patient modal; never shrink the directory. */
+.doctors-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.doctors-detail-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: rgb(15 38 48 / 34%);
+  cursor: default;
+}
+
+.doctors-detail-backdrop:hover:not(:disabled) {
+  background: rgb(15 38 48 / 34%);
+  box-shadow: none;
+}
+.doctors-detail-backdrop:disabled { opacity: 1; }
+
+.doctors-workspace .doctors-detail-overlay > .doctors-detail-modal {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(600px, 100%);
+  min-width: 0;
+  max-height: min(680px, calc(100vh - 32px));
+  max-height: min(680px, calc(100dvh - 32px));
+  overflow: hidden;
+  overscroll-behavior: contain;
+  border: 1px solid #cce9dc;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 20px 60px #16314738;
+}
+
+.doctors-detail-modal:focus { outline: none; }
+
+.doctors-detail-modal .doctors-section-head {
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: .5rem;
+  flex: none;
+  margin-bottom: .75rem;
+}
+.doctors-detail-modal .doctors-section-head h3 { overflow-wrap: anywhere; }
+
+.doctors-detail-close {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid #dce7ed;
+  border-radius: 10px;
+  background: #fff;
+  color: #304755;
+}
+
+.doctors-detail-close:hover:not(:disabled) {
+  border-color: #b5d9cc;
+  background: #edf8f3;
+  color: #0b8061;
+  box-shadow: none;
+}
+
+.doctors-detail-modal .doctors-detail-fields dt { flex-wrap: wrap; }
+.doctors-detail-modal .doctors-detail-fields > div:last-child { grid-column: 1 / -1; }
+.doctors-detail-modal .doctors-detail-heading { min-width: 0; }
+.doctors-detail-modal .doctors-detail-heading h4 { overflow-wrap: anywhere; }
+.doctors-detail-modal .doctors-data-note { overflow-wrap: anywhere; }
+
+.doctors-detail-modal .doctors-detail-heading {
+  flex: none;
+  padding: .15rem 0 .85rem;
+  gap: .75rem;
+}
+.doctors-detail-modal .doctors-avatar.large { width: 52px; height: 52px; }
+.doctors-detail-modal .doctors-avatar.large svg { width: 25px; height: 25px; }
+.doctors-detail-modal .doctors-detail-heading p { margin: .2rem 0 .35rem; }
+
+.doctors-detail-views {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex: none;
+  gap: .4rem;
+  padding: .75rem 0;
+  border-bottom: 1px solid #e9eef2;
+}
+.doctors-detail-views button {
+  min-width: 0;
+  min-height: 39px;
+  padding: .55rem .6rem;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: #f4f8f7;
+  color: #476577;
+  font-size: .78rem;
+  font-weight: 750;
+}
+.doctors-detail-views button:hover:not(:disabled) {
+  background: #e9f6ef;
+  color: #087454;
+  box-shadow: none;
+}
+.doctors-detail-views button.is-active {
+  border-color: #acd9c5;
+  background: #e3f6ec;
+  color: #086e52;
+}
+
+.doctors-detail-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: .15rem .15rem .1rem 0;
+  scrollbar-width: thin;
+}
+.doctors-detail-content .doctors-detail-fields { margin: .75rem 0; gap: .65rem; }
+.doctors-detail-content .doctors-detail-fields > div { padding: .75rem; gap: .3rem; }
+.doctors-detail-content .doctors-detail-actions { margin: .8rem 0; }
+.doctors-detail-content .doctors-data-note { margin: .8rem 0 0; padding: .65rem .8rem; }
+.doctors-detail-content .doctors-detail-fields > div:last-child dd {
+  max-height: 6.5rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.doctors-detail-content .doctors-schedule-compact {
+  margin: 0;
+  padding: .85rem 0 0;
+  border: 0;
+}
+.doctors-schedule-compact h4 { flex-wrap: wrap; }
+.doctors-schedule-compact h4 span { font-size: .73rem; font-weight: 600; color: #748a96; }
+.doctors-schedule-day {
+  display: grid;
+  grid-template-columns: 95px minmax(0, 1fr);
+  align-items: start;
+  gap: .65rem;
+  padding: .65rem .25rem;
+  border-bottom: 1px solid #e9eef2;
+}
+.doctors-schedule-day > strong { padding-top: .3rem; font-size: .78rem; color: #405c6b; }
+.doctors-schedule-day > div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .35rem; }
+.doctors-schedule-day > div span {
+  padding: .3rem .48rem;
+  border-radius: 7px;
+  background: #edf8f2;
+  color: #087454;
+  font-size: .74rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .doctors-detail-overlay { padding: 10px; }
+  .doctors-workspace .doctors-detail-overlay > .doctors-detail-modal {
+    max-height: calc(100dvh - 20px);
+    border-radius: 14px;
+  }
+  .doctors-detail-modal .doctors-detail-fields > div:last-child { grid-column: auto; }
+  .doctors-schedule-day { grid-template-columns: minmax(0, 1fr); gap: .35rem; }
+  .doctors-schedule-day > div { justify-content: flex-start; }
+}
+
+.doctors-field-error {
+  display: block;
+  color: #b42335;
+  font-size: .72rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.doctors-form input[aria-invalid="true"],
+.doctors-form select[aria-invalid="true"] {
+  border-color: #c93e50;
+  box-shadow: 0 0 0 3px #c93e5018;
+}

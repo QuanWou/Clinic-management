@@ -1,0 +1,39 @@
+/* Doctor-owned appointment details. Presentation only; no workflow or permission changes. */
+.doctor-appointments-detail .doctor-appointment-detail-heading { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.doctor-appointment-detail-icon { flex: none; display: grid; place-items: center; width: 56px; height: 56px; color: #147653; background: #e7f8ed; border-radius: 15px; }
+.doctor-appointments-detail .doctor-appointment-detail-heading h3 { font-size: clamp(1.15rem, 1.65vw, 1.4rem); margin: .22rem 0; }
+.doctor-appointments-detail .doctor-appointment-detail-heading p { font-size: .86rem; }
+.doctor-appointments-detail .doctor-appointment-detail-heading + .soft-button { flex: none; min-height: 44px; }
+.doctor-appointment-info-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+.doctor-appointment-info-card { min-width: 0; overflow: hidden; border: 1px solid #dae9e5; border-radius: 15px; background: #fff; }
+.doctor-appointment-info-card h4 { display: flex; gap: .65rem; align-items: center; color: #22694f; background: #f0fbf6; margin: 0; padding: 1rem 1.15rem; font-size: 1rem; font-weight: 800; }
+.doctor-appointment-info-card h4 svg { flex: none; }
+.doctor-appointment-info-card dl { margin: 0; padding: .35rem .8rem .65rem; }
+.doctor-appointment-info-card dl > div { display: grid; align-items: baseline; grid-template-columns: minmax(125px, 42%) minmax(0, 1fr); gap: .7rem; padding: .72rem .4rem; border-bottom: 1px solid #e9eef1; }
+.doctor-appointment-info-card dl > div:last-child { border-bottom: none; }
+.doctor-appointment-info-card dl > div:nth-child(even) { background: #f8fbfc; border-radius: 8px; }
+.doctor-appointment-info-card dt { display: inline-flex; align-items: center; gap: .4rem; min-width: 0; font-size: .8rem; color: #667e8b; }
+.doctor-appointment-info-card dd { margin: 0; min-width: 0; font-size: .86rem; font-weight: 700; color: #243f4b; overflow-wrap: anywhere; white-space: pre-wrap; }
+.doctor-appointment-info-card dd .badge { vertical-align: middle; }
+.doctor-appointment-data-hint { color: #697f89; font-size: .76rem; line-height: 1.55; margin: 0; padding: .15rem 1.1rem 1rem; }
+.doctor-appointment-technical-id { grid-column: 1 / -1; color: #6c8090; padding: .2rem .25rem; font-size: .75rem; }
+.doctor-appointment-technical-id summary { cursor: pointer; display: inline-flex; gap: .4rem; align-items: center; }
+.doctor-appointment-technical-id summary:focus-visible { outline: 2px solid #12956c; outline-offset: 3px; border-radius: 4px; }
+.doctor-appointment-technical-id code { display: block; width: fit-content; max-width: 100%; margin: .5rem 0; padding: .55rem .7rem; border-radius: 8px; background: #f5f9fa; overflow-wrap: anywhere; white-space: normal; }
+.doctor-appointment-timeline { border: 1px solid #dce9e9; border-radius: 15px; margin-top: 1.15rem; padding: 1.2rem; }
+.doctor-appointment-timeline header h4 { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; font-size: 1.03rem; margin: .2rem 0; color: #203c4d; }
+.doctor-appointment-timeline-kicker { letter-spacing: .11em; font-size: .68rem; color: #0b805e; font-weight: 850; }
+.doctor-appointment-timeline header p { color: #70838e; font-size: .77rem; margin: .4rem 0 0; line-height: 1.55; }
+.doctor-appointment-timeline-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin: 1.3rem 0 .15rem; padding: 0; list-style: none; }
+.doctor-appointment-timeline-steps li { position: relative; display: flex; flex-direction: column; gap: .3rem; min-width: 0; padding-top: 2.1rem; }
+.doctor-appointment-timeline-steps li:not(:last-child)::before { content: ''; position: absolute; top: .72rem; height: 2px; left: 1.4rem; right: -1.1rem; background: #dfe8e9; }
+.doctor-appointment-timeline-steps li.is-done:not(:last-child)::before { background: #27a278; }
+.doctor-appointment-step-marker { position: absolute; z-index: 1; top: 0; left: 0; display: grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; background: #f0f4f5; color: #8298a2; }
+.doctor-appointment-timeline-steps li.is-done .doctor-appointment-step-marker { color: #13936b; background: #e4f7ed; }
+.doctor-appointment-step-marker > span { width: 10px; height: 10px; border: 2px solid currentColor; border-radius: 50%; }
+.doctor-appointment-timeline-steps strong { color: #284454; font-size: .85rem; }
+.doctor-appointment-timeline-steps time { font-size: .79rem; color: #667c89; font-variant-numeric: tabular-nums; }
+.doctor-appointment-timeline-steps small { color: #738994; font-size: .73rem; line-height: 1.4; }
+.doctor-appointment-timeline + .doctor-appointments-action { margin-top: .9rem; padding-top: 1rem; }
+@media (max-width: 900px) { .doctor-appointment-info-columns { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) { .doctor-appointments-detail .doctor-appointment-detail-heading { gap: .65rem; } .doctor-appointment-detail-icon { width: 42px; height: 42px; } .doctor-appointment-info-card dl > div { grid-template-columns: minmax(0, 1fr); gap: .2rem; } .doctor-appointment-timeline-steps { grid-template-columns: minmax(0, 1fr); gap: 1rem; } .doctor-appointment-timeline-steps li { padding: .15rem 0 .25rem 2.2rem; } .doctor-appointment-timeline-steps li:not(:last-child)::before { left: .8rem; top: 1.5rem; right: auto; width: 2px; height: calc(100% + .4rem); } .doctor-appointment-timeline-steps li .doctor-appointment-step-marker { top: 0; } }
