@@ -263,7 +263,7 @@ export const demoMedicalRecords: UiMedicalRecord[] = [
     patientName: demoPatients[3].name,
     doctorName: demoDoctors[3].name,
     recordType: 'Consultation',
-    status: 'Completed'
+    status: 'FINAL'
   }
 ];
 

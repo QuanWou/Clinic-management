@@ -1,0 +1,17 @@
+.doctor-schedule-help { grid-column: 1 / -1; min-width: 0; margin: .15rem 0; padding: .65rem .8rem; border: 1px solid #d4e9df; border-radius: 9px; background: #f3fbf7; color: #376b5e; font-size: .75rem; font-weight: 550; line-height: 1.55; }
+.doctor-schedule-field { display: grid; align-content: start; min-width: 0; gap: .4rem; color: #304a56; font-size: .79rem; font-weight: 750; }
+.doctor-schedule-field select { box-sizing: border-box; width: 100%; min-width: 0; }
+.doctor-schedule-field select:disabled { cursor: not-allowed; opacity: .7; background: #f5f8fa; }
+.doctor-schedule-field select[aria-invalid="true"] { border-color: #d36666; }
+
+.doctor-schedule-slot-field { grid-column: 1 / -1; min-width: 0; margin: 0; padding: 0; border: 0; }
+.doctor-schedule-slot-field legend { padding: 0; color: #304a56; font-size: .79rem; font-weight: 800; }
+.doctor-schedule-slot-hint { display: block; margin-top: .25rem; color: #758993; font-size: .7rem; font-weight: 550; line-height: 1.45; }
+.doctor-schedule-slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: .45rem; margin-top: .55rem; }
+.doctor-schedule-slot-grid button { min-height: 38px; padding: .45rem .55rem; border: 1px solid #dbe7e2; border-radius: 10px; background: #fff; color: #35505c; box-shadow: none; font-size: .78rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+.doctor-schedule-slot-grid button:hover:not(:disabled) { border-color: #75bda4; background: #f1faf6; color: #12684f; box-shadow: none; }
+.doctor-schedule-slot-grid button.is-selected { border-color: #168b68; background: #168b68; color: #fff; box-shadow: none; }
+.doctor-schedule-slot-grid button.is-selected:hover:not(:disabled) { background: #11785a; color: #fff; }
+.doctor-schedule-slot-field:disabled { opacity: .62; }
+.doctor-schedule-slot-field:disabled .doctor-schedule-slot-grid button { cursor: not-allowed; }
+.doctor-schedule-end-slots { margin-top: .1rem; }
