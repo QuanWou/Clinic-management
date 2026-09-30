@@ -50,6 +50,26 @@ public class DoctorClient {
         }
     }
 
+    public DoctorProfileResponse getCurrentDoctorProfile(String authorizationHeader) {
+        try {
+            ApiResponse<DoctorProfileResponse> response = restClient.get()
+                    .uri("/api/doctors/profile")
+                    .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {});
+            if (response == null || response.data() == null) {
+                throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Doctor profile not found");
+            }
+            return response.data();
+        } catch (BusinessException ex) {
+            throw ex;
+        } catch (RestClientResponseException ex) {
+            throw mapRemoteError(ex);
+        } catch (RestClientException ex) {
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Unable to resolve doctor profile");
+        }
+    }
+
     private BusinessException mapRemoteError(RestClientResponseException ex) {
         return switch (ex.getStatusCode().value()) {
             case 401 -> new BusinessException(ErrorCode.UNAUTHORIZED, "Unauthorized when checking doctor availability");

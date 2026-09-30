@@ -4,37 +4,46 @@ server:
 spring:
   application:
     name: appointment-service
-
   datasource:
     url: jdbc:postgresql://localhost:5432/clinic_db?currentSchema=appointment
     username: postgres
-    password: ${SPRING_DATASOURCE_PASSWORD:password}
-
+    password: password
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
         default_schema: appointment
-
   flyway:
     enabled: true
     schemas: appointment
     locations: classpath:db/migration
+  rabbitmq:
+    publisher-confirm-type: correlated
+    publisher-returns: true
 
 services:
   patient:
     url: http://localhost:8084
   doctor:
     url: http://localhost:8085
+
 app:
+  internal:
+    service-key: ${APP_INTERNAL_SERVICE_KEY:local-dev-internal-service-key}
+  notification:
+    relay-interval-ms: ${NOTIFICATION_RELAY_INTERVAL_MS:5000}
+    rabbitmq:
+      exchange: ${NOTIFICATION_EXCHANGE:notification.exchange}
+      event-routing-key: ${NOTIFICATION_EVENT_ROUTING_KEY:notification.business}
   security:
     jwt:
       secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
       access-token-expiration-minutes: 60
       refresh-token-expiration-days: 7
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,prometheus

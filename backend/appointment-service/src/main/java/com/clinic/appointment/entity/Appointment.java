@@ -6,8 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +25,9 @@ public class Appointment {
 
     @Column(name = "patient_id", nullable = false)
     private UUID patientId;
+
+    @Column(name = "patient_user_id")
+    private UUID patientUserId;
 
     @Column(name = "doctor_id", nullable = false)
     private UUID doctorId;
