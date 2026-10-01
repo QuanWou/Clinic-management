@@ -1,0 +1,39 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: appointment-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clinic_db?currentSchema=appointment
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: appointment
+  flyway:
+    enabled: true
+    schemas: appointment
+    locations: classpath:db/migration
+
+services:
+  patient:
+    url: http://localhost:8084
+  doctor:
+    url: http://localhost:8085
+
+app:
+  security:
+    jwt:
+      secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+      access-token-expiration-minutes: 60
+      refresh-token-expiration-days: 7
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus

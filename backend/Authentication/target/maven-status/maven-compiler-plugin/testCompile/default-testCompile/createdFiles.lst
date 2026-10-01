@@ -1,0 +1,4 @@
+com\clinic\appointment\client\DoctorClientTest.class
+com\clinic\appointment\controller\AppointmentControllerTest$1.class
+com\clinic\appointment\controller\AppointmentControllerTest.class
+com\clinic\appointment\service\impl\AppointmentServiceImplTest.class
