@@ -1,0 +1,13 @@
+{
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM",
+  "status": "PASS",
+  "privateReferences": "omitted",
+  "onlineCollection": "DISABLED",
+  "clinicalRelease": "DISABLED",
+  "otherBranch": "empty",
+  "ownership": "real-Patient-link-different-platform-user-UUID",
+  "money": "two-source-bills-paid-onsite-internal-receipts",
+  "otherUser": 404,
+  "history": "linked-unpublished-Clinic-visible",
+  "linkRevoke": 404
+}

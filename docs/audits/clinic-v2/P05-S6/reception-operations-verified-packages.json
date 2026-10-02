@@ -1,0 +1,136 @@
+{
+  "task": "P05-S6-authenticated-operational-journey",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-02T03:11:38.4285828+07:00",
+  "modules": [
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "D2032FF717C9B324BF61DA86EB4F259AF35E33B7576A583368FCBAE585DDC644",
+      "tests": 9,
+      "service": "patient",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "C92E114C28483250905C14FD802391766D47E863DE57E846FE50880D54DFA820",
+      "tests": 33,
+      "service": "appointment",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "2B2E8BC8D7A7691D5973416AEF2FB15A223E0941984E29C5D5820DD2109C3535",
+      "tests": 30,
+      "service": "clinic",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "769BDC51F5828C08937AA2A35D5693038BEC38D73BC8BEEB219BDD1B4E5A21CE",
+      "tests": 15,
+      "service": "doctor",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "A4DFB0896A95A513CEEB1B53722026FB39D19BBB3A691C8D68509F80A08FA2B8",
+      "tests": 17,
+      "service": "identity",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "6F112990923E9A4A0EDBEB58FD1DCDECF659DF4917C60DE319A7832389C251FE",
+      "tests": 11,
+      "service": "notification",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "FC377A0D0887874CA684735F4DF60EDCF9953ED73D6B77519321C296E6269308",
+      "tests": 8,
+      "service": "catalog",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "12898A7FB96D699802F59BA516423481A99E87AE3148AB6B39E5680D0ECB37F5",
+      "tests": 9,
+      "service": "medical",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "40980D05EC4CBAA0516E88AB82108BA3AED1DAF39DF96779C3521C7A8202252D",
+      "tests": 24,
+      "service": "billing",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "errors": 0,
+      "package": "PASS",
+      "jarSha256": "2593576F30005C7E8922CD0D0FCE4ABE8E8B671C9DE946E09BC8ACDA897A3E0A",
+      "tests": 5,
+      "service": "search",
+      "failures": 0,
+      "skipped": 0,
+      "verification": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "jarSha256": "3B6D1F61A8E15C18F148D4F29D7D2BD75EF9B4C0C78E2B314561929EFEC63C14",
+      "package": "PASS",
+      "errors": 0,
+      "skipped": 0,
+      "tests": 25,
+      "failures": 0,
+      "service": "encounter"
+    },
+    {
+      "jarSha256": "8349E85D65B83B24D48439C89AD2DCAA1706C1F083CE0CFC55F39E1FA4922213",
+      "package": "PASS",
+      "errors": 0,
+      "skipped": 0,
+      "tests": 16,
+      "failures": 0,
+      "service": "audit"
+    }
+  ],
+  "status": "PASS",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 30633,
+  "receptionFlow": "PASS",
+  "syntheticRestore": "PASS",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\019fcbed64974b938bd3390f31dd74d9",
+  "finishedAt": "2026-10-02T03:13:29.1106651+07:00",
+  "packageSources": [
+    "authenticated-checkpoint-02/summary.json",
+    "../P05-S2/reception-operations-verification/summary.json"
+  ]
+}

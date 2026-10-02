@@ -1,0 +1,25 @@
+
+> clinic-v2-web-shell@0.1.0 test:browser
+> playwright test
+
+[WebServer] (node:23152) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19460) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 4 workers
+
+(node:35200) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31592) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 e2e\doctor.spec.ts:4:1 › assigned doctor waits and returns through reception queue on desktop and mobile (2.8s)
+  ok 3 e2e\public-booking.spec.ts:4:1 › public booking uses API and remains usable on desktop and mobile (2.8s)
+  ok 4 e2e\reception.spec.ts:5:1 › reception uses an explicit patient selection and supports mobile queue actions (3.1s)
+  ok 1 e2e\medical.spec.ts:4:1 › doctor draft, lab result and doctor review stay separate on desktop and mobile (9.2s)
+
+  4 passed (11.7s)

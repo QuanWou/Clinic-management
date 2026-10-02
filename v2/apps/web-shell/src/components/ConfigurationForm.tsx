@@ -1,0 +1,8 @@
+import { useState } from 'react';
+export type Field={key:string;label:string;type?:'text'|'email'|'tel'|'date'|'time'|'datetime-local'|'number'|'checkbox'|'textarea';required?:boolean;min?:number;max?:number;maxLength?:number;pattern?:string;options?:{value:string;label:string}[]};
+export type FormValues=Record<string,string|boolean>;
+// Remount with a source version key to avoid silently overwriting a user's active draft.
+export function ConfigurationForm({fields,initial,disabled,submit,label}:{fields:Field[];initial:FormValues;disabled:boolean;submit:(v:FormValues)=>Promise<void>;label:string}){
+ const [values,setValues]=useState(initial);
+ return <form onSubmit={e=>{e.preventDefault();void submit(values);}}><fieldset className="configuration-fields" disabled={disabled}>{fields.map(f=><label key={f.key}>{f.label}{f.options?<select required={f.required} value={String(values[f.key]??'')} onChange={e=>setValues(v=>({...v,[f.key]:e.target.value}))}>{f.options.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}</select>:f.type==='textarea'?<textarea maxLength={f.maxLength} required={f.required} value={String(values[f.key]??'')} onChange={e=>setValues(v=>({...v,[f.key]:e.target.value}))}/>:f.type==='checkbox'?<input type="checkbox" checked={values[f.key]===true} onChange={e=>setValues(v=>({...v,[f.key]:e.target.checked}))}/>:<input type={f.type??'text'} required={f.required} min={f.min} max={f.max} maxLength={f.maxLength} pattern={f.pattern} value={String(values[f.key]??'')} onChange={e=>setValues(v=>({...v,[f.key]:e.target.value}))}/>}</label>)}<button className="booking-primary">{label}</button></fieldset></form>;
+}

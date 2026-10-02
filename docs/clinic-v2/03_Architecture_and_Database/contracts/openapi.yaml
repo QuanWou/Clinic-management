@@ -1,0 +1,1455 @@
+openapi: 3.1.1
+info:
+  title: Clinic Management V2 - Representative High-Risk Contracts
+  version: 0.9.0
+  description: Architecture draft. Representative routes only; per-service exhaustive contracts and legal/medical
+    sign-off required. A staff tenant header is a request, not an authority token.
+servers:
+- url: https://api.example.invalid/api/v2
+  description: Placeholder, not a deployed service
+tags:
+- name: Identity
+- name: Clinic
+- name: Public
+- name: Appointment
+- name: Patient
+- name: Encounter
+- name: Medical
+- name: Billing
+- name: Portal
+security:
+- bearerAuth: []
+paths:
+  /me/contexts:
+    get:
+      summary: List current verified clinic/branch contexts
+      tags:
+      - Identity
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextList'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: get_me_contexts
+      x-prd-requirements:
+      - FR-IAM-02
+  /clinics:
+    post:
+      summary: Submit clinic onboarding draft
+      tags:
+      - Clinic
+      parameters: &id003
+      - &id001
+        $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClinicSubmission'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clinic'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_clinics
+      x-prd-requirements:
+      - FR-ORG-01
+  /platform/clinics/{clinicId}/approve:
+    post:
+      summary: Approve clinic publication (platform operator)
+      tags:
+      - Clinic
+      parameters:
+      - name: clinicId
+        in: path
+        required: true
+        schema: &id002
+          type: string
+          format: uuid
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalRequest'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clinic'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_platform_clinics_clinicId_approve
+      x-prd-requirements:
+      - FR-ORG-02
+  /public/clinics:
+    get:
+      summary: Search approved clinics
+      tags:
+      - Public
+      parameters:
+      - name: q
+        in: query
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClinicList'
+        default:
+          $ref: '#/components/responses/Error'
+      security: []
+      operationId: get_public_clinics
+      x-prd-requirements:
+      - FR-PUB-01
+  /public/clinics/{clinicId}:
+    get:
+      summary: Approved clinic detail
+      tags:
+      - Public
+      parameters:
+      - name: clinicId
+        in: path
+        required: true
+        schema: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clinic'
+        default:
+          $ref: '#/components/responses/Error'
+      security: []
+      operationId: get_public_clinics_clinicId
+      x-prd-requirements:
+      - FR-PUB-02
+  /public/availability:
+    get:
+      summary: Public availability hint; booking rechecks slot authority
+      tags:
+      - Public
+      parameters:
+      - name: clinicId
+        in: query
+        required: true
+        schema: *id002
+      - name: branchId
+        in: query
+        required: true
+        schema: *id002
+      - name: serviceId
+        in: query
+        required: true
+        schema: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityList'
+        default:
+          $ref: '#/components/responses/Error'
+      security: []
+      operationId: get_public_availability
+      x-prd-requirements:
+      - FR-PUB-04
+  /appointments/holds:
+    post:
+      summary: Reserve a slot atomically
+      tags:
+      - Appointment
+      parameters: *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HoldRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hold'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_appointments_holds
+      x-prd-requirements:
+      - FR-SCH-02
+  /appointments:
+    post:
+      summary: Consume hold or start pending deposit flow
+      tags:
+      - Appointment
+      parameters: *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_appointments
+      x-prd-requirements:
+      - FR-PUB-05
+      - FR-SCH-04
+  /appointments/{appointmentId}:
+    get:
+      summary: Read authorized appointment
+      tags:
+      - Appointment
+      parameters:
+      - name: appointmentId
+        in: path
+        required: true
+        schema: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: get_appointments_appointmentId
+      x-prd-requirements:
+      - FR-PUB-06
+  /appointments/{appointmentId}/cancel:
+    post:
+      summary: Cancel with financial policy evaluation
+      tags:
+      - Appointment
+      parameters:
+      - name: appointmentId
+        in: path
+        required: true
+        schema: *id002
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReasonRequest'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_appointments_appointmentId_cancel
+      x-prd-requirements:
+      - FR-SCH-03
+  /appointments/{appointmentId}/reschedule:
+    post:
+      summary: Acquire new hold and atomically swap slot
+      tags:
+      - Appointment
+      parameters:
+      - name: appointmentId
+        in: path
+        required: true
+        schema: *id002
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RescheduleRequest'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_appointments_appointmentId_reschedule
+      x-prd-requirements:
+      - FR-SCH-05
+  /patients/walk-in:
+    post:
+      summary: Create verified or provisional clinic patient link
+      tags:
+      - Patient
+      parameters:
+      - &id004
+        $ref: '#/components/parameters/ClinicHeader'
+      - &id005
+        $ref: '#/components/parameters/BranchHeader'
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalkinPatientRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientLink'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_patients_walk_in
+      x-prd-requirements:
+      - FR-IAM-06
+  /visits/walk-in:
+    post:
+      summary: Create visit + check-in + queue without appointment
+      tags:
+      - Encounter
+      parameters:
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visit'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_visits_walk_in
+      x-prd-requirements:
+      - FR-SCH-06
+      - FR-MED-01
+  /appointments/{appointmentId}/check-in:
+    post:
+      summary: Idempotently check in booked patient
+      tags:
+      - Encounter
+      parameters:
+      - name: appointmentId
+        in: path
+        required: true
+        schema: *id002
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckinRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visit'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_appointments_appointmentId_check_in
+      x-prd-requirements:
+      - FR-SCH-07
+  /visits/{visitId}:
+    get:
+      summary: Read visit scoped to care assignment
+      tags:
+      - Encounter
+      parameters:
+      - name: visitId
+        in: path
+        required: true
+        schema: *id002
+      - *id004
+      - *id005
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visit'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: get_visits_visitId
+      x-prd-requirements:
+      - FR-MED-02
+  /visits/{visitId}/start:
+    post:
+      summary: Assigned clinician starts encounter
+      tags:
+      - Encounter
+      parameters:
+      - name: visitId
+        in: path
+        required: true
+        schema: *id002
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReasonRequest'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visit'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_visits_visitId_start
+      x-prd-requirements:
+      - FR-MED-02
+  /visits/{visitId}/orders:
+    post:
+      summary: Create clinical order
+      tags:
+      - Medical
+      parameters:
+      - name: visitId
+        in: path
+        required: true
+        schema: *id002
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClinicalOrder'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_visits_visitId_orders
+      x-prd-requirements:
+      - FR-MED-05
+  /orders/{orderId}/results:
+    post:
+      summary: Enter result by assigned lab staff
+      tags:
+      - Medical
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema: *id002
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResultRequest'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClinicalOrder'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_orders_orderId_results
+      x-prd-requirements:
+      - FR-MED-06
+  /orders/{orderId}/reviews:
+    post:
+      summary: Assigned doctor reviews result
+      tags:
+      - Medical
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema: *id002
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClinicalOrder'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_orders_orderId_reviews
+      x-prd-requirements:
+      - FR-MED-07
+  /visits/{visitId}/documents/{documentId}/sign:
+    post:
+      summary: Sign immutable document version
+      tags:
+      - Medical
+      parameters:
+      - name: visitId
+        in: path
+        required: true
+        schema: *id002
+      - name: documentId
+        in: path
+        required: true
+        schema: *id002
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentAction'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentVersion'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_visits_visitId_documents_documentId_sign
+      x-prd-requirements:
+      - FR-MED-09
+  /documents/{documentId}/release:
+    post:
+      summary: Release signed document for authorized portal access
+      tags:
+      - Medical
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema: *id002
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentAction'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentVersion'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_documents_documentId_release
+      x-prd-requirements:
+      - FR-MED-09
+      - FR-PUB-07
+  /bills/{billId}:
+    get:
+      summary: Read bill by authorization scope
+      tags:
+      - Billing
+      parameters:
+      - name: billId
+        in: path
+        required: true
+        schema: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bill'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: get_bills_billId
+      x-prd-requirements:
+      - FR-BIL-02
+  /payment-intents:
+    post:
+      summary: Create online intent using server-owned merchant configuration
+      tags:
+      - Billing
+      parameters: *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentIntentRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_payment_intents
+      x-prd-requirements:
+      - FR-BIL-04
+      - FR-BIL-05
+  /payments/onsite:
+    post:
+      summary: Record verified direct clinic payment
+      tags:
+      - Billing
+      parameters:
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnsitePaymentRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentReceipt'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_payments_onsite
+      x-prd-requirements:
+      - FR-BIL-03
+  /refunds:
+    post:
+      summary: Request approved refund against original payment
+      tags:
+      - Billing
+      parameters:
+      - *id004
+      - *id005
+      - *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_refunds
+      x-prd-requirements:
+      - FR-BIL-08
+  /webhooks/payments/{provider}:
+    post:
+      summary: Verified payment provider webhook; raw body signature and provider-event dedupe enforced
+      tags:
+      - Billing
+      security: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: X-Provider-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Acknowledged
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAck'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: post_webhooks_payments_provider
+      x-prd-requirements:
+      - FR-BIL-04
+      - FR-BIL-11
+  /me/appointments:
+    get:
+      summary: Patient or verified guardian appointments
+      tags:
+      - Portal
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentList'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: get_me_appointments
+      x-prd-requirements:
+      - FR-PUB-06
+  /me/records/{visitId}/released-documents:
+    get:
+      summary: Released documents authorized by owning clinic
+      tags:
+      - Portal
+      parameters:
+      - name: visitId
+        in: path
+        required: true
+        schema: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasedDocumentList'
+        default:
+          $ref: '#/components/responses/Error'
+      operationId: get_me_records_visitId_released_documents
+      x-prd-requirements:
+      - FR-PUB-07
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    ClinicHeader:
+      name: X-Clinic-Id
+      in: header
+      required: true
+      description: Requested active tenant; verify server-side membership and resource ownership.
+      schema: *id002
+    BranchHeader:
+      name: X-Branch-Id
+      in: header
+      required: true
+      description: Requested branch within clinic; verify scope.
+      schema: *id002
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 128
+  responses:
+    Error:
+      description: Structured error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            requestId:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+          required:
+          - code
+          - message
+          - requestId
+      required:
+      - error
+    ContextList:
+      type: object
+      additionalProperties: false
+      properties:
+        contexts:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              clinicId: *id002
+              branchIds:
+                type: array
+                items: *id002
+              roles:
+                type: array
+                items:
+                  type: string
+              membershipVersion:
+                type: integer
+            required:
+            - clinicId
+            - roles
+      required:
+      - contexts
+    ClinicSubmission:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 2
+        licenseReference:
+          type: string
+        contactEmail:
+          type: string
+          format: email
+        branches:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+              address:
+                type: string
+              timezone:
+                type: string
+                default: Asia/Ho_Chi_Minh
+            required:
+            - name
+            - address
+      required:
+      - name
+      - licenseReference
+      - branches
+    Clinic:
+      type: object
+      additionalProperties: false
+      properties:
+        id: *id002
+        name:
+          type: string
+        status:
+          type: string
+        publicationStatus:
+          type: string
+      required:
+      - id
+      - name
+      - status
+    ClinicList:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Clinic'
+        nextCursor:
+          oneOf:
+          - type: string
+          - type: 'null'
+      required:
+      - items
+    ApprovalRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        reason:
+          type: string
+        publicationApproved:
+          type: boolean
+      required:
+      - reason
+      - publicationApproved
+    Availability:
+      type: object
+      additionalProperties: false
+      properties:
+        slotId: *id002
+        clinicId: *id002
+        branchId: *id002
+        doctorId: *id002
+        startsAt: &id006
+          type: string
+          format: date-time
+        endsAt: *id006
+        available:
+          type: boolean
+        quotedAmountVnd: &id007
+          type: integer
+          format: int64
+          minimum: 0
+          description: Integer Vietnamese dong; no floating-point currency.
+        sourceVersion:
+          type: integer
+      required:
+      - slotId
+      - clinicId
+      - branchId
+      - startsAt
+      - endsAt
+      - available
+    AvailabilityList:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Availability'
+        asOf: *id006
+      required:
+      - items
+      - asOf
+    HoldRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        clinicId: *id002
+        branchId: *id002
+        slotId: *id002
+        doctorId: *id002
+        serviceId: *id002
+        patientId: *id002
+      required:
+      - clinicId
+      - branchId
+      - slotId
+      - serviceId
+      - patientId
+    Hold:
+      type: object
+      additionalProperties: false
+      properties:
+        holdId: *id002
+        slotId: *id002
+        status:
+          type: string
+          enum:
+          - active
+          - consumed
+          - expired
+          - released
+        expiresAt: *id006
+        priceSnapshot:
+          type: object
+          additionalProperties: false
+          properties:
+            amountVnd: *id007
+            currency:
+              type: string
+              enum:
+              - VND
+            priceVersionId: *id002
+          required:
+          - amountVnd
+          - currency
+          - priceVersionId
+      required:
+      - holdId
+      - slotId
+      - status
+      - expiresAt
+    AppointmentRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        holdId: *id002
+        patientId: *id002
+        paymentPolicyAcknowledged:
+          type: boolean
+      required:
+      - holdId
+      - patientId
+      - paymentPolicyAcknowledged
+    Appointment:
+      type: object
+      additionalProperties: false
+      properties:
+        id: *id002
+        clinicId: *id002
+        branchId: *id002
+        patientId: *id002
+        slotId: *id002
+        status:
+          type: string
+          enum:
+          - pending_confirmation
+          - pending_payment
+          - confirmed
+          - checked_in
+          - fulfilled
+          - cancelled
+          - rescheduled
+          - no_show
+        expiresAt: *id006
+        appointmentCode:
+          type: string
+      required:
+      - id
+      - clinicId
+      - branchId
+      - patientId
+      - status
+    ReasonRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        reason:
+          type: string
+          minLength: 2
+      required:
+      - reason
+    RescheduleRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        newHoldId: *id002
+        reason:
+          type: string
+          minLength: 2
+        expectedVersion:
+          type: integer
+          minimum: 1
+      required:
+      - newHoldId
+      - reason
+      - expectedVersion
+    WalkinPatientRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        clinicId: *id002
+        branchId: *id002
+        name:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        matchingReviewed:
+          type: boolean
+      required:
+      - clinicId
+      - branchId
+      - name
+      - matchingReviewed
+    PatientLink:
+      type: object
+      additionalProperties: false
+      properties:
+        patientId: *id002
+        clinicPatientLinkId: *id002
+        verificationStatus:
+          type: string
+      required:
+      - patientId
+      - clinicPatientLinkId
+      - verificationStatus
+    VisitRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        clinicId: *id002
+        branchId: *id002
+        clinicPatientLinkId: *id002
+        serviceId: *id002
+        doctorId: *id002
+      required:
+      - clinicId
+      - branchId
+      - clinicPatientLinkId
+      - serviceId
+    Visit:
+      type: object
+      additionalProperties: false
+      properties:
+        id: *id002
+        clinicId: *id002
+        branchId: *id002
+        patientId: *id002
+        appointmentId: *id002
+        source:
+          type: string
+          enum:
+          - booking
+          - walk_in
+        status:
+          type: string
+          enum:
+          - waiting
+          - in_progress
+          - awaiting_results
+          - clinically_completed
+          - closed
+          - cancelled
+          - transferred
+        queueTicketId: *id002
+        queueNumber:
+          type: integer
+      required:
+      - id
+      - clinicId
+      - branchId
+      - patientId
+      - source
+      - status
+    CheckinRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        branchId: *id002
+        identityVerified:
+          type: boolean
+      required:
+      - branchId
+      - identityVerified
+    OrderRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        offeringId: *id002
+        clinicalReason:
+          type: string
+          minLength: 1
+        priceVersionId: *id002
+      required:
+      - offeringId
+      - clinicalReason
+    ClinicalOrder:
+      type: object
+      additionalProperties: false
+      properties:
+        id: *id002
+        encounterId: *id002
+        status:
+          type: string
+          enum:
+          - ordered
+          - accepted
+          - processing
+          - resulted
+          - reviewed
+          - cancelled
+          - rejected
+      required:
+      - id
+      - encounterId
+      - status
+    ResultRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        summary:
+          type: string
+        attachmentId: *id002
+        resultedAt: *id006
+      required:
+      - summary
+      - resultedAt
+    ReviewRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        reviewNote:
+          type: string
+        decision:
+          type: string
+          enum:
+          - acknowledged
+          - repeat_test
+          - follow_up
+      required:
+      - decision
+    DocumentAction:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          minimum: 1
+        reason:
+          type: string
+      required:
+      - expectedVersion
+    DocumentVersion:
+      type: object
+      additionalProperties: false
+      properties:
+        documentId: *id002
+        versionId: *id002
+        status:
+          type: string
+          enum:
+          - draft
+          - validated
+          - signed
+          - released
+        contentHash:
+          type: string
+      required:
+      - documentId
+      - versionId
+      - status
+    Bill:
+      type: object
+      additionalProperties: false
+      properties:
+        id: *id002
+        clinicId: *id002
+        branchId: *id002
+        totalVnd: *id007
+        paidVnd: *id007
+        remainingVnd: *id007
+        status:
+          type: string
+      required:
+      - id
+      - clinicId
+      - totalVnd
+      - paidVnd
+      - remainingVnd
+      - status
+    PaymentIntentRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        billId: *id002
+        amountVnd: *id007
+        collectionMode:
+          type: string
+          enum:
+          - clinic_merchant
+          - platform_on_behalf
+      required:
+      - billId
+      - amountVnd
+      - collectionMode
+    PaymentIntent:
+      type: object
+      additionalProperties: false
+      properties:
+        id: *id002
+        billId: *id002
+        amountVnd: *id007
+        merchantId:
+          type: string
+        status:
+          type: string
+          enum:
+          - initiated
+          - pending
+          - succeeded
+          - failed
+          - cancelled
+          - unknown
+        providerRedirectUrl:
+          type: string
+          format: uri
+      required:
+      - id
+      - billId
+      - amountVnd
+      - merchantId
+      - status
+    OnsitePaymentRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        billId: *id002
+        amountVnd: *id007
+        method:
+          type: string
+          enum:
+          - cash
+          - transfer
+          - pos
+        shiftId: *id002
+        reference:
+          type: string
+      required:
+      - billId
+      - amountVnd
+      - method
+      - shiftId
+    PaymentReceipt:
+      type: object
+      additionalProperties: false
+      properties:
+        paymentId: *id002
+        billId: *id002
+        amountVnd: *id007
+        receiptLabel:
+          type: string
+          enum:
+          - internal_receipt
+        status:
+          type: string
+      required:
+      - paymentId
+      - billId
+      - amountVnd
+      - receiptLabel
+    RefundRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        paymentId: *id002
+        amountVnd: *id007
+        reason:
+          type: string
+          minLength: 2
+        approvalId: *id002
+      required:
+      - paymentId
+      - amountVnd
+      - reason
+      - approvalId
+    Refund:
+      type: object
+      additionalProperties: false
+      properties:
+        id: *id002
+        paymentId: *id002
+        amountVnd: *id007
+        status:
+          type: string
+          enum:
+          - requested
+          - approved
+          - processing
+          - succeeded
+          - failed
+      required:
+      - id
+      - paymentId
+      - amountVnd
+      - status
+    WebhookAck:
+      type: object
+      additionalProperties: false
+      properties:
+        accepted:
+          type: boolean
+        requestId:
+          type: string
+      required:
+      - accepted
+    AppointmentList:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+        nextCursor:
+          type: string
+      required:
+      - items
+    ReleasedDocument:
+      type: object
+      additionalProperties: false
+      properties:
+        documentId: *id002
+        versionId: *id002
+        releasedAt: *id006
+        downloadLink:
+          type: string
+          format: uri
+      required:
+      - documentId
+      - versionId
+      - releasedAt
+    ReleasedDocumentList:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReleasedDocument'
+      required:
+      - items

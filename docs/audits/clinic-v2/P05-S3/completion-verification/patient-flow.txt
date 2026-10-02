@@ -1,0 +1,36 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-01T22:34:27.354+07:00  INFO 11600 --- [           main] c.clinic.v2.patient.PatientApplication   : Starting PatientApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 11600 (D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\patient-service\target\patient-service-0.1.0-SNAPSHOT.jar started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36)
+2026-10-01T22:34:27.361+07:00  INFO 11600 --- [           main] c.clinic.v2.patient.PatientApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-10-01T22:34:32.760+07:00  INFO 11600 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-01T22:34:33.012+07:00  INFO 11600 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 228 ms. Found 3 JPA repository interfaces.
+2026-10-01T22:34:39.586+07:00  INFO 11600 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 32558 (http)
+2026-10-01T22:34:39.615+07:00  INFO 11600 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-01T22:34:39.616+07:00  INFO 11600 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-01T22:34:39.734+07:00  INFO 11600 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-01T22:34:39.737+07:00  INFO 11600 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 12203 ms
+2026-10-01T22:34:40.679+07:00  INFO 11600 --- [           main] o.s.boot.web.servlet.RegistrationBean    : Filter userReg was not registered (disabled)
+2026-10-01T22:34:40.680+07:00  INFO 11600 --- [           main] o.s.boot.web.servlet.RegistrationBean    : Filter workloadReg was not registered (disabled)
+2026-10-01T22:34:41.338+07:00  INFO 11600 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-01T22:34:41.643+07:00  INFO 11600 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-01T22:34:41.777+07:00  INFO 11600 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-01T22:34:42.951+07:00  INFO 11600 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-01T22:34:43.036+07:00  INFO 11600 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-01T22:34:43.634+07:00  INFO 11600 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6a0e97fc
+2026-10-01T22:34:43.640+07:00  INFO 11600 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-01T22:34:47.898+07:00  INFO 11600 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-01T22:34:48.021+07:00  INFO 11600 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-01T22:34:53.113+07:00  INFO 11600 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-01T22:34:54.954+07:00  INFO 11600 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 32558 (http) with context path '/'
+2026-10-01T22:34:54.996+07:00  INFO 11600 --- [           main] c.clinic.v2.patient.PatientApplication   : Started PatientApplication in 29.329 seconds (process running for 31.231)
+2026-10-01T22:34:56.256+07:00  INFO 11600 --- [.1-32558-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-01T22:34:56.257+07:00  INFO 11600 --- [.1-32558-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-01T22:34:56.258+07:00  INFO 11600 --- [.1-32558-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms

@@ -1,0 +1,50 @@
+server:
+  port: ${MEDICAL_V2_PORT:8102}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: medical-v2-service
+  datasource:
+    url: ${MEDICAL_V2_DB_URL}
+    username: ${MEDICAL_V2_DB_USER}
+    password: ${MEDICAL_V2_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: medical_v2
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: medical_v2
+    schemas: medical_v2
+    locations: classpath:db/migration
+    user: ${MEDICAL_V2_MIGRATION_DB_USER:${MEDICAL_V2_DB_USER}}
+    password: ${MEDICAL_V2_MIGRATION_DB_PASSWORD:${MEDICAL_V2_DB_PASSWORD}}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+medical:
+  charges:
+    enabled: ${MEDICAL_CHARGES_ENABLED:false}
+    billing-url: ${MEDICAL_CHARGES_BILLING_URL:http://127.0.0.1:8103}
+    delay-ms: ${MEDICAL_CHARGES_DELAY_MS:1000}
+  portal:
+    patient-url: ${MEDICAL_PORTAL_PATIENT_URL:http://127.0.0.1:8098}
+  security:
+    service-secret: ${MEDICAL_V2_SERVICE_SECRET}
+    iam-url: ${MEDICAL_V2_IAM_URL:http://localhost:8093}
+    iam-service-secret: ${MEDICAL_V2_IAM_SERVICE_SECRET}
+    clinic-url: ${MEDICAL_V2_CLINIC_URL:http://localhost:8092}
+    clinic-service-secret: ${MEDICAL_V2_CLINIC_SERVICE_SECRET}
+
+
+  sources:
+    encounter-url: ${MEDICAL_ENCOUNTER_URL:http://127.0.0.1:8101}
+    catalog-url: ${MEDICAL_CATALOG_URL:http://127.0.0.1:8095}

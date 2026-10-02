@@ -1,0 +1,28 @@
+
+> clinic-v2-web-shell@0.1.0 test:browser
+> playwright test
+
+[WebServer] (node:38740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:25300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 5 workers
+
+(node:35776) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21248) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26228) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 e2e\billing.spec.ts:4:1 › cashier records partial onsite tender, prints an internal receipt and submits counted shift on desktop/mobile (3.2s)
+  ok 5 e2e\public-booking.spec.ts:4:1 › public booking uses API and remains usable on desktop and mobile (4.0s)
+  ok 1 e2e\doctor.spec.ts:4:1 › assigned doctor waits and returns through reception queue on desktop and mobile (4.1s)
+  ok 4 e2e\reception.spec.ts:5:1 › reception uses an explicit patient selection and supports mobile queue actions (4.6s)
+  ok 3 e2e\medical.spec.ts:4:1 › doctor draft, lab result and doctor review stay separate on desktop and mobile (13.5s)
+
+  5 passed (16.7s)

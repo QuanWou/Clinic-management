@@ -1,0 +1,13 @@
+import { requestJson } from './client';
+import { unwrap } from './booking';
+import type { Clinic } from './configuration';
+import type { PageResponse } from '../types/contracts';
+const base=import.meta.env.VITE_CLINIC_V2_URL??'/s1/clinic';
+const path=(clinic:string)=>`/api/v2/platform/clinics/${encodeURIComponent(clinic)}`;
+export type Review={id:string;actorUserId:string;action:string;reason:string;occurredAt:string};
+export type Decision='request-changes'|'reject'|'approve'|'publish'|'unpublish'|'suspend';
+export const capabilities=(token:string)=>unwrap(requestJson<{publicationEnabled:boolean}>(base+'/api/v2/platform/clinics/capabilities',{headers:{Authorization:`Bearer ${token}`}}));
+export const list=(token:string,status:string,page:number)=>unwrap(requestJson<PageResponse<Clinic>>(base+'/api/v2/platform/clinics?'+new URLSearchParams({status,page:String(page),size:'20'}),{headers:{Authorization:`Bearer ${token}`}}));
+export const detail=(token:string,clinic:string)=>unwrap(requestJson<Clinic>(base+path(clinic),{headers:{Authorization:`Bearer ${token}`}}));
+export const history=(token:string,clinic:string)=>unwrap(requestJson<Review[]>(base+`/api/v2/clinics/${encodeURIComponent(clinic)}/reviews`,{headers:{Authorization:`Bearer ${token}`}}));
+export const decide=(token:string,clinic:string,action:Decision,reason:string,evidenceVerified:boolean)=>unwrap(requestJson<Clinic>(base+path(clinic)+'/'+action,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({reason,...(action==='approve'?{evidenceVerified}:{})})}));

@@ -1,0 +1,103 @@
+{
+  "task": "P05-S3-02-03",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T14:38:27.1282236+00:00",
+  "modules": [
+    {
+      "jarSha256": "3EB4950FEA6808E2942F8B682883F5140565AD8870EDFEE22321CFE12533A579",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 6,
+      "package": "PASS",
+      "failures": 0,
+      "service": "patient"
+    },
+    {
+      "jarSha256": "61691F1E2A1F4CE53EACD72A553C90178536B4E3CC2C54EEF4D299C7E99A3FD2",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 21,
+      "package": "PASS",
+      "failures": 0,
+      "service": "appointment"
+    },
+    {
+      "jarSha256": "B0CACE1424B2AE58638D9AB996FD0E3A4FA2E7E83A10128E0B03C95F6865AA1A",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 25,
+      "package": "PASS",
+      "failures": 0,
+      "service": "clinic"
+    },
+    {
+      "jarSha256": "C1B89ADEDD559FAD6E1161857BA1C6D4151B71BBD93BDBFAC0E0A8D5C6B69FBB",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 13,
+      "package": "PASS",
+      "failures": 0,
+      "service": "doctor"
+    },
+    {
+      "jarSha256": "31D77880A1A967055AA6C8227818C836F87F0C1167AAC21352DB58F457D6C100",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 13,
+      "package": "PASS",
+      "failures": 0,
+      "service": "encounter"
+    },
+    {
+      "jarSha256": "C620024D2B9B7038E515BA217BB09919C992596C3D32EA5759E139E8BDA13738",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 16,
+      "package": "PASS",
+      "failures": 0,
+      "service": "identity"
+    },
+    {
+      "jarSha256": "4BD10F4F0B3D94DE6CBC52CAB2B0E9483B3A29E46F50FBC46D8D6A7FDACD34DF",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 5,
+      "package": "PASS",
+      "failures": 0,
+      "service": "notification"
+    },
+    {
+      "jarSha256": "8F4007BE0E8B31473F7718AC991C23B90802273BE14FF5ECD1D648E1E6B44A69",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 10,
+      "package": "PASS",
+      "failures": 0,
+      "service": "audit"
+    },
+    {
+      "jarSha256": "7BDD403FD544980466DC166CC531D8CA14EF24808BBDBDA8E0A21379712A2BB0",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 8,
+      "package": "PASS",
+      "failures": 0,
+      "service": "catalog"
+    },
+    {
+      "jarSha256": "8F16E9AAE224FD8BCF6015116CBC4B08FCCF56A613A0B93AA4334C573C45C7AD",
+      "skipped": 0,
+      "errors": 0,
+      "tests": 6,
+      "package": "PASS",
+      "failures": 0,
+      "service": "medical"
+    }
+  ],
+  "status": "FAIL",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 11781,
+  "error": "S2 flow timeout: seven exact Medical audit effects",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\9c8e7b25eb08404dae7cd6910918bc7f",
+  "finishedAt": "2026-10-01T14:45:39.1291942+00:00"
+}

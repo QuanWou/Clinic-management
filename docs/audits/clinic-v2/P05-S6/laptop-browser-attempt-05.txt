@@ -1,0 +1,15 @@
+[WebServer] (node:37060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:1728) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\laptop.spec.ts:7:25 › laptop 1280: keyboard, worklist, draft and exact retry remain usable (1.3s)
+  ok 2 e2e\laptop.spec.ts:7:25 › laptop 1366: keyboard, worklist, draft and exact retry remain usable (1.1s)
+  ok 3 e2e\laptop.spec.ts:7:25 › laptop 1440: keyboard, worklist, draft and exact retry remain usable (1.1s)
+  ok 4 e2e\laptop.spec.ts:67:1 › short laptop sidebar and denied view remain reachable at 200% viewport equivalent (463ms)
+
+  4 passed (6.1s)

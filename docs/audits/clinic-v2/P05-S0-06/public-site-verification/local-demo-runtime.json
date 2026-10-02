@@ -1,0 +1,191 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-02T03:30:38.643Z",
+  "backend": [
+    {
+      "service": "appointment",
+      "status": "UP"
+    },
+    {
+      "service": "medical",
+      "status": "UP"
+    },
+    {
+      "service": "clinic",
+      "status": "UP"
+    },
+    {
+      "service": "billing",
+      "status": "UP"
+    },
+    {
+      "service": "catalog",
+      "status": "UP"
+    },
+    {
+      "service": "search",
+      "status": "UP"
+    },
+    {
+      "service": "auth",
+      "status": "UP"
+    },
+    {
+      "service": "notification",
+      "status": "UP"
+    },
+    {
+      "service": "identity",
+      "status": "UP"
+    },
+    {
+      "service": "encounter",
+      "status": "UP"
+    },
+    {
+      "service": "audit",
+      "status": "UP"
+    },
+    {
+      "service": "patient",
+      "status": "UP"
+    },
+    {
+      "service": "doctor",
+      "status": "UP"
+    }
+  ],
+  "accounts": [
+    {
+      "role": "owner",
+      "email": "owner@clinic.local",
+      "passwordLogin": "PASS",
+      "canonicalScope": "PASS"
+    },
+    {
+      "role": "platform",
+      "email": "platform@clinic.local",
+      "passwordLogin": "PASS",
+      "canonicalScope": "PASS"
+    },
+    {
+      "role": "patient",
+      "email": "patient@clinic.local",
+      "passwordLogin": "PASS",
+      "canonicalScope": "PASS"
+    },
+    {
+      "role": "cashier",
+      "email": "cashier@clinic.local",
+      "passwordLogin": "PASS",
+      "canonicalScope": "PASS"
+    },
+    {
+      "role": "reception",
+      "email": "reception@clinic.local",
+      "passwordLogin": "PASS",
+      "canonicalScope": "PASS"
+    },
+    {
+      "role": "manager",
+      "email": "manager@clinic.local",
+      "passwordLogin": "PASS",
+      "canonicalScope": "PASS"
+    },
+    {
+      "role": "doctor",
+      "email": "doctor@clinic.local",
+      "passwordLogin": "PASS",
+      "canonicalScope": "PASS"
+    },
+    {
+      "role": "lab",
+      "email": "lab@clinic.local",
+      "passwordLogin": "PASS",
+      "canonicalScope": "PASS"
+    }
+  ],
+  "browser": [
+    {
+      "role": "owner",
+      "status": "PASS",
+      "viewport": "1366x768",
+      "http": "real-source",
+      "passwordLogins": 1,
+      "sessionNavigation": "PASS"
+    },
+    {
+      "role": "manager",
+      "status": "PASS",
+      "viewport": "1366x768",
+      "http": "real-source",
+      "passwordLogins": 1,
+      "sessionNavigation": "PASS"
+    },
+    {
+      "role": "reception",
+      "status": "PASS",
+      "viewport": "1366x768",
+      "http": "real-source",
+      "passwordLogins": 1,
+      "sessionNavigation": "PASS"
+    },
+    {
+      "role": "doctor",
+      "status": "PASS",
+      "viewport": "1366x768",
+      "http": "real-source",
+      "passwordLogins": 1,
+      "sessionNavigation": "PASS"
+    },
+    {
+      "role": "lab",
+      "status": "PASS",
+      "viewport": "1366x768",
+      "http": "real-source",
+      "passwordLogins": 1,
+      "sessionNavigation": "PASS"
+    },
+    {
+      "role": "cashier",
+      "status": "PASS",
+      "viewport": "1366x768",
+      "http": "real-source",
+      "passwordLogins": 1,
+      "sessionNavigation": "PASS"
+    },
+    {
+      "role": "patient",
+      "status": "PASS",
+      "viewport": "1366x768",
+      "http": "real-source",
+      "passwordLogins": 1,
+      "sessionNavigation": "NOT_APPLICABLE"
+    },
+    {
+      "role": "platform",
+      "status": "PASS",
+      "viewport": "1366x768",
+      "http": "real-source",
+      "passwordLogins": 1,
+      "sessionNavigation": "NOT_APPLICABLE"
+    }
+  ],
+  "data": "synthetic-loopback-demo",
+  "clinicalRelease": "DISABLED",
+  "onlinePayment": "DISABLED",
+  "singleClinicSource": "PASS",
+  "availableSlots": 24,
+  "publicWebsite": {
+    "status": "PASS",
+    "clinicName": "Phòng khám An Nhiên",
+    "singleClinic": true,
+    "viewportWidths": [
+      1366,
+      1024,
+      375
+    ],
+    "serviceAndDoctorPrefill": "PASS",
+    "patientFormsOnHome": false
+  }
+}

@@ -1,0 +1,402 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< com.clinic.v2:patient-service >--------------------
+[INFO] Building patient-service 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ patient-service ---
+[INFO] Deleting D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\patient-service\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ patient-service ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 5 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ patient-service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 28 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ patient-service ---
+[INFO] skip non existing resourceDirectory D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\patient-service\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ patient-service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 5 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ patient-service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.clinic.v2.patient.EncounterPeerVerifierTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.309 s -- in com.clinic.v2.patient.EncounterPeerVerifierTest
+[INFO] Running com.clinic.v2.patient.PatientPostgresTest
+23:30:15.276 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.clinic.v2.patient.PatientPostgresTest]: PatientPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+23:30:15.379 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.clinic.v2.patient.PatientApplication for test class com.clinic.v2.patient.PatientPostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-01T23:30:16.197+07:00  INFO 35468 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:28523/clinic_v2_s1_patient_sandbox (PostgreSQL 17.6)
+2026-10-01T23:30:16.207+07:00  WARN 35468 --- [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-01T23:30:16.230+07:00  INFO 35468 --- [           main] o.f.core.internal.database.base.Schema   : Creating schema "patient_v2" ...
+2026-10-01T23:30:16.236+07:00  INFO 35468 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "patient_v2"."flyway_schema_history" ...
+2026-10-01T23:30:16.320+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "patient_v2": null
+2026-10-01T23:30:16.330+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "1 - patient identity"
+2026-10-01T23:30:16.337+07:00  WARN 35468 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "patient_v2" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-01T23:30:16.359+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "2 - runtime role"
+2026-10-01T23:30:16.377+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "3 - patient rls"
+2026-10-01T23:30:16.392+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "4 - reception provisional patient"
+2026-10-01T23:30:16.411+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "5 - own clinic link read"
+2026-10-01T23:30:16.420+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 5 migrations to schema "patient_v2", now at version v5 (execution time 00:00.047s)
+2026-10-01T23:30:16.468+07:00  INFO 35468 --- [           main] c.clinic.v2.patient.PatientPostgresTest  : Starting PatientPostgresTest using Java 21.0.12.1 with PID 35468 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\patient-service)
+2026-10-01T23:30:16.469+07:00  INFO 35468 --- [           main] c.clinic.v2.patient.PatientPostgresTest  : No active profile set, falling back to 1 default profile: "default"
+2026-10-01T23:30:17.281+07:00  INFO 35468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-01T23:30:17.330+07:00  INFO 35468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 43 ms. Found 3 JPA repository interfaces.
+2026-10-01T23:30:18.066+07:00  INFO 35468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-01T23:30:18.196+07:00  INFO 35468 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-01T23:30:18.234+07:00  INFO 35468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-01T23:30:18.442+07:00  INFO 35468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-01T23:30:18.461+07:00  INFO 35468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-01T23:30:18.497+07:00  INFO 35468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@55202ba6
+2026-10-01T23:30:18.498+07:00  INFO 35468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-01T23:30:19.227+07:00  INFO 35468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-01T23:30:19.267+07:00  INFO 35468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-01T23:30:20.659+07:00  INFO 35468 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-01T23:30:21.520+07:00  INFO 35468 --- [           main] c.clinic.v2.patient.PatientPostgresTest  : Started PatientPostgresTest in 6.033 seconds (process running for 7.172)
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\dung0\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-01T23:30:22.309+07:00  WARN 35468 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42P17
+2026-10-01T23:30:22.309+07:00 ERROR 35468 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: infinite recursion detected in policy for relation "clinic_patient_links"
+2026-10-01T23:30:22.362+07:00  WARN 35468 --- [pool-2-thread-2] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42P17
+2026-10-01T23:30:22.362+07:00 ERROR 35468 --- [pool-2-thread-2] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: infinite recursion detected in policy for relation "clinic_patient_links"
+2026-10-01T23:30:22.371+07:00  WARN 35468 --- [pool-2-thread-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42P17
+2026-10-01T23:30:22.371+07:00 ERROR 35468 --- [pool-2-thread-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: infinite recursion detected in policy for relation "clinic_patient_links"
+[ERROR] Tests run: 3, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 7.250 s <<< FAILURE! -- in com.clinic.v2.patient.PatientPostgresTest
+[ERROR] com.clinic.v2.patient.PatientPostgresTest.ownClinicHistoryFollowsPatientLinkNotContactOrUserUuidAndRevokeIsImmediate -- Time elapsed: 0.303 s <<< ERROR!
+org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement [ERROR: infinite recursion detected in policy for relation "clinic_patient_links"] [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]; SQL [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:277)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:550)
+	at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61)
+	at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:335)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:160)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy159.saveAndFlush(Unknown Source)
+	at com.clinic.v2.patient.service.PatientService.ensureClinicLink(PatientService.java:62)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720)
+	at com.clinic.v2.patient.service.PatientService$$SpringCGLIB$$0.ensureClinicLink(<generated>)
+	at com.clinic.v2.patient.PatientPostgresTest.ownClinicHistoryFollowsPatientLinkNotContactOrUserUuidAndRevokeIsImmediate(PatientPostgresTest.java:39)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.hibernate.exception.SQLGrammarException: could not execute statement [ERROR: infinite recursion detected in policy for relation "clinic_patient_links"] [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:91)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.performNonBatchedMutation(AbstractMutationExecutor.java:134)
+	at org.hibernate.engine.jdbc.mutation.internal.MutationExecutorSingleNonBatched.performNonBatchedOperations(MutationExecutorSingleNonBatched.java:55)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.execute(AbstractMutationExecutor.java:55)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.doStaticInserts(InsertCoordinatorStandard.java:194)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.coordinateInsert(InsertCoordinatorStandard.java:132)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.insert(InsertCoordinatorStandard.java:104)
+	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:110)
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:633)
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:500)
+	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:385)
+	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127)
+	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1425)
+	at org.hibernate.internal.SessionImpl.flush(SessionImpl.java:1411)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:319)
+	at jdk.proxy2/jdk.proxy2.$Proxy152.flush(Unknown Source)
+	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.flush(SimpleJpaRepository.java:673)
+	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.saveAndFlush(SimpleJpaRepository.java:640)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:277)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:516)
+	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:285)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:628)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:173)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:148)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	... 24 more
+Caused by: org.postgresql.util.PSQLException: ERROR: infinite recursion detected in policy for relation "clinic_patient_links"
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:517)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:434)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:194)
+	... 63 more
+
+[ERROR] com.clinic.v2.patient.PatientPostgresTest.concurrentClinicLinkIsOneVerifiedSourceLink -- Time elapsed: 0.035 s <<< ERROR!
+java.util.concurrent.ExecutionException: org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement [ERROR: infinite recursion detected in policy for relation "clinic_patient_links"] [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]; SQL [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:205)
+	at com.clinic.v2.patient.PatientPostgresTest.concurrentClinicLinkIsOneVerifiedSourceLink(PatientPostgresTest.java:52)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement [ERROR: infinite recursion detected in policy for relation "clinic_patient_links"] [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]; SQL [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:277)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:550)
+	at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61)
+	at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:335)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:160)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy159.saveAndFlush(Unknown Source)
+	at com.clinic.v2.patient.service.PatientService.ensureClinicLink(PatientService.java:62)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720)
+	at com.clinic.v2.patient.service.PatientService$$SpringCGLIB$$0.ensureClinicLink(<generated>)
+	at com.clinic.v2.patient.PatientPostgresTest.lambda$concurrentClinicLinkIsOneVerifiedSourceLink$5(PatientPostgresTest.java:50)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.hibernate.exception.SQLGrammarException: could not execute statement [ERROR: infinite recursion detected in policy for relation "clinic_patient_links"] [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:91)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.performNonBatchedMutation(AbstractMutationExecutor.java:134)
+	at org.hibernate.engine.jdbc.mutation.internal.MutationExecutorSingleNonBatched.performNonBatchedOperations(MutationExecutorSingleNonBatched.java:55)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.execute(AbstractMutationExecutor.java:55)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.doStaticInserts(InsertCoordinatorStandard.java:194)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.coordinateInsert(InsertCoordinatorStandard.java:132)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.insert(InsertCoordinatorStandard.java:104)
+	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:110)
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:633)
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:500)
+	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:385)
+	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127)
+	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1425)
+	at org.hibernate.internal.SessionImpl.flush(SessionImpl.java:1411)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:319)
+	at jdk.proxy2/jdk.proxy2.$Proxy152.flush(Unknown Source)
+	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.flush(SimpleJpaRepository.java:673)
+	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.saveAndFlush(SimpleJpaRepository.java:640)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:277)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:516)
+	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:285)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:628)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:173)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:148)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	... 25 more
+Caused by: org.postgresql.util.PSQLException: ERROR: infinite recursion detected in policy for relation "clinic_patient_links"
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:517)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:434)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:194)
+	... 64 more
+
+[INFO] Running com.clinic.v2.patient.ReceptionPatientPostgresTest
+2026-10-01T23:30:22.391+07:00  INFO 35468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.clinic.v2.patient.ReceptionPatientPostgresTest]: ReceptionPatientPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-01T23:30:22.396+07:00  INFO 35468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.clinic.v2.patient.PatientApplication for test class com.clinic.v2.patient.ReceptionPatientPostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-01T23:30:22.453+07:00  INFO 35468 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:28523/clinic_v2_s1_patient_sandbox (PostgreSQL 17.6)
+2026-10-01T23:30:22.455+07:00  WARN 35468 --- [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-01T23:30:22.465+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.007s)
+2026-10-01T23:30:22.495+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "patient_v2": 5
+2026-10-01T23:30:22.495+07:00  INFO 35468 --- [           main] o.f.core.internal.command.DbMigrate      : Schema "patient_v2" is up to date. No migration necessary.
+2026-10-01T23:30:22.522+07:00  INFO 35468 --- [           main] c.c.v.p.ReceptionPatientPostgresTest     : Starting ReceptionPatientPostgresTest using Java 21.0.12.1 with PID 35468 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\patient-service)
+2026-10-01T23:30:22.522+07:00  INFO 35468 --- [           main] c.c.v.p.ReceptionPatientPostgresTest     : No active profile set, falling back to 1 default profile: "default"
+2026-10-01T23:30:22.715+07:00  INFO 35468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-01T23:30:22.726+07:00  INFO 35468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 11 ms. Found 3 JPA repository interfaces.
+2026-10-01T23:30:23.237+07:00  INFO 35468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-01T23:30:23.242+07:00  INFO 35468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-01T23:30:23.260+07:00  INFO 35468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-01T23:30:23.262+07:00  INFO 35468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-10-01T23:30:23.408+07:00  INFO 35468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@58ff6462
+2026-10-01T23:30:23.409+07:00  INFO 35468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-10-01T23:30:23.539+07:00  INFO 35468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-01T23:30:23.559+07:00  INFO 35468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-01T23:30:24.133+07:00  INFO 35468 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-01T23:30:24.543+07:00  INFO 35468 --- [           main] c.c.v.p.ReceptionPatientPostgresTest     : Started ReceptionPatientPostgresTest in 2.144 seconds (process running for 10.196)
+[ERROR] Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 2.335 s <<< FAILURE! -- in com.clinic.v2.patient.ReceptionPatientPostgresTest
+[ERROR] com.clinic.v2.patient.ReceptionPatientPostgresTest.sharedContactOnlySuggestsWithoutAutoMergeAndMissingDobNeedsNoAccount -- Time elapsed: 0.154 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [insert into patient_v2.clinic_patient_links(id,clinic_id,patient_id,patient_code,status) values(?,?,?,?,'PROVISIONAL')]
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:677)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:970)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1014)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1024)
+	at com.clinic.v2.patient.service.ReceptionPatientService.lambda$provisional$1(ReceptionPatientService.java:34)
+	at com.clinic.v2.patient.service.ReceptionPatientService.lambda$local$0(ReceptionPatientService.java:24)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at com.clinic.v2.patient.service.ReceptionPatientService.local(ReceptionPatientService.java:24)
+	at com.clinic.v2.patient.service.ReceptionPatientService.provisional(ReceptionPatientService.java:28)
+	at com.clinic.v2.patient.ReceptionPatientPostgresTest.sharedContactOnlySuggestsWithoutAutoMergeAndMissingDobNeedsNoAccount(ReceptionPatientPostgresTest.java:28)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: infinite recursion detected in policy for relation "clinic_patient_links"
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:517)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:434)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$2(JdbcTemplate.java:975)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:658)
+	... 12 more
+
+[ERROR] com.clinic.v2.patient.ReceptionPatientPostgresTest.explicitReviewKeepsUserLinkAbsentAndRevokeDeniesNextRequest -- Time elapsed: 0.011 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [insert into patient_v2.clinic_patient_links(id,clinic_id,patient_id,patient_code,status) values(?,?,?,?,'PROVISIONAL')]
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:677)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:970)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1014)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1024)
+	at com.clinic.v2.patient.service.ReceptionPatientService.lambda$provisional$1(ReceptionPatientService.java:34)
+	at com.clinic.v2.patient.service.ReceptionPatientService.lambda$local$0(ReceptionPatientService.java:24)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at com.clinic.v2.patient.service.ReceptionPatientService.local(ReceptionPatientService.java:24)
+	at com.clinic.v2.patient.service.ReceptionPatientService.provisional(ReceptionPatientService.java:28)
+	at com.clinic.v2.patient.ReceptionPatientPostgresTest.explicitReviewKeepsUserLinkAbsentAndRevokeDeniesNextRequest(ReceptionPatientPostgresTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: infinite recursion detected in policy for relation "clinic_patient_links"
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:517)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:434)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$2(JdbcTemplate.java:975)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:658)
+	... 12 more
+
+[INFO] Running com.clinic.v2.patient.security.WorkloadTokenVerifierTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.clinic.v2.patient.security.WorkloadTokenVerifierTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   PatientPostgresTest.concurrentClinicLinkIsOneVerifiedSourceLink:52 � Execution org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement [ERROR: infinite recursion detected in policy for relation "clinic_patient_links"] [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]; SQL [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]
+[ERROR]   PatientPostgresTest.ownClinicHistoryFollowsPatientLinkNotContactOrUserUuidAndRevokeIsImmediate:39 � InvalidDataAccessResourceUsage could not execute statement [ERROR: infinite recursion detected in policy for relation "clinic_patient_links"] [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]; SQL [insert into patient_v2.clinic_patient_links (clinic_id,created_at,patient_code,patient_id,status,verified_at,row_version,id) values (?,?,?,?,?,?,?,?)]
+[ERROR]   ReceptionPatientPostgresTest.explicitReviewKeepsUserLinkAbsentAndRevokeDeniesNextRequest:37 � BadSqlGrammar PreparedStatementCallback; bad SQL grammar [insert into patient_v2.clinic_patient_links(id,clinic_id,patient_id,patient_code,status) values(?,?,?,?,'PROVISIONAL')]
+[ERROR]   ReceptionPatientPostgresTest.sharedContactOnlySuggestsWithoutAutoMergeAndMissingDobNeedsNoAccount:28 � BadSqlGrammar PreparedStatementCallback; bad SQL grammar [insert into patient_v2.clinic_patient_links(id,clinic_id,patient_id,patient_code,status) values(?,?,?,?,'PROVISIONAL')]
+[INFO] 
+[ERROR] Tests run: 7, Failures: 0, Errors: 4, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  14.637 s
+[INFO] Finished at: 2026-10-01T23:30:24+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project patient-service: 
+[ERROR] 
+[ERROR] Please refer to D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\patient-service\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -1,0 +1,14 @@
+{
+  "mutations": "NO_NEW_CLINICAL_OR_MONETARY_MUTATIONS",
+  "http": "actual-source-APIs-no-route-interception",
+  "browserTests": 5,
+  "views": [
+    "Patient history/receipts",
+    "Cashier paid bill/internal receipt",
+    "Reception queue/receipt",
+    "Doctor visit/Medical draft",
+    "Owner scoped aggregates"
+  ],
+  "credentials": "IGNORED_OWNED_SANDBOX_ONLY",
+  "status": "PASS"
+}

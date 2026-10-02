@@ -1,0 +1,68 @@
+
+> clinic-v2-web-shell@0.1.0 test:browser
+> playwright test
+
+[WebServer] (node:27576) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:35584) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 13 tests using 10 workers
+
+(node:36380) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:30336) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36808) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35456) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19892) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12632) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31764) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  3 e2e\billing.spec.ts:4:1 › cashier records partial onsite tender, prints an internal receipt and submits counted shift on desktop/mobile (4.3s)
+  ok 10 e2e\operations.spec.ts:3:1 › owner overview shows scoped operational sources, withholds failed aggregates and clears on revoke on desktop/mobile (4.1s)
+  ok  9 e2e\platform-review.spec.ts:3:1 › platform reads actual review-shaped source data and requires independent evidence confirmation on mobile (4.2s)
+  ok  7 e2e\charge-recovery.spec.ts:3:1 › manager recovers a failed charge using the original request after lost response on mobile (5.0s)
+  ok  2 e2e\configuration.spec.ts:3:1 › owner edits source price with immutable history and recovers a lost response across reload on desktop/mobile (6.3s)
+  ok  6 e2e\financial-notification.spec.ts:3:1 › manager retries only the unchanged notification request after an unknown response and patient sees fixed preview copy (6.2s)
+  ok  5 e2e\followup.spec.ts:2:1 › proposed follow-up starts a new no-deposit booking linked to the prior visit and retries the same hold request (6.4s)
+  ok  4 e2e\doctor.spec.ts:4:1 › assigned doctor waits and returns through reception queue on desktop and mobile (7.3s)
+  ok 11 e2e\portal.spec.ts:4:1 › patient sees linked unpublished-clinic history and own internal receipts on desktop/mobile, then loses data on revoke (3.1s)
+  ok 12 e2e\public-booking.spec.ts:4:1 › public booking uses API and remains usable on desktop and mobile (3.6s)
+  ok 13 e2e\reception.spec.ts:5:1 › reception uses an explicit patient selection and supports mobile queue actions (3.6s)
+  ok  8 e2e\medical.spec.ts:4:1 › doctor draft, lab result and doctor review stay separate on desktop and mobile (15.3s)
+  x   1 e2e\absence-lifecycle.spec.ts:4:1 › manager source cancellation freezes its original request after a lost reply on mobile (30.0s)
+
+
+  1) e2e\absence-lifecycle.spec.ts:4:1 › manager source cancellation freezes its original request after a lost reply on mobile 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Bác sĩ tiếp nhận', { exact: true })
+
+
+      13 |   await route.fulfill({json});
+      14 |  });
+    > 15 |  await page.setViewportSize({width:375,height:812});await page.goto('/workspace?view=reception');await page.getByLabel('Email nhân viên').fill('synthetic@example.invalid');await page.getByLabel('Mật khẩu nhân viên').fill('synthetic-password');await page.getByRole('button',{name:'Đăng nhập tiếp nhận'}).click();await page.getByLabel('Địa điểm tiếp nhận').selectOption('branch');await page.getByLabel('Bác sĩ tiếp nhận',{exact:true}).selectOption('doctor');await page.getByRole('button',{name:'Tải nguồn khoảng vắng để xử lý'}).click();await expect(page.getByRole('button',{name:'Hủy khoảng vắng này'})).toBeVisible();await page.getByLabel('Lý do xử lý khoảng vắng hoặc ngoại lệ').fill('Synthetic source investigation');await page.getByRole('button',{name:'Hủy khoảng vắng này'}).click();await expect(page.getByRole('button',{name:'Thử lại yêu cầu xử lý đang chờ'})).toBeVisible();await expect(page.getByLabel('Địa điểm tiếp nhận')).toBeDisabled();await expect(page.getByLabel('Bác sĩ tiếp nhận',{exact:true})).toBeDisabled();await expect(page.getByLabel('Lý do xử lý khoảng vắng hoặc ngoại lệ')).toBeDisabled();await page.getByRole('button',{name:'Thử lại yêu cầu xử lý đang chờ'}).click();await expect(page.getByRole('status').filter({hasText:'Hủy khoảng vắng đã được ghi nhận'})).toBeVisible();expect(requests).toHaveLength(2);expect(requests[0]).toEqual(requests[1]);expect(requests[0].key).toBeTruthy();expect(requests[0].body).toEqual({expectedVersion:1,reason:'Synthetic source investigation'});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);await page.locator('[aria-label="Xử lý nguồn vắng và ngoại lệ"]').screenshot({path:path.join(evidence,'absence-lifecycle-mobile.png')});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+      16 | });
+      17 |
+        at D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\apps\web-shell\e2e\absence-lifecycle.spec.ts:15:434
+
+    Error Context: test-results\absence-lifecycle-manager--0a17c-fter-a-lost-reply-on-mobile\error-context.md
+
+  1 failed
+    e2e\absence-lifecycle.spec.ts:4:1 › manager source cancellation freezes its original request after a lost reply on mobile 
+  12 passed (33.3s)

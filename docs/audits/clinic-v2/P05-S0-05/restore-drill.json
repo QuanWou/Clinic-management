@@ -1,0 +1,28 @@
+﻿{
+    "generatedAtUtc":  "2026-09-30T16:42:11.0784327Z",
+    "syntheticOnly":  true,
+    "container":  "clinic-v2-s005-audit-6820",
+    "sourceDatabase":  "clinic_v2_s005_audit_sandbox",
+    "targetDatabase":  "clinic_v2_s005_audit_restore_sandbox",
+    "dumpSha256":  "2dbc73da8966f0dc50336980fd0a2cda9379de88d03217e98ec63c12e4a62eee",
+    "sourceTableCounts":  {
+                              "audit_v2|audit_chain_heads":  4,
+                              "audit_v2|audit_events":  6,
+                              "audit_v2|outbox_events":  6
+                          },
+    "targetTableCounts":  {
+                              "audit_v2|audit_chain_heads":  4,
+                              "audit_v2|audit_events":  6,
+                              "audit_v2|outbox_events":  6
+                          },
+    "integrity":  true,
+    "differences":  [
+
+                    ],
+    "restoreSecondsMeasured":  0.144,
+    "totalDrillSecondsMeasured":  0.812,
+    "rpoTargetStatus":  "NOT_EVALUATED_OPEN_OD_09",
+    "rtoTargetStatus":  "MEASURED_ONLY_NOT_PRODUCTION_CLAIM",
+    "encryptionAtRest":  "NOT_APPLICABLE_SYNTHETIC_LOCAL_DRILL",
+    "offsiteImmutableCopy":  "NOT_TESTED_IN_LOCAL_DRILL"
+}

@@ -1,0 +1,84 @@
+{
+  "task": "P05-S1",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-09-30T23:57:23.5493231+00:00",
+  "modules": [
+    {
+      "tests": 5,
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "service": "search",
+      "jarSha256": "A6EAAD06D51B99CADAE2FEC6D727832A424F0CD4F49E19154FEE038A55F11780"
+    },
+    {
+      "tests": 3,
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "service": "patient",
+      "jarSha256": "483CC44238833F0A9AC6D490548B965BD23F43A260E9A425260446CF95FD16B5"
+    },
+    {
+      "tests": 15,
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "service": "appointment",
+      "jarSha256": "2E801A9AA400C9FABBCA51369C72EAF074ADDA0FE17A7EA36B0B6A7E44317ECA"
+    },
+    {
+      "tests": 25,
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "service": "clinic",
+      "jarSha256": "1DA36521FA2F03F58CF28F041BDBF522218614D40F482FE8310455B8784762C7"
+    },
+    {
+      "tests": 10,
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "service": "doctor",
+      "jarSha256": "F1E1BDFB3D9F0923D44756DE70A672B063E7002EF73FFE92C953D258C81506BD"
+    },
+    {
+      "tests": 8,
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "service": "catalog",
+      "jarSha256": "0974D82596ED6D6C5DB635587114CAF274080254EACE70AEED1DBA1C8550FB41"
+    },
+    {
+      "tests": 4,
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "service": "notification",
+      "jarSha256": "0E07E098A8E443F685023DBF17F23AFF0541C64F1D5754C0BD22F16665489B34"
+    },
+    {
+      "tests": 8,
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "service": "audit",
+      "jarSha256": "E689336F683CAE6F8D8E6C11B16302EAFDFB63539E8667CF923729AD5ECCECD9"
+    }
+  ],
+  "status": "PASS",
+  "cleanup": "PASS",
+  "port": 48516,
+  "projectionFlow": "PASS",
+  "finishedAt": "2026-10-01T00:01:49.2993430+00:00"
+}

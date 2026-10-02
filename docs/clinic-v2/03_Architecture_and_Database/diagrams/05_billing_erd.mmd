@@ -1,0 +1,21 @@
+erDiagram
+  CHARGE ||--o{ BILL_LINE : billed_as
+  BILL ||--o{ BILL_LINE : contains
+  BILL ||--o{ PAYMENT_ALLOCATION : allocated
+  PAYMENT ||--o{ PAYMENT_ALLOCATION : contributes
+  PAYMENT_INTENT o|--o{ PAYMENT : settles
+  PAYMENT ||--o{ REFUND : original
+  JOURNAL_ENTRY ||--|{ JOURNAL_LINE : balanced
+  PAYMENT o|--o{ JOURNAL_ENTRY : posted
+  REFUND o|--o{ JOURNAL_ENTRY : reversed
+  SETTLEMENT ||--o{ JOURNAL_ENTRY : aggregates
+  CHARGE { uuid id PK uuid clinic_id string source_type uuid source_id int source_version bigint amount_vnd }
+  BILL { uuid id PK uuid clinic_id uuid branch_id string status bigint total_vnd }
+  BILL_LINE { uuid id PK uuid bill_id uuid charge_id bigint amount_vnd }
+  PAYMENT_INTENT { uuid id PK uuid clinic_id uuid bill_id string merchant_id string collector bigint amount_vnd string status }
+  PAYMENT { uuid id PK uuid clinic_id string provider_ref bigint amount_vnd string state }
+  PAYMENT_ALLOCATION { uuid id PK uuid bill_id uuid payment_id bigint amount_vnd }
+  REFUND { uuid id PK uuid original_payment_id bigint amount_vnd string status }
+  JOURNAL_ENTRY { uuid id PK uuid clinic_id string currency datetime posted_at }
+  JOURNAL_LINE { uuid id PK uuid entry_id string account bigint debit_vnd bigint credit_vnd }
+  SETTLEMENT { uuid id PK uuid clinic_id string beneficiary bigint net_vnd string state }

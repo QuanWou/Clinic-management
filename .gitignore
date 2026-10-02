@@ -7,3 +7,7 @@
 **/dist/
 *.log
 .env
+v2/.sandbox/
+v2/.runtime/
+**/test-results/
+**/playwright-report/

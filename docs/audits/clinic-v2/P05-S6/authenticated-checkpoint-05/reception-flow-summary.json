@@ -1,0 +1,16 @@
+{
+  "doctor": "assigned-worklist-start",
+  "revokeDenied": 403,
+  "absence": "source-interval-replay-bulk-and-background-impact-keeps-booking",
+  "branchDenied": 403,
+  "clinicDirectory": "branch-scoped",
+  "walkIn": "no-appointment-one-check-in-ticket",
+  "exception": "future-late-denied-source-absence-exception",
+  "legacyIdentity": "actual-legacy-signup-password-login-real-V2-IAM",
+  "patient": "provisional-replay-and-suggestions",
+  "recovery": "own-server-receipt-after-browser-loss",
+  "status": "PASS",
+  "bookingArrival": "actual-Public-browser-booking-replay",
+  "v2Identity": "real-runtime-service",
+  "audit": "six-exact-events-real-consumer-before-lifecycle"
+}

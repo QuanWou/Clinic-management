@@ -1,0 +1,101 @@
+[WebServer] (node:27008) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:13720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:8180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 e2e\laptop.spec.ts:7:25 › laptop 1280: keyboard, worklist, draft and exact retry remain usable (5.7s)
+(node:29988) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 e2e\laptop.spec.ts:7:25 › laptop 1366: keyboard, worklist, draft and exact retry remain usable (5.7s)
+(node:30288) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  3 e2e\laptop.spec.ts:7:25 › laptop 1440: keyboard, worklist, draft and exact retry remain usable (5.7s)
+(node:37588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 4 e2e\laptop.spec.ts:67:1 › short laptop sidebar and denied view remain reachable at 200% viewport equivalent (652ms)
+
+
+  1) e2e\laptop.spec.ts:7:25 › laptop 1280: keyboard, worklist, draft and exact retry remain usable 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByLabel('Lý do khám', { exact: true })
+    Expected: "Synthetic review"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Lý do khám', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Lý do khám', { exact: true })
+
+
+      37 |  await page.getByLabel('Email bác sĩ').fill('laptop@example.invalid');await page.getByLabel('Mật khẩu bác sĩ').fill('synthetic-password');
+      38 |  await page.getByLabel('Mật khẩu bác sĩ').press('Enter');await page.getByLabel('Địa điểm khám').selectOption('branch');
+    > 39 |  await page.getByRole('button',{name:'Chọn lượt R1-20261002-0001',exact:true}).click();await expect(page.getByLabel('Lý do khám',{exact:true})).toHaveValue('Synthetic review');
+         |                                                                                                                                                 ^
+      40 |  const queue=page.locator('.doctor-queue'),detail=page.locator('.doctor-case');
+      41 |  const q=await queue.boundingBox(),d=await detail.boundingBox();expect(q&&d&&q.x+q.width<=d.x).toBeTruthy();
+      42 |  await expect(page.getByRole('button',{name:'Danh sách khám',exact:true})).toHaveAttribute('aria-current','page');
+        at D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\apps\web-shell\e2e\laptop.spec.ts:39:145
+
+    Error Context: test-results\laptop-laptop-1280-keyboar-3668f-d-exact-retry-remain-usable\error-context.md
+
+  2) e2e\laptop.spec.ts:7:25 › laptop 1366: keyboard, worklist, draft and exact retry remain usable 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByLabel('Lý do khám', { exact: true })
+    Expected: "Synthetic review"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Lý do khám', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Lý do khám', { exact: true })
+
+
+      37 |  await page.getByLabel('Email bác sĩ').fill('laptop@example.invalid');await page.getByLabel('Mật khẩu bác sĩ').fill('synthetic-password');
+      38 |  await page.getByLabel('Mật khẩu bác sĩ').press('Enter');await page.getByLabel('Địa điểm khám').selectOption('branch');
+    > 39 |  await page.getByRole('button',{name:'Chọn lượt R1-20261002-0001',exact:true}).click();await expect(page.getByLabel('Lý do khám',{exact:true})).toHaveValue('Synthetic review');
+         |                                                                                                                                                 ^
+      40 |  const queue=page.locator('.doctor-queue'),detail=page.locator('.doctor-case');
+      41 |  const q=await queue.boundingBox(),d=await detail.boundingBox();expect(q&&d&&q.x+q.width<=d.x).toBeTruthy();
+      42 |  await expect(page.getByRole('button',{name:'Danh sách khám',exact:true})).toHaveAttribute('aria-current','page');
+        at D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\apps\web-shell\e2e\laptop.spec.ts:39:145
+
+    Error Context: test-results\laptop-laptop-1366-keyboar-c87a4-d-exact-retry-remain-usable\error-context.md
+
+  3) e2e\laptop.spec.ts:7:25 › laptop 1440: keyboard, worklist, draft and exact retry remain usable 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByLabel('Lý do khám', { exact: true })
+    Expected: "Synthetic review"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Lý do khám', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Lý do khám', { exact: true })
+
+
+      37 |  await page.getByLabel('Email bác sĩ').fill('laptop@example.invalid');await page.getByLabel('Mật khẩu bác sĩ').fill('synthetic-password');
+      38 |  await page.getByLabel('Mật khẩu bác sĩ').press('Enter');await page.getByLabel('Địa điểm khám').selectOption('branch');
+    > 39 |  await page.getByRole('button',{name:'Chọn lượt R1-20261002-0001',exact:true}).click();await expect(page.getByLabel('Lý do khám',{exact:true})).toHaveValue('Synthetic review');
+         |                                                                                                                                                 ^
+      40 |  const queue=page.locator('.doctor-queue'),detail=page.locator('.doctor-case');
+      41 |  const q=await queue.boundingBox(),d=await detail.boundingBox();expect(q&&d&&q.x+q.width<=d.x).toBeTruthy();
+      42 |  await expect(page.getByRole('button',{name:'Danh sách khám',exact:true})).toHaveAttribute('aria-current','page');
+        at D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\apps\web-shell\e2e\laptop.spec.ts:39:145
+
+    Error Context: test-results\laptop-laptop-1440-keyboar-e42cc-d-exact-retry-remain-usable\error-context.md
+
+  3 failed
+    e2e\laptop.spec.ts:7:25 › laptop 1280: keyboard, worklist, draft and exact retry remain usable ─
+    e2e\laptop.spec.ts:7:25 › laptop 1366: keyboard, worklist, draft and exact retry remain usable ─
+    e2e\laptop.spec.ts:7:25 › laptop 1440: keyboard, worklist, draft and exact retry remain usable ─
+  1 passed (22.8s)

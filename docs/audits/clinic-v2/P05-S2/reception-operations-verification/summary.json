@@ -1,0 +1,31 @@
+{
+  "task": "P05-S2-reception-operations",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T20:19:18.6779452+00:00",
+  "modules": [
+    {
+      "jarSha256": "3B6D1F61A8E15C18F148D4F29D7D2BD75EF9B4C0C78E2B314561929EFEC63C14",
+      "package": "PASS",
+      "errors": 0,
+      "skipped": 0,
+      "tests": 25,
+      "failures": 0,
+      "service": "encounter"
+    },
+    {
+      "jarSha256": "8349E85D65B83B24D48439C89AD2DCAA1706C1F083CE0CFC55F39E1FA4922213",
+      "package": "PASS",
+      "errors": 0,
+      "skipped": 0,
+      "tests": 16,
+      "failures": 0,
+      "service": "audit"
+    }
+  ],
+  "status": "PASS",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 23480,
+  "receptionFlow": "NOT_RUN_DATABASE_ONLY",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\bec6c9a4a8de4324973413a06b1f61bd",
+  "finishedAt": "2026-10-01T20:20:05.9428145+00:00"
+}

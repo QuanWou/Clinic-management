@@ -1,0 +1,11 @@
+{
+  "review": "assigned-DOCTOR-unreviewed-blocks-validation",
+  "result": "canonical-LAB-author-scope-result-replay",
+  "status": "PASS",
+  "labDraftDenied": 403,
+  "signature": "DISABLED",
+  "release": "DISABLED",
+  "draft": "immutable-version-one-same-key-replay",
+  "audit": "seven-exact-identifier-only-events",
+  "order": "private-Catalog-name-and-price-snapshot"
+}

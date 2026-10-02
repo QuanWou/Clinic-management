@@ -1,0 +1,15 @@
+{
+  "price": "new-Catalog-120000-imported-100000-immutable",
+  "billsBeforeCashier": 0,
+  "sourceEvents": 4,
+  "sourceCharges": 3,
+  "ingressReplay": "same-id-one-effect",
+  "journalsBeforeCashier": 0,
+  "changedReplay": 409,
+  "producerDelivery": "separate-Billing-and-Audit-ACK",
+  "wrongProducer": 403,
+  "payment": "no-deposit-no-online-collection",
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM",
+  "userSourceProof": 403,
+  "status": "PASS"
+}

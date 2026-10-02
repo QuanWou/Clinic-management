@@ -1,0 +1,33 @@
+sequenceDiagram
+  actor Patient
+  participant Web as Marketplace
+  participant AP as Appointment
+  participant BI as Billing
+  participant PSP as Payment Provider
+  participant EB as Event Bus
+  Patient->>Web: choose clinic, doctor, slot
+  Web->>AP: POST hold (Idempotency-Key)
+  AP->>AP: lock slot + reserve capacity + outbox
+  AP-->>Web: holdId, expiresAt
+  Patient->>Web: confirm booking
+  Web->>AP: POST appointment (holdId)
+  alt deposit not required
+    AP->>AP: consume hold + confirm
+    AP-->>Web: confirmed
+  else deposit required
+    AP-->>Web: pending_payment
+    AP->>BI: create payment intent
+    BI->>PSP: create provider order
+    PSP-->>BI: redirect / provider token
+    PSP->>BI: signed webhook
+    BI->>BI: verify signature, amount, merchant, dedupe, post ledger + outbox
+    BI->>EB: PaymentSucceeded
+    EB->>AP: PaymentSucceeded
+    alt reservation still valid
+      AP->>AP: lock slot, consume, confirm + outbox
+      AP-->>Web: confirmed on status query
+    else reservation expired or released
+      AP->>BI: refund/exception command
+      AP-->>Web: payment exception; no slot reassigned
+    end
+  end

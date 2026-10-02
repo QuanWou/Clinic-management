@@ -1,0 +1,13 @@
+
+> clinic-v2-web-shell@0.1.0 test
+> vitest run src
+
+
+ RUN  v5.0.3 D:/MCP_Plugins_With_ChatGPTWeb/worktrees/0b5f260d-5bb9-4508-9999-088885fef174/6820c6b7-522a-4a2c-9f1b-b05d2184fb36/v2/apps/web-shell
+
+
+ Test Files  10 passed (10)
+      Tests  39 passed (39)
+   Start at  23:47:26
+   Duration  12.39s (tests 72%, environment 20%, import 6%, transform 2%)
+

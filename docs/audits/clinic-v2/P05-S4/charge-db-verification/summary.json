@@ -1,0 +1,49 @@
+{
+  "task": "P05-S4-source-charge-db",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T18:09:06.8084906+00:00",
+  "modules": [
+    {
+      "service": "billing",
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "jarSha256": "7BB8F8B2EEB02F4A44D1D024AA0E8B9C48CAC7C729EC964F0866E9DB89674BCD",
+      "tests": 21
+    },
+    {
+      "service": "medical",
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "jarSha256": "4156263B48B4D001F1248A55ABF15363AB57889AF428C61ECE18576E2709BE7F",
+      "tests": 7
+    },
+    {
+      "service": "encounter",
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "jarSha256": "058DF6479B5EC7715A53921C19266A4A48E3CB5E2173D5780366DF410D01C8A1",
+      "tests": 19
+    },
+    {
+      "service": "appointment",
+      "package": "PASS",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "jarSha256": "D7622C08B461C4CD8E3FB3B63CE96836BF1C3FB64D94D085C028F9BB885972EC",
+      "tests": 28
+    }
+  ],
+  "status": "PASS",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 47855,
+  "receptionFlow": "NOT_RUN_DATABASE_ONLY",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\c3e174308ebb4df2bf26267c64d05f14",
+  "finishedAt": "2026-10-01T18:10:34.1994925+00:00"
+}

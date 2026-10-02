@@ -1,0 +1,15 @@
+{
+  "ingressReplay": "same-id-one-effect",
+  "changedReplay": 409,
+  "sourceEvents": 4,
+  "wrongProducer": 403,
+  "billsBeforeCashier": 0,
+  "price": "new-Catalog-120000-imported-100000-immutable",
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM",
+  "payment": "no-deposit-no-online-collection",
+  "userSourceProof": 403,
+  "status": "PASS",
+  "sourceCharges": 3,
+  "producerDelivery": "separate-Billing-and-Audit-ACK",
+  "journalsBeforeCashier": 0
+}

@@ -1,0 +1,14 @@
+{
+  "currentOutstandingVnd": 0,
+  "clinicalRelease": "DISABLED",
+  "dailyPosVnd": 40000,
+  "dailyCompleted": 2,
+  "role": "canonical-Owner-Manager-only",
+  "sources": "real-Encounter-and-Billing",
+  "dailyBankVnd": 200000,
+  "separateShiftApproval": 1,
+  "receptionDenied": 403,
+  "dailyCashVnd": 40000,
+  "branchScope": "RLS-empty-other-branch",
+  "status": "PASS"
+}

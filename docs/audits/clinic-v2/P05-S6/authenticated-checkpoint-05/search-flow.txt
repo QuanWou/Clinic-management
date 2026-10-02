@@ -1,0 +1,46 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T03:52:58.727+07:00  INFO 23916 --- [search-v2-service] [           main] com.clinic.v2.search.SearchApplication   : Starting SearchApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 23916 (D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\search-service\target\search-service-0.1.0-SNAPSHOT.jar started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36)
+2026-10-02T03:52:58.737+07:00  INFO 23916 --- [search-v2-service] [           main] com.clinic.v2.search.SearchApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T03:53:05.902+07:00  INFO 23916 --- [search-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T03:53:06.083+07:00  INFO 23916 --- [search-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 162 ms. Found 5 JPA repository interfaces.
+2026-10-02T03:53:11.057+07:00  INFO 23916 --- [search-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 2246 (http)
+2026-10-02T03:53:11.171+07:00  INFO 23916 --- [search-v2-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-02T03:53:11.175+07:00  INFO 23916 --- [search-v2-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-02T03:53:11.509+07:00  INFO 23916 --- [search-v2-service] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-02T03:53:11.517+07:00  INFO 23916 --- [search-v2-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 12499 ms
+2026-10-02T03:53:13.517+07:00  INFO 23916 --- [search-v2-service] [           main] o.s.boot.web.servlet.RegistrationBean    : Filter registration was not registered (disabled)
+2026-10-02T03:53:15.864+07:00  INFO 23916 --- [search-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:2232/clinic_v2_s1_search_sandbox (PostgreSQL 17.6)
+2026-10-02T03:53:15.887+07:00  WARN 23916 --- [search-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-02T03:53:15.948+07:00  INFO 23916 --- [search-v2-service] [           main] o.f.core.internal.database.base.Schema   : Creating schema "search_v2" ...
+2026-10-02T03:53:15.970+07:00  INFO 23916 --- [search-v2-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "search_v2"."flyway_schema_history" ...
+2026-10-02T03:53:16.218+07:00  INFO 23916 --- [search-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "search_v2": null
+2026-10-02T03:53:16.267+07:00  INFO 23916 --- [search-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "search_v2" to version "1 - public projection"
+2026-10-02T03:53:16.291+07:00  WARN 23916 --- [search-v2-service] [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "search_v2" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-02T03:53:16.378+07:00  INFO 23916 --- [search-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "search_v2" to version "2 - runtime role"
+2026-10-02T03:53:16.412+07:00  INFO 23916 --- [search-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "search_v2" to version "3 - projection inbox"
+2026-10-02T03:53:16.472+07:00  INFO 23916 --- [search-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 3 migrations to schema "search_v2", now at version v3 (execution time 00:00.124s)
+2026-10-02T03:53:17.007+07:00  INFO 23916 --- [search-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T03:53:17.203+07:00  INFO 23916 --- [search-v2-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-02T03:53:17.330+07:00  INFO 23916 --- [search-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T03:53:19.028+07:00  INFO 23916 --- [search-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T03:53:19.126+07:00  INFO 23916 --- [search-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-02T03:53:19.248+07:00  INFO 23916 --- [search-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@dd07be8
+2026-10-02T03:53:19.254+07:00  INFO 23916 --- [search-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-02T03:53:22.982+07:00  INFO 23916 --- [search-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T03:53:23.125+07:00  INFO 23916 --- [search-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T03:53:24.569+07:00  INFO 23916 --- [search-v2-service] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-02T03:53:29.352+07:00  INFO 23916 --- [search-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-02T03:53:30.051+07:00  INFO 23916 --- [search-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 2246 (http) with context path '/'
+2026-10-02T03:53:30.068+07:00  INFO 23916 --- [search-v2-service] [           main] com.clinic.v2.search.SearchApplication   : Started SearchApplication in 33.431 seconds (process running for 35.818)
+2026-10-02T03:53:31.146+07:00  INFO 23916 --- [search-v2-service] [0.1-2246-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-02T03:53:31.148+07:00  INFO 23916 --- [search-v2-service] [0.1-2246-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-02T03:53:31.149+07:00  INFO 23916 --- [search-v2-service] [0.1-2246-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms

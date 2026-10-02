@@ -1,0 +1,40 @@
+{
+  "task": "P05-S5-aftercare-db",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T16:58:07.4341792+00:00",
+  "modules": [
+    {
+      "tests": 28,
+      "skipped": 0,
+      "package": "PASS",
+      "failures": 0,
+      "jarSha256": "1F880F0820FC2076BC6C93BC78E238CDAC50F40D2D61CBA8DEE460453D64A877",
+      "service": "appointment",
+      "errors": 0
+    },
+    {
+      "tests": 7,
+      "skipped": 0,
+      "package": "PASS",
+      "failures": 0,
+      "jarSha256": "7F93056D084FE749A759D1E11DC3CBBFB4439956CA16E9FCD4507DE2F7FD95EA",
+      "service": "medical",
+      "errors": 0
+    },
+    {
+      "tests": 18,
+      "skipped": 0,
+      "package": "PASS",
+      "failures": 0,
+      "jarSha256": "19AEC473EFC4A524A6F02714DBBBD708F3351C54AED929F78B6DA5F70B59D105",
+      "service": "encounter",
+      "errors": 0
+    }
+  ],
+  "status": "PASS",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 30556,
+  "receptionFlow": "NOT_RUN_DATABASE_ONLY",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\9c74e62fe7b845e79980c144ed750fea",
+  "finishedAt": "2026-10-01T16:59:15.1953256+00:00"
+}

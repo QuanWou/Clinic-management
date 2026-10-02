@@ -1,0 +1,13 @@
+{
+  "assignedRead": 200,
+  "readPermission": "SEPARATE_FROM_AUDIT_READ",
+  "unassignedEncounter": 403,
+  "status": "PASS",
+  "document": "IMMUTABLE_VALIDATED_SOURCE_UNCHANGED",
+  "identity": "actual-password-login-canonical-unassigned-Doctor",
+  "clinicalRelease": "DISABLED",
+  "receptionMedical": 403,
+  "unassignedMedical": 403,
+  "audit": "separate-identifier-only-source-outbox-security-chain",
+  "signature": "DISABLED"
+}

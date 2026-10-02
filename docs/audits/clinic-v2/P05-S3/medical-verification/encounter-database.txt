@@ -1,0 +1,20 @@
+        current_database        |                                 version                                 
+--------------------------------+-------------------------------------------------------------------------
+ clinic_v2_s1_encounter_sandbox | PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit
+(1 row)
+
+ version |         description          | success 
+---------+------------------------------+---------
+         | << Flyway Schema Creation >> | t
+ 1       | encounter queue              | t
+ 2       | encounter runtime rls        | t
+ 3       | encounter audit delivery     | t
+ 4       | arrival recovery             | t
+ 5       | care command receipts        | t
+(6 rows)
+
+       rolname       | rolsuper | rolbypassrls 
+---------------------+----------+--------------
+ s1_encounter_verify | f        | f
+(1 row)
+

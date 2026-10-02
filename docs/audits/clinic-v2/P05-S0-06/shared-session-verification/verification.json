@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-10-02T02:09:17.751Z",
+  "branch": "local-coder/clinic-management-v2-6820c6b7",
+  "scope": "Common in-memory session and role-based navigation across Public, Clinic Workspace, Platform",
+  "build": "PASS",
+  "unit": {
+    "files": 18,
+    "tests": 76,
+    "status": "PASS"
+  },
+  "browserFixtures": {
+    "tests": 20,
+    "status": "PASS",
+    "sizes": [
+      "1280x800",
+      "1366x768",
+      "1440x900",
+      "1366x500",
+      "683x384",
+      "375x812"
+    ],
+    "finalPublicCssRegression": {
+      "tests": 4,
+      "status": "PASS"
+    }
+  },
+  "runtime": {
+    "backend": 13,
+    "roles": 8,
+    "passwordLoginsPerRole": 1,
+    "status": "PASS"
+  },
+  "hashes": {
+    "v2/apps/web-shell/src/auth/access.ts": "4e4f25050fa9adcab639733cc37acf1db4247418ae35bf3019f6a9aa50ee4d42",
+    "v2/apps/web-shell/src/auth/LoginPage.tsx": "35c17316596f50f3b30bc3c2cbfb02ba47054595f98eeb7da185dd1983321f43",
+    "v2/apps/web-shell/src/auth/navigation.ts": "ef0393c662c72557ff265a39ce748c57e6a24a997f247a697a73a9d791600be0",
+    "v2/apps/web-shell/src/auth/SessionProvider.tsx": "59830d1799568af42930bba20842f088443efc734e90f816a94ef2ac088f6557",
+    "v2/apps/web-shell/src/auth/SourceSessionState.tsx": "cb1fe833ac2df1d9854c8948409a49a8d48b4e45f75cad8919c2d92b09f03c44",
+    "v2/apps/web-shell/src/App.tsx": "19d535c1b84edd38684ed32e1975c1134c67b2bcd73507a730e166840f44e768",
+    "v2/apps/web-shell/src/api/client.ts": "e747563f29afe8849f7280287657ad10f54e79fea40bd6ee693c45f6e0331135",
+    "v2/apps/web-shell/src/shells/WorkspaceShell.tsx": "96a886a0bd14a92c2a2450cf8a56f20e5c0202be4a507b677e603115a5911a85",
+    "v2/apps/web-shell/src/shells/PlatformShell.tsx": "69d327ee61c57b1048f29ac4eb53285d4bc078913e7941846dc3aa8f25bfc469",
+    "v2/apps/web-shell/src/shells/PublicShell.tsx": "a985623e801af3cee005f8df0a5943901d4468be75b0279422cdbe82d1f7d5cd",
+    "v2/apps/web-shell/src/components/DoctorPanel.tsx": "5d5b39a48bf78623d832413d16fae275c0c686e6e05cfee83dbc2fc4c9ceb2d2",
+    "v2/apps/web-shell/src/components/LabPanel.tsx": "6df054d206c1d2368a8e8effa56fe490603ec662e78bb33f6b80a792e6092f12",
+    "v2/apps/web-shell/src/components/CashierPanel.tsx": "903f2f3c1848cb825992aea2c0f3464a1a4ee924aa76a62119628529cb939e1f",
+    "v2/apps/web-shell/src/components/ReceptionPanel.tsx": "a8706e2d955ae1672083dfb630ad93e0bfccf4a74178117ffc8b0d0b0389755c",
+    "v2/apps/web-shell/src/components/ConfigurationPanel.tsx": "d137bce5602bf4965288c248eaaf903eba84c510574cadf8a4229163a869485e",
+    "v2/apps/web-shell/src/components/OperationsPanel.tsx": "8f31eec473d549b22aa2cb1c11de30324bc5d3204e62ddbff5cb86e3392fe016",
+    "v2/apps/web-shell/src/components/AccountSettingsPanel.tsx": "0a07d8e05747545c9283c54a5a913dda5f3b5dd910ac3ab52293a2d2747fee46",
+    "v2/apps/web-shell/src/components/PlatformReviewPanel.tsx": "f27601b9fbc5465db161b0ff3a65909482de646b288a8cf1afa6747eba515a33",
+    "v2/apps/web-shell/src/components/useNavigationLock.ts": "7f40afaee6e3b91064027ca049ba2274940454c4d2e2daa40b6981c3edd63245",
+    "v2/apps/web-shell/src/styles.css": "4721d5de252d32bf41da2ffdda429ec121935b59548189db3ff4588bb0661977",
+    "v2/apps/web-shell/src/__tests__/application-session.test.tsx": "1de65f2f424b2fd55785f6c1cf7b9c506e78bc78d1b66294e3130543dc889a25",
+    "v2/apps/web-shell/src/__tests__/shells.test.tsx": "e21080a407ae7aa03e80584bc49a264086cd198fca118d964b0d7b106b50d525",
+    "v2/apps/web-shell/e2e/absence-lifecycle.spec.ts": "aa8db3366bc02f127cca6c879a15a90282165b3c28e82806d86d319e74edd01b",
+    "v2/apps/web-shell/e2e/billing.spec.ts": "31dc8e59340191dc4c8811d1be8ebe39948cf05d6c4f925bae6fe18d9416add2",
+    "v2/apps/web-shell/e2e/charge-recovery.spec.ts": "437ea8f4ecce9a0a04c38e39d220f0067e3e92129ba6a3ce2dfd0efebd4efe72",
+    "v2/apps/web-shell/e2e/configuration.spec.ts": "b54ad9523e59d4db733833be7633c957d8a4421d7d3fd2464ef64088715a3a9d",
+    "v2/apps/web-shell/e2e/doctor.spec.ts": "a015fd28f54c82c816b3f75c5339612610eebf3b6ca149f6261ef8efd1694a9a",
+    "v2/apps/web-shell/e2e/financial-notification.spec.ts": "dcf6baf26072d21bdfb8f93e74562137f8911d977be053b6dd46367252266d2c",
+    "v2/apps/web-shell/e2e/followup.spec.ts": "8c354211a013f69137cc814542b8c78ba2e4a65265b3b8f5697ef48c2c1edf48",
+    "v2/apps/web-shell/e2e/laptop.spec.ts": "84b970cee3957a74b3b1b2cc8c5b1e0e2e548734fcdf011fb10e795d93bfbc76",
+    "v2/apps/web-shell/e2e/medical.spec.ts": "bb9ba1064e63977f9f554f14088c1ad34154bfa188e0a25e3c8fbde98c28a5f9",
+    "v2/apps/web-shell/e2e/operations.spec.ts": "d60252ef981c4cf88153de60bd53207a3c50f6e07348b492ad709b315e5abc20",
+    "v2/apps/web-shell/e2e/platform-review.spec.ts": "1b303c59106776862fc27fdba9560d3590e4b66601f8a67440487b71d2c6184e",
+    "v2/apps/web-shell/e2e/portal.spec.ts": "36710b2cb11e6a98cec3ba16c3be6be0a1c94735caffc1dd0f3d2b1556e3e93c",
+    "v2/apps/web-shell/e2e/public-booking.spec.ts": "f24d5d97578d282a2ae4c3ce9b1e6a0a3afa2a8d0ed89f7ca28874f4ce407503",
+    "v2/apps/web-shell/e2e/reception-operations.spec.ts": "100cf89ba0af89364e77e431b58a1e11da0e3a653594eea1053ebb4b7373d8fb",
+    "v2/apps/web-shell/e2e/reception.spec.ts": "a56be4ec3453a167ababbebda2ae118df035416842bd5dd4f987d7fd188abb87",
+    "v2/scripts/verify-local-demo.mjs": "39ccaf6ebf95cdd08e8204232e5e5f1844b5b7ed93aab8bfaf95027aa0167992"
+  }
+}

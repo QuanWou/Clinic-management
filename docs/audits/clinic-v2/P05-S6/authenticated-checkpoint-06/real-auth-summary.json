@@ -1,0 +1,12 @@
+{
+  "refreshAsAccess": 401,
+  "v1Source": "unchanged",
+  "legacyRoles": "registered-default-Patient-not-tenant-authority",
+  "database": "isolated-clinic_v2_s6_auth_sandbox",
+  "duplicateEmail": 409,
+  "credentials": "synthetic-not-retained-in-evidence",
+  "login": "actual-password-login-current-user-match",
+  "status": "PASS",
+  "accounts": 5,
+  "registration": "actual-legacy-register"
+}

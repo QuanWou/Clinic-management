@@ -1,0 +1,36 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-01T22:34:27.115+07:00  INFO 32672 --- [           main] c.c.v.a.AppointmentApplication           : Starting AppointmentApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 32672 (D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\appointment-service\target\appointment-service-0.1.0-SNAPSHOT.jar started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36)
+2026-10-01T22:34:27.121+07:00  INFO 32672 --- [           main] c.c.v.a.AppointmentApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-10-01T22:34:31.825+07:00  INFO 32672 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-01T22:34:32.086+07:00  INFO 32672 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 221 ms. Found 5 JPA repository interfaces.
+2026-10-01T22:34:36.570+07:00  INFO 32672 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 32559 (http)
+2026-10-01T22:34:36.614+07:00  INFO 32672 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-01T22:34:36.622+07:00  INFO 32672 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-01T22:34:36.820+07:00  INFO 32672 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-01T22:34:36.829+07:00  INFO 32672 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 9479 ms
+2026-10-01T22:34:38.492+07:00  INFO 32672 --- [           main] o.s.boot.web.servlet.RegistrationBean    : Filter reg was not registered (disabled)
+2026-10-01T22:34:39.363+07:00  INFO 32672 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-01T22:34:39.551+07:00  INFO 32672 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-01T22:34:39.679+07:00  INFO 32672 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-01T22:34:40.956+07:00  INFO 32672 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-01T22:34:41.050+07:00  INFO 32672 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-01T22:34:41.640+07:00  INFO 32672 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2aa0feb2
+2026-10-01T22:34:41.664+07:00  INFO 32672 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-01T22:34:45.781+07:00  INFO 32672 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-01T22:34:45.999+07:00  INFO 32672 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-01T22:34:47.947+07:00  INFO 32672 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-01T22:34:54.767+07:00  INFO 32672 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-01T22:34:55.884+07:00  INFO 32672 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 32559 (http) with context path '/'
+2026-10-01T22:34:55.910+07:00  INFO 32672 --- [           main] c.c.v.a.AppointmentApplication           : Started AppointmentApplication in 30.407 seconds (process running for 32.127)
+2026-10-01T22:34:56.489+07:00  INFO 32672 --- [.1-32559-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-01T22:34:56.490+07:00  INFO 32672 --- [.1-32559-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-01T22:34:56.492+07:00  INFO 32672 --- [.1-32559-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms

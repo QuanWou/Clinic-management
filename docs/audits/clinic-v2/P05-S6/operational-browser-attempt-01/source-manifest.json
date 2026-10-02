@@ -1,0 +1,2726 @@
+{
+  "capturedAt": "2026-10-01T21:01:04.4580497+00:00",
+  "kind": "post-verification-source-checkpoint",
+  "files": [
+    {
+      "path": "docs/audits/clinic-v2/Delivery_Scope_No_Deposit_Unsigned.md",
+      "sha256": "C32033DF14010C12BC63013624B4E9760B43AA79525B8A56A9DEF2BC8DE43E48"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S2/S2_Gap_Review.md",
+      "sha256": "13BCFC63561BE88AC2DDD3B6D65A2380332AB4C5BCB81835C00467C084BDA138"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S2/S2_Implementation_Evidence.md",
+      "sha256": "A1E55ABF7DB6B06544D9DEEA6A12F81F7CD0EC8CC28E4644207D68BDC7A04491"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S3/Completion_Implementation_Evidence.md",
+      "sha256": "783E1F0E71FB96CB0C7BBCE23DB79ACD648BC3C51B64ED563F78FB11E1B288D2"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S3/Medical_Implementation_Evidence.md",
+      "sha256": "88484FFA2F839AA8F601245F84ECB71527750AC8883A24C195EA2E116D2F0C44"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S3/S3_Gap_Review.md",
+      "sha256": "7DBCB255BBCCC47622C7686538EB9A0BD579CB31A7055312C404B097A4EF33FA"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S3/S3_Implementation_Evidence.md",
+      "sha256": "D00705108012DBC22B58B9FA05604051B735B1D831A0FC3D9EB175496AFCF3A1"
+    },
+    {
+      "path": "docs/clinic-v2/05_Implementation_Delivery/03_Implementation_Backlog.md",
+      "sha256": "302CFE1614AE359578FB497AEFA41C748E9347C27B3AF3E9CA14988A39E1F84F"
+    },
+    {
+      "path": "docs/clinic-v2/05_Implementation_Delivery/09_Traceability_and_Signoff.md",
+      "sha256": "0D4C448DE09C8CC8819D49ABBC986D73DDC6A5C3183ED67738D8F8CAF496E3C7"
+    },
+    {
+      "path": "docs/clinic-v2/05_Implementation_Delivery/backlog.csv",
+      "sha256": "06EDF8FFA32E37D4E6F8DC2FE316742EEAD4696E05C4F5840D918637D830CCD1"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/absence-lifecycle.spec.ts",
+      "sha256": "B8E2AD55932BBF4592E26C77A7992F12F0B5A2EA3A394865EA0AC7C357303986"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/billing.spec.ts",
+      "sha256": "641E27D369EC767DB8CAE713D50CA9F1666103CE55AB9748DC56B86AE1D7AC2C"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/charge-recovery.spec.ts",
+      "sha256": "1CC6AA5FDD9E7DE25009917A6981310EDF1F8940AA5C42A2DDFE667B1BE153AC"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/configuration.spec.ts",
+      "sha256": "7AE25677AB9CAAA734E902366BFCC22868A4EEDE47CF2705705692977BF2EA2B"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/doctor.spec.ts",
+      "sha256": "B5C9BBF1F201FAB5F60B52B1C66C6CB553DEB02568E61E16F1534ED08170C7F5"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/financial-notification.spec.ts",
+      "sha256": "F80C2A421524597667C37A1596057CCB97C81458E230C6AE24724E65B9F354EC"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/followup.spec.ts",
+      "sha256": "1554DB1BC1D2B5165AE448C9EEBE35F0167E677EE506DAFD526CFCD96B04F9DE"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/medical.spec.ts",
+      "sha256": "8554D4B74A60BFE2D1D192AE900500B8432E2E375E316CEA1C732E9263CBA262"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/operations.spec.ts",
+      "sha256": "2080AD65EDD475CAD7C86FEA7198AA16A8D57AFE2AF0AD15C0EF1F8B8E980EB4"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/platform-review.spec.ts",
+      "sha256": "400CBBF061F0EFAF2059C5B20D76F4C67CFC1966ED93B0059C4BBCBF624F01B9"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/portal.spec.ts",
+      "sha256": "7B902934627596310CA212D8A4F032611F6719AE3AB9CFFCE13724A5B04944B5"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/public-booking.spec.ts",
+      "sha256": "D34017515F37630513BF206CC3DA775DB33957FBB149EAA137A079FD2C400C01"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/reception-operations.spec.ts",
+      "sha256": "890385D9DFF52A9F3635C59FCE2F1BE4D1C95505F2BE87E5E808DA166CE7BD1D"
+    },
+    {
+      "path": "v2/apps/web-shell/e2e/reception.spec.ts",
+      "sha256": "46FE7273529A3EFA3B6AE5D6552D10DB1CDD71810D1E35C7972E113FF80FEF58"
+    },
+    {
+      "path": "v2/apps/web-shell/operational-e2e/source-reads.real.spec.ts",
+      "sha256": "DD7CBA7C062823E8366C6CE9B08F1E87EF7DBAE534182FE85648F7F729069FFC"
+    },
+    {
+      "path": "v2/apps/web-shell/package-lock.json",
+      "sha256": "87C577796D85647DC0101FC87A9B41B829F13027CCDC1A9A09E99533AE096351"
+    },
+    {
+      "path": "v2/apps/web-shell/package.json",
+      "sha256": "082EC73CA8437FC22FA1B2121998A03D4748E29189CABC5DB0C3CAC021527AE7"
+    },
+    {
+      "path": "v2/apps/web-shell/playwright.config.ts",
+      "sha256": "242FE1F5C706DD2194297079E81BA70999AC2292C1281EF2DBBC993779FA0F8E"
+    },
+    {
+      "path": "v2/apps/web-shell/playwright.operational.config.ts",
+      "sha256": "25181817D4CF3F0B5AA1E55804E6C5507A0D21D6CAC37BFE878180744E7C907B"
+    },
+    {
+      "path": "v2/apps/web-shell/playwright.real.config.ts",
+      "sha256": "3AC30E43DBF8A954C9D96810623B4F589E0B59B51A6E38FF9694626125A785DD"
+    },
+    {
+      "path": "v2/apps/web-shell/README.md",
+      "sha256": "FA1C35CF5B26504F0C7FA609FEF6A8CC0B7BB78C680FC3A1B483BAE95B65CCCE"
+    },
+    {
+      "path": "v2/apps/web-shell/real-e2e/public-booking.real.spec.ts",
+      "sha256": "9F98CCA191D1970D79C178100FA5CB3800F4F1FB04311465865C43CC3BBB7342"
+    },
+    {
+      "path": "v2/apps/web-shell/S1_RUNBOOK.md",
+      "sha256": "BC4E81EA3E24D71CA081F2764539167589A79197042274878FB0DE347782AFBE"
+    },
+    {
+      "path": "v2/apps/web-shell/S2_RUNBOOK.md",
+      "sha256": "DFB1264AA742D0119B62A1C67D637DADF84B060B9DE852F173375CDAF2170AB4"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/absence-lifecycle.test.tsx",
+      "sha256": "D84BE6112C673381A8F82B6A6F3076BAB541F44CCE98E39E2AD9C76791E61440"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/billing.test.tsx",
+      "sha256": "04FA917E359167EF919E9498BAEFC89D4DAFF60BA4AFFC22D5422ABBC7597D96"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/booking.test.tsx",
+      "sha256": "C409948581BAE64F5F4F27E5634F16D84A26FA266968601DBD29A9D6B71CF103"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/charge-sync.test.tsx",
+      "sha256": "C3F4AD53243432E1F00691A8D81BB685699DDDA306FAC2DC75DC72F0E83936C0"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/configuration.test.tsx",
+      "sha256": "D12454FFC7822617C87F42EA91476FEDF18F3022C3AD0C5FAA76E81FAC75F84D"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/contracts.test.ts",
+      "sha256": "E029252AAB12FB0AE01627B2ABE88B2B67B7BD339EE77A724F54D6B85F655C83"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/doctor.test.tsx",
+      "sha256": "25A2CE202E16011FE83B31E290AEBCB20C0EA1A4CAFCF544E6C5BF3386AF2BE0"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/financial-notification.test.tsx",
+      "sha256": "9A54EC455AAA583123B5BC78749087B874020783EE080A240A60F26B0EBCE201"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/idempotency.test.ts",
+      "sha256": "DBB2389F786B8BCC0FD1696B7C2F0548D253636661B35F736AE1459930EAAFC3"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/medical.test.tsx",
+      "sha256": "5313A63F4FD61B4B2B0F9E5AC62DD743093F11D9E1DBCEFD23B8FB042E5F3239"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/operations.test.tsx",
+      "sha256": "30E74D06181A7E010D11BE63C951A5748499868571600CAE2D97CE4ACD251968"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/platform-review.test.tsx",
+      "sha256": "D950D11762E50A80687D687F6129BE9A0182ED25151050007CED695CB8D6394C"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/portal.test.tsx",
+      "sha256": "B62B64BA1F491F8C0EDC5F236F9650160DEF9B154213FD940E298046711CE812"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/reception-operations.test.tsx",
+      "sha256": "7D683E504561F2F894024859FF8AFA4425CDC9C7A98738F8379A69F2766E890C"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/reception.test.tsx",
+      "sha256": "20089F9C9717F965B5D8E1B13D4F5E644F9F41D097766FBE12BE3C9C252707A7"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/routing.test.ts",
+      "sha256": "E29CDD2BC735CAC54BD7A8F963A20BD9061045CAFB4A399A9A793A97CF7FF4BF"
+    },
+    {
+      "path": "v2/apps/web-shell/src/__tests__/shells.test.tsx",
+      "sha256": "A687E60E3355A9BD9D9843F68F5DA3A8FA1A99F3FF6F195385A795861E8B304B"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/billing.ts",
+      "sha256": "A9D7CC1C02C304F81BE2221BEE9A48495051A558A99157E35594B5B9F7982E1F"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/booking.ts",
+      "sha256": "8FE9655F52EDC221163CDE35ADF45AA3BFD569820A285ABE8086D39598ADB898"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/care.ts",
+      "sha256": "E92E8B9526CFBDB3E37642E5223B0893FCAADC389B3E092D6D12D1F5F58C6440"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/client.ts",
+      "sha256": "90ECC336651EA0ACF53ECF5CF4951E87AD133E8579EBD62F459D33D85CEE4930"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/configuration.ts",
+      "sha256": "19A3DE7BD5EC0C1009BD8608EE75CCADEBCA10640C7AD57FAE72BC78D1348843"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/idempotency.ts",
+      "sha256": "20EC28BEA9D4469405C28DBAACAC685CC931E979F511CDF6B49DEAB39C8DFBC9"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/medical.ts",
+      "sha256": "AE9BDBD716FF31F40149187DA782C96552D8A011A5A318EA7C90C8CF1807D435"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/operations.ts",
+      "sha256": "D5275645A484E9B330DE5FBC0A7BD9100E36699FCDB4C72451169A9378A7C37F"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/platform.ts",
+      "sha256": "CC190FF26684E8CE8DE03E3E61A8CAB0B3872E1A29619432380F4B97C4D67FEA"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/portal.ts",
+      "sha256": "A5F3C20E754B5FBAEF82893A9DBF35A7D9BA6A975D69930862FDF6647968DBA2"
+    },
+    {
+      "path": "v2/apps/web-shell/src/api/reception.ts",
+      "sha256": "C4AD2C5FA8A8F5B012A6A0F69662871BFC5191ED1579B67DE355B4B99671C251"
+    },
+    {
+      "path": "v2/apps/web-shell/src/App.tsx",
+      "sha256": "A7AFDC5FB84E1466BC31F32AB902F9FE0A0B7E182C0060283ABEF91D566DE67D"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/AbsenceLifecyclePanel.tsx",
+      "sha256": "005E9054BC21CD6C277DA59A870B73A4CAEFCC9DC3FCC867CD954CF12F4D100D"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/AccountSettingsPanel.tsx",
+      "sha256": "B34EF7D6B591004BEF4192F8995E3C1548B901D52C4059BB23B15906C0F41D80"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/BarTrend.tsx",
+      "sha256": "FF2B31A8EC234818C16364722765D41786391BD6CE1F37613063A1938FA0984F"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/CashierNotificationPanel.tsx",
+      "sha256": "D523A2DD0FB1F3747624A212BF0CBFE61BBB551D1379A615A26B77B218CFE680"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/CashierPanel.tsx",
+      "sha256": "EF8EA21E83BB1CFC3E5D4103EFE798B33E32E4B3D55E94036EFDE76BB3C08A31"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/CatalogConfiguration.tsx",
+      "sha256": "90819651E85A45499D37501C82FCE31A865CDD057B7960AC2831E2CF937ACD45"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/ChargeSyncPanel.tsx",
+      "sha256": "A62398879A1EE3982D433B50E893CEEE4E3219EBB376A83C47CA3A2ADCA318CD"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/ConfigurationForm.tsx",
+      "sha256": "BCAAED4DF748371AFF9BCB8F5904656409D380ABB181560E1EEB41086D7D7B4C"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/ConfigurationPanel.tsx",
+      "sha256": "C283311BAB6B95DA7AE3BC358C66B54EB72E542705E0A351EFD394CF48A7AB5C"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/ContextSwitcher.tsx",
+      "sha256": "5C08A600FFB6AC68A964B811D6CC7D5C5969E496987A07B60D6F069758FF6D13"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/DoctorConfiguration.tsx",
+      "sha256": "20D1A6CB782928F02CBADB61F0AA6915478856875B15D06560802A809EEB5E23"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/DoctorPanel.tsx",
+      "sha256": "A2EBB66DFB317BB06439458777CFC07526E6002B287B2B1FF25F4B55A882A641"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/KpiCard.tsx",
+      "sha256": "46A634A1A7AF90EE85993AD17791D6B592E49FAC1BA01F8742101909EDB183E8"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/LabPanel.tsx",
+      "sha256": "5DE29B30DC834E329F28F33EA593585C8A5DBB7C73A6437832480B36C75CB13B"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/MedicalPanel.tsx",
+      "sha256": "49A25B81E68DFB0B8640D1248A2BF96A9B7B43A1A9BCFAD07D34B91445DDFF0C"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/MembershipConfiguration.tsx",
+      "sha256": "FCCB513F3282F7277E72E7C7474DDD7B856A8D12537305759E3C528049C0722C"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/OperationsPanel.tsx",
+      "sha256": "7510FBC06FE4C2A85198FCE749DF9539B0342AE73CCE0D968898D10146C7BF21"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/OvernightQueuePanel.tsx",
+      "sha256": "DE4D6CFE7969358AD1F0259432A271339D801D20B06F6D290E573B010E5246CC"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/PatientFeesPanel.tsx",
+      "sha256": "C7DB14EBFE2220D3D64E0A56A5AEF1FE4F00C287F875DC5A9103C9F86425BF3C"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/PatientFollowUpPanel.tsx",
+      "sha256": "B09EF102F532AAC5F63065E01B9150270E687EA92B541F1EC5E011B91F66AED8"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/PatientHistoryPanel.tsx",
+      "sha256": "AE1416DF910663446C9AEA9F35C8E04DD4A85E3DB43D8826901FD5278FA1DB67"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/PlatformReviewPanel.tsx",
+      "sha256": "271CBC1C39B7C7C91F57739DAA0F671BC9CDFA7D4B35D065C9C85C24EFD7FA06"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/ReceptionPanel.tsx",
+      "sha256": "EB6CD1D995A2C06AD7D5D16842DA6BE78D887B655FE1ACFF567258C6E6FF5029"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/StatusBadge.tsx",
+      "sha256": "8984B6A839BCDB636FD816DCCB3EB314FD51F05A1FAE1E0BAD5A36F3D24F8B83"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/SupervisorArrivalPanel.tsx",
+      "sha256": "5F2C4399640E6BFEEBFBA51FFF823313D879675380146174F393A063980947FC"
+    },
+    {
+      "path": "v2/apps/web-shell/src/components/UiStatePanel.tsx",
+      "sha256": "4C363267420E7E0ACB08232C8BEDFC903B935FA2C9D6844102680941CD5855B9"
+    },
+    {
+      "path": "v2/apps/web-shell/src/data/synthetic.ts",
+      "sha256": "A3460CE1595C3CB6EADBE574C54E675B53FEBC374112CC2300F15ECF542E00FC"
+    },
+    {
+      "path": "v2/apps/web-shell/src/main.tsx",
+      "sha256": "525F0802EF08BE2869CEC123731C5F88EB83B8819863F27010EDF0824CE7E5C5"
+    },
+    {
+      "path": "v2/apps/web-shell/src/routing.ts",
+      "sha256": "4AFF569F13F691F6204E1C1D26BBB5D166FA57638A5A754D26C3A67556261753"
+    },
+    {
+      "path": "v2/apps/web-shell/src/shells/PlatformShell.tsx",
+      "sha256": "D55D01A65AF40898C1919516C659D0F400D302CCE1744AA4E344955551EA3AE4"
+    },
+    {
+      "path": "v2/apps/web-shell/src/shells/PublicShell.tsx",
+      "sha256": "A6CDDE482CAD36CB1B9FB829250DD9B7272778CDB7A64A711FC7F73F8DB32C99"
+    },
+    {
+      "path": "v2/apps/web-shell/src/shells/WorkspaceShell.tsx",
+      "sha256": "2C1E9BE8046DEB7FF67A34431420913A129D60F2A43020BC40EA7B10A2FBABDE"
+    },
+    {
+      "path": "v2/apps/web-shell/src/styles.css",
+      "sha256": "0609CB6D2BE06A1BA7E4D79A3BBA5A93623DB34294577AD8AFEF96DE299E2ED7"
+    },
+    {
+      "path": "v2/apps/web-shell/src/types/contracts.ts",
+      "sha256": "623D9C6F8B5F09F08C70F8586AE3915156731624A535C386CD7F9485B99B3191"
+    },
+    {
+      "path": "v2/apps/web-shell/src/vite-env.d.ts",
+      "sha256": "65996936FBB042915F7B74A200FCDDE7E410F32A669B1AB9597CFAA4B0FADDB5"
+    },
+    {
+      "path": "v2/apps/web-shell/tsconfig.json",
+      "sha256": "127926627595010044816762D93FFFD8B342CA83ACECC3C1C44D89C3444BA9FC"
+    },
+    {
+      "path": "v2/apps/web-shell/vite.config.ts",
+      "sha256": "E8B5B85875FCF2FCD4FF125AEAB1291F2308F5FF4E1D0C0ACF5ED4E6A862F264"
+    },
+    {
+      "path": "v2/contracts/audit-producer-checklist.md",
+      "sha256": "C8FD24FCF488B693FF3BE703142E6D719BA683C2882FBE64FAEAB679A9FC1CC8"
+    },
+    {
+      "path": "v2/contracts/event-envelope.schema.json",
+      "sha256": "F27A0ECDB63F4EFA0E72B8473D82C0F2D354281F95FF42BBA8910DADFC512445"
+    },
+    {
+      "path": "v2/contracts/README.md",
+      "sha256": "1F5CE5EB1AF798749F82D287F4AE3376C07708D4ACB8C193AA68D86B1B5C5493"
+    },
+    {
+      "path": "v2/contracts/s1-delivery.md",
+      "sha256": "4B3B56D5CD27E80B61B0AE312D5265A8F27A429CA8C9070612993057BFCCE8D3"
+    },
+    {
+      "path": "v2/contracts/s2-doctor-absence-lifecycle.md",
+      "sha256": "FB5E2E64988AFC4196249474CFCC29781DC15EF8CF9C866592AD6E1D1656D12F"
+    },
+    {
+      "path": "v2/contracts/s2-reception.md",
+      "sha256": "D06DDE3282C180E0982E47161C5063D9B5A15AA157063752068B0123E1012FCD"
+    },
+    {
+      "path": "v2/contracts/s3-care.md",
+      "sha256": "760E90B43DEC351D6A38136A0D0A9A6FF359A2E05BA9679EE83F6FF1748B2B2A"
+    },
+    {
+      "path": "v2/contracts/s3-medical.md",
+      "sha256": "6C02300D469B0FF4E3A60F39C5F045B49CF5B4A16E1781FB8490791277603BA1"
+    },
+    {
+      "path": "v2/contracts/s4-onsite-billing.md",
+      "sha256": "06ADBA1B1DCE947165ACC386D4C4DE93D947EBB1B12AAEE9CB1044E0C28542B1"
+    },
+    {
+      "path": "v2/contracts/s5-operations-summary.md",
+      "sha256": "6DD90ABE0CE2888EC6F7EEFD4A6BA1C1BEC8A83C752B3407374D19D2E5423B31"
+    },
+    {
+      "path": "v2/contracts/s5-patient-portal.md",
+      "sha256": "A6840F1661DB016879A75E8FFF80B5F75C9BB95ACD10CA9980075BD89478E610"
+    },
+    {
+      "path": "v2/scripts/SyntheticIdentityFixture.java",
+      "sha256": "9FD5AC590867B1EA0C2FBE9EF2D44BA021A2076DE03F8EAB8A83973EAFA5A08B"
+    },
+    {
+      "path": "v2/scripts/SyntheticLegacyIdentityFixture.java",
+      "sha256": "92D566BE10578C558E7AFFE7DBC9F7E132298468B53A66BD99A61C1C43CE86BD"
+    },
+    {
+      "path": "v2/scripts/verify-absence-lifecycle-flow.ps1",
+      "sha256": "CE056F8FF22686C7C7E8AE9F4D803DFD9C7881155C056B384408A4E0B9C8F452"
+    },
+    {
+      "path": "v2/scripts/verify-aftercare-flow.ps1",
+      "sha256": "CC0C5450F7EF2A9152271E49D82BBBAE76DF727505537C8A7EF89989D17C49EB"
+    },
+    {
+      "path": "v2/scripts/verify-aftercare-local.ps1",
+      "sha256": "50E8D075779370DC4A3406FFAFA40A6A44C875E931BABFD5898E2805B9701665"
+    },
+    {
+      "path": "v2/scripts/verify-authenticated-local.ps1",
+      "sha256": "648610E6E7B79D25388D0DABEFDD326EF66160910D3B0DFF5EA8FCE4EA7AB187"
+    },
+    {
+      "path": "v2/scripts/verify-billing-db-local.ps1",
+      "sha256": "C0DDA885830AC96A07EBE9A62DCD254984CA69774EF5E98598D509EC809C63D7"
+    },
+    {
+      "path": "v2/scripts/verify-billing-flow.ps1",
+      "sha256": "6C92192F673B49B1724C31370CA7BF1C5E82A8DD7F46A39ECC38E2E8F04C091A"
+    },
+    {
+      "path": "v2/scripts/verify-billing-local.ps1",
+      "sha256": "71755DAA53182F8D728BF16C727C54C50131AEA0EC5DF71B65E58C58B9D83D45"
+    },
+    {
+      "path": "v2/scripts/verify-charge-flow.ps1",
+      "sha256": "A45B5E6D16F0516767973ACCD352B1D454B183BCDB71E7B8CD7ABC397C9EB869"
+    },
+    {
+      "path": "v2/scripts/verify-charge-local.ps1",
+      "sha256": "F6E66FB2EDE4B59EAB39F2337B160DB0AADF84440A0AC1A4CEE544B12A0C646A"
+    },
+    {
+      "path": "v2/scripts/verify-charge-recovery-flow.ps1",
+      "sha256": "EF281566CDAEF32E90BCA2D93584641581058984511862636F7C584795323950"
+    },
+    {
+      "path": "v2/scripts/verify-clinical-access-flow.ps1",
+      "sha256": "BE7E9691E634155BDEAAF2E802D765C7C298CBAC2748F3F5CFFD24ADD38BC79B"
+    },
+    {
+      "path": "v2/scripts/verify-completion-flow.ps1",
+      "sha256": "666B6D196BCEE6FED13C8A73267EAD9B9081F845619E348A751117DB6C16F7D1"
+    },
+    {
+      "path": "v2/scripts/verify-completion-local.ps1",
+      "sha256": "825FFAA50A454D149B78C84104E270AE730B54A0EAD52FAB92E5D0FD5CA75B3F"
+    },
+    {
+      "path": "v2/scripts/verify-configuration-flow.ps1",
+      "sha256": "F804A0DC9B39E7EF4D0FEEB2429044759B63E24393B3CA03523E53F262C05866"
+    },
+    {
+      "path": "v2/scripts/verify-configuration-local.ps1",
+      "sha256": "0A5D9B9F3AB45D3566DC154B9DB67A2E2E26A5D3542B3782A99F94A1B25C158D"
+    },
+    {
+      "path": "v2/scripts/verify-financial-flow.ps1",
+      "sha256": "CDB4A3F1BD3E5D6C50F71F35D172198B4DBCD7F6066B38B57B9B03BA1AD82B88"
+    },
+    {
+      "path": "v2/scripts/verify-financial-local.ps1",
+      "sha256": "5F7F638D087342E8A3ADACE90F6314B6564AB4D9CFD47B43ABACA1A84908C8C5"
+    },
+    {
+      "path": "v2/scripts/verify-medical-flow.ps1",
+      "sha256": "80173091851926D801D433DB21E57E36F97A51E488E3A99DC9A51EE335693F2F"
+    },
+    {
+      "path": "v2/scripts/verify-medical-local.ps1",
+      "sha256": "D30CF18880743BFDE5AEEC10167C07323D0711762419B05FD56E239D00060F35"
+    },
+    {
+      "path": "v2/scripts/verify-operational-browser-flow.ps1",
+      "sha256": "76D956DEC7923CD64F3717D99B543851573B71D853E92993D63F362DFBDBC8DC"
+    },
+    {
+      "path": "v2/scripts/verify-operations-flow.ps1",
+      "sha256": "07AF5F4EB55387C4F4B6F29016C38373B82C315CA8F384C970798FEB9E5BD65A"
+    },
+    {
+      "path": "v2/scripts/verify-portal-flow.ps1",
+      "sha256": "1EF4AFC712A6330136DAB00F1203B94019AEA8CCA96088B0DA95FB6E3366E59F"
+    },
+    {
+      "path": "v2/scripts/verify-portal-local.ps1",
+      "sha256": "941AEAB0D3477B29C43CA57E16E4726FADCFF51FFD6729270DBE0D8D1BA9E660"
+    },
+    {
+      "path": "v2/scripts/verify-real-booking-flow.ps1",
+      "sha256": "B1D8C06E439519EDD3F29B805116F7EB644E8B1A94CADF321619130F2685D1A1"
+    },
+    {
+      "path": "v2/scripts/verify-real-browser-flow.ps1",
+      "sha256": "2ED9C718A5BA56A5DD4FEA157F3BBF883BC3FA8FC1F059DA22262424A8653907"
+    },
+    {
+      "path": "v2/scripts/verify-real-identity-flow.ps1",
+      "sha256": "9145DDF389D4D347683DEE7F4B2B3708F25E2A7E8B8EE4AC748093DA8A51C2F8"
+    },
+    {
+      "path": "v2/scripts/verify-reception-operations-flow.ps1",
+      "sha256": "75DCD0DEF29DE89F50A1DF6ADD0D1E607E9BEB4B60F3BF49AC96E2222854CE00"
+    },
+    {
+      "path": "v2/scripts/verify-restored-applications-flow.ps1",
+      "sha256": "AA148AFBF22B438E5FDA12034E172264B5DD255A9E21F0924847A58CCB2F261C"
+    },
+    {
+      "path": "v2/scripts/verify-s0-04.ps1",
+      "sha256": "169396B10BFA39A9B9E078B49F269C9B2203BF87175275D31D4B736E6EE22F7E"
+    },
+    {
+      "path": "v2/scripts/verify-s1-local.ps1",
+      "sha256": "13BACCB6EEA3D05F1DBE0E6C0FF187A738DB2AC84C859B987C674D6AD5FF91C0"
+    },
+    {
+      "path": "v2/scripts/verify-s1-projection-flow.ps1",
+      "sha256": "4514029012A14E767B5FC584B721300020A269F549149D969A1A86801D498B8F"
+    },
+    {
+      "path": "v2/scripts/verify-s1.ps1",
+      "sha256": "249F1466BAFA7719BF2A8F3A297D5FD6ED745269E648C6AE69ADB5D1274BAC1E"
+    },
+    {
+      "path": "v2/scripts/verify-s2-local.ps1",
+      "sha256": "37353A3C5834C180FB7983EC9AF7E1CB0DB6F94992B23BBF733F7B71DD3CBD4A"
+    },
+    {
+      "path": "v2/scripts/verify-s2-reception-flow.ps1",
+      "sha256": "914094D35E8391014AC459FCE8F9A5C3D232A9681ED5306A981F338F906D0C1F"
+    },
+    {
+      "path": "v2/scripts/verify-s3-local.ps1",
+      "sha256": "815B9C98CF1484424770AFAB61119DDD6639843CB3702A6CFBBB24CADD73D74B"
+    },
+    {
+      "path": "v2/scripts/verify-s6-restore-flow.ps1",
+      "sha256": "010284D02DC89B36925528EDEADAF247EACEE0A9ABA9CB11DDF54DD40A1E4882"
+    },
+    {
+      "path": "v2/scripts/write-operational-candidate-manifest.ps1",
+      "sha256": "06FEB98D41D78242E0652CA707316E3BDE8CE8A46CE9B7A1E210D2D7D421FD87"
+    },
+    {
+      "path": "v2/scripts/write-s2-source-manifest.ps1",
+      "sha256": "73EBC7C04A4E9E7E92131670E8FC133E8D840233D986D3CAA1D297A763F29205"
+    },
+    {
+      "path": "v2/services/appointment-service/pom.xml",
+      "sha256": "35A639A8F778432E6811DB396C9BACD6F9F3CF3DB0201B7EA6D50A74BD7B4209"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/ApiErrorHandler.java",
+      "sha256": "BC74800C2365DFF63452C47DC6BF7E461CE472F90439C8EDB6D5001256252645"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/ApiProblem.java",
+      "sha256": "E5634B4F5BF0326C82DD3073913E5B5D4FEB29E4750E0A6B3F7E78423402C271"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/AppointmentController.java",
+      "sha256": "178C0265893FD8E7392A8AFEBD6A565EEEA274EF346539094C771F16E2675929"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/AppointmentDto.java",
+      "sha256": "4461E19021E00BFAA1841026EC1399EDD991464C7800ED1465FBAE56AC890E45"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/BillingProofController.java",
+      "sha256": "59DB94C3A6113CA32AA1AB465992877867C0E86D6B50EA46DB57029A32E7443A"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/FollowUpBookingController.java",
+      "sha256": "13216B6C110E5AE67A01546435024514F59C0A613C38FD034354972CA24BA584"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/InternalAbsenceImpactController.java",
+      "sha256": "EAA1FCFCA9090345638361743C977CC2552D78D64B8F23472E1B9679EA952441"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/InternalArrivalController.java",
+      "sha256": "05F251708161C9D9622FB27F59CEE6E2780E1AC11CF71C3E976269C76119D528"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/InternalArrivalListController.java",
+      "sha256": "27B0771E6CD4E0CC57DC54884A088787740859287D3B3F9BDD300467E6E6C595"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/InternalDoctorAbsenceController.java",
+      "sha256": "3D4A362EA8D3FDD45E86F8879DDB6BE054AE50D17662828C9F812335544B1BFD"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/InternalExceptionController.java",
+      "sha256": "CF712FF84FDAC338CEEF31010A0B6C2F5EA3B9C7F4B544971837842D167A38C1"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/api/InternalFulfillmentController.java",
+      "sha256": "02D881545EB9F87678C9CFC0D4D2C5A68D87836E075577B17B762D18AD3A217F"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/AppointmentApplication.java",
+      "sha256": "5D7259DC76740293520971799282BB9727EF74315E5C90AFD584C1D2890B959A"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/domain/Appointment.java",
+      "sha256": "F3E984CC860CCE563C663E3EA7FC22671285FD8E30F10C5BA137D192F0D704BF"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/domain/AppointmentHistory.java",
+      "sha256": "01A267101DDC86C854BE16803299C28CEF76A4950EDA8670F73DE96A4B712614"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/domain/CapacitySlot.java",
+      "sha256": "9566F281029E84468B1C1962B8C423658EED32809520FBCFC028E6E754450050"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/domain/OutboxEvent.java",
+      "sha256": "CA997D166753BA03000A232ACA1B5449C476C1C5B9AC59AC82E0FA0E68F9EDC3"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/domain/SlotReservation.java",
+      "sha256": "DF073B1BFF75D83A25ACAFD9AC2F6DFA40EB9B45E4789025EA16D8F86AB80187"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/repo/AppointmentHistoryRepository.java",
+      "sha256": "C21B23F9D705DFF052E9CDAC05B53437BE9D8ECC1CA2A8F6D15509C04A45E3CC"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/repo/AppointmentRepository.java",
+      "sha256": "38D2B71B9A15E48110E1D955715E554D2E627F008912CD1087028C3EAF6838D0"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/repo/CapacitySlotRepository.java",
+      "sha256": "455410C5D04A04760350CDCFD5F82DA9FDB1BBEBCFA409B80BE0561BB763A29F"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/repo/OutboxEventRepository.java",
+      "sha256": "3C1D45B84D558AA1EEF05A1D5591EB7AC7DA5DF9419A7E24BBBF5C4BC4D9E7CC"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/repo/SlotReservationRepository.java",
+      "sha256": "8C8DF3963A96FCE157D75DA06051DFC606CD6B3E290F5068433EA836B6F80566"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/Actor.java",
+      "sha256": "E163CA135C6BE135CF9D0FCBA07EDBDBEF035D62B57937ACFFCA6A7B9BFD5922"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/BillingPeerVerifier.java",
+      "sha256": "DADB6727E4116FEE8D28E11E870533CFE653737A4298FDD5C80E21A7F1F79A0F"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/BillingSourceAuthorization.java",
+      "sha256": "1BA359F8BE856D4808D619703EDD43366BDFDB8881D38DC68BB736EE6C5CB564"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/DoctorPeerVerifier.java",
+      "sha256": "06E608842CD87ABB5A896E4764F29795613CB8DED3CDB368EB429ACE26A3DD96"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/EncounterPeerVerifier.java",
+      "sha256": "7BDC0D8C72194DE275CEFBC67F2457AA5F7E5E33AC7CDD33C3A9454E0665E279"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/IdentityClient.java",
+      "sha256": "CC92675D593F35FC36285EF9BFDB33B38AAA48DB6EBBA451E63200F747CC888B"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/SecurityConfiguration.java",
+      "sha256": "85EBDAC402255BD3D225C50D9C594F39D7764CA2A791BE1F8D365E8EFBA9C7F3"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/TenantDbContext.java",
+      "sha256": "E89ED66398F4798FE71519B3CA6A6A20B7A1D337F9EC0C0CECEA2C4EFD089926"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/UserAuthenticationFilter.java",
+      "sha256": "574BDA0C2BE77EB5C7C378604701B3E759BE3B1FE90F42DC85BDFE18F1F901F3"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/security/WorkloadTokenIssuer.java",
+      "sha256": "20DFD4E16B476C9D3AE44B8C7DE6B5445BC761307CB6541202DFF342483DE9BA"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/service/AbsenceConsumer.java",
+      "sha256": "DBDCE59832A7947B4BBCCDE068BC8DA53C7EFC449FFD2CBA0E648F228104A3E3"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/service/AppointmentEventRelay.java",
+      "sha256": "1A95A105614EEA860AD9A89D87F3DD6B257D604A20BFC06A27704B3B8C8987AB"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/service/AppointmentService.java",
+      "sha256": "F53B3D78C12289BBB07BB0D6FF05ED5A3C459EC4676E5CA0531A9A1BA05D89E6"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/service/ArrivalService.java",
+      "sha256": "F21BA0461E80F187BC229DEE11D8D9B4B55FEB2B8396EC7DFCBEB52130C195A2"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/service/FollowUpBookingService.java",
+      "sha256": "DED06B04A274F4EC80E4656551A22826DA8FF86789CA96F7EBD9539E9093885D"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/service/FulfillmentService.java",
+      "sha256": "6252E6B98DF32D399C25985BFDAD990C6B9AB258DB35A2A51ABD0938A4129F18"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/service/ReceptionExceptionService.java",
+      "sha256": "EB53F94D034A306286AE869E0085A1D7535F7E43007F991E0236904B7F8C119A"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/source/CatalogSourceClient.java",
+      "sha256": "C53D9A812FFED0F711AB71FEA0F302015290EA85E6B1B7C9DB619E952A274E38"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/source/ClinicSourceClient.java",
+      "sha256": "D3FBF7C23E5CD6D68D8A274186C95075C57402F758AE803A557FC5EC920E94F4"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/source/DoctorSourceClient.java",
+      "sha256": "953BD28A8CCD97A44645E68E0B543B65E25CB840C9525E8819D234A5922B4241"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/source/FollowUpSources.java",
+      "sha256": "053B31F14E162EC43FE71FC0FC4A9E731457FC653C99BAE28E7DC20F0900F9B5"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/java/com/clinic/v2/appointment/source/PatientSourceClient.java",
+      "sha256": "F3BEB1D3AA53DD6288BCF4411904D3CC6FA29B85D9181C76004E7806271901F9"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/application.yml",
+      "sha256": "69E4BBB2A64DBA3C57FEAAB268705BD1BEF69C8B141B6F8DD1EAA094E2570F69"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V1__appointment.sql",
+      "sha256": "A13425F844ABDA8D605896E1DBE9D79E846CD47CF1F5C724FEB44012CDC4DD61"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V10__follow_up_source_link.sql",
+      "sha256": "41C9EEF18FA11F7D94673FBAE6D7A134290A5DB176F12FF405E3D26B8B0D481B"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V11__absence_recovery.sql",
+      "sha256": "5E4FEC9BEB3237E56062C23F4895CCAF9175E49062F35A6DEF18FC08577568CD"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V2__tenant_rls.sql",
+      "sha256": "F9F52E076D131F68090D26B181963E302F416054C2EB0B6832EF7152DAB4F8EB"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V3__runtime_role.sql",
+      "sha256": "70A02152CFA29DCE83D5C695B488601C983E15D0FD888FC2EFCEEB53547C6BEF"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V4__booking_scope_constraints.sql",
+      "sha256": "D334B6E736085B6502CABBD100CD95C53E3A6BCBE757D12234F359E8BA47ADB1"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V5__notification_audit_relay.sql",
+      "sha256": "E1C0AFB201C3FDBAB24146D14C80CF0EAF23ED30DDB3242FD9A93E5E6A983581"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V6__encounter_arrival.sql",
+      "sha256": "032ECC0B8F41AE7AF8918BBB4D26BDEDD79B18D3C80F5ED271E2439049C05ECC"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V7__reception_exceptions.sql",
+      "sha256": "965247037CDB37673103865B86012079D63DFFC37760AE0A4B4984961102DC5A"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V8__absence_exception_dedup.sql",
+      "sha256": "A7EC345C02095BD4E237999EEF2144F74D0C2C59944CDE4B7C8FAE444C852921"
+    },
+    {
+      "path": "v2/services/appointment-service/src/main/resources/db/migration/V9__encounter_fulfillment.sql",
+      "sha256": "3C6A70D3FBBEBFF9AD4384E65B0B8BAA8234F0406EE1C068C1112934C441E6B7"
+    },
+    {
+      "path": "v2/services/appointment-service/src/test/java/com/clinic/v2/appointment/AppointmentPostgresTest.java",
+      "sha256": "F7B5EBF80814D4549FDCF21B23829A4DA9C1C1C8575FF96952F8C1C58513DBEB"
+    },
+    {
+      "path": "v2/services/appointment-service/src/test/java/com/clinic/v2/appointment/AppointmentServiceTest.java",
+      "sha256": "F0ED9D7B0537D10AFCD097142CFF6EFDDB182EF74A093B08415FAEDDBFFA5FBB"
+    },
+    {
+      "path": "v2/services/appointment-service/src/test/java/com/clinic/v2/appointment/DoctorPeerVerifierTest.java",
+      "sha256": "EA03DBF87020926B837164B434B36CF0D9659E32DE31B91C45C2676919AC4A7E"
+    },
+    {
+      "path": "v2/services/appointment-service/src/test/java/com/clinic/v2/appointment/EncounterPeerVerifierTest.java",
+      "sha256": "8005055641CF3FB388A247EC5F2D5FBA3FED6AE320A4989D49AD415FE2C21918"
+    },
+    {
+      "path": "v2/services/appointment-service/src/test/java/com/clinic/v2/appointment/FollowUpSourcesTest.java",
+      "sha256": "54975000737055F1B82CB1F21E0C64A3FC78387B5B1C00434DF7C1ABCEA758DF"
+    },
+    {
+      "path": "v2/services/appointment-service/src/test/java/com/clinic/v2/appointment/S1Postgres.java",
+      "sha256": "D6A8EC03B41905D49CA0C1362C95D30E4D8586FD116A066968C348F3C0EA4BC6"
+    },
+    {
+      "path": "v2/services/audit-service/pom.xml",
+      "sha256": "8D8BFB66B40FA44D8FF5A979C36C41742A5AB74E2414F16A7DC33433CEB88912"
+    },
+    {
+      "path": "v2/services/audit-service/README.md",
+      "sha256": "8A2BC17BE2D90701E50A409CAD473E5305FD9827EDFD06D2A4CD9D2E09DF0E01"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/ApiErrorHandler.java",
+      "sha256": "FE6E36A342E6D1B376AA447BF86B89777C8655D0F9E0E5F4366D9923062A56F3"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/ApiProblem.java",
+      "sha256": "962FE59665DE97D4400EC040AE098B7204A787F3B6CEA66FE4A78AABD5852E4F"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/AppointmentAuditController.java",
+      "sha256": "8CA81BEDA8E13275DB9B79FDEA5D34CD53119D65B2B162786670D4B429A1EDDE"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/AuditController.java",
+      "sha256": "D163DA00709FDF834B4DBCEB9BD05837AE1EA6D67B5780C4FEC32EE61AF69214"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/AuditDto.java",
+      "sha256": "27D94BA481D1A63F70488B9453B065965C0BFE9B11BAF2FF0A72EC6D9ACE72E3"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/BillingAuditController.java",
+      "sha256": "4F37F5A8FB1F81BB5D3FAB25FF750DF229A0454AEBAEE1D45FCC0DDFED0C0110"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/EncounterAuditController.java",
+      "sha256": "B1C77497B9D35FF36F0490C2857DE281B7197E294E06CEA00C7AD0B5F2BBFF88"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/EventEnvelopeController.java",
+      "sha256": "22B76875811558FB3FF6A08F2712AAFB9024254ADF47C6B971A3E98561124628"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/api/MedicalAuditController.java",
+      "sha256": "07AFD7C985EEAAA2F8B289147494215697A84BD659103198D87AFB64A33A6A7E"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/AuditApplication.java",
+      "sha256": "33854033048EDD35AF9E31E8AEB8CFFD14A7176C8B6AF53509232AA031366059"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/domain/AuditChainHead.java",
+      "sha256": "F131027DFD0C045DD5049213F6DC7BE964D1FCBD77EF83C1622BB9821E3B1329"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/domain/AuditEvent.java",
+      "sha256": "17C6C5F357DDD5C6B842F97E01941426BAA92C3FE882AFFB446ED6AC2D149723"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/domain/OutboxEvent.java",
+      "sha256": "FC78AF947E83AE4865DC9EA8C1767182FEF982816A12AEB658BB3DF61D603ACB"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/repo/AuditChainHeadRepository.java",
+      "sha256": "6088C032589DF449542F58A1CA61BF9378B0A1DE2F5FB9BE6637E8D4AA4FEF41"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/repo/AuditEventRepository.java",
+      "sha256": "40BC2E9B2B45A5C86A3854EFC922690F2CEB51B99113223AA936853B07BF49A4"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/repo/OutboxEventRepository.java",
+      "sha256": "EA6B17417BA68B72109C656AEE24FECE32077A510473266FBE95DA2E6D85CE70"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/security/SecurityConfiguration.java",
+      "sha256": "9E9AA48568D790E2E947A940095EDEE5C9530E32AA66DECACDD38869360016C3"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/security/WorkloadAuthenticationFilter.java",
+      "sha256": "DFA17B9573027CEE162F964850A4977DFA74C3CE4A95C89A4AE036EA4EE73F24"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/security/WorkloadPrincipal.java",
+      "sha256": "4E71112FA99667533B6E178EF39B07F8237ED77954E2246D6F48DDCFB7F7B3CD"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/security/WorkloadTokenVerifier.java",
+      "sha256": "E7443CBD66FA62DA3B3266DBAA23FD63EB858D28CA3822BE4E26F7D9D3D8A7C8"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/AppointmentAuditConsumer.java",
+      "sha256": "2D8E6D213712005E24493A67BD00EA2E53994700B342DE355034A7004A1094CF"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/AuditService.java",
+      "sha256": "9F4663FD92D44727347183941F9722CE9A36C7832AFE6E93D823B8FB7BBB9E77"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/BillingAuditConsumer.java",
+      "sha256": "C806D746CFACE2FA638C202E68D28779BFAEC580ED9940BE4D56974A219971B1"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/ClinicalAccessConsumer.java",
+      "sha256": "CCB1EB39328EE45C439CE87A21BFB342CC20BFC532A6960FAFEAA1C3A73E8DA2"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/EncounterAuditConsumer.java",
+      "sha256": "61744AA5A77EA4F27A5E6EEC7E032AFE4A428676B76AD00E76A3F624C56A13D1"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/EventEnvelopeValidator.java",
+      "sha256": "44094DEE6CE30448EB0B4B61E1A26D431598287D714466A31A1FA207DC89141E"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/EventPublisher.java",
+      "sha256": "9267133A67EBB787694E6FC0450C263A062BD8FE8F6FA76C610368894544C306"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/MedicalAuditConsumer.java",
+      "sha256": "7C362986E9220F64DA1481663A56BF196951150F1F42DBBB85C6232B143B1AD2"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/OutboxRelayService.java",
+      "sha256": "29141B13C96213F5E03F2164FDC3ED7F3E25EE4D7B0B8B1BC251A766F2BCAB6F"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/java/com/clinic/v2/audit/service/SafeMetadata.java",
+      "sha256": "ADC1BC71BC2E1D99078E054927D4A8B0CD2163686FB71EFC9D6C6C377EB6F805"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/resources/application.yml",
+      "sha256": "D71203DB6402413BAEB5C499A00B1897C9621E2F43845803B5EF1B01B63453B2"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/resources/db/migration/V1__audit_and_outbox.sql",
+      "sha256": "E063222797511D52FD5060E5E621F6A7E6990D299D52BE8BD5548CF25BA73396"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/resources/db/migration/V2__audit_runtime_role.sql",
+      "sha256": "0BF8AC7EE8607D917ED4F78C555663DE126822290D37778AA5CD21E0C2D8F8C7"
+    },
+    {
+      "path": "v2/services/audit-service/src/main/resources/db/migration/V3__appointment_event_inbox.sql",
+      "sha256": "BF8CB82F00BF6AC288130D2E84A5232E79DDDC4641E01148E6F87D480C12282D"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/AppointmentAuditPostgresTest.java",
+      "sha256": "9518B0B7EA320FF916A046ABD7807853431243828BC67BD447C3A690C0E78BA2"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/AuditExternalPostgresTest.java",
+      "sha256": "516D9BC5227989818EA1F04C09DB2111055C9E96585CB343F5941225ADC13CA6"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/BillingAuditHttpPostgresTest.java",
+      "sha256": "670E378FF14F8B97992821A156A47E496B90E73DC7DABB49921139F4257FBDEA"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/ChargeRecoveryAuditHttpPostgresTest.java",
+      "sha256": "D980B374C52E7242B663629D04CD14893BD84112116912F0577C6A84B45A471D"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/ClinicalAccessPostgresTest.java",
+      "sha256": "482E4E89D011B54098F352B61FB1819A7A9FD066F5BE0CB8A145B4020720A51C"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/MedicalAuditHttpPostgresTest.java",
+      "sha256": "5F18E6B424E206C5628A8F13431A1032075BA2A55F9A44F980FCC7F4168729B8"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/S1Postgres.java",
+      "sha256": "81870B7BADA067BFC8D6FE34BEBB98682D9EDFE835B252D37C5909882CFC4328"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/security/WorkloadTokenVerifierTest.java",
+      "sha256": "92B028D452B1C17820D55F645599617804B1757D58CB4263977CAA2BD809A71C"
+    },
+    {
+      "path": "v2/services/audit-service/src/test/java/com/clinic/v2/audit/service/EventEnvelopeValidatorTest.java",
+      "sha256": "F1BAB5EA623CE055485FD0D867BB9BF119B17267C10DCF5BF0605F530FCF6D1E"
+    },
+    {
+      "path": "v2/services/billing-service/pom.xml",
+      "sha256": "91A903C5F1545E67CCCDA64C21D9DF83685A020D71D08170562F68DFCA7E843F"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/api/ApiErrorHandler.java",
+      "sha256": "5DB97E06B9B1991160CFA6ACB0A1EAE6A1CA0BB27C61B21277663ADA2D8ED7F7"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/api/ApiProblem.java",
+      "sha256": "FC78663BA11B5CF4453A71E07EBB96B9F44E641603FBCC724BF985192DCB1A53"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/api/BillingController.java",
+      "sha256": "AF3A62B5F46B149ACF4E1BF3F0354C6A307A4129B40F82E5E09415360C69FFA5"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/api/BillingDto.java",
+      "sha256": "40B6EEF5AD9E94A1AC036DE2065BA30FB49E4F07114806C82512925808B9B614"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/api/OperationsSummaryController.java",
+      "sha256": "A363611D3E1766787DEB295A6F7714B4DBC5A6F775E1428E275677534DB228DC"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/api/PatientBillingController.java",
+      "sha256": "ECB9D72BE24BA53382C43438C112DFB52B994A5EF1C615EB577096E08FA95521"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/api/SourceChargeController.java",
+      "sha256": "8F5BD98943766277F783C72CFEC4AA0398ECEB6198EE1BAFD7435F425BFD7BFD"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/api/SourceChargeOperationsController.java",
+      "sha256": "129F8932099CA0027545825105CE3A2945DE158D6593C502E0EFBA01E6135B96"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/BillingApplication.java",
+      "sha256": "717E05AF013A270F7A8B908F40728B1969F95DAC862CC8A563C1D7DA1C7E28E8"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/Actor.java",
+      "sha256": "91BFFE775CC20AF07E2F65EE5B05D75A8DF136AAF6809F135354725771BDDAB8"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/ApiAuthenticationFilter.java",
+      "sha256": "5B1C771E7708202070665A84529A67E99FE448EC5AA55B455AA0AAEBE7180F2B"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/BillingDb.java",
+      "sha256": "8B0F3535B98919C53BCB32C7D0300E0F3996B68744B16CED60219B44E07EB6D5"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/ChargeAuthenticationFilter.java",
+      "sha256": "85491A07F9158D39A317449ED59373B7C3137142EF2E75458B4606DC0F57772E"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/ChargePeerVerifier.java",
+      "sha256": "A4866B68CCFD0346773882DC287DA2582F7AFC83D45DBE8E16CE1A0ECA563BA1"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/IamAuthorizationClient.java",
+      "sha256": "1571546C91554E29BDB0CF3CDB1B0E0E7297AD62A5C0D5C23D85EF548C4F2A38"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/IdentityClient.java",
+      "sha256": "6420C41CCCB85E88A8F8E42F1FE813CF0AF5A34D3690BB8657BB16E898807E2A"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/PatientBillingIdentity.java",
+      "sha256": "EAB307C95EB6DCBC8867FEFB9EA3B701DBFAAD14B456C3E204F04871ADA15F48"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/SecurityConfiguration.java",
+      "sha256": "428D542C5FA0612C50B6EA411C9785CAE6F861DD46D1BFCC2C5214D8637DC44C"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/security/WorkloadTokenIssuer.java",
+      "sha256": "3ABB57F856BCD2170DFD5F71EB05F7EED9EA1EE92C0478F06DA1D1DB30228F99"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/BillingAuditRelay.java",
+      "sha256": "CF47749C8ED5030181B864A7671A6C4535D372AFAC51299E7258F16F5960335F"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/BillingNotificationDelivery.java",
+      "sha256": "BE98574FFBCD9D3AF6D41E760DDFFFED7978E81B88388922B2A602644E4AF778"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/BillingNotificationRelay.java",
+      "sha256": "BB6F4F81F9FE541AA738454F9397308717403536216307B46B7D99E169924BF1"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/BillingService.java",
+      "sha256": "5D4C05F4CEA736B34706ED8F323777D0E9C110C4281034D77DA41DFFED435C73"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/BillingSources.java",
+      "sha256": "8646934C7487783060ADEF4723CF8D35892699E7FE01FA2C028B7C79161EBF30"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/ChargeSnapshots.java",
+      "sha256": "D2D9729AE6320ADA94DA4543B1AC5C72196FEFDFAF0E303683AD2F8A9AD0B4F4"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/ChargeSourceClient.java",
+      "sha256": "37A132D1C3A6367F526047D042478081101951571615F9FDC03F4AAAB9794333"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/FinancialNotificationClient.java",
+      "sha256": "9E419060A7FA73E2FE7F75E6ED3B9E532C69554735B49CD0EAA1EA588BE761A4"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/PatientBillingService.java",
+      "sha256": "839FCD5C56289B58892023697C9356240DD2AA09425F28C5691B893E1BF63AF2"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/SourceChargeOperations.java",
+      "sha256": "63FB6FF42511F7E192B44AC1CFEE86A8236DC8F3877EC31B7111AA5373C185A1"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/SourceChargeService.java",
+      "sha256": "66CF94B19244F3D53A98661D656CC61B6E93B9461F203E0117187AF4BAA7A6A6"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/java/com/clinic/v2/billing/service/SourceChargeWorker.java",
+      "sha256": "73E91C581EA6458CBBAD410D3F46EF528D4DFF63F2DA2058FBA983325607F239"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/resources/application.yml",
+      "sha256": "58017AB6D8D20BD142B337092B76490A84B3894E017D438F2E8245ABBB8CAA24"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/resources/db/migration/V1__onsite_billing.sql",
+      "sha256": "6227CD2F6CC1E9C44A77F6BC9D2148E1E37757AFC6BE5F2CBC5A40349AA1410B"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/resources/db/migration/V2__billing_runtime_rls.sql",
+      "sha256": "D7952261EE39442B6A51ED38FFC250B32CF3CAE04F2C13975FA9B9DFA6E851D1"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/resources/db/migration/V3__financial_notification_delivery.sql",
+      "sha256": "4CA84BEFE1758CED8F2038B553D48B5D022391AAE6067BE5CFD4CCB1F405C1D4"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/resources/db/migration/V4__source_charge_inbox.sql",
+      "sha256": "7D9EA35072DEACF7D363D076EDDB2F29543FC4D7F299DA3772B42C28F43922C0"
+    },
+    {
+      "path": "v2/services/billing-service/src/main/resources/db/migration/V5__charge_recovery_commands.sql",
+      "sha256": "4679C39E8EF6CB46A14DB7409AD8332040EE9D3C95E556783CF5A351DAEF07C4"
+    },
+    {
+      "path": "v2/services/billing-service/src/test/java/com/clinic/v2/billing/BillingPostgresTest.java",
+      "sha256": "8AD96B17F9BDC5557C005002F324030FC4DA867AE41F3B6F80D53F43AD3A462F"
+    },
+    {
+      "path": "v2/services/billing-service/src/test/java/com/clinic/v2/billing/ChargeSourceClientTest.java",
+      "sha256": "AAB0A5BF2A8F08F525086F0C818E03419EF696E3F233FA3D5EAC25CA013363CB"
+    },
+    {
+      "path": "v2/services/billing-service/src/test/java/com/clinic/v2/billing/FinancialNotificationClientTest.java",
+      "sha256": "AEF6BEDEC5A06A205BC5F5E97F23F5BF46BCD9D1AA6C4CE9F23490A579A116B5"
+    },
+    {
+      "path": "v2/services/billing-service/src/test/java/com/clinic/v2/billing/S1Postgres.java",
+      "sha256": "EEFC1BFDE3847FF08FD633BFD58F8F020A0A0E0083B81CE654C397BDEE693589"
+    },
+    {
+      "path": "v2/services/catalog-service/pom.xml",
+      "sha256": "662C65E485EEAC81376C11DE95542A7049F7D886A00D89729366AB4DBBB5FE20"
+    },
+    {
+      "path": "v2/services/catalog-service/README.md",
+      "sha256": "FC7DE373538ACC22D916FE21E952357902BFD230F3B94B3702E9ABCCEADA5D58"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/api/ApiErrorHandler.java",
+      "sha256": "23CE0DEA7B8990C6AAD15396F5D3E26D092EFC53C5F09197AD5CECDEBC57B14C"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/api/ApiProblem.java",
+      "sha256": "F1DDE637F191F33179C9DBE30B4E9F8BEBF6718A219D7DF2954EEEDEAD215EB4"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/api/CatalogController.java",
+      "sha256": "F1F0F2612DF7228D5B4E7E79201A8D1F25744BDA45339B10C27E5F8DDFCD846B"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/api/CatalogDto.java",
+      "sha256": "83CA904D90F87EB85771749F647ACA39F2E3AFA6C8DC98AA26D426324D498486"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/api/PublicCatalogController.java",
+      "sha256": "F8A8DB4BDFA7E218E11C9C97F365EFA7A17AAFA416D5C37B8709338ECF60571D"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/CatalogApplication.java",
+      "sha256": "4BFB00BE785FCA1848F0CEFDF00DE79C3D3C5AD98648C96B8BE95A4F4E627325"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/domain/BranchOffering.java",
+      "sha256": "0C2BF92A4F8F1252CB9BC1BD17FAEC46ABB49E51E859FAFEE6CB7BB653ECF02A"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/domain/Offering.java",
+      "sha256": "F09CE9AB9EA396DECBC934ACBE771C024496CD4AE3FE84A253B9F11D8B607EC9"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/domain/PriceVersion.java",
+      "sha256": "4F209C1D72E6FDFBE4D2E2666B4AF21E134DC6BA7876E07CEAEC36F0CE66A557"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/integration/SearchProjectionRelay.java",
+      "sha256": "EBA652624CE3DBA61EB532FABE19B38FF3ED18235C9A97AA552E301495591A52"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/repo/BranchOfferingRepository.java",
+      "sha256": "DD9DD87593DD7CEAFA4D75085DFF172F8B3A294609C7A106A65F3FA84DDD2349"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/repo/OfferingRepository.java",
+      "sha256": "2FF04B733FF17A179EE15651EAFEB67404E8A7114EDC41CC111FE07E2301115A"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/repo/PriceVersionRepository.java",
+      "sha256": "D5CE27CB0A14B4CD84D9220E740E4BB0A07EAE34B1D6DEC699D5A257FB04FFE2"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/security/Actor.java",
+      "sha256": "36A4C1D5254C641EE385D9B13B9D6E9FE1C214ECE4F4A481E8B1BD2283DCF20B"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/security/ApiAuthenticationFilter.java",
+      "sha256": "CACEF1610E9C3134E78EF7ADBF84E7DB1D730B443E9B7CECC97F084766ABDAA2"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/security/ClinicDirectoryClient.java",
+      "sha256": "E1935060598D37020F53EB4016D581542673F7B204574CF2405F08D973C033E9"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/security/IamAuthorizationClient.java",
+      "sha256": "C461C4856F319E0020E799BEEB6E4DCA4647E069CF7F56EA7D79728B15436708"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/security/IdentityClient.java",
+      "sha256": "572E9288FDAB989A577C543B7683A037EAF1D4EE98C369C041EE4EBBBD668FDA"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/security/SecurityConfiguration.java",
+      "sha256": "9C74D5180D4813B52DCA1DCC5206C1709B9FB6FDC512D71B5BFED319744B6882"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/security/TenantDbContext.java",
+      "sha256": "79967A25649BDBCB083156028A5D3F1E7DC97674C680769EC649F5015CCC9B8A"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/security/WorkloadTokenIssuer.java",
+      "sha256": "EF1DB7123CEC19F90B330F70696799594F4858B06CEDF36859CAAEF3FFBDA9F8"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/java/com/clinic/v2/catalog/service/CatalogService.java",
+      "sha256": "D7BD4E17EA8FB7ECF4E170AAC02CA677774B5891F4832BF2E80D4A7F57A8D404"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/resources/application.yml",
+      "sha256": "4819DC0020606D9A4638F7A51750FAA47049898A4894CD35B8431E0E45F5BFCC"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/resources/db/migration/V1__offering_price_version.sql",
+      "sha256": "2CF60D2706CE481D68769CCB200EB0180A8F4728BE69522470A2098E7AF59EBD"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/resources/db/migration/V2__catalog_tenant_rls.sql",
+      "sha256": "6DDA5C7BF31BCA83782D2DB525490AB8EDC712074CF1404DA717211E448C8B3D"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/resources/db/migration/V3__catalog_runtime_role.sql",
+      "sha256": "D1806D4655893E6A02F0FD7F455D1CC25B6348AA0000B278A23A84D65147745E"
+    },
+    {
+      "path": "v2/services/catalog-service/src/main/resources/db/migration/V4__search_projection_outbox.sql",
+      "sha256": "B4974C3B4BF33468B1598497A9D446127ECA8B7AD985F12C2DD08135554DA3D9"
+    },
+    {
+      "path": "v2/services/catalog-service/src/test/java/com/clinic/v2/catalog/CatalogExternalPostgresTest.java",
+      "sha256": "5C03A3489996A8EF9CE521D06287F785CE0B264390ADF100B8A3C59CFFC82E68"
+    },
+    {
+      "path": "v2/services/catalog-service/src/test/java/com/clinic/v2/catalog/ProjectionOutboxPostgresTest.java",
+      "sha256": "EC466A4CC1A5333663EDF2EAED6AFD6D04178F45D0F441AD5A5419D18BD9593B"
+    },
+    {
+      "path": "v2/services/catalog-service/src/test/java/com/clinic/v2/catalog/S1Postgres.java",
+      "sha256": "51A839662784ACD5FC73F6475C745E024E4D4FB409571F98826F4B07440954CC"
+    },
+    {
+      "path": "v2/services/catalog-service/src/test/java/com/clinic/v2/catalog/service/CatalogServiceTest.java",
+      "sha256": "1EA1484939A2568E10D696C3C2FD8E4103699BB57C259516A7BAC58A28264538"
+    },
+    {
+      "path": "v2/services/clinic-service/pom.xml",
+      "sha256": "9306C3DFE252316DF529DA024DBE5FA55685C6290050529B70A8AB9F63079D72"
+    },
+    {
+      "path": "v2/services/clinic-service/README.md",
+      "sha256": "E303D299C62CFC758202DF50FDFD299F8E690C74A12692DE2FCD03AD0A295E71"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/ApiErrorHandler.java",
+      "sha256": "D7F2703F05221E13573C66F5CCC22B31BD8E2E9D2960E5016C32D5AE59FC305E"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/ApiProblem.java",
+      "sha256": "E71246B6AF41818BD7FF0BCA026EFC575A0170182C258F688A8F8632C1D97BB4"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/ClinicDto.java",
+      "sha256": "48D891088D4A8D96390D9AF7DBD236E6C0B68EEC5C2C16890DA532C5F84FF91F"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/InternalClinicController.java",
+      "sha256": "C1359458B16869EC95DFC1B8E80CF1B33C355028ABB319377EC2E5DD4D8635DE"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/OwnerClinicController.java",
+      "sha256": "D7368D38AFFF02B9210B7A8C2ACC2ACC4E9A157857B172D5315B746AF19584ED"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/PatientHistoryController.java",
+      "sha256": "0E6B1B08B80261A06597A4BF1C340D0551258E191D82AAE9896BF96748B8361C"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/PlatformClinicController.java",
+      "sha256": "8287765A3066BC466760CF998727992EB2AE5AD8D9E10C70EFDE5CB28A744728"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/PublicClinicController.java",
+      "sha256": "BD5E41E5236C4D16F17F6CFA4AEEDD9C20B1371CAC9536DF5D36ECDD3C103A56"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/api/ReceptionDirectoryController.java",
+      "sha256": "46836149E7DCC3758E6B46B7FADBA10107B0C492937A6942C2FDF16129E5837B"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/ClinicApplication.java",
+      "sha256": "25F6AD9558ED31801134E9BDC1E28E4C65E3528EA79F3F72354C6B6C073232C9"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/domain/Branch.java",
+      "sha256": "BE9FC4F102FE8A19A0318702A623FA7724D4690C3F8C54AC1E8FE87CAD5639FB"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/domain/Clinic.java",
+      "sha256": "05ACB51FB8F1E28F6CF1BABCB5873EC024FE9AEF9346E5DA535939699982A550"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/domain/ClinicLicense.java",
+      "sha256": "C19DA3472284EE6B46966BCD750D713D587A1D9971874D439EF60E89F46D1E3E"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/domain/PublicationStatus.java",
+      "sha256": "2BDDBABBD078BD1A89D0E19C3B183A561EFED6D6866E983EEB04708BA3F3A69B"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/domain/ReviewEvent.java",
+      "sha256": "A90EE03DFCBF8771E9837C9CE848805F4FB685D0E4EAB4C7578E32BBE4399FAA"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/domain/ReviewStatus.java",
+      "sha256": "9D117C12C80EF68C794A5E3D1725F319FA98D127853DB3F3E506F4C6F6EBBDD9"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/integration/SearchProjectionRelay.java",
+      "sha256": "76405BE98EEAC2BB96F5979848BB33FD467B06FC4C4D62D813A46E1DBAE186FE"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/repo/BranchRepository.java",
+      "sha256": "4D9EB0FA2D64E4F377EFB475646F0FCE8FF7E43B3E685F726C9FBFABFBF36175"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/repo/ClinicRepository.java",
+      "sha256": "E7212072D8178F1F3428BF33BBF3322134E4E5D8347BCD0CDB35C7B628A0B57A"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/repo/LicenseRepository.java",
+      "sha256": "3D1E912EAED0AFB8086A827057873935C3D23086CA11CDE0AD1D7EBEAA16480D"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/repo/ReviewRepository.java",
+      "sha256": "A2FEAFE99064C6F03EE0BF5C5764BFFCAB1C35C38A0DF5867BAC11DB7DC836B8"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/Actor.java",
+      "sha256": "C71F43BB35290C1B05F69E160D2DE099C786F7C62C0F9138BD44518745F17012"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/ApiAuthenticationFilter.java",
+      "sha256": "1566282EB7A8BCD4DA460C887BD44D47DB3E641A0AF1BB5C5312876600425C21"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/ClinicWorkloadTokenVerifier.java",
+      "sha256": "909181FF023A554C6A14182F0A8FC3456103B66E0D179E2BDC9DB9F4159A949D"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/IamAuthorizationClient.java",
+      "sha256": "2637F0391010C1B3416DF26CBBCA0ABD1F35CFDB687C504D5AF25E9509121F26"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/IamWorkloadTokenIssuer.java",
+      "sha256": "925602EE6688DDF95FC69312B4903478C7DE7D6091D10389EC07BD1C43E1B2D5"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/IdentityClient.java",
+      "sha256": "4162C435A78037B2B1422A8BD434E32FA2E98C663C537B02523EAF0F519A8DE7"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/PatientHistoryClient.java",
+      "sha256": "B9DC0BDCBAFB87549EA5A218DA63C3402D05084DAF2EB7531777462C0F96EA90"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/PlatformAccess.java",
+      "sha256": "27034000B5CDB5D90DC027C0C0E655264B14AB891D48523CC912443C22C701D8"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/SecurityConfiguration.java",
+      "sha256": "800C560D9D026A95F99DEA36EF8BD0E4EB133B36D9C10E0B9A1AF190EE90EBC2"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/TenantDbContext.java",
+      "sha256": "F038971CAEC81AF56A2ED0E0A795CA1176B9C928B3EFD5001032C60599DA2916"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/security/TokenVerifier.java",
+      "sha256": "2C07C4BCA9FD980CB5E27342263118DEF0026E375967BA887BDF4D9EAEB5C705"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/service/ClinicOnboardingService.java",
+      "sha256": "EFB329A7DE3011821C4E6FE05E20DA2374875B85FAB0DB9A398AED5F0600D25D"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/java/com/clinic/v2/service/PatientHistoryDirectory.java",
+      "sha256": "E202EEC6ADADCAA464AE110AA9445DEDD7AEF0F8266B96BEF63137896DC50177"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/resources/application.yml",
+      "sha256": "3E5B727F595EB43D6AF96EDDB28703F509D1E9E3A28E8BFA68E1728E6CA6FD48"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/resources/db/migration/V1__clinic_onboarding.sql",
+      "sha256": "D7540210EDE98241CDE55D9202E903AED2768040BA5479E51DD6D1A24A4739DA"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/resources/db/migration/V2__tenant_rls.sql",
+      "sha256": "76566996FC160D854724FBAA8A2CAE663AD4078477C4B5CEAF5812D76A21157E"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/resources/db/migration/V3__runtime_least_privilege.sql",
+      "sha256": "6B6A8A78944B04985C429FDC32869BE8DFD2465FDC7DDEE99E05A4F236BB80F5"
+    },
+    {
+      "path": "v2/services/clinic-service/src/main/resources/db/migration/V4__search_projection_outbox.sql",
+      "sha256": "AFBAD234851B0BD5E0E136FD0D9F2AD79E0243FC07B120C87879436661686B0C"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/ClinicConfigurationPostgresTest.java",
+      "sha256": "D5A01B5F92823F357A4C1CE3E9203814179CCD7133DBD52B6CF3BBD96BFFC417"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/ClinicExternalPostgresTest.java",
+      "sha256": "B35B103644BD2267F061D9FB6AC07F684A34784595CD4F54C1C32F71A3CD7866"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/ClinicPostgresIntegrationTest.java",
+      "sha256": "0BC65F8FFABCA8942B3CDCCB173FD7D72EC1D1E116CD22159DB28F62BD44F693"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/ClinicTenancyExternalPostgresTest.java",
+      "sha256": "D8FA18659949B93F605F80696F751BAE9B987B4363E3AA6B210691F568533F9D"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/PatientHistoryPostgresTest.java",
+      "sha256": "6C8D30296805766D00CAD8CEFDE644CB14D8FF9BB4E6A7B86061ECC662318AE6"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/ProjectionOutboxPostgresTest.java",
+      "sha256": "2D3C18DE2130F42D826BD18616A44D3C22FA2CC602FA10D59A34AA213CE9C2E5"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/S1Postgres.java",
+      "sha256": "B61392D00E3EB0B10E1D07AC0BFAC1389D42667F4AE9CA5453841D063E74F5FC"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/security/TokenVerifierTest.java",
+      "sha256": "D9E98CBDE3A920174EDDB7FD1B7930D271E9A5BAAC7B6A5EEC0651FFFA179216"
+    },
+    {
+      "path": "v2/services/clinic-service/src/test/java/com/clinic/v2/service/ClinicOnboardingServiceTest.java",
+      "sha256": "FED3E50A84C79175AE6E430C9613642B4D87366158D5F38212007A532A12BCAD"
+    },
+    {
+      "path": "v2/services/doctor-service/pom.xml",
+      "sha256": "E149342E11AFF87DA9650E17D0A74CF57CC124984FA67E29242906FAD1FDE3C4"
+    },
+    {
+      "path": "v2/services/doctor-service/README.md",
+      "sha256": "AB3F6051298D51946CCA3A1EAAE10D05F1A820359D897B26D14E3D97EDC234A8"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/api/AbsenceController.java",
+      "sha256": "CDB9B1120F2155D1B60C64A107CB581D421CA4BC53A3DB07E09C2DAE613DEA47"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/api/ApiErrorHandler.java",
+      "sha256": "67941F23687F0D66F1D4F6E284E7B8E62DE6C0F8F2765A98BE0927C2F8469C80"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/api/ApiProblem.java",
+      "sha256": "935114DED24D9C997B2F6EB9349C0DDACFB83DFCE9E2114917890526FCB1DADC"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/api/DoctorController.java",
+      "sha256": "F0CE277C1D99D432100E081073BEB8ADC3BC5A99B70978CA27D964882DD212FE"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/api/DoctorDto.java",
+      "sha256": "6D5BF324E4893E089E0A1D921AF5FB1D51E434CA86088135350AC9EB943D2E31"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/api/InternalDoctorController.java",
+      "sha256": "7393CAF08B516C7884BA5CCDB58994D935BEB1E857EB4E2837133FF2C0F21AAD"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/api/PublicDoctorController.java",
+      "sha256": "F1F8940352679FE6523A77FA0B3D42375952E579C5091E84B7807259CCF1612D"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/DoctorApplication.java",
+      "sha256": "8B1D7FC1BD692DF34BC39FA7E6BEEABC4B3D109D9EF4515E72313E99A42F8182"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/domain/DoctorAffiliation.java",
+      "sha256": "955092EAC3CAD91BD88C587F207155CFCF95972D80D5A3F747E743CF59BB2A8B"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/domain/Practitioner.java",
+      "sha256": "1F095088990EADC3FC19AB425771F4257968E72C56E2052C528A42E1EE2C6715"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/domain/WorkingSchedule.java",
+      "sha256": "C86737BE899BB1B74C2B3F682C52C3605F10CE6B849C64EDFE2608F675FD981F"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/integration/AbsenceDeliveryRelay.java",
+      "sha256": "F0E388045EC833021442F4F3BBB598683E5D3D5D448D9036675930396AF80C77"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/integration/SearchProjectionRelay.java",
+      "sha256": "C63122837C3FBB38E24CD7B0B9B65408E4FE9F2740F6C581013DEE4E52CAD28B"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/repo/DoctorAffiliationRepository.java",
+      "sha256": "CE48BC1FEE426A911B6280DCC25D4E526500F9E5EA422E53208BC629CBB5BA21"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/repo/PractitionerRepository.java",
+      "sha256": "7101877F87A2ED1C60BF3A86F7FFBF76281847A73E0D60984FA7E8D86EA59DF8"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/repo/WorkingScheduleRepository.java",
+      "sha256": "D73803E71E0838694E1284A8792285FA96E95E2E5731DA3BB06137A1970D8B4F"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/Actor.java",
+      "sha256": "39CEF8028D4F0664DA75585DF6C6AE4BC04241710995D16E5C525460DADDA7F3"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/ApiAuthenticationFilter.java",
+      "sha256": "3F3E07F02128D7BA16CB212AF43A63245935A3BB5401E8D92DD1A73E778EC8D5"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/ClinicDirectoryClient.java",
+      "sha256": "019088452EE97EC8916702EBB247BED12235D5EEEC3EE32C0607DC2298667C0C"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/EncounterPeerVerifier.java",
+      "sha256": "FC5C9317AC9A41544995FF950D56CF5F0E4ABEB29A7513F52271EAE7D3420E9F"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/IamAuthorizationClient.java",
+      "sha256": "8AD0C5F4CDC4ACCDABF5DF0652FDB736EC25AF8B3709363EEFB97B5FFD3B960C"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/IdentityClient.java",
+      "sha256": "B5EAE142FBCD1FAE6CAA8B2321B98A6D5BC61A4766C6C4EE778C560E7D298CEF"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/SecurityConfiguration.java",
+      "sha256": "A8A55938D20E47F85478DB2EDB39616C0E312A55F50B454B0F67FE9187ADA3FD"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/TenantDbContext.java",
+      "sha256": "A7412B8415D4315674F04EB1A328E691FEE27BE27D16E6011B7AA1088988344D"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/security/WorkloadTokenIssuer.java",
+      "sha256": "1A693D9C8FDE0B98F1CEA188CDB0C6FF4066D020818A7ED30D002BA68167A150"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/service/AbsenceService.java",
+      "sha256": "0F46EC91B4C78288CDCA0AB7942B4FCC5A231EC5C708336024D61DE4C0EF6E66"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/java/com/clinic/v2/doctor/service/DoctorService.java",
+      "sha256": "09641ADC4F79A330529AE0C7660CC1A98A43D300180A8BD0D81FBB8613BE416E"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/resources/application.yml",
+      "sha256": "9B9853AC9739E0C85388D39A0AF9490DB50036AB559A24D2A8CF6F52A1337BF3"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/resources/db/migration/V1__doctor_affiliation_schedule.sql",
+      "sha256": "82EF3A115631881172F0EDABACAD7AEFA366F7EB40117015180328AFF8782729"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/resources/db/migration/V2__doctor_tenant_rls.sql",
+      "sha256": "FB7E9710F379647936D4B2C2A4CD867AD9FDE504A5402A7E18E152FAFDE96609"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/resources/db/migration/V3__doctor_runtime_role.sql",
+      "sha256": "1FEA3908EB8A7C8C156692C963430382B03291E8B55511E06F67A8C291FC4B96"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/resources/db/migration/V4__search_projection_outbox.sql",
+      "sha256": "F86CD50405A32ECE3D95CE6B582A6F089179DE440F27C2427F5B61889496899F"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/resources/db/migration/V5__doctor_absence.sql",
+      "sha256": "2F75F5DE491CA37AC3CAB58EF11D0E074BE68B81A152E2819C70AC06C45BC4F4"
+    },
+    {
+      "path": "v2/services/doctor-service/src/main/resources/db/migration/V6__absence_lifecycle_delivery.sql",
+      "sha256": "E8EED48A2665274ED7F2093807F5950CC1731E9F215E6A7CC65A287F3D11494E"
+    },
+    {
+      "path": "v2/services/doctor-service/src/test/java/com/clinic/v2/doctor/AbsencePostgresTest.java",
+      "sha256": "AACDC375922313C3529C18F9A248AA29CD90153ADEB5DC5E0D9815303568E783"
+    },
+    {
+      "path": "v2/services/doctor-service/src/test/java/com/clinic/v2/doctor/DoctorExternalPostgresTest.java",
+      "sha256": "F13E2F35E7C3DB0367D9080C55A2000135617CCC2C274E8B133134954B03AFB2"
+    },
+    {
+      "path": "v2/services/doctor-service/src/test/java/com/clinic/v2/doctor/EncounterPeerVerifierTest.java",
+      "sha256": "AF7C38CB17354F06A1D755B9946033C1A87817489F9ABF2515733EEA432C3480"
+    },
+    {
+      "path": "v2/services/doctor-service/src/test/java/com/clinic/v2/doctor/ProjectionOutboxPostgresTest.java",
+      "sha256": "95A8F88789128FBF887303F21316A31ECC162865D8F0BEEC4ACB16DCE069617A"
+    },
+    {
+      "path": "v2/services/doctor-service/src/test/java/com/clinic/v2/doctor/S1Postgres.java",
+      "sha256": "26DC25CE003C0C0BC4C12A17D1224DCA384419048B3F96104ADF9B66BD44C516"
+    },
+    {
+      "path": "v2/services/doctor-service/src/test/java/com/clinic/v2/doctor/service/DoctorServiceTest.java",
+      "sha256": "CF25865E190A3B37403641924656CB8894E7CBF208F3BF23A7B193419F2879D7"
+    },
+    {
+      "path": "v2/services/encounter-service/pom.xml",
+      "sha256": "3AA71FC97A785D8520564A0CCFC030FC198FD7801C625B224068C14DDCBC7FF0"
+    },
+    {
+      "path": "v2/services/encounter-service/README.md",
+      "sha256": "25811204C233C1CD4BF93DFC3171190FF3AA0F5C1FB318130E56C53CA4C29962"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/ApiErrorHandler.java",
+      "sha256": "2B2B524EF533DBE793A8E5AE92C22E320F81308281FA8866FB9116106B294C2B"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/ApiProblem.java",
+      "sha256": "63911969F337980112B7D3C84E0CE02B0FAEFCDC8CB6F52D1343099065DB89E1"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/BillingProofController.java",
+      "sha256": "428A47918497F946A31CF8AD762D2C23D9E31EB1B517A40EC1C4F63FF5B2382A"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/ChargeDeliveryOperationsController.java",
+      "sha256": "4997F669C42F0F8B1F5DF1238A6D97BEC51779B11C231182517827171E0AB3BF"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/ClinicalAccessAuditAdvice.java",
+      "sha256": "7F90A464894C2CE939B8B4B09938019967990089550C1E52BAA53F92D06B92E7"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/EncounterController.java",
+      "sha256": "75D94E2FF344AF5C735B2ED0DF3CFDD5F749D31F4A6959945B8A29E46CC92C3A"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/EncounterDto.java",
+      "sha256": "F33D62348C3DCF20738C48DCF55EEB4E74C87A47ACE5005910E1D00AF0C4DF93"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/OperationsSummaryController.java",
+      "sha256": "E290A75B76B6A62510B9EEF27D465F3FAB34DA91BD87951AFE33A52F02644063"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/api/PatientFollowUpController.java",
+      "sha256": "FD67ABB26A38CE1BEBDE3EB52D875D48B15B6325BBB8686152281DD6AD1F51F2"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/EncounterApplication.java",
+      "sha256": "5ECEB836C83524D7DA1E6F54F7CAA021C50C61CD4005F8B2ACF4FEE7B0A75CF1"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/Actor.java",
+      "sha256": "777044E00DF42B75618C64D8DBE96B6B7C792C671D059CF00901DA86DE0A4C02"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/ApiAuthenticationFilter.java",
+      "sha256": "0D61308D9D8BFAEDF86BB5CAD93B0F3A5BD8D7236D6DF3516EFAA760FB7F190F"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/BillingPeerVerifier.java",
+      "sha256": "791D2836C5CC3553B1FAAF92063B7C2F843438E5A5E5E101F225DAA5D3296810"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/ClinicDirectoryClient.java",
+      "sha256": "49B6414CC79678A66019BA384B840034304800DF4CA549E924C668817A4CD247"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/EncounterDb.java",
+      "sha256": "9CEDB43F73C9F2FF268508968CC1FD997F7A1D5FBE3B665AF034A1F9057FA31A"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/IamAuthorizationClient.java",
+      "sha256": "B5F17189700A98B01A4F45D2E5F8F31EFA73C5593B2331F9C1603981A45B26B4"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/IdentityClient.java",
+      "sha256": "AA384DA45B33DACD767BA54DF4F27F27F944CA2A1E5D3CA31ED009E123232F67"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/PatientOwnershipClient.java",
+      "sha256": "8CF104840E23B9939AE894CB862129A781AEB19AE30215B1523C9EBE3352F17D"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/SecurityConfiguration.java",
+      "sha256": "0CFA1987336980CF4A655FD75C479C0C6BB6992AD4EBC2B9D1D04E59130C98DA"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/security/WorkloadTokenIssuer.java",
+      "sha256": "70A5A9F118FD5F5D6970E48BC15522505A88F948D15502166A90D46A666E35D1"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/service/AppointmentFulfillmentRelay.java",
+      "sha256": "A0BEBAAAE5D6ABC6C393D980723217A58B293D1DFDBAB0BAE1757EDEF922DC3E"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/service/BillingChargeRelay.java",
+      "sha256": "3C287AB290163D606771731548837C226F837EDCC5CEFB93493E33F2FAD5553F"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/service/ChargeDeliveryOperations.java",
+      "sha256": "F82D02A7604F6448D6A24942B089314CFC55FB74BCBF7E292FADFD895A72F930"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/service/EncounterAuditRelay.java",
+      "sha256": "F971C6DBE406E9B20D031C2B50E5B731A27EDC77AF15711FA2ED9C6B1D243D2A"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/service/EncounterService.java",
+      "sha256": "A810798F21CE2DDDC2F3BDCAEA55187079F3F59E2E6555F42613C548D7BCD782"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/service/EncounterSources.java",
+      "sha256": "C076E6DE944F41134A68602F00B83165CF48B62299E3E552E262676A91C9A57D"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/java/com/clinic/v2/encounter/service/MedicalReadinessClient.java",
+      "sha256": "997BB5664304583D4956BA9421093980A2CFE7C83E45803BAEA0CE090E1815E1"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/application.yml",
+      "sha256": "F5870E5D27ECCD93ED9ADC25E028CEBA03BD3BE70CE40403DFE53917A8A16AF9"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V1__encounter_queue.sql",
+      "sha256": "5A3A589C695913F56126EBC3A0BA1CA494B99D8580011CB9D13A170683AFFC1C"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V2__encounter_runtime_rls.sql",
+      "sha256": "E911CF6794CFCBD0B856235F1F37E275A4C47A62072343B6FCE0C459A288DC8D"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V3__encounter_audit_delivery.sql",
+      "sha256": "EB5011B3C907E59DB1D314DEC81B245634DFA875982E59BC5C11E987CC729F55"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V4__arrival_recovery.sql",
+      "sha256": "DE90E71BF6B8813AC0740BE360E331268C2D074A54BC33635593447314250295"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V5__care_command_receipts.sql",
+      "sha256": "99C1F6FE3DC702AC41B60D114BE294A3DBEDAC04D4962872A320DC50A12BBB3B"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V6__clinical_completion.sql",
+      "sha256": "F471E029C5D0359D3F41D524F9FA89BDA460ECEF1F4A319746BB2BA1E58D0328"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V7__appointment_fulfillment_delivery.sql",
+      "sha256": "2068A067BA1099BA400572417CE0CE9A5124BACE88C4B4B8BCC095C0640442D7"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V8__billing_charge_delivery.sql",
+      "sha256": "3EF903E7DF36DD216D97E041BF385A57B03574586854858522D0CC54D0A76E60"
+    },
+    {
+      "path": "v2/services/encounter-service/src/main/resources/db/migration/V9__charge_recovery_commands.sql",
+      "sha256": "25C5A11386A1647B68D3823F098F7D85E314BE4CDFD282BA2FD0C5E5CFE567EC"
+    },
+    {
+      "path": "v2/services/encounter-service/src/test/java/com/clinic/v2/encounter/EncounterPostgresTest.java",
+      "sha256": "B931C1534B4F9525080F77FA416037FA5B7F17D632069E3823EA4196C67DB15D"
+    },
+    {
+      "path": "v2/services/encounter-service/src/test/java/com/clinic/v2/encounter/S1Postgres.java",
+      "sha256": "348F3746DF09DAC32B9600FC65650EEEAC96477A94C4FF814A221459B668D305"
+    },
+    {
+      "path": "v2/services/encounter-service/src/test/java/com/clinic/v2/encounter/security/BillingPeerVerifierTest.java",
+      "sha256": "F18F273A8F077A60FF64D2DD217C816303364C1C1DA15F2722B2C00468A0B32A"
+    },
+    {
+      "path": "v2/services/iam-service/pom.xml",
+      "sha256": "3E2A1126F79DF647D0F8648C0B121636EE4A0579930123142BDF15B03405F511"
+    },
+    {
+      "path": "v2/services/iam-service/README.md",
+      "sha256": "650D6E1FF6C3366AF89F39C865167EB65662F7186A65A02CE763ED1DD84221FB"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/api/ApiErrorHandler.java",
+      "sha256": "683A7EF5FBB0CF88FEC144EAB28A678ECBFF0EB34BFB3D2195B1E163CFDA62F0"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/api/ApiProblem.java",
+      "sha256": "5F977101EFF3505D3667A206C93E50A02FECED8BE7DB43F5D9214CABDBEB5C43"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/api/IamDto.java",
+      "sha256": "755F2EB4729D2DB2D248141C34E2E6C114F2F4FEE72C52AB9724F0D5A1026542"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/api/InternalIamController.java",
+      "sha256": "57AEB5C3D12C5F4695C448D76F4085F6010F1E24AF17CB984B8AA75620B37232"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/api/MeContextController.java",
+      "sha256": "DF7999B0B839D3135A8CD888AEFB068BED5EA2080B911BC9FF623B11286A09B0"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/api/MembershipAdminController.java",
+      "sha256": "A478588E98E9DC2B6EB6EE622BB6A5C921CA2093A85A02165D60D43D05A87F4A"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/client/ClinicDirectoryClient.java",
+      "sha256": "9445ECA4695470274B335BA3ACCE57FABF9D5F88322B31E0A6C0C5A6033E3F02"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/BranchGrantId.java",
+      "sha256": "C67E23805B34A82998A8277521B7D1FCCC3125DCBA1F5DA4A3033999EFDAFD85"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/Membership.java",
+      "sha256": "6526DB15B3B508368EE78931905EEB601A1247B601DDA14193E4107B6E737EBC"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/MembershipBranchGrant.java",
+      "sha256": "D5C5FC07AB7837F4425361A3071F9C378CD10CC926EE4EBBC905D139C1D88CF9"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/MembershipRole.java",
+      "sha256": "263737D6FA738FEB0E2548AC11264BFC6FEAFDBF55B0A6CE496D5A2C07D8FA57"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/MembershipStatus.java",
+      "sha256": "BDDADF62DDE950B3CC74B1B71A8134DE0CD797EC28FC84850C5DB51FF159F250"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/PermissionEpoch.java",
+      "sha256": "AA0535798C6BAAB61A22907CD50ABF5D4195B2C3F26A5F26758DD987B5641AD4"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/PlatformCapability.java",
+      "sha256": "344C215288662CACBEB0D055DBC32EBC940712F44B6384EE9C5F441E4016FC83"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/PlatformGrant.java",
+      "sha256": "B9FD55F0A9D8D3BE3E0F51DCA523528AF008726964368B2653BB8FC2613245B8"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/PlatformGrantId.java",
+      "sha256": "A186991C1620A9DC0772D8A44B5B2337E45A7D5A0BEC1BD8A9656BFE305BC137"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/SecurityEvent.java",
+      "sha256": "D0A010045DEBCF27D4BFA140F3EB5A94659E05C3CAE604D9198A3584F93FBDDC"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/domain/UserSessionState.java",
+      "sha256": "A2179DC86544014C861D265E4467A967CA46DD3D1B9D882F9ED01DA206CF1C49"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/IamApplication.java",
+      "sha256": "438B15C906DCF697F35777A446A58A21EB7B0C3A1F339628E40DF4303D86B81C"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/repo/BranchGrantRepository.java",
+      "sha256": "417AE924757977CF6CA2B6220DC8740CF3EE1FD8E42EBF692E5CA094E41F75CC"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/repo/MembershipRepository.java",
+      "sha256": "D0363C6E9FDDB31F93F85C29894BF1B05DE6C55D0465A2CFA414769A38ED2EE0"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/repo/PermissionEpochRepository.java",
+      "sha256": "CC25775A50D2959797E5450342B1B19013E67341AAAA1B03E0F5E9C1154767CA"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/repo/PlatformGrantRepository.java",
+      "sha256": "905B7D9833E707D3CAAE687D94AFD2ED26D56F4BEBCD49EA09860E27C7AD6236"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/repo/SecurityEventRepository.java",
+      "sha256": "3D5E98F33CDFC39591C3B6866B3E2FACC6181FF93BCD9CF55C6360047C3BE365"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/repo/UserSessionStateRepository.java",
+      "sha256": "3831C4322298CDE4C5305A9CC08D6A4BB6885C90F5E3FEFDBCE644563A7F690C"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/security/Actor.java",
+      "sha256": "54C3A3DB18893989F08DA1699880A902947BB4A9129EEA739606AD7E2E491D74"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/security/ClinicWorkloadTokenIssuer.java",
+      "sha256": "50EEA21BD80DED698D2EB14C4A6CBA23B3C7CC9C106507E308B493E0DB0EF01F"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/security/IamDbContext.java",
+      "sha256": "1393798A1CE1FC74F7F8BEB0310FF46F413919D06CE4B4650C30715045B1B79B"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/security/LegacyIdentityClient.java",
+      "sha256": "A28D38E5A6012D0338858B7594B700BAFB764FFE813E5A7095B9F75AC9D4A65B"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/security/SecurityConfiguration.java",
+      "sha256": "B66751FFEFB25223BB1A2DA632411AD9D342B2133360981C76A9220CC718FC39"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/security/UserAuthenticationFilter.java",
+      "sha256": "A2F37E43D6C3BFD7A966E94EFE06A92747FD19640C5C10552ED289DBA0596F81"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/security/UserTokenVerifier.java",
+      "sha256": "CA8525AF2755F59CB52769484D10BCA0B4B3F309C6D0CAE6ED43E2B822DB6211"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/security/WorkloadTokenVerifier.java",
+      "sha256": "4534486BB82106CB0D68F7A2F985F68510A68E17F9103875E36090572F7222F1"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/service/MembershipService.java",
+      "sha256": "22A5322B59B6F5D7DC8416668AD4E57D501BA1BA199F61AF3ABB9C7A161CC498"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/java/com/clinic/v2/iam/service/SessionRevocationService.java",
+      "sha256": "AB438C7DE7B11BC3EF2A20A2067DE0CC0EF64639BF955DF0C2A1D111BD153280"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/resources/application.yml",
+      "sha256": "FAC0AD5CDA1D9CA77214A70A1C4FE279B37A302617BD2C5593508F4B2704460F"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/resources/db/migration/V1__membership_and_platform_grants.sql",
+      "sha256": "08E9DD7E0315224BE8A12D3EA88F340570B049E79F1EBC9CF3212DEA8D835B44"
+    },
+    {
+      "path": "v2/services/iam-service/src/main/resources/db/migration/V2__permission_epoch.sql",
+      "sha256": "1DD64B10425EC88EBD9E9EFF04CAB7469B2726EE6EBC184743B70CD674C74C89"
+    },
+    {
+      "path": "v2/services/iam-service/src/test/java/com/clinic/v2/iam/IamExternalPostgresTest.java",
+      "sha256": "9D692917B381ADB8CD7C86C91501B0B9B5AA6E50F7AAB3201A9927C77364E0AD"
+    },
+    {
+      "path": "v2/services/iam-service/src/test/java/com/clinic/v2/iam/security/WorkloadTokenVerifierTest.java",
+      "sha256": "90BA6833A200E2E3FAD04137A9C1AF9B7CC706CEB334D76C0A18A240BF3F17A3"
+    },
+    {
+      "path": "v2/services/iam-service/src/test/java/com/clinic/v2/iam/service/MembershipServiceTest.java",
+      "sha256": "6D650BE8B44E02724D1F936A4F8F24456271A46E31788CFB836372CBFEA29566"
+    },
+    {
+      "path": "v2/services/identity-service/pom.xml",
+      "sha256": "DE7339C13F53933653AED15F58B3EF6D1267D81BAC501EB1AE9D97534A6C09B1"
+    },
+    {
+      "path": "v2/services/identity-service/README.md",
+      "sha256": "47287AAD140B221639228E49606E30907AAB202E060B8F7D0F48A48A75EEF0E3"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/api/ApiErrorHandler.java",
+      "sha256": "2BBACF2B2FDBE22B3C78E36DEE9AE12D5094AB04F560C6C3D053A108C5BAF640"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/api/ApiProblem.java",
+      "sha256": "8574C09CC9886A1C985E4F8D071455E1107ACB3FD643C9D35259272E7B153A59"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/api/Capability.java",
+      "sha256": "EFDACE5E35AB53DA5828A5BA9317D18193941A19BF80911BBF2149F37E587E92"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/api/IamDto.java",
+      "sha256": "ED2F49C9914CCB6B537050E2E482C80EFA161FB8CAE6A0EDAE27CC18A52FEA9D"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/api/InternalIamController.java",
+      "sha256": "65F0B56FC191F7E72266C51AF818103E6FE4EC51031CC114E7283A96FDF7FA4F"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/api/MembershipController.java",
+      "sha256": "357A1107FC1DFC32050B8A828BB8FBD30916E9126CBAB5052747FCC20658B533"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/domain/BranchGrant.java",
+      "sha256": "6E73F7711D5D19FEAE6CE8762F9AF77833DDBC6888CBBA9067E70F4FD81D087A"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/domain/Membership.java",
+      "sha256": "24ECCE6F8DCAE3905FAEA7F372044AE2D0450737E8826BBE04A473B438524DF9"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/domain/MembershipEvent.java",
+      "sha256": "9D9BFB9819EAE54BB8CC0465E4A0D963DD03A6FFC3D4A8BE231F3C3EF3968AB6"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/domain/MembershipRole.java",
+      "sha256": "263737D6FA738FEB0E2548AC11264BFC6FEAFDBF55B0A6CE496D5A2C07D8FA57"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/domain/MembershipStatus.java",
+      "sha256": "3542DFE017C933F5D6EE335BED178D01EF89730928AFD8DD07DFA9CDFB7B2771"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/domain/PlatformOperator.java",
+      "sha256": "4C21FE1FF51F9353EA19CEC1448D09314900C5E63AB4149EFE314013218DC9A9"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/domain/UserSecurityState.java",
+      "sha256": "82F837B303B6E470F2942F238939224883E07560FC808AAEE5D4273BB7C20CCC"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/IamApplication.java",
+      "sha256": "9D5053BE088886D146DF41A9784969F485AFDFE85A07460B107C3DA4E06454D1"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/repo/BranchGrantRepository.java",
+      "sha256": "015B19C6FD415C3BCB44E5D7C69FBEEC9B037A3A84AEF3BAF6C41888559E0420"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/repo/MembershipEventRepository.java",
+      "sha256": "40F9B75D12F75F21D343C436B10E7098F434E55EBFEBF790F263F6B689FB5F4F"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/repo/MembershipRepository.java",
+      "sha256": "A51169FA614930424435D819E42E19CEF18C16D553A85FB3162F541C04F8DD2E"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/repo/PlatformOperatorRepository.java",
+      "sha256": "171B864FD95FBCC968C2390E7B714F92B7F3F7CC689FDF22A23FE4A2C494DCA6"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/repo/UserSecurityStateRepository.java",
+      "sha256": "54452EFD83F6B6CF9E34CE702A10E9E96F5000302F82FD41CD012AA4127DD99B"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/Actor.java",
+      "sha256": "43298F2D11BE47D7D1A4FF75F1702150D9CA0D7DAA4373AA0B3BA250D2F53271"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/ClinicDirectoryClient.java",
+      "sha256": "3C28D24D4A647148AABCBB41C1A309E97E587B7060FEAB726D0F4ED1015373F9"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/DatabaseScope.java",
+      "sha256": "7C5B65D01990B0112A31C0824D318E25F2C9BD5D1601B1E7C29DE270C9927495"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/LegacyIdentityClient.java",
+      "sha256": "7BA61FAF5BDC60F995CC94537121816D70ACB7656DB145C33F380E1038141AFD"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/SecurityConfiguration.java",
+      "sha256": "2DAB6DF0259E3FBAE0CCFC55B4150B1A8BCB683EC6DD99E83CF45C923EF79933"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/SessionSecurityService.java",
+      "sha256": "33D790969D97E80BB877509C697DF4EF6BC000414A8A0DC8D8644092B7DCB301"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/TokenVerifier.java",
+      "sha256": "216362E48DF55F5C1FC319BC94AA4178034ECA6E14018B69C0E9BA5BD2AB2626"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/UserAuthenticationFilter.java",
+      "sha256": "B650B68D7CCBBF92C6CE98E6F9B4B4612CBD8F6722ECA2070C7F981BBD665C76"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/WorkloadAuthenticationFilter.java",
+      "sha256": "9D20288088D37B4D113AA4964751F90E75C01910A6F3E4AFC684E4D5118EDD72"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/WorkloadPrincipal.java",
+      "sha256": "C1A3F10BBFA63FEFDE159A4921C057CEF7DA0DC72E66BDDAC12438A7EC0D07D2"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/security/WorkloadTokens.java",
+      "sha256": "73061F5F33180137E31DDE43CBC005B726794AC57CCDEEDA7AB70FADE86DD1D3"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/java/com/clinic/v2/iam/service/MembershipService.java",
+      "sha256": "5FFA3C91324EF269FF4289EB0CBEA67C664B220739316308828761F844F02F87"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/resources/application.yml",
+      "sha256": "568A633A20CC108943E02E9635AD354537CF87E487A7F61DDA2783901CFE0330"
+    },
+    {
+      "path": "v2/services/identity-service/src/main/resources/db/migration/V1__membership_tenancy.sql",
+      "sha256": "6931658C65EAE47D73934DF5DA848B6A3B576D6F905E0ACF3E1343306BAF9FC4"
+    },
+    {
+      "path": "v2/services/identity-service/src/test/java/com/clinic/v2/iam/IamExternalPostgresTest.java",
+      "sha256": "EE0EB6B77381D50C2504B26A5E953208BF6F51B740F33A2AC1510353AF2966DC"
+    },
+    {
+      "path": "v2/services/identity-service/src/test/java/com/clinic/v2/iam/IdentityS2PostgresTest.java",
+      "sha256": "FD55C0F57AFC965DB9A4B55D77C660C1A3D90B984CF9839F3209E7631ABC3E4E"
+    },
+    {
+      "path": "v2/services/identity-service/src/test/java/com/clinic/v2/iam/S1Postgres.java",
+      "sha256": "8C607C96392C0F3906D8934D4BE8D5C62B318BE1E4C721A137097053A6D27F44"
+    },
+    {
+      "path": "v2/services/identity-service/src/test/java/com/clinic/v2/iam/security/SecurityTokenTest.java",
+      "sha256": "7EBE6251698F81F0B404DB0E2B1C9BEFD6A3ED8DD137B965473B7164548EA285"
+    },
+    {
+      "path": "v2/services/identity-service/src/test/java/com/clinic/v2/iam/security/SessionSecurityServiceTest.java",
+      "sha256": "2440098C56BF51B59A4F23DC980D7A20F835346F41B69C8EE9F8F07957B602D3"
+    },
+    {
+      "path": "v2/services/identity-service/src/test/java/com/clinic/v2/iam/service/MembershipSecurityTest.java",
+      "sha256": "02C03C67112D79BE186A9D97579C902EBE5A95C1A1AF9D73D522E059C39660A3"
+    },
+    {
+      "path": "v2/services/identity-service/src/test/java/com/clinic/v2/iam/service/MembershipServiceTest.java",
+      "sha256": "5047C7BD796D6B6276D3BCF578E3EC6CF0B8A6B9A7A7E68222A3B0EDF9E9B707"
+    },
+    {
+      "path": "v2/services/medical-service/pom.xml",
+      "sha256": "0432502976B1511C4DCED63F0D7148ED3C35CD11E4DA6C4A35F62F2370EBA620"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/api/ApiErrorHandler.java",
+      "sha256": "CACE9D5CC262FF48820AAC8B0BFAE1B1C8A0D6B5C1D1B8AE61BDC8599C2DADC0"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/api/ApiProblem.java",
+      "sha256": "CD436EF2D0B30DAF4E7AB4750150F470F2D3E2C195B0A81E01479549FAB5ACD5"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/api/BillingProofController.java",
+      "sha256": "63CFC164FD3845F3A200990F001EBA89CF0732AE72A525DE0469A91F0802A133"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/api/ChargeDeliveryOperationsController.java",
+      "sha256": "45CCECA22163105CA4F59D76A37DEC2823435A501076AC636CC0A1DBD900E469"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/api/ClinicalAccessAuditAdvice.java",
+      "sha256": "98B9DCBBA38DD3D88651FA2F4FBC5F4F692C96146F03C6B5B452C41EE7625D24"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/api/MedicalController.java",
+      "sha256": "A57D1C6FEFB7DED261FA4D3994A79619B0A7A8BDD8E4318C949E0BF47402F32F"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/api/MedicalDto.java",
+      "sha256": "92F0935C960902CEFEC00F4FD3D2723054F2E6CD3437E516E54FD2D7C182454B"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/api/PatientFollowUpController.java",
+      "sha256": "711D0EA6BBA6AB7F2378319C82BF9396A951268488DF89A251210B1C4A174F85"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/MedicalApplication.java",
+      "sha256": "7C2F1A4AF0E66DC353AF89FAB1CC62305C80200D6CCEC71BE6E630C113E705C6"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/Actor.java",
+      "sha256": "B2C23416643958247070A32463FFED67846F049EB0726C94D589960FCEF74F57"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/ApiAuthenticationFilter.java",
+      "sha256": "FFECFEE4847E375EEB8621BD194BDFF785380E92F2E59243DCFAC8108F2567FC"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/BillingPeerVerifier.java",
+      "sha256": "66DAD824621D41767646445E83CD9D1FF57FE8ABE64390858736CDBCF2CFB987"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/IamAuthorizationClient.java",
+      "sha256": "FCE7AE745169A4B8601E261F889BE1BB3A351EEA30BD29DE944CFACE0F800578"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/IdentityClient.java",
+      "sha256": "56EA4907352EA90DBF2D2A496C0BD90CFFEAA62B7F682A0BC4EE714E29918ABE"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/MedicalDb.java",
+      "sha256": "F073473CC610ABDB38AA03267FB4A08FCCE998245A2BF5FE7C84E3725DB95F59"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/PatientOwnershipClient.java",
+      "sha256": "15B953B75E2BC12D0FB83B05A758A9DDF6073FF109E4EA576EC0513A3D9AF031"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/SecurityConfiguration.java",
+      "sha256": "852A2D21F233752577AD10BDEE9363E409727667BFCE57C15828933A2875508A"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/security/WorkloadTokenIssuer.java",
+      "sha256": "B6EBC914D3F8708931490CE0CD567608BE83D587BE42D056027855031875D4DF"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/service/BillingChargeRelay.java",
+      "sha256": "DF46CE9EEC7153C458F2681CF8EEA760912C50FBE0F55202BF0DD3DE2F42B881"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/service/ChargeDeliveryOperations.java",
+      "sha256": "E475DEA33B3AC660FCD3717CBEAA8AB37DA214F51D2C06EAADA786D50F36D909"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/service/MedicalAuditRelay.java",
+      "sha256": "A2CD47920BC92C9027C7D44E9BC4BB99F29D7FFA1F654C85931DCEE20686F852"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/service/MedicalService.java",
+      "sha256": "5738F1CE51B0C60A917CD93D363836FE035E120A6C8C29C9D3BA7EDB70C8EC3E"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/service/MedicalSources.java",
+      "sha256": "8965B78456487727BA475EED6C6AED24C5BAD9F7079E0BB8475D2133C6545DEC"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/java/com/clinic/v2/medical/service/PatientFollowUpService.java",
+      "sha256": "0DA836B5C038428C586DB4A7FB84A0CC08E1022061089ECB4AE4EA90E892973E"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/resources/application.yml",
+      "sha256": "F80469DD5D7BE5138DFF15747643774671CEA8C0FF505BC5C900F90915D8A859"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/resources/db/migration/V1__medical_care.sql",
+      "sha256": "90E993968D45F9BE4DDDE233010999E0AAF941D27C7DAE0786A3CF59B45E0CF5"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/resources/db/migration/V2__billing_charge_delivery.sql",
+      "sha256": "C2338480104FE110A5C905AFB4EE0528C9CD85E5D437CC849042108FEDEC0A32"
+    },
+    {
+      "path": "v2/services/medical-service/src/main/resources/db/migration/V3__charge_recovery_commands.sql",
+      "sha256": "3C3E371DBF0ABAD5A26BE5241A2B76B5D511C5097070B1D76B3B58EC57F0F14C"
+    },
+    {
+      "path": "v2/services/medical-service/src/test/java/com/clinic/v2/medical/MedicalPostgresTest.java",
+      "sha256": "F5B3694655F30BEECEF1CADA08ABF588D13232FF4836839D80EE652CF6B807B7"
+    },
+    {
+      "path": "v2/services/medical-service/src/test/java/com/clinic/v2/medical/S1Postgres.java",
+      "sha256": "A2CACDB3CEAD5583F72EF5B26B89E1643AF5E55AA43F3F7497CF472F4191C847"
+    },
+    {
+      "path": "v2/services/notification-service/pom.xml",
+      "sha256": "99BA4E4AB1327D852634D607AE31A4A326C23B89EFF4ADD3282F69E0DF35A888"
+    },
+    {
+      "path": "v2/services/notification-service/README.md",
+      "sha256": "0CADF8BA3F47D958993FF4DD12235F4717C96F3E0E79354A9ADCD03C365138ED"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/api/ApiErrorHandler.java",
+      "sha256": "E4388691B1CF6465CA455E5D154399675F023BF64204FE7283E8FDBA384E1074"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/api/ApiProblem.java",
+      "sha256": "6DEE6C26C8CF6DDF040576035F66BC2C5A3C0CAD79E912B9E8D74BB6730C1363"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/api/FinancialNotificationController.java",
+      "sha256": "FEC0D60BDB5615531AFB90C4D18224074245B445944E8A5C55471E2249C668CA"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/api/NotificationController.java",
+      "sha256": "6B8742031E512902DE2CC87FD0AC5DAB57579E46A1C6C68632B5B0E97F09C0D9"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/FinancialNotificationService.java",
+      "sha256": "F58443B7E82AADA99D65C9BEBEAF641BB562378DF7151658D406F5BF61069175"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/NotificationApplication.java",
+      "sha256": "158918F704392B64D047D10F9E1543DD9E53C9A58973E733B0D2C1ED798319D7"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/NotificationService.java",
+      "sha256": "646D4588A18236A64504FDED726F812D9DF2350467DF94BBEC2140C2004EB075"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/security/Actor.java",
+      "sha256": "8165797CB2B6F87D58B651076B1D183958F426F06D05D796E84F493298C2B4E2"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/security/BillingPeerVerifier.java",
+      "sha256": "4367539E32E731FE6D717EAFF815B07C479EEEAD2A7FADCE9869565A8F951CAB"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/security/IdentityClient.java",
+      "sha256": "8A322B8A1FA587FF3215A054399F854C1C69C241AACE4A6AB550728433462BB2"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/security/SecurityConfiguration.java",
+      "sha256": "92FC895716875B18A96FE04A1FF4B8D7BFC7FE7D721473368017889F968ED1F3"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/security/UserAuthenticationFilter.java",
+      "sha256": "AA665982337F007D8AA27E8F38DA9A01BCA98FE3D2EF831C927034B7AD02FCD2"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/security/WorkloadAuthenticationFilter.java",
+      "sha256": "4FE3632166CA92AD424DCD1650DDFD8CAB7C19FA21EEFA747987A3FAC7AAA147"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/security/WorkloadPrincipal.java",
+      "sha256": "DAD2BCD3F0B8113FCAEBEFE0B014C24125BFA27787C28CE27331E17424819549"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/java/com/clinic/v2/notification/security/WorkloadTokenVerifier.java",
+      "sha256": "73093FCCDE3D5EB33B93E6E3CAA5E856626557DA9F56831775EB36714DE5DE20"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/resources/application.yml",
+      "sha256": "6A588C252143C944577BDB7311D66A56EA7FEB862CA2C49C58140A235CA78F0F"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/resources/db/migration/V1__notification_inbox.sql",
+      "sha256": "DBA4D3E55D96CA79E1A46D1DC45630857E8681D2A095851A9FDEA38AC40F656C"
+    },
+    {
+      "path": "v2/services/notification-service/src/main/resources/db/migration/V2__financial_notification_inbox.sql",
+      "sha256": "CC792AEE7947F13A3104818A887FF86CC12CD9C1D28FA12986453D1C5268D722"
+    },
+    {
+      "path": "v2/services/notification-service/src/test/java/com/clinic/v2/notification/FinancialNotificationPostgresTest.java",
+      "sha256": "1A7B57496ECEA0677F342480E41B6B7C6C622676161704CF98CDB2773BBFD6B8"
+    },
+    {
+      "path": "v2/services/notification-service/src/test/java/com/clinic/v2/notification/NotificationPostgresTest.java",
+      "sha256": "F13D80B717CCB545CFE41EC8B8ED2D8D8E786C0EA0CBAF624EDCFC37CC51BA05"
+    },
+    {
+      "path": "v2/services/notification-service/src/test/java/com/clinic/v2/notification/S1Postgres.java",
+      "sha256": "86852DA80FFBEF555E6D37E3601B1AD64D6FD6994CA1DFE67584FCC54FB6CB57"
+    },
+    {
+      "path": "v2/services/notification-service/src/test/java/com/clinic/v2/notification/security/WorkloadTokenVerifierTest.java",
+      "sha256": "7547F3F5E2DF27CBE4A2DE4C724EFC1C0033E919492E077AD21AAB05ED8A7A07"
+    },
+    {
+      "path": "v2/services/patient-service/pom.xml",
+      "sha256": "AB5188877DE69B8DA183CF170C1EACF37317F6CFB39172F7C4C827799758DFB3"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/ApiErrorHandler.java",
+      "sha256": "DF101CE22E3BB2024E14A5BFAC957C22646ABCBD3439825CBC6201485A96611A"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/ApiProblem.java",
+      "sha256": "B0AAF558A6F6A2BE2937989217480769B847391896CA754F155FA53622EAFD9D"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/InternalClinicPatientController.java",
+      "sha256": "6AA66CEC37A1643B3050723D5881EC89926F08F92EFB6F760C163721CCB86E29"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/InternalPatientController.java",
+      "sha256": "893952E933F7D67F637C38A3B511AF56346ECB6BA96CB381A3BCF620625C0AEB"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/NotificationRecipientController.java",
+      "sha256": "565FA8BE4674EBB44CCE10234BA1780F637733BAFDB1573077AC1B307A91F663"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/OwnClinicLinkController.java",
+      "sha256": "6425F9B529A62EB0E6A58C551C6FE62395DF62755D94976BC77842FA0D401058"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/PatientController.java",
+      "sha256": "C7AE9B73A41191E7E37332385338DF38D742E4DC9125B6609DD277A011F4410D"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/PatientDto.java",
+      "sha256": "52276A5320E6A44DC2C6518CF9404B7CA6543F0F0640BC1A68973E0EA2B2A74B"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/api/ReceptionPatientController.java",
+      "sha256": "08BD4A6CC4A3ABD939CF75C2D4C5D9F070252542F20B84C3EBE842A50CC4F714"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/domain/ClinicPatientLink.java",
+      "sha256": "764C139D9947F98096844FD327B85423DB2077E8A15680867996B5352C2FE327"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/domain/PatientIdentity.java",
+      "sha256": "E88308ED92F0BE1B0C3DAE66A6D57D459F16E791B794BBEF817F354FB9895F9D"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/domain/UserPatientLink.java",
+      "sha256": "DD355AE54A142272FE95AA6B4AF4BF6C5E9AF1EAFCDB3B15DB532D12E11766CF"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/PatientApplication.java",
+      "sha256": "A9D8A4BA843F280D42CE1C5C5F26BB073EC9B4B5F74E74C8011489BF333ED3FC"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/repo/ClinicPatientLinkRepository.java",
+      "sha256": "CC0367BC13CA704A9657FB9FF6F7FF77AC8F89A79DD764080E9A107F137934B3"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/repo/PatientIdentityRepository.java",
+      "sha256": "1406E52CA0E7744B44336904FF634DA3E8BBC327884AC63FD77FE694EC7333A2"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/repo/UserPatientLinkRepository.java",
+      "sha256": "21D9CC66E948C40DC9E61E6C8CA0302B072B4568C3D5C11B3A29B8259C0DB310"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/Actor.java",
+      "sha256": "88488B75A770646F50FEB78734A9721AC1C6CEE580A6028ED033125D82BB60AD"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/BillingPeerVerifier.java",
+      "sha256": "7FC10B2FCE2F79A727FD857643CBF20136A8C6C922ACDB0DA2F50FFC51EE8F92"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/ClinicDirectoryClient.java",
+      "sha256": "AE2BEB24D3725CA0F80ED72F870EDD5C4AAB5A3E20A86C749578AA8E5F19946D"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/EncounterPeerVerifier.java",
+      "sha256": "D382BE3E6748AB5B90E96F3CDE88733F348B177C379C36786FA7604C18F61FCE"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/IamAuthorizationClient.java",
+      "sha256": "7D0431F620AA70D6007B45BA5558EF330029D228F884A4E78F75CF85EEC518FC"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/IdentityClient.java",
+      "sha256": "B3CD0E576C774FCD0609EFA204A4AE004A1D7B0A116D6378986D2F0E6D7389B0"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/SecurityConfiguration.java",
+      "sha256": "3EC22D83BD78C29BA3128BFBDB1D86F205BF449923F92F86A4F15DFEE29F37AC"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/UserAuthenticationFilter.java",
+      "sha256": "9444A3E6A70BDA6E84CE16B2BD955252F0667EFF596B860ACB1EC5B17905E02C"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/WorkloadAuthenticationFilter.java",
+      "sha256": "28F577B3F689A88CF8BD002FE7FBD22C8B2C2D1B0F4C9544679F691C55BF4B49"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/WorkloadPrincipal.java",
+      "sha256": "9C407FDA1912E8690C4A1CD7BF9439BFF898860DC3BC3A2A25D6E1E13160B4F1"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/WorkloadTokenIssuer.java",
+      "sha256": "AEB90BC19524B64D0D82AF1D90C4E40D5550AC9FC56C7C697C0610FE5B897660"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/security/WorkloadTokenVerifier.java",
+      "sha256": "414CFD7FF133C33036ED2CAD9B6BE0F2FB0115650BE1CCFF4C386AC30CE085DB"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/service/PatientService.java",
+      "sha256": "6BA6F58C91071C369A894B95139E3643DE1829665C6C8242549B6CC96BEEEA63"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/java/com/clinic/v2/patient/service/ReceptionPatientService.java",
+      "sha256": "ACA9649198A525587951D38483A0F74C18A69A6858016DF8A51552E5BAA4AF81"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/resources/application.yml",
+      "sha256": "56CEFB16D93938C41134D3B7CED93EB793ED550DBA22E0D089D53E185CF08C66"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/resources/db/migration/V1__patient_identity.sql",
+      "sha256": "5FE0B5C1921BC4584F6AB98F29DC1C3C0EA7AA74515C896F93D3377A2BFFE5F3"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/resources/db/migration/V2__runtime_role.sql",
+      "sha256": "1CDEBB6A76E12264E95E44F879BA1A3E1E8A56772B28A55EA675F68BA44F2AD1"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/resources/db/migration/V3__patient_rls.sql",
+      "sha256": "A72700FF4BE692E361E6ED19169A433912941C3077F348DA0B5CD644A23AEE90"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/resources/db/migration/V4__reception_provisional_patient.sql",
+      "sha256": "61835C64E72062FEA82912BC3FD5EF9B85577FEE8C5DCCB278D6415BD89DEB24"
+    },
+    {
+      "path": "v2/services/patient-service/src/main/resources/db/migration/V5__own_clinic_link_read.sql",
+      "sha256": "D861A53C975C814DA4E18ADE9361DA982D6C392100C3BD44DB054D69FB1E9A77"
+    },
+    {
+      "path": "v2/services/patient-service/src/test/java/com/clinic/v2/patient/EncounterPeerVerifierTest.java",
+      "sha256": "C7A0EF1FF2C30109B2EC9F4FBD119F81E515244D86EAE3AE7AE3CB82DEDDB44E"
+    },
+    {
+      "path": "v2/services/patient-service/src/test/java/com/clinic/v2/patient/PatientPostgresTest.java",
+      "sha256": "7B02D1BF85C0CE7E00D080B61FF8B51C52DEAEAF21C923B7BAD241A97E28FDED"
+    },
+    {
+      "path": "v2/services/patient-service/src/test/java/com/clinic/v2/patient/ReceptionPatientPostgresTest.java",
+      "sha256": "1165FE1CCE2360841C09B70D3B5D296E0B1F4908EE2B6AA4DB8DEB6DDB8C0E7C"
+    },
+    {
+      "path": "v2/services/patient-service/src/test/java/com/clinic/v2/patient/S1Postgres.java",
+      "sha256": "A2730523678E88070860195DF6B4D9217987D0897E6D08E28210C979A4E02823"
+    },
+    {
+      "path": "v2/services/patient-service/src/test/java/com/clinic/v2/patient/security/WorkloadTokenVerifierTest.java",
+      "sha256": "041BA308F0EFA11ACF89D722E00CED7FB4B4F1E3BBB95B780D9539F0C8C0887D"
+    },
+    {
+      "path": "v2/services/search-service/pom.xml",
+      "sha256": "3042CF9C1EB38E11087C7C96F779A069C50B9B1567438AA86528A0098F839075"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/api/ApiErrorHandler.java",
+      "sha256": "5CB51328B3AA68606FE39D71382035F371D30B8C069D29ED43750597A9377053"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/api/ApiProblem.java",
+      "sha256": "31EB7F1ADCB14A2727A0678231AE0C98F88B25F315290A11DD4E0BC3C458C679"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/api/InternalProjectionController.java",
+      "sha256": "CBFA074B560E4BC03E742647951228756E071D118B65FEE34D7CDFE20FF5029E"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/api/PublicSearchController.java",
+      "sha256": "741AECC5F7A2319D97EB5A38F09088862B07360C868CA1580BFF94E122C0FCF1"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/api/SearchDto.java",
+      "sha256": "1EA93268EF2301BA0D0F50F378665F813E82D7852C8DFA26661386A05EE713D7"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/domain/ProjectionReceipt.java",
+      "sha256": "23A6B481B065075507AD899B7798DA68FDA372C0D2B025B0659D8CC99E70347A"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/domain/PublicBranch.java",
+      "sha256": "5F92462FA8DC198A2295F9BF54EF9B587F166F79D93425D0026EC06D2CC24E49"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/domain/PublicClinic.java",
+      "sha256": "DCF4154319252755BC9DF7CE5BAEC7E5AD8F7DEECB62106D8C9F553B98E6FC62"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/domain/PublicDoctor.java",
+      "sha256": "F8A1BB278674F2D81FE6281920BC29B5C78DAEAA58E13FCDDDDBAA903BEFF21B"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/domain/PublicOffering.java",
+      "sha256": "31848913E4270D2F4AC6452CCA5FBCA8D26775F0A414D53061534CC09505B495"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/repo/ProjectionReceiptRepository.java",
+      "sha256": "47F8C1AB7D23A97DA4F673C758C302B0741E939657C2546FE2E9EB33DF68A8B7"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/repo/PublicBranchRepository.java",
+      "sha256": "80373F982AFD87CC47905A09BCB58E9692F9F79E1B9853C46EEB3C2B77BC5E22"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/repo/PublicClinicRepository.java",
+      "sha256": "A58B6837EB8824E2F5B75AE8CB1B9128F837B023F8E556974FE6AE2F9E43C91C"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/repo/PublicDoctorRepository.java",
+      "sha256": "17FD82E25D2554D243B58D4BF05CB9EAA6D0EFE041279A370F5646566634B0B4"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/repo/PublicOfferingRepository.java",
+      "sha256": "0E672513EFDBA662059397A1825D13DC8FF8289CFEDF61123BE0E326F43287E9"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/SearchApplication.java",
+      "sha256": "58E838C71A5B44DBB46D43C30AF1B712C82B066DCAEB090E434B5F5C1609CF81"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/security/SecurityConfiguration.java",
+      "sha256": "71ACB6284363ED91596F2F994A38048A111C3B533E70ACAD37BE526720DFA977"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/security/WorkloadFilter.java",
+      "sha256": "E5EA8AA80697F0CD17E6E39B6407EDD8A24D1D9257BD345BFB09C9C0BDC72745"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/security/WorkloadPrincipal.java",
+      "sha256": "D2529112D47AC78588BA5C55CD02FFEB345FD183921114583C52E6318971543C"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/security/WorkloadTokenVerifier.java",
+      "sha256": "96E59318EACEE3E1E60B7D7645E9A4A400A2CBC11AB5C42361D1E9074E783675"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/service/ProjectionSnapshotService.java",
+      "sha256": "CC61719C9DE7250B120B662B3344F30463B6F03865B8222CE99A79824A7F9F23"
+    },
+    {
+      "path": "v2/services/search-service/src/main/java/com/clinic/v2/search/service/SearchProjectionService.java",
+      "sha256": "487BC6DE1A5ABBE9AF02C095E36EC20A9BF68C0A805B3E3D28C89B1376AE136A"
+    },
+    {
+      "path": "v2/services/search-service/src/main/resources/application.yml",
+      "sha256": "ADF51F303B767B266F88C557801CF4073EC25BDD28826D8A38D0A388D1B6C28C"
+    },
+    {
+      "path": "v2/services/search-service/src/main/resources/db/migration/V1__public_projection.sql",
+      "sha256": "7F6D5E53B7F4579483D666AA2C9D31E3308A54A442A83574B528E90EC94D7B5C"
+    },
+    {
+      "path": "v2/services/search-service/src/main/resources/db/migration/V2__runtime_role.sql",
+      "sha256": "5021CB2056F09F25FC73787F7C9E79EC9334FDE23B86A1CAD13F362C0CDCBA96"
+    },
+    {
+      "path": "v2/services/search-service/src/main/resources/db/migration/V3__projection_inbox.sql",
+      "sha256": "F79C632D24CC25D2A8599D3623BA1D60CE6FB5C0C3F2D27D779C28692940D54C"
+    },
+    {
+      "path": "v2/services/search-service/src/test/java/com/clinic/v2/search/S1Postgres.java",
+      "sha256": "3DEB88F2C2B521C8DBBCD320C831BB22202DFFB212C4AF09E4E7583302EFD519"
+    },
+    {
+      "path": "v2/services/search-service/src/test/java/com/clinic/v2/search/SearchPostgresTest.java",
+      "sha256": "7944F701F2D380D0C97490EC61A63582F8A38CD7E970C17A4AEECE388CA8B354"
+    }
+  ]
+}

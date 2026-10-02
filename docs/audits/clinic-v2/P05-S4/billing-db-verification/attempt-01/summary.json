@@ -1,0 +1,12 @@
+{
+  "task": "P05-S4-onsite-database",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T15:45:28.6905048+00:00",
+  "modules": [],
+  "status": "FAIL",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 5679,
+  "error": "mvn.cmd failed; inspect billing-test.txt",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\00d587f3810f44f39d668e0e84276857",
+  "finishedAt": "2026-10-01T15:45:46.6704749+00:00"
+}

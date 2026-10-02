@@ -1,0 +1,40 @@
+
+> clinic-v2-web-shell@0.1.0 test:browser
+> playwright test
+
+[WebServer] (node:26896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:30096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 9 workers
+
+(node:4636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3596) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19940) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32340) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 3 e2e\financial-notification.spec.ts:3:1 › manager retries only the unchanged notification request after an unknown response and patient sees fixed preview copy (4.5s)
+  ok 2 e2e\followup.spec.ts:2:1 › proposed follow-up starts a new no-deposit booking linked to the prior visit and retries the same hold request (4.7s)
+  ok 6 e2e\operations.spec.ts:3:1 › owner overview shows scoped operational sources, withholds failed aggregates and clears on revoke on desktop/mobile (4.7s)
+  ok 8 e2e\portal.spec.ts:4:1 › patient sees linked unpublished-clinic history and own internal receipts on desktop/mobile, then loses data on revoke (4.6s)
+  ok 4 e2e\billing.spec.ts:4:1 › cashier records partial onsite tender, prints an internal receipt and submits counted shift on desktop/mobile (5.0s)
+  ok 5 e2e\public-booking.spec.ts:4:1 › public booking uses API and remains usable on desktop and mobile (6.0s)
+  ok 1 e2e\doctor.spec.ts:4:1 › assigned doctor waits and returns through reception queue on desktop and mobile (6.2s)
+  ok 9 e2e\reception.spec.ts:5:1 › reception uses an explicit patient selection and supports mobile queue actions (5.9s)
+  ok 7 e2e\medical.spec.ts:4:1 › doctor draft, lab result and doctor review stay separate on desktop and mobile (14.3s)
+
+  9 passed (17.7s)

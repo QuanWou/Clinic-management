@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "http": "actual-Public-register-Patient-profile-no-route-fixtures",
+  "registrationStatus": 200,
+  "profileStatus": 200,
+  "patientId": "b9c64110-1db3-4447-814b-fba9a003df3e",
+  "credentialsPersisted": false
+}

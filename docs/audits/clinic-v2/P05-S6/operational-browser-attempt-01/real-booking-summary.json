@@ -1,0 +1,15 @@
+{
+  "publicationEvidence": "declared-synthetic-isolated-fixture",
+  "confirmReplay": "same-id",
+  "clinicalRelease": "DISABLED",
+  "availability": "actual-Doctor-Catalog-source",
+  "identity": "actual-signup-password-login",
+  "holdReplay": "same-id",
+  "onlinePayment": "DISABLED",
+  "priceVnd": 100000,
+  "status": "PASS",
+  "patientId": "d30239dc-4cae-4e5f-b7fd-624277c6b2d7",
+  "patient": "actual-own-profile-no-SQL-ownership-link",
+  "bookingId": "02a71642-f1f9-470b-9f36-943e6fa9eda5",
+  "deposit": "NONE"
+}

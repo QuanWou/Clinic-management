@@ -1,0 +1,80 @@
+{
+  "browserFixtures": 9,
+  "packages": 11,
+  "port": 58145,
+  "frontendTests": 45,
+  "modules": [
+    {
+      "service": "patient",
+      "tests": 9,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "appointment",
+      "tests": 28,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "clinic",
+      "tests": 26,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "doctor",
+      "tests": 13,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "encounter",
+      "tests": 19,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "identity",
+      "tests": 16,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "notification",
+      "tests": 9,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "audit",
+      "tests": 15,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "catalog",
+      "tests": 8,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "medical",
+      "tests": 7,
+      "package": "PASS",
+      "hashMatches": true
+    },
+    {
+      "service": "billing",
+      "tests": 18,
+      "package": "PASS",
+      "hashMatches": true
+    }
+  ],
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\06b815ed81ee40939985f3d753a76b36",
+  "tests": 168.0,
+  "checkedAt": "2026-10-01T17:53:08.8668111+00:00",
+  "status": "PASS",
+  "postgresListenerPresent": false
+}

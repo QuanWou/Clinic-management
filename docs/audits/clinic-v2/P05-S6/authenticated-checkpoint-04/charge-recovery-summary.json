@@ -1,0 +1,20 @@
+{
+  "fault": "synthetic-lost-ack-own-deliveries",
+  "frozenChargeCount": 3,
+  "frozenPriceVnd": 100000,
+  "status": "PASS",
+  "retry": "actual-manager-API-same-event-and-key",
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM",
+  "changedPayload": 409,
+  "wrongRole": 403,
+  "recoveryCommands": 3,
+  "billCount": 0,
+  "sources": [
+    "Medical",
+    "Encounter",
+    "Billing"
+  ],
+  "recoveryAuditEffects": 3,
+  "clinicalState": "unchanged",
+  "journalCount": 0
+}

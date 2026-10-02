@@ -1,0 +1,41 @@
+{
+  "width": 375,
+  "scrollWidth": 375,
+  "wide": [
+    {
+      "tag": "BUTTON",
+      "cls": "",
+      "right": 475.3125
+    },
+    {
+      "tag": "SPAN",
+      "cls": "",
+      "right": 464.3125
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "",
+      "right": 632.8125
+    },
+    {
+      "tag": "svg",
+      "cls": {},
+      "right": 508.3125
+    },
+    {
+      "tag": "path",
+      "cls": {},
+      "right": 506.0297546386719
+    },
+    {
+      "tag": "circle",
+      "cls": {},
+      "right": 501.5625
+    },
+    {
+      "tag": "SPAN",
+      "cls": "",
+      "right": 621.8125
+    }
+  ]
+}

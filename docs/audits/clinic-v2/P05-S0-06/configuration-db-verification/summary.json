@@ -1,0 +1,31 @@
+{
+  "task": "P05-S0-06-owner-configuration",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T18:37:42.1964301+00:00",
+  "modules": [
+    {
+      "jarSha256": "941E97B4349469D9CF14621F23CA168347880532329186CA55C10F4570EAC365",
+      "errors": 0,
+      "failures": 0,
+      "service": "clinic",
+      "skipped": 0,
+      "tests": 29,
+      "package": "PASS"
+    },
+    {
+      "jarSha256": "A894B2B1697B9F050E17A99E3476BBD57B61549249D14F9860FFD4A1D4EC27B6",
+      "errors": 0,
+      "failures": 0,
+      "service": "identity",
+      "skipped": 0,
+      "tests": 17,
+      "package": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 23615,
+  "receptionFlow": "NOT_RUN_DATABASE_ONLY",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\49c458e7e5a7411f80457ee488f108ab",
+  "finishedAt": "2026-10-01T18:38:28.9631156+00:00"
+}

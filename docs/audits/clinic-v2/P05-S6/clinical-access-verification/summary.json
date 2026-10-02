@@ -1,0 +1,31 @@
+{
+  "task": "P05-S6-clinical-access-denied-audit",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T20:50:52.3690622+00:00",
+  "modules": [
+    {
+      "errors": 0,
+      "service": "encounter",
+      "jarSha256": "9882A958F3A0BB5DEE8BB30CA4D83C111374231908B79266D8C512F8209FCAE0",
+      "skipped": 0,
+      "tests": 26,
+      "failures": 0,
+      "package": "PASS"
+    },
+    {
+      "errors": 0,
+      "service": "audit",
+      "jarSha256": "2085F556D13D33B3102CD0C9CF0028648EB72A7330536B2B817F8D97CB74E58A",
+      "skipped": 0,
+      "tests": 18,
+      "failures": 0,
+      "package": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 2063,
+  "receptionFlow": "NOT_RUN_DATABASE_ONLY",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\c5f3004778de4cc2a0f111f16a2af4ec",
+  "finishedAt": "2026-10-01T20:51:37.3813094+00:00"
+}

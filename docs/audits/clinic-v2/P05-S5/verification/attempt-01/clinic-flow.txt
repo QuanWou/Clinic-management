@@ -1,0 +1,36 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-01T23:38:15.454+07:00  INFO 29532 --- [clinic-v2-service] [           main] com.clinic.v2.ClinicApplication          : Starting ClinicApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 29532 (D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\clinic-service\target\clinic-service-0.1.0-SNAPSHOT.jar started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36)
+2026-10-01T23:38:15.465+07:00  INFO 29532 --- [clinic-v2-service] [           main] com.clinic.v2.ClinicApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-10-01T23:38:20.665+07:00  INFO 29532 --- [clinic-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-01T23:38:20.952+07:00  INFO 29532 --- [clinic-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 232 ms. Found 4 JPA repository interfaces.
+2026-10-01T23:38:25.634+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 12660 (http)
+2026-10-01T23:38:25.673+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-01T23:38:25.678+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-01T23:38:25.849+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-01T23:38:25.864+07:00  INFO 29532 --- [clinic-v2-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 10156 ms
+2026-10-01T23:38:26.697+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.s.boot.web.servlet.RegistrationBean    : Filter securityOnlyRegistration was not registered (disabled)
+2026-10-01T23:38:28.497+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-01T23:38:28.893+07:00  INFO 29532 --- [clinic-v2-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-01T23:38:29.077+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-01T23:38:30.641+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-01T23:38:30.724+07:00  INFO 29532 --- [clinic-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-01T23:38:31.335+07:00  INFO 29532 --- [clinic-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4b7e4d14
+2026-10-01T23:38:31.345+07:00  INFO 29532 --- [clinic-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-01T23:38:34.602+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-01T23:38:34.709+07:00  INFO 29532 --- [clinic-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-01T23:38:35.810+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-01T23:38:42.282+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-01T23:38:44.912+07:00  INFO 29532 --- [clinic-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 12660 (http) with context path '/'
+2026-10-01T23:38:44.953+07:00  INFO 29532 --- [clinic-v2-service] [           main] com.clinic.v2.ClinicApplication          : Started ClinicApplication in 31.243 seconds (process running for 32.666)
+2026-10-01T23:38:45.335+07:00  INFO 29532 --- [clinic-v2-service] [.1-12660-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-01T23:38:45.337+07:00  INFO 29532 --- [clinic-v2-service] [.1-12660-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-01T23:38:45.342+07:00  INFO 29532 --- [clinic-v2-service] [.1-12660-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms

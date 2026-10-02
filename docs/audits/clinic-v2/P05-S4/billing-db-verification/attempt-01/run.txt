@@ -1,0 +1,427 @@
+The files belonging to this database system will be owned by user "dung0".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+creating directory D:/MCP_Plugins_With_ChatGPTWeb/worktrees/0b5f260d-5bb9-4508-9999-088885fef174/6820c6b7-522a-4a2c-9f1b-b05d2184fb36/v2/.sandbox/00d587f3810f44f39d668e0e84276857/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... windows
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Asia/Bangkok
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+Success. You can now start the database server using:
+
+    ^"C^:^\Program^ Files^\PostgreSQL^\17^\bin^\pg^_ctl^" -D ^"D^:^\MCP^_Plugins^_With^_ChatGPTWeb^\worktrees^\0b5f260d^-5bb9^-4508^-9999^-088885fef174^\6820c6b7^-522a^-4a2c^-9f1b^-b05d2184fb36^\v2^\^.sandbox^\00d587f3810f44f39d668e0e84276857^\data^" -l logfile start
+
+waiting for server to start.... done
+server started
+CREATE DATABASE
+CREATE ROLE
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< com.clinic.v2:billing-service >--------------------
+[INFO] Building billing-service 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ billing-service ---
+[INFO] Deleting D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\billing-service\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ billing-service ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ billing-service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 14 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ billing-service ---
+[INFO] skip non existing resourceDirectory D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\billing-service\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ billing-service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 2 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ billing-service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.clinic.v2.billing.BillingPostgresTest
+22:45:37.333 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.clinic.v2.billing.BillingPostgresTest]: BillingPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+22:45:37.423 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.clinic.v2.billing.BillingApplication for test class com.clinic.v2.billing.BillingPostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-01T22:45:38.392+07:00  INFO 33848 --- [billing-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:5679/clinic_v2_s1_billing_sandbox (PostgreSQL 17.6)
+2026-10-01T22:45:38.404+07:00  WARN 33848 --- [billing-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-01T22:45:38.427+07:00  INFO 33848 --- [billing-v2-service] [           main] o.f.core.internal.database.base.Schema   : Creating schema "billing_v2" ...
+2026-10-01T22:45:38.432+07:00  INFO 33848 --- [billing-v2-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "billing_v2"."flyway_schema_history" ...
+2026-10-01T22:45:38.532+07:00  INFO 33848 --- [billing-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "billing_v2": null
+2026-10-01T22:45:38.552+07:00  INFO 33848 --- [billing-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "billing_v2" to version "1 - onsite billing"
+2026-10-01T22:45:38.562+07:00  WARN 33848 --- [billing-v2-service] [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "billing_v2" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-01T22:45:38.619+07:00  INFO 33848 --- [billing-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "billing_v2" to version "2 - billing runtime rls"
+2026-10-01T22:45:38.639+07:00  INFO 33848 --- [billing-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema "billing_v2", now at version v2 (execution time 00:00.066s)
+2026-10-01T22:45:38.677+07:00  INFO 33848 --- [billing-v2-service] [           main] c.clinic.v2.billing.BillingPostgresTest  : Starting BillingPostgresTest using Java 21.0.12.1 with PID 33848 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\billing-service)
+2026-10-01T22:45:38.677+07:00  INFO 33848 --- [billing-v2-service] [           main] c.clinic.v2.billing.BillingPostgresTest  : No active profile set, falling back to 1 default profile: "default"
+2026-10-01T22:45:39.542+07:00  INFO 33848 --- [billing-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-01T22:45:39.567+07:00  INFO 33848 --- [billing-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18 ms. Found 0 JPA repository interfaces.
+WARNING: A Java agent has been loaded dynamically (C:\Users\dung0\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-01T22:45:41.555+07:00  INFO 33848 --- [billing-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-01T22:45:41.641+07:00  INFO 33848 --- [billing-v2-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-01T22:45:41.681+07:00  INFO 33848 --- [billing-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-01T22:45:41.816+07:00  INFO 33848 --- [billing-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-01T22:45:41.852+07:00  INFO 33848 --- [billing-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-01T22:45:41.895+07:00  INFO 33848 --- [billing-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5b634e24
+2026-10-01T22:45:41.903+07:00  INFO 33848 --- [billing-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-01T22:45:42.689+07:00  INFO 33848 --- [billing-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-01T22:45:42.696+07:00  INFO 33848 --- [billing-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-01T22:45:44.042+07:00  INFO 33848 --- [billing-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-01T22:45:45.495+07:00  INFO 33848 --- [billing-v2-service] [           main] c.clinic.v2.billing.BillingPostgresTest  : Started BillingPostgresTest in 7.957 seconds (process running for 8.76)
+[ERROR] Tests run: 9, Failures: 0, Errors: 8, Skipped: 0, Time elapsed: 8.808 s <<< FAILURE! -- in com.clinic.v2.billing.BillingPostgresTest
+[ERROR] com.clinic.v2.billing.BillingPostgresTest.managerCannotApproveOwnShiftOrCollectInSomeoneElsesShift -- Time elapsed: 0.129 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:265)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:152)
+	at com.clinic.v2.billing.service.BillingService.local(BillingService.java:18)
+	at com.clinic.v2.billing.service.BillingService.issue(BillingService.java:29)
+	at com.clinic.v2.billing.BillingPostgresTest.bill(BillingPostgresTest.java:35)
+	at com.clinic.v2.billing.BillingPostgresTest.managerCannotApproveOwnShiftOrCollectInSomeoneElsesShift(BillingPostgresTest.java:67)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: record "new" has no field "journal_id"
+  Where: PL/pgSQL assignment "task_id:=CASE WHEN TG_TABLE_NAME='journals' THEN NEW.id ELSE NEW.journal_id END"
+PL/pgSQL function billing_v2.require_balanced_journal() line 4 at assignment
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:330)
+	at org.postgresql.jdbc.PgConnection.executeTransactionCommand(PgConnection.java:981)
+	at org.postgresql.jdbc.PgConnection.commit(PgConnection.java:1003)
+	at com.zaxxer.hikari.pool.ProxyConnection.commit(ProxyConnection.java:378)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.commit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.commit(AbstractLogicalConnectionImplementor.java:87)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:268)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562)
+	... 10 more
+
+[ERROR] com.clinic.v2.billing.BillingPostgresTest.repeatedExternalTenderCannotFundAnotherBill -- Time elapsed: 0.020 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:265)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:152)
+	at com.clinic.v2.billing.service.BillingService.local(BillingService.java:18)
+	at com.clinic.v2.billing.service.BillingService.issue(BillingService.java:29)
+	at com.clinic.v2.billing.BillingPostgresTest.bill(BillingPostgresTest.java:35)
+	at com.clinic.v2.billing.BillingPostgresTest.repeatedExternalTenderCannotFundAnotherBill(BillingPostgresTest.java:71)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: record "new" has no field "journal_id"
+  Where: PL/pgSQL assignment "task_id:=CASE WHEN TG_TABLE_NAME='journals' THEN NEW.id ELSE NEW.journal_id END"
+PL/pgSQL function billing_v2.require_balanced_journal() line 4 at assignment
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:330)
+	at org.postgresql.jdbc.PgConnection.executeTransactionCommand(PgConnection.java:981)
+	at org.postgresql.jdbc.PgConnection.commit(PgConnection.java:1003)
+	at com.zaxxer.hikari.pool.ProxyConnection.commit(ProxyConnection.java:378)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.commit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.commit(AbstractLogicalConnectionImplementor.java:87)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:268)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562)
+	... 10 more
+
+[ERROR] com.clinic.v2.billing.BillingPostgresTest.paymentRetryWorksAfterShiftSubmissionWithoutDuplicateEffect -- Time elapsed: 0.019 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:265)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:152)
+	at com.clinic.v2.billing.service.BillingService.local(BillingService.java:18)
+	at com.clinic.v2.billing.service.BillingService.issue(BillingService.java:29)
+	at com.clinic.v2.billing.BillingPostgresTest.bill(BillingPostgresTest.java:35)
+	at com.clinic.v2.billing.BillingPostgresTest.paymentRetryWorksAfterShiftSubmissionWithoutDuplicateEffect(BillingPostgresTest.java:59)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: record "new" has no field "journal_id"
+  Where: PL/pgSQL assignment "task_id:=CASE WHEN TG_TABLE_NAME='journals' THEN NEW.id ELSE NEW.journal_id END"
+PL/pgSQL function billing_v2.require_balanced_journal() line 4 at assignment
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:330)
+	at org.postgresql.jdbc.PgConnection.executeTransactionCommand(PgConnection.java:981)
+	at org.postgresql.jdbc.PgConnection.commit(PgConnection.java:1003)
+	at com.zaxxer.hikari.pool.ProxyConnection.commit(ProxyConnection.java:378)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.commit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.commit(AbstractLogicalConnectionImplementor.java:87)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:268)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562)
+	... 10 more
+
+[ERROR] com.clinic.v2.billing.BillingPostgresTest.concurrentIssueCreatesOneFrozenChargeBillAndBalancedJournal -- Time elapsed: 0.048 s <<< ERROR!
+java.util.concurrent.ExecutionException: org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:205)
+	at com.clinic.v2.billing.BillingPostgresTest.concurrentIssueCreatesOneFrozenChargeBillAndBalancedJournal(BillingPostgresTest.java:38)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:265)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:152)
+	at com.clinic.v2.billing.service.BillingService.local(BillingService.java:18)
+	at com.clinic.v2.billing.service.BillingService.issue(BillingService.java:29)
+	at com.clinic.v2.billing.BillingPostgresTest.bill(BillingPostgresTest.java:35)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: ERROR: record "new" has no field "journal_id"
+  Where: PL/pgSQL assignment "task_id:=CASE WHEN TG_TABLE_NAME='journals' THEN NEW.id ELSE NEW.journal_id END"
+PL/pgSQL function billing_v2.require_balanced_journal() line 4 at assignment
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:330)
+	at org.postgresql.jdbc.PgConnection.executeTransactionCommand(PgConnection.java:981)
+	at org.postgresql.jdbc.PgConnection.commit(PgConnection.java:1003)
+	at com.zaxxer.hikari.pool.ProxyConnection.commit(ProxyConnection.java:378)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.commit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.commit(AbstractLogicalConnectionImplementor.java:87)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:268)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562)
+	... 10 more
+
+[ERROR] com.clinic.v2.billing.BillingPostgresTest.partialPaymentApprovedReductionAndReceiptKeepSeparateHistory -- Time elapsed: 0.022 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:265)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:152)
+	at com.clinic.v2.billing.service.BillingService.local(BillingService.java:18)
+	at com.clinic.v2.billing.service.BillingService.issue(BillingService.java:29)
+	at com.clinic.v2.billing.BillingPostgresTest.bill(BillingPostgresTest.java:35)
+	at com.clinic.v2.billing.BillingPostgresTest.partialPaymentApprovedReductionAndReceiptKeepSeparateHistory(BillingPostgresTest.java:50)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: record "new" has no field "journal_id"
+  Where: PL/pgSQL assignment "task_id:=CASE WHEN TG_TABLE_NAME='journals' THEN NEW.id ELSE NEW.journal_id END"
+PL/pgSQL function billing_v2.require_balanced_journal() line 4 at assignment
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:330)
+	at org.postgresql.jdbc.PgConnection.executeTransactionCommand(PgConnection.java:981)
+	at org.postgresql.jdbc.PgConnection.commit(PgConnection.java:1003)
+	at com.zaxxer.hikari.pool.ProxyConnection.commit(ProxyConnection.java:378)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.commit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.commit(AbstractLogicalConnectionImplementor.java:87)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:268)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562)
+	... 10 more
+
+[ERROR] com.clinic.v2.billing.BillingPostgresTest.databaseRejectsUnbalancedOrLateJournalLinesAndPaymentHistoryRewrite -- Time elapsed: 0.026 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:265)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:152)
+	at com.clinic.v2.billing.service.BillingService.local(BillingService.java:18)
+	at com.clinic.v2.billing.service.BillingService.issue(BillingService.java:29)
+	at com.clinic.v2.billing.BillingPostgresTest.bill(BillingPostgresTest.java:35)
+	at com.clinic.v2.billing.BillingPostgresTest.databaseRejectsUnbalancedOrLateJournalLinesAndPaymentHistoryRewrite(BillingPostgresTest.java:79)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: record "new" has no field "journal_id"
+  Where: PL/pgSQL assignment "task_id:=CASE WHEN TG_TABLE_NAME='journals' THEN NEW.id ELSE NEW.journal_id END"
+PL/pgSQL function billing_v2.require_balanced_journal() line 4 at assignment
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:330)
+	at org.postgresql.jdbc.PgConnection.executeTransactionCommand(PgConnection.java:981)
+	at org.postgresql.jdbc.PgConnection.commit(PgConnection.java:1003)
+	at com.zaxxer.hikari.pool.ProxyConnection.commit(ProxyConnection.java:378)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.commit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.commit(AbstractLogicalConnectionImplementor.java:87)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:268)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562)
+	... 10 more
+
+[ERROR] com.clinic.v2.billing.BillingPostgresTest.scopeRevokeAndFailedSourceDoNotIssueOrExposeBills -- Time elapsed: 0.028 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:265)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:152)
+	at com.clinic.v2.billing.service.BillingService.local(BillingService.java:18)
+	at com.clinic.v2.billing.service.BillingService.issue(BillingService.java:29)
+	at com.clinic.v2.billing.BillingPostgresTest.bill(BillingPostgresTest.java:35)
+	at com.clinic.v2.billing.BillingPostgresTest.scopeRevokeAndFailedSourceDoNotIssueOrExposeBills(BillingPostgresTest.java:86)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: record "new" has no field "journal_id"
+  Where: PL/pgSQL assignment "task_id:=CASE WHEN TG_TABLE_NAME='journals' THEN NEW.id ELSE NEW.journal_id END"
+PL/pgSQL function billing_v2.require_balanced_journal() line 4 at assignment
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:330)
+	at org.postgresql.jdbc.PgConnection.executeTransactionCommand(PgConnection.java:981)
+	at org.postgresql.jdbc.PgConnection.commit(PgConnection.java:1003)
+	at com.zaxxer.hikari.pool.ProxyConnection.commit(ProxyConnection.java:378)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.commit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.commit(AbstractLogicalConnectionImplementor.java:87)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:268)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562)
+	... 10 more
+
+[ERROR] com.clinic.v2.billing.BillingPostgresTest.twoCollectorsCannotOverpayOneBill -- Time elapsed: 0.012 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:265)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:152)
+	at com.clinic.v2.billing.service.BillingService.local(BillingService.java:18)
+	at com.clinic.v2.billing.service.BillingService.issue(BillingService.java:29)
+	at com.clinic.v2.billing.BillingPostgresTest.bill(BillingPostgresTest.java:35)
+	at com.clinic.v2.billing.BillingPostgresTest.twoCollectorsCannotOverpayOneBill(BillingPostgresTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: record "new" has no field "journal_id"
+  Where: PL/pgSQL assignment "task_id:=CASE WHEN TG_TABLE_NAME='journals' THEN NEW.id ELSE NEW.journal_id END"
+PL/pgSQL function billing_v2.require_balanced_journal() line 4 at assignment
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:330)
+	at org.postgresql.jdbc.PgConnection.executeTransactionCommand(PgConnection.java:981)
+	at org.postgresql.jdbc.PgConnection.commit(PgConnection.java:1003)
+	at com.zaxxer.hikari.pool.ProxyConnection.commit(ProxyConnection.java:378)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.commit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.commit(AbstractLogicalConnectionImplementor.java:87)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:268)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101)
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562)
+	... 10 more
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   BillingPostgresTest.concurrentIssueCreatesOneFrozenChargeBillAndBalancedJournal:38 � Execution org.springframework.jdbc.BadSqlGrammarException: Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+[ERROR]   BillingPostgresTest.databaseRejectsUnbalancedOrLateJournalLinesAndPaymentHistoryRewrite:79->bill:35 � BadSqlGrammar Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+[ERROR]   BillingPostgresTest.managerCannotApproveOwnShiftOrCollectInSomeoneElsesShift:67->bill:35 � BadSqlGrammar Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+[ERROR]   BillingPostgresTest.partialPaymentApprovedReductionAndReceiptKeepSeparateHistory:50->bill:35 � BadSqlGrammar Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+[ERROR]   BillingPostgresTest.paymentRetryWorksAfterShiftSubmissionWithoutDuplicateEffect:59->bill:35 � BadSqlGrammar Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+[ERROR]   BillingPostgresTest.repeatedExternalTenderCannotFundAnotherBill:71->bill:35 � BadSqlGrammar Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+[ERROR]   BillingPostgresTest.scopeRevokeAndFailedSourceDoNotIssueOrExposeBills:86->bill:35 � BadSqlGrammar Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+[ERROR]   BillingPostgresTest.twoCollectorsCannotOverpayOneBill:45->bill:35 � BadSqlGrammar Hibernate transaction: Unable to commit against JDBC Connection; bad SQL grammar []
+[INFO] 
+[ERROR] Tests run: 9, Failures: 0, Errors: 8, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  13.418 s
+[INFO] Finished at: 2026-10-01T22:45:46+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project billing-service: 
+[ERROR] 
+[ERROR] Please refer to D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\billing-service\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+waiting for server to shut down.... done
+server stopped
+Exception: D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\scripts\verify-s2-local.ps1:39
+Line |
+  39 |   if($LASTEXITCODE -ne 0){throw "$file failed; inspect $log"}
+     |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | mvn.cmd failed; inspect billing-test.txt

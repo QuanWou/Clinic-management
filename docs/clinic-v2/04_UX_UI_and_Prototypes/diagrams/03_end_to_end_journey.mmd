@@ -1,0 +1,11 @@
+flowchart LR
+ A[Find clinic] --> B[Select slot] --> C[Confirm booking]
+ C --> D[Reception check-in]
+ W[Walk-in] --> D
+ D --> Q[Queue] --> E[Doctor encounter]
+ E --> O{Orders?}
+ O -->|Yes| L[Lab result] --> R[Doctor reviews]
+ O -->|No| R
+ R --> S[Prescription / sign]
+ S --> B[Bill & payment]
+ B --> P[Released portal documents]

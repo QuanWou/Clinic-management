@@ -1,0 +1,125 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.clinic.v2:doctor-service >--------------------
+[INFO] Building doctor-service 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ doctor-service ---
+[INFO] Deleting D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\doctor-service\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ doctor-service ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 5 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ doctor-service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 26 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ doctor-service ---
+[INFO] skip non existing resourceDirectory D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\doctor-service\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ doctor-service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 6 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ doctor-service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.clinic.v2.doctor.AbsencePostgresTest
+13:14:22.239 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.clinic.v2.doctor.AbsencePostgresTest]: AbsencePostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+13:14:22.334 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.clinic.v2.doctor.DoctorApplication for test class com.clinic.v2.doctor.AbsencePostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-01T13:14:23.176+07:00  INFO 17884 --- [doctor-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:28604/clinic_v2_s1_doctor_sandbox (PostgreSQL 17.6)
+2026-10-01T13:14:23.185+07:00  WARN 17884 --- [doctor-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-01T13:14:23.230+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.database.base.Schema   : Creating schema "doctor" ...
+2026-10-01T13:14:23.235+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "doctor"."flyway_schema_history" ...
+2026-10-01T13:14:23.307+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "doctor": null
+2026-10-01T13:14:23.323+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "doctor" to version "1 - doctor affiliation schedule"
+2026-10-01T13:14:23.332+07:00  WARN 17884 --- [doctor-v2-service] [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "doctor" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-01T13:14:23.498+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "doctor" to version "2 - doctor tenant rls"
+2026-10-01T13:14:23.511+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "doctor" to version "3 - doctor runtime role"
+2026-10-01T13:14:23.528+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "doctor" to version "4 - search projection outbox"
+2026-10-01T13:14:23.547+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "doctor" to version "5 - doctor absence"
+2026-10-01T13:14:23.561+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 5 migrations to schema "doctor", now at version v5 (execution time 00:00.194s)
+2026-10-01T13:14:23.616+07:00  INFO 17884 --- [doctor-v2-service] [           main] c.clinic.v2.doctor.AbsencePostgresTest   : Starting AbsencePostgresTest using Java 21.0.12.1 with PID 17884 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\doctor-service)
+2026-10-01T13:14:23.617+07:00  INFO 17884 --- [doctor-v2-service] [           main] c.clinic.v2.doctor.AbsencePostgresTest   : No active profile set, falling back to 1 default profile: "default"
+2026-10-01T13:14:24.472+07:00  INFO 17884 --- [doctor-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-01T13:14:24.532+07:00  INFO 17884 --- [doctor-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 54 ms. Found 3 JPA repository interfaces.
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\dung0\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-01T13:14:31.129+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-01T13:14:31.260+07:00  INFO 17884 --- [doctor-v2-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-01T13:14:31.324+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-01T13:14:31.584+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-01T13:14:31.662+07:00  INFO 17884 --- [doctor-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-01T13:14:31.789+07:00  INFO 17884 --- [doctor-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1ce8084a
+2026-10-01T13:14:31.885+07:00  INFO 17884 --- [doctor-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-01T13:14:33.659+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-01T13:14:33.721+07:00  INFO 17884 --- [doctor-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-01T13:14:37.919+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-01T13:14:39.527+07:00  INFO 17884 --- [doctor-v2-service] [           main] c.clinic.v2.doctor.AbsencePostgresTest   : Started AbsencePostgresTest in 17.082 seconds (process running for 17.924)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.09 s -- in com.clinic.v2.doctor.AbsencePostgresTest
+[INFO] Running com.clinic.v2.doctor.EncounterPeerVerifierTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.257 s -- in com.clinic.v2.doctor.EncounterPeerVerifierTest
+[INFO] Running com.clinic.v2.doctor.ProjectionOutboxPostgresTest
+2026-10-01T13:14:40.509+07:00  INFO 17884 --- [doctor-v2-service] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.clinic.v2.doctor.ProjectionOutboxPostgresTest]: ProjectionOutboxPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-01T13:14:40.540+07:00  INFO 17884 --- [doctor-v2-service] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.clinic.v2.doctor.DoctorApplication for test class com.clinic.v2.doctor.ProjectionOutboxPostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-01T13:14:41.032+07:00  INFO 17884 --- [doctor-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:28604/clinic_v2_s1_doctor_sandbox (PostgreSQL 17.6)
+2026-10-01T13:14:41.064+07:00  WARN 17884 --- [doctor-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-01T13:14:41.155+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.045s)
+2026-10-01T13:14:41.219+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "doctor": 5
+2026-10-01T13:14:41.219+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Schema "doctor" is up to date. No migration necessary.
+2026-10-01T13:14:41.285+07:00  INFO 17884 --- [doctor-v2-service] [           main] c.c.v.d.ProjectionOutboxPostgresTest     : Starting ProjectionOutboxPostgresTest using Java 21.0.12.1 with PID 17884 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\doctor-service)
+2026-10-01T13:14:41.332+07:00  INFO 17884 --- [doctor-v2-service] [           main] c.c.v.d.ProjectionOutboxPostgresTest     : No active profile set, falling back to 1 default profile: "default"
+2026-10-01T13:14:42.139+07:00  INFO 17884 --- [doctor-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-01T13:14:42.235+07:00  INFO 17884 --- [doctor-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 100 ms. Found 3 JPA repository interfaces.
+2026-10-01T13:14:42.516+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-01T13:14:42.518+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-01T13:14:42.527+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-01T13:14:42.529+07:00  INFO 17884 --- [doctor-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-10-01T13:14:42.665+07:00  INFO 17884 --- [doctor-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@2bdd6203
+2026-10-01T13:14:42.665+07:00  INFO 17884 --- [doctor-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-10-01T13:14:42.853+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-01T13:14:42.885+07:00  INFO 17884 --- [doctor-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-01T13:14:43.681+07:00  INFO 17884 --- [doctor-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-01T13:14:43.996+07:00  INFO 17884 --- [doctor-v2-service] [           main] c.c.v.d.ProjectionOutboxPostgresTest     : Started ProjectionOutboxPostgresTest in 3.456 seconds (process running for 22.388)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.727 s -- in com.clinic.v2.doctor.ProjectionOutboxPostgresTest
+[INFO] Running com.clinic.v2.doctor.service.DoctorServiceTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.571 s -- in com.clinic.v2.doctor.service.DoctorServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  33.359 s
+[INFO] Finished at: 2026-10-01T13:14:44+07:00
+[INFO] ------------------------------------------------------------------------

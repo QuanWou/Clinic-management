@@ -1,0 +1,14 @@
+{
+  "recipient": "actual-Patient-owner-never-cashier",
+  "recoveryAudit": "one-exact-effect",
+  "status": "PASS",
+  "independentDelivery": "Audit-and-Notification-own-ACK",
+  "preview": "fixed-copy-no-money-care-contact",
+  "changedRecipient": 400,
+  "replay": "same-event-id-one-effect",
+  "onsiteMessages": 3,
+  "wrongEndpointScope": 403,
+  "managerRecovery": "lost-sender-ACK-same-six-messages-money-unchanged",
+  "financialMessages": 6,
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM"
+}

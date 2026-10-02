@@ -1,0 +1,11 @@
+{
+  "result": "canonical-LAB-author-scope-result-replay",
+  "status": "PASS",
+  "draft": "immutable-version-one-same-key-replay",
+  "labDraftDenied": 403,
+  "audit": "seven-exact-identifier-only-events",
+  "signature": "DISABLED",
+  "release": "DISABLED",
+  "order": "private-Catalog-name-and-price-snapshot",
+  "review": "assigned-DOCTOR-unreviewed-blocks-validation"
+}

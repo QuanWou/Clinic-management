@@ -1,0 +1,47 @@
+
+Running 5 tests using 1 worker
+
+  ok 1 operational-e2e\source-reads.real.spec.ts:6:1 › patient reads paid onsite receipts and fulfilled history when clinic is unpublished (1.2s)
+  x  2 operational-e2e\source-reads.real.spec.ts:9:1 › cashier reads actual paid bills and internal receipts without collecting again (1.0m)
+  ok 3 operational-e2e\source-reads.real.spec.ts:12:1 › reception reads its actual receipts and paged queue (1.1s)
+  ok 4 operational-e2e\source-reads.real.spec.ts:15:1 › assigned doctor reads current visit and draft from actual Encounter and Medical (1.0s)
+  ok 5 operational-e2e\source-reads.real.spec.ts:18:1 › owner reads actual Encounter and Billing aggregates for a single clinic (859ms)
+
+
+  1) operational-e2e\source-reads.real.spec.ts:9:1 › cashier reads actual paid bills and internal receipts without collecting again 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 60000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Địa điểm thu phí')
+        - locator resolved to <select>…</select>
+      - attempting select option action
+        2 × waiting for element to be visible and enabled
+          - did not find some options
+        - retrying select option action
+        - waiting 20ms
+        2 × waiting for element to be visible and enabled
+          - did not find some options
+        - retrying select option action
+          - waiting 100ms
+        116 × waiting for element to be visible and enabled
+            - did not find some options
+          - retrying select option action
+            - waiting 500ms
+
+
+       8 | });
+       9 | test('cashier reads actual paid bills and internal receipts without collecting again',async({page})=>{
+    > 10 |  await page.goto(`/workspace?view=billing&clinicId=${config.clinic}`);await page.getByLabel('Email thu ngân').fill(config.accounts.stranger.email);await page.getByLabel('Mật khẩu thu ngân').fill(config.accounts.stranger.password);await page.getByRole('button',{name:'Đăng nhập thu phí',exact:true}).click();await page.getByLabel('Địa điểm thu phí').selectOption(config.branch);await expect(page.getByLabel('Phiếu thu').locator('option')).toHaveCount(3);const bill=await page.getByLabel('Phiếu thu').locator('option').nth(1).getAttribute('value');await page.getByLabel('Phiếu thu').selectOption(bill!);await expect(page.getByRole('heading',{name:'Khoản phải thu'})).toBeVisible();await expect(page.getByRole('button',{name:'Ghi nhận tiền đã nhận',exact:true})).toBeDisabled();await page.locator('[aria-label="Biên nhận đã ghi nhận"]').getByRole('button').first().click();await expect(page.getByRole('heading',{name:'BIÊN NHẬN NỘI BỘ — KHÔNG PHẢI HÓA ĐƠN THUẾ'})).toBeVisible();await capture(page,'cashier-read');
+         |                                                                                                                                                                                                                                                                                                                                                              ^
+      11 | });
+      12 | test('reception reads its actual receipts and paged queue',async({page})=>{
+      13 |  await page.goto(`/workspace?view=reception&clinicId=${config.clinic}`);await page.getByLabel('Email nhân viên').fill(config.accounts.reception.email);await page.getByLabel('Mật khẩu nhân viên').fill(config.accounts.reception.password);await page.getByRole('button',{name:'Đăng nhập tiếp nhận'}).click();await page.getByLabel('Địa điểm tiếp nhận').selectOption(config.branch);await page.getByRole('combobox',{name:'Điểm phục vụ',exact:true}).selectOption(config.pointId);await page.getByRole('button',{name:'Tải lại hàng đợi'}).click();await expect(page.getByRole('heading',{name:'Hàng đợi tại điểm phục vụ',exact:true}).locator('..').getByRole('heading',{name:config.queueCode,exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Tra cứu lượt đã gửi'})).toBeVisible();await capture(page,'reception-read');
+        at D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\apps\web-shell\operational-e2e\source-reads.real.spec.ts:10:350
+
+    Error Context: test-results\source-reads.real-cashier--5b620-ts-without-collecting-again\error-context.md
+
+  1 failed
+    operational-e2e\source-reads.real.spec.ts:9:1 › cashier reads actual paid bills and internal receipts without collecting again 
+  4 passed (1.1m)

@@ -1,0 +1,53 @@
+{
+  "jarHashes": [
+    {
+      "service": "patient",
+      "matches": true
+    },
+    {
+      "service": "appointment",
+      "matches": true
+    },
+    {
+      "service": "clinic",
+      "matches": true
+    },
+    {
+      "service": "doctor",
+      "matches": true
+    },
+    {
+      "service": "encounter",
+      "matches": true
+    },
+    {
+      "service": "identity",
+      "matches": true
+    },
+    {
+      "service": "notification",
+      "matches": true
+    },
+    {
+      "service": "audit",
+      "matches": true
+    },
+    {
+      "service": "catalog",
+      "matches": true
+    },
+    {
+      "service": "medical",
+      "matches": true
+    },
+    {
+      "service": "billing",
+      "matches": true
+    }
+  ],
+  "packages": 11,
+  "postgresListeners": 0,
+  "backendTests": 180.0,
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "sourceAfterCheckpoint": "Platform capabilities endpoint is a subsequent unverified backend change"
+}

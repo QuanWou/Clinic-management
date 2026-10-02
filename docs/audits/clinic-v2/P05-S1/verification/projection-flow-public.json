@@ -1,0 +1,50 @@
+{
+  "clinics": [
+    {
+      "clinicId": "6e490309-0463-4681-9123-d852bd2963d4",
+      "slug": "flow-6e490309-0463-4681-9123-d852bd2963d4",
+      "name": "Synthetic Flow Clinic",
+      "description": null,
+      "locationText": null,
+      "sourceUpdatedAt": "2026-10-01T00:00:09.404371Z",
+      "indexedAt": "2026-10-01T00:01:33.773357Z",
+      "branches": [
+        {
+          "branchId": "0fe38570-5f11-4b3a-84df-898e89a4511c",
+          "name": "Synthetic Flow Branch",
+          "address": "Synthetic address",
+          "openingHours": "08-17"
+        }
+      ]
+    }
+  ],
+  "doctors": [
+    {
+      "doctorId": "42ebce36-9eb9-420e-923a-9a91a91af08a",
+      "clinicId": "6e490309-0463-4681-9123-d852bd2963d4",
+      "branchId": "0fe38570-5f11-4b3a-84df-898e89a4511c",
+      "displayName": "Synthetic Flow Doctor",
+      "specialtyCode": "GEN",
+      "specialtyName": "Synthetic specialty",
+      "professionalTitle": null,
+      "sourceVersion": 5,
+      "indexedAt": "2026-10-01T00:01:34.121707Z"
+    }
+  ],
+  "offerings": [
+    {
+      "offeringId": "de5a2876-9afa-45cd-b9f6-e12922bf4313",
+      "clinicId": "6e490309-0463-4681-9123-d852bd2963d4",
+      "branchId": "0fe38570-5f11-4b3a-84df-898e89a4511c",
+      "code": "FLOW",
+      "name": "Synthetic Flow Offering",
+      "specialtyCode": null,
+      "amountVnd": 100000,
+      "currency": "VND",
+      "priceVersionId": "73f07cbf-21e6-4655-a95b-171ff1eecad2",
+      "effectiveFrom": "2026-10-01T00:00:09.566562Z",
+      "sourceVersion": 14,
+      "indexedAt": "2026-10-01T00:01:34.183281Z"
+    }
+  ]
+}

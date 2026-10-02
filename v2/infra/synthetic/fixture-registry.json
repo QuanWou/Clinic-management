@@ -1,0 +1,60 @@
+{
+  "version": "s0-05-v1",
+  "synthetic": true,
+  "description": "Clinic Management V2 synthetic A/B registry. No real patient, staff, license, contact, payment or medical data.",
+  "clinics": [
+    {"key":"CL-A","id":"10000000-0000-4000-8000-000000000001","name":"SYNTHETIC Clinic A","state":"APPROVED_PUBLIC","synthetic":true},
+    {"key":"CL-B","id":"10000000-0000-4000-8000-000000000002","name":"SYNTHETIC Clinic B","state":"APPROVED_PRIVATE","synthetic":true},
+    {"key":"CL-DRAFT","id":"10000000-0000-4000-8000-000000000003","name":"SYNTHETIC Draft Clinic","state":"DRAFT","synthetic":true},
+    {"key":"CL-SUSP","id":"10000000-0000-4000-8000-000000000004","name":"SYNTHETIC Suspended Clinic","state":"SUSPENDED","synthetic":true}
+  ],
+  "branches": [
+    {"key":"A-B1","id":"11000000-0000-4000-8000-000000000001","clinic":"CL-A","name":"SYNTHETIC A Branch 1","synthetic":true},
+    {"key":"A-B2","id":"11000000-0000-4000-8000-000000000002","clinic":"CL-A","name":"SYNTHETIC A Branch 2","synthetic":true},
+    {"key":"B-B1","id":"11000000-0000-4000-8000-000000000003","clinic":"CL-B","name":"SYNTHETIC B Branch 1","synthetic":true}
+  ],
+  "staff": [
+    {"key":"OWNER-A","id":"12000000-0000-4000-8000-000000000001","memberships":[{"clinic":"CL-A","role":"CLINIC_OWNER","allBranches":true}],"synthetic":true},
+    {"key":"MANAGER-A","id":"12000000-0000-4000-8000-000000000002","memberships":[{"clinic":"CL-A","role":"CLINIC_MANAGER","allBranches":true}],"synthetic":true},
+    {"key":"RECEPTION-A-B1","id":"12000000-0000-4000-8000-000000000003","memberships":[{"clinic":"CL-A","role":"RECEPTIONIST","branches":["A-B1"]}],"synthetic":true},
+    {"key":"CASHIER-A-B2","id":"12000000-0000-4000-8000-000000000004","memberships":[{"clinic":"CL-A","role":"CASHIER","branches":["A-B2"]}],"synthetic":true},
+    {"key":"LAB-A-B1","id":"12000000-0000-4000-8000-000000000005","memberships":[{"clinic":"CL-A","role":"LAB","branches":["A-B1"]}],"synthetic":true},
+    {"key":"CROSS-AB","id":"12000000-0000-4000-8000-000000000006","memberships":[{"clinic":"CL-A","role":"RECEPTIONIST","branches":["A-B1"]},{"clinic":"CL-B","role":"RECEPTIONIST","branches":["B-B1"]}],"synthetic":true},
+    {"key":"REVOKED-A","id":"12000000-0000-4000-8000-000000000007","memberships":[{"clinic":"CL-A","role":"RECEPTIONIST","branches":["A-B1"],"status":"REVOKED"}],"synthetic":true}
+  ],
+  "doctors": [
+    {"key":"DR-A1","userId":"13000000-0000-4000-8000-000000000001","clinic":"CL-A","branches":["A-B1","A-B2"],"specialtyCode":"GEN","synthetic":true},
+    {"key":"DR-B1","userId":"13000000-0000-4000-8000-000000000002","clinic":"CL-B","branches":["B-B1"],"specialtyCode":"GEN","synthetic":true},
+    {"key":"DR-ABSENT","userId":"13000000-0000-4000-8000-000000000003","clinic":"CL-A","branches":["A-B1"],"specialtyCode":"GEN","scenario":"ABSENCE_PENDING","synthetic":true}
+  ],
+  "offerings": [
+    {"key":"CONSULT-GEN","code":"CONSULT_GEN","name":"SYNTHETIC General Consultation","branches":[{"branch":"A-B1","priceVersions":[{"version":"v1","amountVnd":100000},{"version":"v2","amountVnd":120000}]},{"branch":"A-B2","priceVersions":[{"version":"v1","amountVnd":90000}]}],"synthetic":true},
+    {"key":"LAB-X","code":"LAB_X","name":"SYNTHETIC Lab X","branches":[{"branch":"A-B1","priceVersions":[{"version":"v1","amountVnd":80000}]}],"synthetic":true},
+    {"key":"FOLLOW-UP","code":"FOLLOW_UP","name":"SYNTHETIC Follow-up","branches":[{"branch":"A-B1","priceVersions":[{"version":"v1","amountVnd":70000}]}],"synthetic":true}
+  ],
+  "futureFixtures": {
+    "patients": [
+      {"key":"PT-01","state":"PORTAL_LINKED","synthetic":true},
+      {"key":"PT-02","state":"WALK_IN_NO_WEB","synthetic":true},
+      {"key":"PT-03","state":"DUPLICATE_CONTACT_CANDIDATE","synthetic":true},
+      {"key":"PT-04","state":"DEPENDENT","synthetic":true}
+    ],
+    "scenarios": [
+      "TD-01 duplicate contact suggestion without auto-merge",
+      "TD-02 cross-clinic staff context switch",
+      "TD-03 historical price snapshot after price v2",
+      "TD-04 capacity-1 concurrent holds",
+      "TD-05 late payment after hold expiry",
+      "TD-06 source event replay five times",
+      "TD-07 result after midnight awaiting review",
+      "TD-08 signed document addendum",
+      "TD-09 revoked guardian cached portal denial",
+      "TD-10 forged webhook or wrong amount",
+      "TD-11 partial bill 500000 VND with 200000 VND onsite",
+      "TD-12 collector beneficiary split",
+      "TD-13 refund replay and concurrent cashier",
+      "TD-14 signed clinical record with payment pending",
+      "TD-15 notification PHI content rejection"
+    ]
+  }
+}

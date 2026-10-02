@@ -1,0 +1,56 @@
+server:
+  port: ${BILLING_V2_PORT:8103}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: billing-v2-service
+  datasource:
+    url: ${BILLING_V2_DB_URL}
+    username: ${BILLING_V2_DB_USER}
+    password: ${BILLING_V2_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: billing_v2
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: billing_v2
+    schemas: billing_v2
+    locations: classpath:db/migration
+    user: ${BILLING_V2_MIGRATION_DB_USER:${BILLING_V2_DB_USER}}
+    password: ${BILLING_V2_MIGRATION_DB_PASSWORD:${BILLING_V2_DB_PASSWORD}}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+billing:
+  security:
+    service-secret: ${BILLING_V2_SERVICE_SECRET}
+    iam-url: ${BILLING_V2_IAM_URL:http://localhost:8093}
+    iam-service-secret: ${BILLING_V2_IAM_SERVICE_SECRET}
+    clinic-url: ${BILLING_V2_CLINIC_URL:http://localhost:8092}
+    clinic-service-secret: ${BILLING_V2_CLINIC_SERVICE_SECRET}
+
+
+  sources:
+    patient-url: ${BILLING_PATIENT_URL:http://127.0.0.1:8098}
+    encounter-url: ${BILLING_ENCOUNTER_URL:http://127.0.0.1:8101}
+    medical-url: ${BILLING_MEDICAL_URL:http://127.0.0.1:8102}
+    appointment-url: ${BILLING_APPOINTMENT_URL:http://127.0.0.1:8099}
+  notification:
+    enabled: ${BILLING_NOTIFICATION_ENABLED:false}
+    patient-url: ${BILLING_NOTIFICATION_PATIENT_URL:http://127.0.0.1:8098}
+    notification-url: ${BILLING_NOTIFICATION_NOTIFICATION_URL:http://127.0.0.1:8100}
+    delay-ms: ${BILLING_NOTIFICATION_DELAY_MS:1000}
+  charges:
+    enabled: ${BILLING_CHARGES_ENABLED:false}
+    medical-secret: ${BILLING_CHARGES_MEDICAL_SECRET:}
+    encounter-secret: ${BILLING_CHARGES_ENCOUNTER_SECRET:}
+    delay-ms: ${BILLING_CHARGES_DELAY_MS:1000}

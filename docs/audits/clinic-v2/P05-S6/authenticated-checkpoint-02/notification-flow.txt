@@ -1,0 +1,45 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T03:11:56.789+07:00  INFO 33312 --- [           main] c.c.v.n.NotificationApplication          : Starting NotificationApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 33312 (D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\notification-service\target\notification-service-0.1.0-SNAPSHOT.jar started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36)
+2026-10-02T03:11:56.794+07:00  INFO 33312 --- [           main] c.c.v.n.NotificationApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T03:12:01.598+07:00  INFO 33312 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T03:12:01.668+07:00  INFO 33312 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 53 ms. Found 0 JPA repository interfaces.
+2026-10-02T03:12:05.756+07:00  INFO 33312 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 30642 (http)
+2026-10-02T03:12:05.819+07:00  INFO 33312 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-02T03:12:05.829+07:00  INFO 33312 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-02T03:12:06.008+07:00  INFO 33312 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-02T03:12:06.014+07:00  INFO 33312 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 9041 ms
+2026-10-02T03:12:07.271+07:00  INFO 33312 --- [           main] o.s.boot.web.servlet.RegistrationBean    : Filter userReg was not registered (disabled)
+2026-10-02T03:12:07.278+07:00  INFO 33312 --- [           main] o.s.boot.web.servlet.RegistrationBean    : Filter workloadReg was not registered (disabled)
+2026-10-02T03:12:09.995+07:00  INFO 33312 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:30633/clinic_v2_s1_notification_sandbox (PostgreSQL 17.6)
+2026-10-02T03:12:10.015+07:00  WARN 33312 --- [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-02T03:12:10.079+07:00  INFO 33312 --- [           main] o.f.core.internal.database.base.Schema   : Creating schema "notification_v2" ...
+2026-10-02T03:12:10.096+07:00  INFO 33312 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "notification_v2"."flyway_schema_history" ...
+2026-10-02T03:12:10.379+07:00  INFO 33312 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "notification_v2": null
+2026-10-02T03:12:10.449+07:00  INFO 33312 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "notification_v2" to version "1 - notification inbox"
+2026-10-02T03:12:10.467+07:00  WARN 33312 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "notification_v2" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-02T03:12:10.584+07:00  INFO 33312 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "notification_v2" to version "2 - financial notification inbox"
+2026-10-02T03:12:10.654+07:00  INFO 33312 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema "notification_v2", now at version v2 (execution time 00:00.135s)
+2026-10-02T03:12:10.993+07:00  INFO 33312 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T03:12:11.379+07:00  INFO 33312 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-02T03:12:11.935+07:00  INFO 33312 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T03:12:13.129+07:00  INFO 33312 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T03:12:13.223+07:00  INFO 33312 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-02T03:12:13.331+07:00  INFO 33312 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@146db8a6
+2026-10-02T03:12:13.337+07:00  INFO 33312 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-02T03:12:14.904+07:00  INFO 33312 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T03:12:14.924+07:00  INFO 33312 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T03:12:16.678+07:00  INFO 33312 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-02T03:12:19.044+07:00  INFO 33312 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 30642 (http) with context path '/'
+2026-10-02T03:12:19.096+07:00  INFO 33312 --- [           main] c.c.v.n.NotificationApplication          : Started NotificationApplication in 23.794 seconds (process running for 25.904)
+2026-10-02T03:12:30.175+07:00  INFO 33312 --- [.1-30642-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-02T03:12:30.177+07:00  INFO 33312 --- [.1-30642-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-02T03:12:30.179+07:00  INFO 33312 --- [.1-30642-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms

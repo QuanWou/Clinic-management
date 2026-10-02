@@ -1,0 +1,517 @@
+{
+  "kind": "verified-operational-candidate-not-production-release",
+  "capturedAt": "2026-10-01T21:15:22.4136801+00:00",
+  "branch": "local-coder/clinic-management-v2-6820c6b7",
+  "baseCommit": "e6ab0d4f45e0779dff82e555f990ab043614a5c6",
+  "workingTree": "UNCOMMITTED",
+  "scope": "NO_DEPOSIT_UNSIGNED_CARE_ONSITE_COLLECTION_OWN_PORTAL",
+  "disabled": [
+    "CLINICAL_SIGNATURE",
+    "CLINICAL_DOCUMENT_RELEASE",
+    "ONLINE_COLLECTION",
+    "AUTOMATIC_REFUND",
+    "GUARDIAN_ACCESS"
+  ],
+  "decision": "NO_PRODUCTION_RELEASE_APPROVAL",
+  "approvalGates": "A1-A6_NOT_ACCEPTED",
+  "selectedBackendTests": 206,
+  "builds": [
+    {
+      "service": "patient",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "D2032FF717C9B324BF61DA86EB4F259AF35E33B7576A583368FCBAE585DDC644",
+      "selectedTests": 9,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "appointment",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "C92E114C28483250905C14FD802391766D47E863DE57E846FE50880D54DFA820",
+      "selectedTests": 33,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "clinic",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "2B2E8BC8D7A7691D5973416AEF2FB15A223E0941984E29C5D5820DD2109C3535",
+      "selectedTests": 30,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "doctor",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "769BDC51F5828C08937AA2A35D5693038BEC38D73BC8BEEB219BDD1B4E5A21CE",
+      "selectedTests": 15,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "encounter",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "9882A958F3A0BB5DEE8BB30CA4D83C111374231908B79266D8C512F8209FCAE0",
+      "selectedTests": 26,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "identity",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "A4DFB0896A95A513CEEB1B53722026FB39D19BBB3A691C8D68509F80A08FA2B8",
+      "selectedTests": 17,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "notification",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "6F112990923E9A4A0EDBEB58FD1DCDECF659DF4917C60DE319A7832389C251FE",
+      "selectedTests": 11,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "audit",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "2085F556D13D33B3102CD0C9CF0028648EB72A7330536B2B817F8D97CB74E58A",
+      "selectedTests": 18,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "catalog",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "FC377A0D0887874CA684735F4DF60EDCF9953ED73D6B77519321C296E6269308",
+      "selectedTests": 8,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "medical",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "BD60E4FEB03CB2476BE6CA5A30E34D9903A5EF3E617F8548B47385A8571B82F5",
+      "selectedTests": 10,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "billing",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "40980D05EC4CBAA0516E88AB82108BA3AED1DAF39DF96779C3521C7A8202252D",
+      "selectedTests": 24,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    },
+    {
+      "service": "search",
+      "version": "0.1.0-SNAPSHOT",
+      "jarSha256": "2593576F30005C7E8922CD0D0FCE4ABE8E8B671C9DE946E09BC8ACDA897A3E0A",
+      "selectedTests": 5,
+      "testMode": "REUSED_EXACT_JAR_FROM_PRIOR_ZERO_SKIP_TEST_RUN"
+    }
+  ],
+  "legacyIdentity": {
+    "service": "unchanged-legacy-identity",
+    "version": "1.0.0-SNAPSHOT",
+    "jarSha256": "8E46EAB981BAA7058184A88421E21AFE80546038539C6E228200A524DFE1B6C4",
+    "verification": "ACTUAL_SIGNUP_LOGIN_AND_RESTORED_APPLICATION_STARTUP"
+  },
+  "frontend": {
+    "defaultBrowserTests": 14,
+    "metadataSha256": "D14F8A18969A5E0D434EA60F2B4DAC63131B2371382464CAB3CAE93492152809",
+    "vitestTests": 62
+  },
+  "migrations": [
+    {
+      "service": "patient",
+      "sha256": "5FE0B5C1921BC4584F6AB98F29DC1C3C0EA7AA74515C896F93D3377A2BFFE5F3",
+      "file": "V1__patient_identity.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "patient",
+      "sha256": "1CDEBB6A76E12264E95E44F879BA1A3E1E8A56772B28A55EA675F68BA44F2AD1",
+      "file": "V2__runtime_role.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "patient",
+      "sha256": "A72700FF4BE692E361E6ED19169A433912941C3077F348DA0B5CD644A23AEE90",
+      "file": "V3__patient_rls.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "patient",
+      "sha256": "61835C64E72062FEA82912BC3FD5EF9B85577FEE8C5DCCB278D6415BD89DEB24",
+      "file": "V4__reception_provisional_patient.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "patient",
+      "sha256": "D861A53C975C814DA4E18ADE9361DA982D6C392100C3BD44DB054D69FB1E9A77",
+      "file": "V5__own_clinic_link_read.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "A13425F844ABDA8D605896E1DBE9D79E846CD47CF1F5C724FEB44012CDC4DD61",
+      "file": "V1__appointment.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "41C9EEF18FA11F7D94673FBAE6D7A134290A5DB176F12FF405E3D26B8B0D481B",
+      "file": "V10__follow_up_source_link.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "5E4FEC9BEB3237E56062C23F4895CCAF9175E49062F35A6DEF18FC08577568CD",
+      "file": "V11__absence_recovery.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "F9F52E076D131F68090D26B181963E302F416054C2EB0B6832EF7152DAB4F8EB",
+      "file": "V2__tenant_rls.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "70A02152CFA29DCE83D5C695B488601C983E15D0FD888FC2EFCEEB53547C6BEF",
+      "file": "V3__runtime_role.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "D334B6E736085B6502CABBD100CD95C53E3A6BCBE757D12234F359E8BA47ADB1",
+      "file": "V4__booking_scope_constraints.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "E1C0AFB201C3FDBAB24146D14C80CF0EAF23ED30DDB3242FD9A93E5E6A983581",
+      "file": "V5__notification_audit_relay.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "032ECC0B8F41AE7AF8918BBB4D26BDEDD79B18D3C80F5ED271E2439049C05ECC",
+      "file": "V6__encounter_arrival.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "965247037CDB37673103865B86012079D63DFFC37760AE0A4B4984961102DC5A",
+      "file": "V7__reception_exceptions.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "A7EC345C02095BD4E237999EEF2144F74D0C2C59944CDE4B7C8FAE444C852921",
+      "file": "V8__absence_exception_dedup.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "appointment",
+      "sha256": "3C6A70D3FBBEBFF9AD4384E65B0B8BAA8234F0406EE1C068C1112934C441E6B7",
+      "file": "V9__encounter_fulfillment.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "clinic",
+      "sha256": "D7540210EDE98241CDE55D9202E903AED2768040BA5479E51DD6D1A24A4739DA",
+      "file": "V1__clinic_onboarding.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "clinic",
+      "sha256": "76566996FC160D854724FBAA8A2CAE663AD4078477C4B5CEAF5812D76A21157E",
+      "file": "V2__tenant_rls.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "clinic",
+      "sha256": "6B6A8A78944B04985C429FDC32869BE8DFD2465FDC7DDEE99E05A4F236BB80F5",
+      "file": "V3__runtime_least_privilege.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "clinic",
+      "sha256": "AFBAD234851B0BD5E0E136FD0D9F2AD79E0243FC07B120C87879436661686B0C",
+      "file": "V4__search_projection_outbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "doctor",
+      "sha256": "82EF3A115631881172F0EDABACAD7AEFA366F7EB40117015180328AFF8782729",
+      "file": "V1__doctor_affiliation_schedule.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "doctor",
+      "sha256": "FB7E9710F379647936D4B2C2A4CD867AD9FDE504A5402A7E18E152FAFDE96609",
+      "file": "V2__doctor_tenant_rls.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "doctor",
+      "sha256": "1FEA3908EB8A7C8C156692C963430382B03291E8B55511E06F67A8C291FC4B96",
+      "file": "V3__doctor_runtime_role.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "doctor",
+      "sha256": "F86CD50405A32ECE3D95CE6B582A6F089179DE440F27C2427F5B61889496899F",
+      "file": "V4__search_projection_outbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "doctor",
+      "sha256": "2F75F5DE491CA37AC3CAB58EF11D0E074BE68B81A152E2819C70AC06C45BC4F4",
+      "file": "V5__doctor_absence.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "doctor",
+      "sha256": "E8EED48A2665274ED7F2093807F5950CC1731E9F215E6A7CC65A287F3D11494E",
+      "file": "V6__absence_lifecycle_delivery.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "5A3A589C695913F56126EBC3A0BA1CA494B99D8580011CB9D13A170683AFFC1C",
+      "file": "V1__encounter_queue.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "E911CF6794CFCBD0B856235F1F37E275A4C47A62072343B6FCE0C459A288DC8D",
+      "file": "V2__encounter_runtime_rls.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "EB5011B3C907E59DB1D314DEC81B245634DFA875982E59BC5C11E987CC729F55",
+      "file": "V3__encounter_audit_delivery.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "DE90E71BF6B8813AC0740BE360E331268C2D074A54BC33635593447314250295",
+      "file": "V4__arrival_recovery.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "99C1F6FE3DC702AC41B60D114BE294A3DBEDAC04D4962872A320DC50A12BBB3B",
+      "file": "V5__care_command_receipts.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "F471E029C5D0359D3F41D524F9FA89BDA460ECEF1F4A319746BB2BA1E58D0328",
+      "file": "V6__clinical_completion.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "2068A067BA1099BA400572417CE0CE9A5124BACE88C4B4B8BCC095C0640442D7",
+      "file": "V7__appointment_fulfillment_delivery.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "3EF903E7DF36DD216D97E041BF385A57B03574586854858522D0CC54D0A76E60",
+      "file": "V8__billing_charge_delivery.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "encounter",
+      "sha256": "25C5A11386A1647B68D3823F098F7D85E314BE4CDFD282BA2FD0C5E5CFE567EC",
+      "file": "V9__charge_recovery_commands.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "identity",
+      "sha256": "6931658C65EAE47D73934DF5DA848B6A3B576D6F905E0ACF3E1343306BAF9FC4",
+      "file": "V1__membership_tenancy.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "notification",
+      "sha256": "DBA4D3E55D96CA79E1A46D1DC45630857E8681D2A095851A9FDEA38AC40F656C",
+      "file": "V1__notification_inbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "notification",
+      "sha256": "CC792AEE7947F13A3104818A887FF86CC12CD9C1D28FA12986453D1C5268D722",
+      "file": "V2__financial_notification_inbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "audit",
+      "sha256": "E063222797511D52FD5060E5E621F6A7E6990D299D52BE8BD5548CF25BA73396",
+      "file": "V1__audit_and_outbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "audit",
+      "sha256": "0BF8AC7EE8607D917ED4F78C555663DE126822290D37778AA5CD21E0C2D8F8C7",
+      "file": "V2__audit_runtime_role.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "audit",
+      "sha256": "BF8CB82F00BF6AC288130D2E84A5232E79DDDC4641E01148E6F87D480C12282D",
+      "file": "V3__appointment_event_inbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "catalog",
+      "sha256": "2CF60D2706CE481D68769CCB200EB0180A8F4728BE69522470A2098E7AF59EBD",
+      "file": "V1__offering_price_version.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "catalog",
+      "sha256": "6DDA5C7BF31BCA83782D2DB525490AB8EDC712074CF1404DA717211E448C8B3D",
+      "file": "V2__catalog_tenant_rls.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "catalog",
+      "sha256": "D1806D4655893E6A02F0FD7F455D1CC25B6348AA0000B278A23A84D65147745E",
+      "file": "V3__catalog_runtime_role.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "catalog",
+      "sha256": "B4974C3B4BF33468B1598497A9D446127ECA8B7AD985F12C2DD08135554DA3D9",
+      "file": "V4__search_projection_outbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "medical",
+      "sha256": "90E993968D45F9BE4DDDE233010999E0AAF941D27C7DAE0786A3CF59B45E0CF5",
+      "file": "V1__medical_care.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "medical",
+      "sha256": "C2338480104FE110A5C905AFB4EE0528C9CD85E5D437CC849042108FEDEC0A32",
+      "file": "V2__billing_charge_delivery.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "medical",
+      "sha256": "3C3E371DBF0ABAD5A26BE5241A2B76B5D511C5097070B1D76B3B58EC57F0F14C",
+      "file": "V3__charge_recovery_commands.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "billing",
+      "sha256": "6227CD2F6CC1E9C44A77F6BC9D2148E1E37757AFC6BE5F2CBC5A40349AA1410B",
+      "file": "V1__onsite_billing.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "billing",
+      "sha256": "D7952261EE39442B6A51ED38FFC250B32CF3CAE04F2C13975FA9B9DFA6E851D1",
+      "file": "V2__billing_runtime_rls.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "billing",
+      "sha256": "4CA84BEFE1758CED8F2038B553D48B5D022391AAE6067BE5CFD4CCB1F405C1D4",
+      "file": "V3__financial_notification_delivery.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "billing",
+      "sha256": "7D9EA35072DEACF7D363D076EDDB2F29543FC4D7F299DA3772B42C28F43922C0",
+      "file": "V4__source_charge_inbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "billing",
+      "sha256": "4679C39E8EF6CB46A14DB7409AD8332040EE9D3C95E556783CF5A351DAEF07C4",
+      "file": "V5__charge_recovery_commands.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "search",
+      "sha256": "7F6D5E53B7F4579483D666AA2C9D31E3308A54A442A83574B528E90EC94D7B5C",
+      "file": "V1__public_projection.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "search",
+      "sha256": "5021CB2056F09F25FC73787F7C9E79EC9334FDE23B86A1CAD13F362C0CDCBA96",
+      "file": "V2__runtime_role.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    },
+    {
+      "service": "search",
+      "sha256": "F79C632D24CC25D2A8599D3623BA1D60CE6FB5C0C3F2D27D779C28692940D54C",
+      "file": "V3__projection_inbox.sql",
+      "rollback": "FORWARD_REPAIR_REQUIRED_NO_AUTOMATIC_DOWN_MIGRATION"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/summary.json",
+      "sha256": "37E5505DDF7B8C2F3DE6ED48981389B40810B19629B41647AB594F967B3070C4"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/real-auth-summary.json",
+      "sha256": "61AB4007848015BD5DFAA7356198E26C22D6A8F366B16AAC60E662F17FF48C80"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/real-booking-summary.json",
+      "sha256": "EC142F82F6A038E6A6F55BAF770D4B6B604DC2B67D2E7B5F4CDD237EB7196F9C"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/actual-public-registration.json",
+      "sha256": "DDF685C6ACD6C1646A7957C268752CE868A80EA9F1F59AA184D4C30DE24B1C0B"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/actual-public-booking.json",
+      "sha256": "05E7D22FBC102A6114FBFA0EF8EA94F4A72AF53E7ABA179A62473FEC6C5524A3"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/charge-recovery-summary.json",
+      "sha256": "D1F03468830C183B70E868EF77CD5CCF741A553A795219B0A2FDA4629F411F4C"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/absence-lifecycle-summary.json",
+      "sha256": "B429CC709AD9F2485897B73175F82823ED20F927B519985A55B9F793E5DD33FD"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/billing-flow-summary.json",
+      "sha256": "20F2B357787E9C436D6A69C3221CD85D61354D456C3D02E9FA9F80E22B6B762A"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/restore-drill-summary.json",
+      "sha256": "F04B67ABCE5D6050BA4D2D3993CB4847D62A7C7AFD020350455417C66113F4F9"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/reception-operations-summary.json",
+      "sha256": "9D81DB41F70893BAF5DDBBB0FC48981D9C78756EE54F3858564012B2AEF08163"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/clinical-access-summary.json",
+      "sha256": "628818B59EE10973FE7F8B66ADF522D2B404B8F80992D516E84FE74D7AD7D2DC"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/restored-applications-summary.json",
+      "sha256": "B1FCA543F62382573D095FE24F2A1092BFCDA73186CF8B3E42E1D2FFF8B02DA5"
+    },
+    {
+      "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/operational-browser-summary.json",
+      "sha256": "75625B3128CB3F197507E7839C285283896375405BB230E4C05814230A242083"
+    }
+  ],
+  "sourceManifest": {
+    "path": "docs/audits/clinic-v2/P05-S6/authenticated-checkpoint-06/source-manifest.json",
+    "sha256": "5E0B58BE67D386FD7A023B95AD66A44333204458AF91C0C9CABB05B604BACBD3"
+  },
+  "databaseStopped": true,
+  "sandbox": "RETAINED_BY_CONFIGURATION",
+  "productionMigration": "NOT_EXECUTED",
+  "applicationRecovery": "RESTORED_APPLICATIONS_VERIFIED",
+  "applicationRollback": "NOT_EXECUTED",
+  "clinicalFinancePrivacyReview": "PENDING"
+}

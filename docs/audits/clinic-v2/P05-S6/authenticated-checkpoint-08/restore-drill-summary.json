@@ -1,0 +1,131 @@
+{
+  "clinicalDocumentImport": "NOT_EXECUTED",
+  "status": "PASS",
+  "artifactDirectory": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\6640ed0a25464b6a8bac9917292c74c6\\restore-drill",
+  "unscopedBillingRead": 0,
+  "productionMigration": "NOT_EXECUTED",
+  "releaseAcceptance": "NOT_GRANTED",
+  "services": [
+    {
+      "source": "clinic_v2_s1_patient_sandbox",
+      "rls": "PRESERVED",
+      "service": "patient",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "8DD809A19D22B9B451BF68DD52F85127BB6C8CF8ADC0D6F52AEB9936FF9857AC",
+      "tableCount": 12,
+      "restoredDatabase": "clinic_v2_s6_restore_patient"
+    },
+    {
+      "source": "clinic_v2_s1_appointment_sandbox",
+      "rls": "PRESERVED",
+      "service": "appointment",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "5C699A20BB3E3F6FE4558D252A686A9CE6D7916CF319C41949A56D148559AFC9",
+      "tableCount": 20,
+      "restoredDatabase": "clinic_v2_s6_restore_appointment"
+    },
+    {
+      "source": "clinic_v2_s1_clinic_sandbox",
+      "rls": "PRESERVED",
+      "service": "clinic",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "ED27FB8C5B1A07BD26A5BBBFC4039526FC7346A04CEF62C0FE17084A3B09A721",
+      "tableCount": 12,
+      "restoredDatabase": "clinic_v2_s6_restore_clinic"
+    },
+    {
+      "source": "clinic_v2_s1_doctor_sandbox",
+      "rls": "PRESERVED",
+      "service": "doctor",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "B3851ACF82FE706E2BC2767196C1827E14AE4B6ADF973D3AFB2C0DCDC8204513",
+      "tableCount": 16,
+      "restoredDatabase": "clinic_v2_s6_restore_doctor"
+    },
+    {
+      "source": "clinic_v2_s1_encounter_sandbox",
+      "rls": "PRESERVED",
+      "service": "encounter",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "0D0E35A00A26A2755C151B83A30B3AAD177C99259DC9660019455970722B4CC8",
+      "tableCount": 26,
+      "restoredDatabase": "clinic_v2_s6_restore_encounter"
+    },
+    {
+      "source": "clinic_v2_s1_identity_sandbox",
+      "rls": "PRESERVED",
+      "service": "identity",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "B99C5B2888A62E6749B63F790167FFBF007C99BFCB5DC241D74E5F42A4CBB6BF",
+      "tableCount": 12,
+      "restoredDatabase": "clinic_v2_s6_restore_identity"
+    },
+    {
+      "source": "clinic_v2_s1_notification_sandbox",
+      "rls": "PRESERVED",
+      "service": "notification",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "28D34D53EBAC0A0B01B6ED106C8A2BC6661BB2C3D49202D27FBB9942E053B316",
+      "tableCount": 12,
+      "restoredDatabase": "clinic_v2_s6_restore_notification"
+    },
+    {
+      "source": "clinic_v2_s1_audit_sandbox",
+      "rls": "PRESERVED",
+      "service": "audit",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "2FBBADC68303B30D06FC3A9D8BBAD41B01EF24328DB6A411C9C81D93216F9CC1",
+      "tableCount": 10,
+      "restoredDatabase": "clinic_v2_s6_restore_audit"
+    },
+    {
+      "source": "clinic_v2_s1_catalog_sandbox",
+      "rls": "PRESERVED",
+      "service": "catalog",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "9549F4C9706566BC1DFB43C38BBD2119C9AF6F2AB96888F8860C0CAA60146216",
+      "tableCount": 10,
+      "restoredDatabase": "clinic_v2_s6_restore_catalog"
+    },
+    {
+      "source": "clinic_v2_s1_medical_sandbox",
+      "rls": "PRESERVED",
+      "service": "medical",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "9027489AB91B7318B582036801B59F3B49D974814C6C40AACCC5E78C0B04C7EB",
+      "tableCount": 22,
+      "restoredDatabase": "clinic_v2_s6_restore_medical"
+    },
+    {
+      "source": "clinic_v2_s1_billing_sandbox",
+      "rls": "PRESERVED",
+      "service": "billing",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "FC0B7415A9A6E0968F5DD770C5A375845039243E67F208B5E89C50955D09E00E",
+      "tableCount": 30,
+      "restoredDatabase": "clinic_v2_s6_restore_billing"
+    },
+    {
+      "source": "clinic_v2_s1_search_sandbox",
+      "rls": "PRESERVED",
+      "service": "search",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "A8E3D854972DDBC63CD88CF8E0C9CA21D4EBCAB7FE2309006C739B357AC9ACAD",
+      "tableCount": 16,
+      "restoredDatabase": "clinic_v2_s6_restore_search"
+    },
+    {
+      "source": "clinic_v2_s6_auth_sandbox",
+      "rls": "PRESERVED",
+      "service": "legacy-auth",
+      "rowsAndContent": "EXACT_SYNTHETIC_MATCH",
+      "dumpSha256": "7E9232ABE7E63EA9F6A17607013F5FA2276E35DB66638D1736B8070B736D7A89",
+      "tableCount": 12,
+      "restoredDatabase": "clinic_v2_s6_restore_auth"
+    }
+  ],
+  "environment": "fresh-synthetic-loopback-cluster-only",
+  "applicationRollback": "NOT_EXECUTED",
+  "balancedLedger": "PASS",
+  "restoredApplications": "PASS"
+}

@@ -1,0 +1,14 @@
+{
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM",
+  "status": "PASS",
+  "changedPayload": 409,
+  "branchDenied": 403,
+  "clinicalCompletion": "UNCHANGED",
+  "fault": "isolated-source-claim-committed-local-ACK-lost",
+  "wrongRole": 403,
+  "overnight": "same-visit-old-ticket-retained-new-day-ticket",
+  "onlinePayment": "DISABLED",
+  "supervisor": "same-visit-original-staff-receipt-preserved",
+  "recoveryReplay": "one-checkin-one-ticket-one-recovery-audit",
+  "queuePaging": "keyset-no-duplicates"
+}

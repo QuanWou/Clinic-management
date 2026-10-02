@@ -1,0 +1,28 @@
+sequenceDiagram
+  actor Cashier
+  participant BI as Billing
+  participant PSP as Payment Provider
+  participant AP as Appointment
+  participant R as Reconciliation Worker
+  Cashier->>BI: issue bill from unique source charges
+  alt clinic direct
+    Cashier->>BI: POST onsite payment with cashier/shift
+    BI->>BI: append balanced journal + allocation
+    BI-->>Cashier: internal receipt
+  else online (approved merchant mode)
+    BI->>PSP: create intent for configured merchant
+    PSP->>BI: signed webhook (may duplicate)
+    BI->>BI: verify, dedupe, post journal once
+    BI-->>AP: PaymentSucceeded event
+    opt provider timeout or event delayed
+      R->>PSP: reconcile status
+      PSP-->>R: authoritative transaction status
+      R->>BI: idempotent reconcile command
+    end
+  end
+  opt approved refund
+    Cashier->>BI: request with reason, original payment
+    BI->>BI: approval, remaining refundable amount check
+    BI->>PSP: refund if online, or record authorized onsite refund
+    BI->>BI: reversal journal, not destructive edit
+  end

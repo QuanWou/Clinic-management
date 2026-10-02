@@ -1,0 +1,23 @@
+sequenceDiagram
+  actor Receptionist
+  participant PA as Patient
+  participant EN as Encounter
+  participant ME as Medical Record
+  participant BI as Billing
+  actor Doctor
+  actor Lab
+  Receptionist->>PA: search / verify / create provisional patient
+  PA-->>Receptionist: clinic-patient link
+  Receptionist->>EN: POST walk-in visit (no appointment)
+  EN->>EN: create visit, check-in, queue in local transaction
+  EN-->>Receptionist: visitId, queueNumber
+  Doctor->>EN: start assigned visit
+  Doctor->>ME: write note / clinical order
+  ME-->>Lab: assigned order available
+  Lab->>ME: enter result
+  Doctor->>ME: review result, diagnosis, prescription, sign
+  ME->>ME: immutable version + release policy
+  ME-->>BI: billable charge event via outbox
+  Receptionist->>BI: collect onsite / issue receipt
+  BI-->>Receptionist: confirmed collection
+  Note over EN,BI: Clinical completion, bill paid and document release remain independent

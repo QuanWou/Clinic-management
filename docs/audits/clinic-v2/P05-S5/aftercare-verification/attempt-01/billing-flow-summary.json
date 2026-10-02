@@ -1,0 +1,15 @@
+{
+  "audit": "eight-exact-events",
+  "revoke": 403,
+  "status": "PASS",
+  "receipt": "internal-not-tax-invoice",
+  "collections": "partial-cash-POS-bank-onsite-only",
+  "overpayment": 409,
+  "shift": "separate-approver",
+  "charges": "one-walk-in-lab-and-booked-consultation-plus-lab",
+  "shiftVariance": -100,
+  "onlinePayment": "DISABLED",
+  "ledger": "balanced-append-only",
+  "adjustment": "Owner-approved-cashier-denied",
+  "sources": "real-completed-Encounter-immutable-Medical-booking-price"
+}

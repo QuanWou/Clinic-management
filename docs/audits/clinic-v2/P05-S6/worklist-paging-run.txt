@@ -1,0 +1,184 @@
+The files belonging to this database system will be owned by user "dung0".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+creating directory D:/MCP_Plugins_With_ChatGPTWeb/worktrees/0b5f260d-5bb9-4508-9999-088885fef174/6820c6b7-522a-4a2c-9f1b-b05d2184fb36/v2/.sandbox/58971232f6304b1d81ef5c8437a31f5e/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... windows
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Asia/Bangkok
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+Success. You can now start the database server using:
+
+    ^"C^:^\Program^ Files^\PostgreSQL^\17^\bin^\pg^_ctl^" -D ^"D^:^\MCP^_Plugins^_With^_ChatGPTWeb^\worktrees^\0b5f260d^-5bb9^-4508^-9999^-088885fef174^\6820c6b7^-522a^-4a2c^-9f1b^-b05d2184fb36^\v2^\^.sandbox^\58971232f6304b1d81ef5c8437a31f5e^\data^" -l logfile start
+
+waiting for server to start.... done
+server started
+CREATE DATABASE
+CREATE ROLE
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< com.clinic.v2:encounter-service >-------------------
+[INFO] Building encounter-service 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ encounter-service ---
+[INFO] Deleting D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ encounter-service ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 10 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ encounter-service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 27 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ encounter-service ---
+[INFO] skip non existing resourceDirectory D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ encounter-service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 3 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ encounter-service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.clinic.v2.encounter.EncounterPostgresTest
+04:47:22.227 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.clinic.v2.encounter.EncounterPostgresTest]: EncounterPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+04:47:22.327 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.clinic.v2.encounter.EncounterApplication for test class com.clinic.v2.encounter.EncounterPostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T04:47:23.160+07:00  INFO 7596 --- [encounter-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:18352/clinic_v2_s1_encounter_sandbox (PostgreSQL 17.6)
+2026-10-02T04:47:23.168+07:00  WARN 7596 --- [encounter-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-02T04:47:23.177+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.database.base.Schema   : Creating schema "encounter_v2" ...
+2026-10-02T04:47:23.193+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "encounter_v2"."flyway_schema_history" ...
+2026-10-02T04:47:23.277+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "encounter_v2": null
+2026-10-02T04:47:23.293+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "1 - encounter queue"
+2026-10-02T04:47:23.293+07:00  WARN 7596 --- [encounter-v2-service] [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "encounter_v2" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-02T04:47:23.332+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "2 - encounter runtime rls"
+2026-10-02T04:47:23.352+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "3 - encounter audit delivery"
+2026-10-02T04:47:23.360+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "4 - arrival recovery"
+2026-10-02T04:47:23.360+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "5 - care command receipts"
+2026-10-02T04:47:23.377+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "6 - clinical completion"
+2026-10-02T04:47:23.377+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "7 - appointment fulfillment delivery"
+2026-10-02T04:47:23.393+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "8 - billing charge delivery"
+2026-10-02T04:47:23.412+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "9 - charge recovery commands"
+2026-10-02T04:47:23.422+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "10 - doctor worklist paging"
+2026-10-02T04:47:23.427+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 10 migrations to schema "encounter_v2", now at version v10 (execution time 00:00.072s)
+2026-10-02T04:47:23.477+07:00  INFO 7596 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterPostgresTest   : Starting EncounterPostgresTest using Java 21.0.12.1 with PID 7596 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service)
+2026-10-02T04:47:23.477+07:00  INFO 7596 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterPostgresTest   : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T04:47:24.260+07:00  INFO 7596 --- [encounter-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T04:47:24.277+07:00  INFO 7596 --- [encounter-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 0 JPA repository interfaces.
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\dung0\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-02T04:47:26.293+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T04:47:26.414+07:00  INFO 7596 --- [encounter-v2-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-02T04:47:26.460+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T04:47:26.583+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T04:47:26.627+07:00  INFO 7596 --- [encounter-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-02T04:47:26.677+07:00  INFO 7596 --- [encounter-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4803bf73
+2026-10-02T04:47:26.677+07:00  INFO 7596 --- [encounter-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-02T04:47:27.527+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T04:47:27.527+07:00  INFO 7596 --- [encounter-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T04:47:28.862+07:00  INFO 7596 --- [encounter-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-02T04:47:29.975+07:00  INFO 7596 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterPostgresTest   : Started EncounterPostgresTest in 7.526 seconds (process running for 8.369)
+[INFO] Tests run: 27, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.242 s -- in com.clinic.v2.encounter.EncounterPostgresTest
+[INFO] Running com.clinic.v2.encounter.security.BillingPeerVerifierTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.clinic.v2.encounter.security.BillingPeerVerifierTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 28, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  14.831 s
+[INFO] Finished at: 2026-10-02T04:47:31+07:00
+[INFO] ------------------------------------------------------------------------
+        current_database        |                                 version                                 
+--------------------------------+-------------------------------------------------------------------------
+ clinic_v2_s1_encounter_sandbox | PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit
+(1 row)
+
+ version |           description            | success 
+---------+----------------------------------+---------
+         | << Flyway Schema Creation >>     | t
+ 1       | encounter queue                  | t
+ 2       | encounter runtime rls            | t
+ 3       | encounter audit delivery         | t
+ 4       | arrival recovery                 | t
+ 5       | care command receipts            | t
+ 6       | clinical completion              | t
+ 7       | appointment fulfillment delivery | t
+ 8       | billing charge delivery          | t
+ 9       | charge recovery commands         | t
+ 10      | doctor worklist paging           | t
+(11 rows)
+
+       rolname       | rolsuper | rolbypassrls 
+---------------------+----------+--------------
+ s1_encounter_verify | f        | f
+(1 row)
+
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< com.clinic.v2:encounter-service >-------------------
+[INFO] Building encounter-service 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ encounter-service ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 10 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ encounter-service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ encounter-service ---
+[INFO] skip non existing resourceDirectory D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ encounter-service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ encounter-service ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ encounter-service ---
+[INFO] Building jar: D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service\target\encounter-service-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:3.3.5:repackage (repackage) @ encounter-service ---
+[INFO] Replacing main artifact D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service\target\encounter-service-0.1.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service\target\encounter-service-0.1.0-SNAPSHOT.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.473 s
+[INFO] Finished at: 2026-10-02T04:47:35+07:00
+[INFO] ------------------------------------------------------------------------
+waiting for server to shut down.... done
+server stopped

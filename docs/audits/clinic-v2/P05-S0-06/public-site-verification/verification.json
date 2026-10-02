@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-02T03:34:39.665386+00:00",
+  "checks": {
+    "build": "PASS",
+    "vitest": {
+      "files": 19,
+      "tests": 80,
+      "status": "PASS",
+      "workers": 1
+    },
+    "fixtureBrowser": {
+      "scenarios": 22,
+      "status": "PASS",
+      "workers": 2
+    },
+    "liveRuntime": "local-demo-runtime.json"
+  },
+  "scope": "single-clinic-public-introduction-booking-account",
+  "clinicBrand": "Phòng khám An Nhiên",
+  "references": [
+    "https://careplusvn.com/vi/",
+    "https://www.victoriavn.com/en/",
+    "https://www.vietnammedicalpractice.com/?lang=en"
+  ],
+  "clinicalRelease": "DISABLED",
+  "onlinePayment": "DISABLED",
+  "data": "synthetic-loopback-demo",
+  "sourceSha256": {
+    "v2/apps/web-shell/src/App.tsx": "0a1bf9beb13638294953fc388be133555127ab3de5464a31a0271879cd9d9c4a",
+    "v2/apps/web-shell/index.html": "78d29996e7221bad0984bf8045609b066ea7cfced0e95c60ad818f46f8f7f0d6",
+    "v2/apps/web-shell/src/shells/PublicShell.tsx": "1adadf3a35a4c4cca91523efd93029fd428d2974939982cae1bbf11857a8aaa0",
+    "v2/apps/web-shell/src/components/PublicClinicHome.tsx": "3b1bd8435abf3970d397be332ddac16f05e85de5054a6cefa53478a1ca3ad237",
+    "v2/apps/web-shell/src/api/booking.ts": "3f38a7876148ba3c57327405a440ebdc23042951e1b83a7bbbe833b23604c8bf",
+    "v2/apps/web-shell/src/auth/LoginPage.tsx": "f5792886816b921a110fc14faa8d14cbdd2f02c795623b1c0adb4f02aac0e555",
+    "v2/apps/web-shell/src/auth/navigation.ts": "b87196328b6a5c592c623a608a12fea1fd10e49fba1c2944fe4059b2bcaba270",
+    "v2/apps/web-shell/src/styles.css": "4c2b19dde3ec20489462ece71829e8df4ab356323fb46a08118f9203ddc112d4",
+    "v2/apps/web-shell/src/__tests__/public-site.test.ts": "6021984c0612de8d0052cf625723f4e7939c3494a59d396e15fe3b21a4e5a43d",
+    "v2/apps/web-shell/src/__tests__/booking.test.tsx": "3565fca6583d41fd53e4c1d4740c24a657edcd98161fedaebf7c77e2ff9e9379",
+    "v2/apps/web-shell/e2e/public-home.spec.ts": "a063a327c7fb1c34b2cbc8efa264db1bb0e599c017775872a602d6096292e737",
+    "v2/apps/web-shell/e2e/public-booking.spec.ts": "8a838e12fe5410e8dfb64a02d79c964e0dfb9c15bbfabfef46e1888ddbf9891a",
+    "v2/apps/web-shell/e2e/followup.spec.ts": "c098129864edcbdcae328dda26d2b3cbbc33d69dcca6dd26f8dc1823b6a92819",
+    "v2/scripts/start-local-demo.ps1": "b346e53c2567343dac80f0051b68c6a26deb051176debc66c58b70928af4f24b",
+    "v2/scripts/verify-local-demo.mjs": "9aded48acc796e324c92b2052f851a0fb68b11104246dd2156cdf170164d57a1"
+  },
+  "screenshotSha256": {
+    "patient-1366.png": "59dcd4513c8beeb6eb93c3f4fad1e5aa3373d18f6144392c4e0d81872e649f20",
+    "public-home-1024.png": "d931c52e0db57600ca3322e09dce3c2163f2324108e2acbad1030a43c3814bbe",
+    "public-home-1366.png": "12ea6537d30fa408c29e0a4bd7e8189a7552efe4515633eaa2e2ffb68e241ec1",
+    "public-home-375.png": "8d6cc7e17afa8910f29bedee9ed73d52341aa4c79090a1ff1d95045cd322201e",
+    "public-home-hero-1366.png": "e55061aeac343100f9658dda3942c6ba7e90b5370cf8b5adefd60e8691f36067"
+  }
+}

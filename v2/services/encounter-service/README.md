@@ -1,0 +1,11 @@
+# Encounter V2
+
+Reception/check-in/queue service (default 8101), schema `encounter_v2`. Implements a walk-in visit without appointment, recoverable booking arrival, scoped queue and assigned doctor start. Clinical notes/results/sign/release and payment completion are not implemented here.
+
+Use a separate Flyway migrator and runtime login inheriting `clinic_v2_encounter_runtime`, `NOSUPERUSER NOBYPASSRLS`. V1 creates queue and visit constraints; V2 forces clinic+branch RLS and grants; V3 adds audit delivery metadata and relay policy. Do not run business traffic as the migration owner.
+
+Configuration and API contract: [reception contract](../../contracts/s2-reception.md), [runbook](../../apps/web-shell/S2_RUNBOOK.md). Fresh PostgreSQL verification including this service: `pwsh -NoProfile -File v2/scripts/verify-s2-local.ps1 -KeepSandbox` from repo root (PowerShell 7, Java 21, Maven, local PG 17 binaries required). Evidence records test counts, Flyway/runtime-role checks, package hashes and real HTTP reception flow. Ordinary Maven test leaves opt-in PostgreSQL tests disabled; its result alone cannot substantiate database behavior.
+
+V4 stores receipt time/original reason for actor-owned server recovery after browser loss. Outbox audit delivery is enabled explicitly with `ENCOUNTER_RELAY_ENABLED=true`. Monitor pending/DLQ rows and uncertain `ARRIVAL_PENDING` visits; use the server recovery endpoint before issuing a replacement arrival. Source absence batch propagation is manager-driven, ten bookings per request, with explicit retry/remaining state. No nightly job auto-closes care or awaiting-results visits.
+
+V5 adds append-only care-command receipts for keyed assigned start/await-results/resume-queue. Waiting results retires the serving ticket, preserves the encounter across dates and frees the point. Return gets a new current-day ticket, goes through reception call and resumes the same encounter. Clinical completion remains separate and unimplemented. Use PowerShell 7 `pwsh -NoProfile -File v2/scripts/verify-s3-local.ps1` for the new retained-sandbox checkpoint. See [care contract](../../contracts/s3-care.md) and [S3 evidence](../../../docs/audits/clinic-v2/P05-S3/S3_Implementation_Evidence.md).

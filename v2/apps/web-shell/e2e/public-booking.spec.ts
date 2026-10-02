@@ -1,0 +1,70 @@
+import { test, expect } from '@playwright/test';
+import path from 'node:path';
+const evidence=path.resolve('../../../docs/audits/clinic-v2/P05-S1/verification');
+test('public booking uses API and remains usable on desktop and mobile', async ({page})=>{
+ const price={amountVnd:100000,currency:'VND',priceVersionId:'price-a',effectiveFrom:'2026-01-01T00:00:00Z'};
+ const clinic={clinicId:'clinic-a',name:'Synthetic Clinic',branches:[{branchId:'branch-a',name:'Synthetic Branch',address:'Synthetic address',openingHours:'08-17'}]};
+ const requests: {url: string, key?: string}[]=[];
+ const hold={holdId:'hold-a',slotId:'slot-a',clinicId:'clinic-a',branchId:'branch-a',patientId:'patient-a',state:'ACTIVE',expiresAt:new Date(Date.now()+600000).toISOString(),price};
+ let confirmations=0;
+ await page.route('**/s1/**',async route=>{
+  const url=route.request().url();requests.push({url,key:route.request().headers()['idempotency-key']});
+  let json: unknown={};
+  if(url.includes('/public/search'))json={clinics:[clinic],doctors:[],offerings:[]};
+  else if(url.includes('/public/clinics?page='))json={content:[{id:clinic.clinicId,name:clinic.name,publicDescription:'Synthetic description',branches:clinic.branches.map(b=>({...b,id:b.branchId,active:true}))}],totalElements:1};
+  else if(url.endsWith('/public/clinics/clinic-a'))json=clinic;
+  else if(url.includes('/doctors?'))json=[{doctorId:'doctor-a',clinicId:'clinic-a',branchId:'branch-a',displayName:'Synthetic Doctor'}];
+  else if(url.includes('/offerings?'))json=[{offeringId:'offering-a',clinicId:'clinic-a',branchId:'branch-a',name:'Synthetic Offering',amountVnd:100000}];
+  else if(url.includes('/auth/login'))json={data:{accessToken:'synthetic-token'}};
+  else if(url.endsWith('/me/current'))json={userId:'fixture-user',legacyRoles:['ROLE_USER'],platformOperator:false};
+  else if(url.endsWith('/me/contexts'))json=[];
+  else if(url.endsWith('/patient-profile'))json={patientId:'patient-a',fullName:'Synthetic Patient',dateOfBirth:'1990-01-01',sex:'',phone:'',email:'',version:0};
+  else if(url.includes('/availability?'))json=[{slotId:'slot-a',startsAt:'2026-12-01T01:00:00Z',endsAt:'2026-12-01T01:30:00Z',remaining:1,price}];
+  else if(url.endsWith('/appointments/holds'))json=hold;
+  else if(url.includes('/me/appointment-holds?'))json=[{hold,doctorId:'doctor-a',offeringId:'offering-a',startsAt:'2026-12-01T01:00:00Z',endsAt:'2026-12-01T01:30:00Z'}];
+  else if(url.endsWith('/appointments')){
+   if(++confirmations===1){await route.fulfill({status:503,json:{message:'Synthetic uncertain response'}});return;}
+   json={id:'appointment-a',clinicId:'clinic-a',appointmentCode:'AP-SYN',status:'CONFIRMED',startsAt:'2026-12-01T01:00:00Z',endsAt:'2026-12-01T01:30:00Z',price};
+  }
+  else if(url.includes('/me/appointments?'))json=[];
+  await route.fulfill({json});
+ });
+ await page.setViewportSize({width:1440,height:1000});
+ await page.goto('/public');
+ await expect(page.getByRole('heading',{name:'Synthetic Clinic',exact:true})).toBeVisible();await expect(page.getByRole('searchbox')).toHaveCount(0);
+ await page.getByRole('link',{name:'Đặt lịch khám',exact:true}).click();
+ await page.getByRole('button',{name:'Đăng nhập để đặt lịch',exact:true}).click();await page.getByLabel('Email',{exact:true}).fill('synthetic@example.invalid');
+ await page.getByLabel('Mật khẩu',{exact:true}).fill('synthetic-password');
+ await page.getByRole('button',{name:'Đăng nhập',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Lưu hồ sơ'})).toBeVisible();
+ await expect(page.getByRole('combobox',{name:'Địa điểm khám',exact:true})).toHaveCount(0);
+ await page.getByRole('combobox',{name:'Bác sĩ',exact:true}).selectOption('doctor-a');
+ await page.getByRole('combobox',{name:'Dịch vụ',exact:true}).selectOption('offering-a');
+ await page.getByRole('button',{name:'Xem giờ còn trống'}).click();
+ await page.getByRole('button',{name:/100.000/}).click();
+ await expect(page.getByRole('button',{name:'Xác nhận đặt lịch'})).toBeEnabled();
+ await page.evaluate(()=>{if(document.activeElement instanceof HTMLElement)document.activeElement.blur();window.scrollTo(0,0);});
+ await page.screenshot({path:path.join(evidence,'public-booking-desktop.png'),fullPage:true});
+ await page.setViewportSize({width:375,height:812});
+ await expect(page.getByRole('button',{name:'Xác nhận đặt lịch'})).toBeEnabled();
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth);
+ expect(overflow).toBe(false);
+ await page.evaluate(()=>{if(document.activeElement instanceof HTMLElement)document.activeElement.blur();window.scrollTo(0,0);});
+ await page.screenshot({path:path.join(evidence,'public-booking-mobile.png'),fullPage:true});
+ await page.getByRole('button',{name:'Xác nhận đặt lịch'}).click();
+ await expect(page.getByRole('alert')).toBeVisible();
+ await page.reload();
+ await expect(page.getByRole('heading',{name:'Đặt lịch khám',exact:true})).toBeVisible();await expect(page.getByRole('searchbox')).toHaveCount(0);
+ await page.getByRole('button',{name:'Đăng nhập để đặt lịch',exact:true}).click();await page.getByLabel('Email',{exact:true}).fill('synthetic@example.invalid');
+ await page.getByLabel('Mật khẩu',{exact:true}).fill('synthetic-password');
+ await page.getByRole('button',{name:'Đăng nhập',exact:true}).click();
+ await page.getByRole('button',{name:'Tải giờ đang giữ'}).click();
+ await page.getByRole('button',{name:/Tiếp tục .*100.000/}).click();
+ await page.getByRole('button',{name:'Xác nhận đặt lịch'}).click();
+ await expect(page.getByRole('status').filter({hasText:'Đã xác nhận: AP-SYN'})).toBeVisible();
+ expect(requests.some(r=>r.url.includes('/public/search'))).toBe(false);expect(requests.find(r=>r.url.endsWith('/appointments/holds'))?.key).toBeTruthy();
+ expect(requests.find(r=>r.url.endsWith('/appointments'))?.key).toBeTruthy();
+ const keys=requests.filter(r=>r.url.endsWith('/appointments')).map(r=>r.key);
+ expect(keys).toHaveLength(2);expect(keys[0]).toBe(keys[1]);
+});
+

@@ -1,0 +1,40 @@
+server:
+  port: ${IAM_V2_PORT:8093}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: iam-v2-service
+  datasource:
+    url: ${IAM_V2_DB_URL}
+    username: ${IAM_V2_DB_USER}
+    password: ${IAM_V2_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: iam
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: iam
+    schemas: iam
+    locations: classpath:db/migration
+    user: ${IAM_V2_MIGRATION_DB_USER:${IAM_V2_DB_USER}}
+    password: ${IAM_V2_MIGRATION_DB_PASSWORD:${IAM_V2_DB_PASSWORD}}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+iam:
+  security:
+    jwt-secret: ${IAM_V2_USER_JWT_SECRET}
+    identity-url: ${IAM_V2_LEGACY_IDENTITY_URL:http://127.0.0.1:8083}
+    clinic-url: ${IAM_V2_CLINIC_URL:http://127.0.0.1:8092}
+    clinic-service-secret: ${IAM_V2_CLINIC_SERVICE_SECRET:}
+    clinic-directory-secret: ${IAM_V2_CLINIC_DIRECTORY_SECRET:}
+    bootstrap-secret: ${IAM_V2_BOOTSTRAP_SECRET:}

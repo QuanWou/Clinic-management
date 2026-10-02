@@ -1,0 +1,18 @@
+       current_database       |                                 version                                 
+------------------------------+-------------------------------------------------------------------------
+ clinic_v2_s1_patient_sandbox | PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit
+(1 row)
+
+ version |         description          | success 
+---------+------------------------------+---------
+         | << Flyway Schema Creation >> | t
+ 1       | patient identity             | t
+ 2       | runtime role                 | t
+ 3       | patient rls                  | t
+(4 rows)
+
+      rolname      | rolsuper | rolbypassrls 
+-------------------+----------+--------------
+ s1_patient_verify | f        | f
+(1 row)
+

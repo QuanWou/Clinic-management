@@ -1,0 +1,19 @@
+      current_database       |                                 version                                 
+-----------------------------+-------------------------------------------------------------------------
+ clinic_v2_s1_doctor_sandbox | PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit
+(1 row)
+
+ version |         description          | success 
+---------+------------------------------+---------
+         | << Flyway Schema Creation >> | t
+ 1       | doctor affiliation schedule  | t
+ 2       | doctor tenant rls            | t
+ 3       | doctor runtime role          | t
+ 4       | search projection outbox     | t
+(5 rows)
+
+     rolname      | rolsuper | rolbypassrls 
+------------------+----------+--------------
+ s1_doctor_verify | f        | f
+(1 row)
+

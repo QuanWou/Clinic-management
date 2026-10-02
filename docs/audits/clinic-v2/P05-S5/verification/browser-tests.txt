@@ -1,0 +1,34 @@
+
+> clinic-v2-web-shell@0.1.0 test:browser
+> playwright test
+
+[WebServer] (node:37436) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:32516) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 7 workers
+
+(node:26640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21944) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10936) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31908) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\followup.spec.ts:2:1 › proposed follow-up starts a new no-deposit booking linked to the prior visit and retries the same hold request (3.0s)
+  ok 5 e2e\portal.spec.ts:4:1 › patient sees linked unpublished-clinic history and own internal receipts on desktop/mobile, then loses data on revoke (3.1s)
+  ok 2 e2e\billing.spec.ts:4:1 › cashier records partial onsite tender, prints an internal receipt and submits counted shift on desktop/mobile (3.7s)
+  ok 3 e2e\doctor.spec.ts:4:1 › assigned doctor waits and returns through reception queue on desktop and mobile (4.4s)
+  ok 4 e2e\public-booking.spec.ts:4:1 › public booking uses API and remains usable on desktop and mobile (4.3s)
+  ok 6 e2e\reception.spec.ts:5:1 › reception uses an explicit patient selection and supports mobile queue actions (5.0s)
+  ok 7 e2e\medical.spec.ts:4:1 › doctor draft, lab result and doctor review stay separate on desktop and mobile (13.9s)
+
+  7 passed (17.0s)

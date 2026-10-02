@@ -1,0 +1,177 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.clinic.v2:audit-service >---------------------
+[INFO] Building audit-service 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ audit-service ---
+[INFO] Deleting D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\audit-service\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ audit-service ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ audit-service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 29 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ audit-service ---
+[INFO] skip non existing resourceDirectory D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\audit-service\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ audit-service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 7 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ audit-service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.clinic.v2.audit.AppointmentAuditPostgresTest
+00:22:14.601 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.clinic.v2.audit.AppointmentAuditPostgresTest]: AppointmentAuditPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+00:22:14.689 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.clinic.v2.audit.AuditApplication for test class com.clinic.v2.audit.AppointmentAuditPostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T00:22:15.551+07:00  INFO 37628 --- [audit-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:49824/clinic_v2_s1_audit_sandbox (PostgreSQL 17.6)
+2026-10-02T00:22:15.569+07:00  WARN 37628 --- [audit-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-02T00:22:15.601+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.database.base.Schema   : Creating schema "audit_v2" ...
+2026-10-02T00:22:15.603+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "audit_v2"."flyway_schema_history" ...
+2026-10-02T00:22:15.830+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "audit_v2": null
+2026-10-02T00:22:15.843+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "audit_v2" to version "1 - audit and outbox"
+2026-10-02T00:22:15.851+07:00  WARN 37628 --- [audit-v2-service] [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "audit_v2" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-02T00:22:15.881+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "audit_v2" to version "2 - audit runtime role"
+2026-10-02T00:22:15.895+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "audit_v2" to version "3 - appointment event inbox"
+2026-10-02T00:22:15.901+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 3 migrations to schema "audit_v2", now at version v3 (execution time 00:00.039s)
+2026-10-02T00:22:15.946+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.AppointmentAuditPostgresTest     : Starting AppointmentAuditPostgresTest using Java 21.0.12.1 with PID 37628 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\audit-service)
+2026-10-02T00:22:15.946+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.AppointmentAuditPostgresTest     : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T00:22:16.856+07:00  INFO 37628 --- [audit-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T00:22:16.917+07:00  INFO 37628 --- [audit-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 53 ms. Found 3 JPA repository interfaces.
+2026-10-02T00:22:17.686+07:00  INFO 37628 --- [audit-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T00:22:17.749+07:00  INFO 37628 --- [audit-v2-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-02T00:22:17.767+07:00  INFO 37628 --- [audit-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T00:22:17.987+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T00:22:18.001+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-02T00:22:18.151+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6c851821
+2026-10-02T00:22:18.152+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-02T00:22:18.817+07:00  INFO 37628 --- [audit-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T00:22:18.844+07:00  INFO 37628 --- [audit-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T00:22:19.297+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-02T00:22:20.820+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-02T00:22:21.450+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.AppointmentAuditPostgresTest     : Started AppointmentAuditPostgresTest in 6.616 seconds (process running for 7.457)
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\dung0\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.595 s -- in com.clinic.v2.audit.AppointmentAuditPostgresTest
+[INFO] Running com.clinic.v2.audit.BillingAuditHttpPostgresTest
+2026-10-02T00:22:22.069+07:00  INFO 37628 --- [audit-v2-service] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.clinic.v2.audit.BillingAuditHttpPostgresTest]: BillingAuditHttpPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-02T00:22:22.071+07:00  INFO 37628 --- [audit-v2-service] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.clinic.v2.audit.AuditApplication for test class com.clinic.v2.audit.BillingAuditHttpPostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T00:22:22.135+07:00  INFO 37628 --- [audit-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:49824/clinic_v2_s1_audit_sandbox (PostgreSQL 17.6)
+2026-10-02T00:22:22.135+07:00  WARN 37628 --- [audit-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-02T00:22:22.157+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 4 migrations (execution time 00:00.007s)
+2026-10-02T00:22:22.184+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "audit_v2": 3
+2026-10-02T00:22:22.185+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Schema "audit_v2" is up to date. No migration necessary.
+2026-10-02T00:22:22.207+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.BillingAuditHttpPostgresTest     : Starting BillingAuditHttpPostgresTest using Java 21.0.12.1 with PID 37628 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\audit-service)
+2026-10-02T00:22:22.207+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.BillingAuditHttpPostgresTest     : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T00:22:22.376+07:00  INFO 37628 --- [audit-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T00:22:22.389+07:00  INFO 37628 --- [audit-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 9 ms. Found 3 JPA repository interfaces.
+2026-10-02T00:22:22.540+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-10-02T00:22:22.552+07:00  INFO 37628 --- [audit-v2-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-02T00:22:22.553+07:00  INFO 37628 --- [audit-v2-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-02T00:22:22.599+07:00  INFO 37628 --- [audit-v2-service] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-02T00:22:22.600+07:00  INFO 37628 --- [audit-v2-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 384 ms
+2026-10-02T00:22:22.667+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.boot.web.servlet.RegistrationBean    : Filter registration was not registered (disabled)
+2026-10-02T00:22:22.740+07:00  INFO 37628 --- [audit-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T00:22:22.742+07:00  INFO 37628 --- [audit-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T00:22:22.749+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T00:22:22.750+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-10-02T00:22:22.876+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@f32284d
+2026-10-02T00:22:22.876+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-10-02T00:22:22.946+07:00  INFO 37628 --- [audit-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T00:22:22.958+07:00  INFO 37628 --- [audit-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T00:22:23.130+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-02T00:22:23.295+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 46789 (http) with context path '/'
+2026-10-02T00:22:23.299+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.BillingAuditHttpPostgresTest     : Started BillingAuditHttpPostgresTest in 1.221 seconds (process running for 9.298)
+2026-10-02T00:22:23.551+07:00  INFO 37628 --- [audit-v2-service] [o-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-02T00:22:23.551+07:00  INFO 37628 --- [audit-v2-service] [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-02T00:22:23.551+07:00  INFO 37628 --- [audit-v2-service] [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.727 s -- in com.clinic.v2.audit.BillingAuditHttpPostgresTest
+[INFO] Running com.clinic.v2.audit.MedicalAuditHttpPostgresTest
+2026-10-02T00:22:23.795+07:00  INFO 37628 --- [audit-v2-service] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.clinic.v2.audit.MedicalAuditHttpPostgresTest]: MedicalAuditHttpPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-02T00:22:23.797+07:00  INFO 37628 --- [audit-v2-service] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.clinic.v2.audit.AuditApplication for test class com.clinic.v2.audit.MedicalAuditHttpPostgresTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T00:22:23.856+07:00  INFO 37628 --- [audit-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:49824/clinic_v2_s1_audit_sandbox (PostgreSQL 17.6)
+2026-10-02T00:22:23.856+07:00  WARN 37628 --- [audit-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-02T00:22:23.876+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 4 migrations (execution time 00:00.013s)
+2026-10-02T00:22:23.921+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "audit_v2": 3
+2026-10-02T00:22:23.921+07:00  INFO 37628 --- [audit-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Schema "audit_v2" is up to date. No migration necessary.
+2026-10-02T00:22:23.953+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.MedicalAuditHttpPostgresTest     : Starting MedicalAuditHttpPostgresTest using Java 21.0.12.1 with PID 37628 (started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\audit-service)
+2026-10-02T00:22:23.953+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.MedicalAuditHttpPostgresTest     : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T00:22:24.119+07:00  INFO 37628 --- [audit-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T00:22:24.129+07:00  INFO 37628 --- [audit-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 9 ms. Found 3 JPA repository interfaces.
+2026-10-02T00:22:24.202+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-10-02T00:22:24.202+07:00  INFO 37628 --- [audit-v2-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-02T00:22:24.202+07:00  INFO 37628 --- [audit-v2-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-02T00:22:24.232+07:00  INFO 37628 --- [audit-v2-service] [           main] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2026-10-02T00:22:24.232+07:00  INFO 37628 --- [audit-v2-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 277 ms
+2026-10-02T00:22:24.271+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.boot.web.servlet.RegistrationBean    : Filter registration was not registered (disabled)
+2026-10-02T00:22:24.303+07:00  INFO 37628 --- [audit-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T00:22:24.305+07:00  INFO 37628 --- [audit-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T00:22:24.305+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T00:22:24.305+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2026-10-02T00:22:24.334+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection org.postgresql.jdbc.PgConnection@285836c9
+2026-10-02T00:22:24.334+07:00  INFO 37628 --- [audit-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2026-10-02T00:22:24.397+07:00  INFO 37628 --- [audit-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T00:22:24.404+07:00  INFO 37628 --- [audit-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T00:22:24.577+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-02T00:22:24.668+07:00  INFO 37628 --- [audit-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 46807 (http) with context path '/'
+2026-10-02T00:22:24.685+07:00  INFO 37628 --- [audit-v2-service] [           main] c.c.v.a.MedicalAuditHttpPostgresTest     : Started MedicalAuditHttpPostgresTest in 0.885 seconds (process running for 10.684)
+2026-10-02T00:22:24.696+07:00  INFO 37628 --- [audit-v2-service] [o-auto-2-exec-1] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-02T00:22:24.696+07:00  INFO 37628 --- [audit-v2-service] [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-02T00:22:24.696+07:00  INFO 37628 --- [audit-v2-service] [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.978 s -- in com.clinic.v2.audit.MedicalAuditHttpPostgresTest
+[INFO] Running com.clinic.v2.audit.security.WorkloadTokenVerifierTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.clinic.v2.audit.security.WorkloadTokenVerifierTest
+[INFO] Running com.clinic.v2.audit.service.EventEnvelopeValidatorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.clinic.v2.audit.service.EventEnvelopeValidatorTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  15.696 s
+[INFO] Finished at: 2026-10-02T00:22:25+07:00
+[INFO] ------------------------------------------------------------------------

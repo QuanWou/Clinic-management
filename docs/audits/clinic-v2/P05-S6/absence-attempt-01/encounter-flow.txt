@@ -1,0 +1,35 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T03:10:06.004+07:00  INFO 22744 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterApplication    : Starting EncounterApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 22744 (D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service\target\encounter-service-0.1.0-SNAPSHOT.jar started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36)
+2026-10-02T03:10:06.012+07:00  INFO 22744 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T03:10:11.919+07:00  INFO 22744 --- [encounter-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T03:10:12.032+07:00  INFO 22744 --- [encounter-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 0 JPA repository interfaces.
+2026-10-02T03:10:17.694+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 43341 (http)
+2026-10-02T03:10:17.736+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-02T03:10:17.738+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-02T03:10:17.947+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-02T03:10:17.951+07:00  INFO 22744 --- [encounter-v2-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 11732 ms
+2026-10-02T03:10:19.023+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.s.boot.web.servlet.RegistrationBean    : Filter registration was not registered (disabled)
+2026-10-02T03:10:20.540+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T03:10:21.255+07:00  INFO 22744 --- [encounter-v2-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-02T03:10:21.533+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T03:10:22.776+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T03:10:22.866+07:00  INFO 22744 --- [encounter-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-02T03:10:23.307+07:00  INFO 22744 --- [encounter-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@40ddf339
+2026-10-02T03:10:23.314+07:00  INFO 22744 --- [encounter-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-02T03:10:24.483+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T03:10:24.496+07:00  INFO 22744 --- [encounter-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T03:10:27.789+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-02T03:10:31.324+07:00  INFO 22744 --- [encounter-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 43341 (http) with context path '/'
+2026-10-02T03:10:31.385+07:00  INFO 22744 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterApplication    : Started EncounterApplication in 27.288 seconds (process running for 29.068)
+2026-10-02T03:10:37.066+07:00  INFO 22744 --- [encounter-v2-service] [.1-43341-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-02T03:10:37.068+07:00  INFO 22744 --- [encounter-v2-service] [.1-43341-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-02T03:10:37.072+07:00  INFO 22744 --- [encounter-v2-service] [.1-43341-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms

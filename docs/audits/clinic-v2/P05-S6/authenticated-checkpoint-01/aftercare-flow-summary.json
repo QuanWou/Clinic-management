@@ -1,0 +1,14 @@
+{
+  "holdReplay": "same-id",
+  "status": "PASS",
+  "source": "real-owned-Encounter-completed-Medical-immutable-date",
+  "confirmReplay": "same-id",
+  "oldBooking": "FULFILLED-price-100000-unchanged",
+  "clinicalRelease": "DISABLED",
+  "newPriceVnd": 120000,
+  "deposit": "NONE",
+  "newAppointment": "distinct-confirmed-booking-linked-to-prior-visit",
+  "wrongUser": 403,
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM",
+  "unpublishedNewHold": 409
+}

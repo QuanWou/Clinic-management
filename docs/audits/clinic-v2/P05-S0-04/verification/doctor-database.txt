@@ -1,0 +1,27 @@
+       current_database        |                                         version                                          
+-------------------------------+------------------------------------------------------------------------------------------
+ clinic_v2_s004_doctor_sandbox | PostgreSQL 16.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+(1 row)
+
+ version |         description          | success 
+---------+------------------------------+---------
+         | << Flyway Schema Creation >> | t
+ 1       | doctor affiliation schedule  | t
+ 2       | doctor tenant rls            | t
+ 3       | doctor runtime role          | t
+(4 rows)
+
+         rolname          | rolsuper | rolbypassrls | rolcanlogin 
+--------------------------+----------+--------------+-------------
+ s004_doctor_verify       | f        | f            | t
+ clinic_v2_doctor_runtime | f        | f            | f
+(2 rows)
+
+        relname        | relrowsecurity | relforcerowsecurity 
+-----------------------+----------------+---------------------
+ doctor_affiliations   | t              | t
+ flyway_schema_history | f              | f
+ practitioners         | f              | f
+ working_schedules     | t              | t
+(4 rows)
+

@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "exception": "late-replay-manual-contact-mode",
+  "revokeDenied": 403,
+  "recovery": "own-server-receipt-after-browser-loss",
+  "audit": "six-exact-events-real-consumer",
+  "clinicDirectory": "branch-scoped",
+  "v2Identity": "real-runtime-service",
+  "absence": "source-interval-replay-bulk-impact-keeps-booking",
+  "walkIn": "no-appointment-one-check-in-ticket",
+  "legacyIdentity": "synthetic-current-user-token-fixture",
+  "patient": "provisional-replay-and-suggestions",
+  "branchDenied": 403,
+  "bookingArrival": "seeded-confirmed-booking-replay",
+  "doctor": "assigned-worklist-start"
+}

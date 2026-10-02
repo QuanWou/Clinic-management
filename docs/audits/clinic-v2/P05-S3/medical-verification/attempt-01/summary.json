@@ -1,0 +1,94 @@
+{
+  "task": "P05-S3-02-03",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T14:30:43.9739147+00:00",
+  "modules": [
+    {
+      "service": "patient",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "8B6FF14727651D4C7D6E8D12575859B489E5083C574100C61EF85E66D4602E09"
+    },
+    {
+      "service": "appointment",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "E49083D081E3F8569AAD3314A01DED4B3562D3CCC37B9D28FFB22D6A53710CD1"
+    },
+    {
+      "service": "clinic",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "4DCA0F8B8F11DC2CBABD2E90D4274B05DAC0EE576B07BCBF1E2C1E8B37528198"
+    },
+    {
+      "service": "doctor",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "29107CE203F6CB86C57C66D5F8299C212023F8FF51CD5F81BC8B1B08169E30E3"
+    },
+    {
+      "service": "encounter",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "66F096BD120A2A6E86E21BC0BB94E82B7EED2D8213BA3F23C70905E84648356E"
+    },
+    {
+      "service": "identity",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "4D5339E910C4D0FB38D4E813A4998E2294B46BB5B2DE222B62A60D6B62668091"
+    },
+    {
+      "service": "notification",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "DA3C11DA3E4FC38E3E3BFD74B455F4E592775C4F2F4D42013D6BD3456D6A7747"
+    },
+    {
+      "service": "audit",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "4DA2CC24AB52C4DE1495A3D6FCB63C277FD14FBA5107C696E45F4CDE85233BD9"
+    },
+    {
+      "service": "catalog",
+      "skipped": 0,
+      "package": "PASS",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "jarSha256": "3DE595A894F86AEA7ED4BAABDD4595679090D3C71157047B87CD888D3862BA63"
+    }
+  ],
+  "status": "FAIL",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 46847,
+  "error": "mvn.cmd failed; inspect medical-test.txt",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\91b992b328994bb5a64e38892d515d48",
+  "finishedAt": "2026-10-01T14:35:19.3392431+00:00"
+}

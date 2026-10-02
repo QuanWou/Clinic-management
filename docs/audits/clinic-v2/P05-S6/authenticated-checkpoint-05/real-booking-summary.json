@@ -1,0 +1,15 @@
+{
+  "bookingId": "25886a4e-4e9a-4af3-bb3b-4e914481b489",
+  "clinicalRelease": "DISABLED",
+  "publicationEvidence": "declared-synthetic-isolated-fixture",
+  "deposit": "NONE",
+  "priceVnd": 100000,
+  "patientId": "9c30d970-ed8b-40bf-aff7-1a65dfcf1cd7",
+  "onlinePayment": "DISABLED",
+  "status": "PASS",
+  "holdReplay": "same-id",
+  "patient": "actual-own-profile-no-SQL-ownership-link",
+  "confirmReplay": "same-id",
+  "availability": "actual-Doctor-Catalog-source",
+  "identity": "actual-signup-password-login"
+}

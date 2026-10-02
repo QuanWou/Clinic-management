@@ -1,0 +1,40 @@
+{
+  "task": "P05-S4-charge-recovery-db",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T19:22:32.5006475+00:00",
+  "modules": [
+    {
+      "jarSha256": "BEEEB98E0D160A28B6690B70C86EF87D8A16ABFC123E292658EC5C36432421C3",
+      "service": "encounter",
+      "failures": 0,
+      "tests": 21,
+      "errors": 0,
+      "package": "PASS",
+      "skipped": 0
+    },
+    {
+      "jarSha256": "B57E9BF52AF10D2237B1F97EA2063C36A61593056E4E02932B22AC4792993A8E",
+      "service": "medical",
+      "failures": 0,
+      "tests": 9,
+      "errors": 0,
+      "package": "PASS",
+      "skipped": 0
+    },
+    {
+      "jarSha256": "715BAA60489AD3B2F10077A8E83E33EFEF45B685FF21B87413881A91A040F59F",
+      "service": "billing",
+      "failures": 0,
+      "tests": 24,
+      "errors": 0,
+      "package": "PASS",
+      "skipped": 0
+    }
+  ],
+  "status": "FAIL",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 6169,
+  "error": "mvn.cmd failed; inspect audit-test.txt",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\5856df9333b5447584ce079521be3f4d",
+  "finishedAt": "2026-10-01T19:24:03.2455047+00:00"
+}

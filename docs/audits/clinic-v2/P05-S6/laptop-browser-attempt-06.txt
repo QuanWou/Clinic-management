@@ -1,0 +1,38 @@
+[WebServer] (node:35560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:20708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:18716) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\laptop.spec.ts:7:25 › laptop 1280: keyboard, worklist, draft and exact retry remain usable (1.2s)
+  ok 2 e2e\laptop.spec.ts:7:25 › laptop 1366: keyboard, worklist, draft and exact retry remain usable (1.1s)
+  x  3 e2e\laptop.spec.ts:7:25 › laptop 1440: keyboard, worklist, draft and exact retry remain usable (793ms)
+(node:19608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 4 e2e\laptop.spec.ts:67:1 › short laptop sidebar and denied view remain reachable at 200% viewport equivalent (678ms)
+
+
+  1) e2e\laptop.spec.ts:7:25 › laptop 1440: keyboard, worklist, draft and exact retry remain usable 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 900
+    Received:    959.40625
+
+      51 |  // Explicit tab focus scrolls the control clear of the sticky topbar.
+      52 |  await reason.focus();await page.keyboard.press('Tab');await expect(page.getByRole('textbox',{name:'Tiền sử',exact:true})).toBeFocused();
+    > 53 |  const focus=await page.locator(':focus').boundingBox(),header=await page.locator('.workspace-topbar').boundingBox();expect(focus!.y).toBeGreaterThanOrEqual(header!.y+header!.height);expect(focus!.y+focus!.height).toBeLessThanOrEqual(size.height);
+         |                                                                                                                                                                                                                       ^
+      54 |  await expect(queue).toBeInViewport();
+      55 |  await page.getByRole('button',{name:'Lưu bản nháp',exact:true}).click();await expect(page.getByRole('button',{name:'Thử lại hồ sơ đang chờ'})).toBeVisible();
+      56 |  await expect(page.getByRole('button',{name:'Thu phí & ca thu',exact:true})).toBeDisabled();
+        at D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\apps\web-shell\e2e\laptop.spec.ts:53:215
+
+    Error Context: test-results\laptop-laptop-1440-keyboar-e42cc-d-exact-retry-remain-usable\error-context.md
+
+  1 failed
+    e2e\laptop.spec.ts:7:25 › laptop 1440: keyboard, worklist, draft and exact retry remain usable ─
+  3 passed (6.8s)

@@ -1,0 +1,10 @@
+
+Running 5 tests using 1 worker
+
+  ok 1 operational-e2e\source-reads.real.spec.ts:19:1 › patient reads paid onsite receipts and fulfilled history when clinic is unpublished (1.3s)
+  ok 2 operational-e2e\source-reads.real.spec.ts:22:1 › cashier reads actual paid bills and internal receipts without collecting again (1.1s)
+  ok 3 operational-e2e\source-reads.real.spec.ts:25:1 › reception reads its actual receipts and paged queue (1.1s)
+  ok 4 operational-e2e\source-reads.real.spec.ts:28:1 › assigned doctor reads current visit and draft from actual Encounter and Medical (1.3s)
+  ok 5 operational-e2e\source-reads.real.spec.ts:31:1 › owner reads actual Encounter and Billing aggregates for a single clinic (927ms)
+
+  5 passed (7.9s)

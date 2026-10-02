@@ -1,0 +1,25 @@
+         current_database         |                                 version                                 
+----------------------------------+-------------------------------------------------------------------------
+ clinic_v2_s1_appointment_sandbox | PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit
+(1 row)
+
+ version |         description          | success 
+---------+------------------------------+---------
+         | << Flyway Schema Creation >> | t
+ 1       | appointment                  | t
+ 2       | tenant rls                   | t
+ 3       | runtime role                 | t
+ 4       | booking scope constraints    | t
+ 5       | notification audit relay     | t
+ 6       | encounter arrival            | t
+ 7       | reception exceptions         | t
+ 8       | absence exception dedup      | t
+ 9       | encounter fulfillment        | t
+ 10      | follow up source link        | t
+(11 rows)
+
+        rolname        | rolsuper | rolbypassrls 
+-----------------------+----------+--------------
+ s1_appointment_verify | f        | f
+(1 row)
+

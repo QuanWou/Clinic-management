@@ -1,0 +1,48 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T03:38:11.422+07:00  INFO 4500 --- [           main] c.clinic.v2.patient.PatientApplication   : Starting PatientApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 4500 (D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\patient-service\target\patient-service-0.1.0-SNAPSHOT.jar started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36)
+2026-10-02T03:38:11.434+07:00  INFO 4500 --- [           main] c.clinic.v2.patient.PatientApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T03:38:17.381+07:00  INFO 4500 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T03:38:17.719+07:00  INFO 4500 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 275 ms. Found 3 JPA repository interfaces.
+2026-10-02T03:38:23.391+07:00  INFO 4500 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 25313 (http)
+2026-10-02T03:38:23.642+07:00  INFO 4500 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-02T03:38:23.752+07:00  INFO 4500 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-02T03:38:23.993+07:00  INFO 4500 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-02T03:38:23.997+07:00  INFO 4500 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 12427 ms
+2026-10-02T03:38:25.321+07:00  INFO 4500 --- [           main] o.s.boot.web.servlet.RegistrationBean    : Filter userReg was not registered (disabled)
+2026-10-02T03:38:25.322+07:00  INFO 4500 --- [           main] o.s.boot.web.servlet.RegistrationBean    : Filter workloadReg was not registered (disabled)
+2026-10-02T03:38:27.615+07:00  INFO 4500 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:25308/clinic_v2_s1_patient_sandbox (PostgreSQL 17.6)
+2026-10-02T03:38:27.666+07:00  WARN 4500 --- [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-02T03:38:27.760+07:00  INFO 4500 --- [           main] o.f.core.internal.database.base.Schema   : Creating schema "patient_v2" ...
+2026-10-02T03:38:27.776+07:00  INFO 4500 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "patient_v2"."flyway_schema_history" ...
+2026-10-02T03:38:27.999+07:00  INFO 4500 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "patient_v2": null
+2026-10-02T03:38:28.016+07:00  INFO 4500 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "1 - patient identity"
+2026-10-02T03:38:28.031+07:00  WARN 4500 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "patient_v2" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-02T03:38:28.085+07:00  INFO 4500 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "2 - runtime role"
+2026-10-02T03:38:28.119+07:00  INFO 4500 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "3 - patient rls"
+2026-10-02T03:38:28.160+07:00  INFO 4500 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "4 - reception provisional patient"
+2026-10-02T03:38:28.200+07:00  INFO 4500 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "patient_v2" to version "5 - own clinic link read"
+2026-10-02T03:38:28.219+07:00  INFO 4500 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 5 migrations to schema "patient_v2", now at version v5 (execution time 00:00.117s)
+2026-10-02T03:38:28.650+07:00  INFO 4500 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T03:38:28.980+07:00  INFO 4500 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-02T03:38:29.107+07:00  INFO 4500 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T03:38:30.129+07:00  INFO 4500 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T03:38:30.190+07:00  INFO 4500 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-02T03:38:30.266+07:00  INFO 4500 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@8dbf0f2
+2026-10-02T03:38:30.269+07:00  INFO 4500 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-02T03:38:34.696+07:00  INFO 4500 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T03:38:34.818+07:00  INFO 4500 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T03:38:39.092+07:00  INFO 4500 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-02T03:38:40.368+07:00  INFO 4500 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 25313 (http) with context path '/'
+2026-10-02T03:38:40.417+07:00  INFO 4500 --- [           main] c.clinic.v2.patient.PatientApplication   : Started PatientApplication in 30.768 seconds (process running for 32.444)
+2026-10-02T03:38:42.821+07:00  INFO 4500 --- [.1-25313-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-02T03:38:42.821+07:00  INFO 4500 --- [.1-25313-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-02T03:38:42.822+07:00  INFO 4500 --- [.1-25313-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms

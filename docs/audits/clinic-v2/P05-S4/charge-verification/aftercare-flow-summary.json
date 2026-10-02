@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "clinicalRelease": "DISABLED",
+  "wrongUser": 403,
+  "holdReplay": "same-id",
+  "newPriceVnd": 120000,
+  "deposit": "NONE",
+  "newAppointment": "distinct-confirmed-booking-linked-to-prior-visit",
+  "confirmReplay": "same-id",
+  "unpublishedNewHold": 409,
+  "oldBooking": "FULFILLED-price-100000-unchanged",
+  "source": "real-owned-Encounter-completed-Medical-immutable-date",
+  "identity": "synthetic-legacy-token-source-and-reviewed-fixtures"
+}

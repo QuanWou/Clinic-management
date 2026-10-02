@@ -1,0 +1,13 @@
+{
+  "onlineCollection": "DISABLED",
+  "money": "two-source-bills-paid-onsite-internal-receipts",
+  "otherBranch": "empty",
+  "identity": "synthetic-legacy-token-source",
+  "status": "PASS",
+  "history": "linked-unpublished-Clinic-visible",
+  "clinicalRelease": "DISABLED",
+  "ownership": "real-Patient-link-different-platform-user-UUID",
+  "privateReferences": "omitted",
+  "otherUser": 404,
+  "linkRevoke": 404
+}

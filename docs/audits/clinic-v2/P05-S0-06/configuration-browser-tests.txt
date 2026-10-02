@@ -1,0 +1,44 @@
+
+> clinic-v2-web-shell@0.1.0 test:browser
+> playwright test
+
+[WebServer] (node:28084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7968) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 11 tests using 10 workers
+
+(node:6084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19668) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35320) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13956) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 e2e\billing.spec.ts:4:1 › cashier records partial onsite tender, prints an internal receipt and submits counted shift on desktop/mobile (5.0s)
+  ok  9 e2e\platform-review.spec.ts:3:1 › platform reads actual review-shaped source data and requires independent evidence confirmation on mobile (4.5s)
+  ok  7 e2e\followup.spec.ts:2:1 › proposed follow-up starts a new no-deposit booking linked to the prior visit and retries the same hold request (5.4s)
+  ok 10 e2e\portal.spec.ts:4:1 › patient sees linked unpublished-clinic history and own internal receipts on desktop/mobile, then loses data on revoke (5.5s)
+  ok  5 e2e\financial-notification.spec.ts:3:1 › manager retries only the unchanged notification request after an unknown response and patient sees fixed preview copy (6.5s)
+  ok  3 e2e\configuration.spec.ts:3:1 › owner edits source price with immutable history and recovers a lost response across reload on desktop/mobile (6.9s)
+  ok  8 e2e\operations.spec.ts:3:1 › owner overview shows scoped operational sources, withholds failed aggregates and clears on revoke on desktop/mobile (6.8s)
+  ok  2 e2e\public-booking.spec.ts:4:1 › public booking uses API and remains usable on desktop and mobile (7.2s)
+  ok  4 e2e\doctor.spec.ts:4:1 › assigned doctor waits and returns through reception queue on desktop and mobile (7.0s)
+  ok 11 e2e\reception.spec.ts:5:1 › reception uses an explicit patient selection and supports mobile queue actions (3.5s)
+  ok  6 e2e\medical.spec.ts:4:1 › doctor draft, lab result and doctor review stay separate on desktop and mobile (16.4s)
+
+  11 passed (20.2s)

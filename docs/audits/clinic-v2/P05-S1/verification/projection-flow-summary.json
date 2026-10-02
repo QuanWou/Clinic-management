@@ -1,0 +1,12 @@
+{
+  "suspension": "PASS",
+  "producerServices": [
+    "clinic",
+    "doctor",
+    "catalog"
+  ],
+  "timeBoundPrice": "PASS",
+  "syntheticOnly": true,
+  "transport": "real HTTP",
+  "status": "PASS"
+}

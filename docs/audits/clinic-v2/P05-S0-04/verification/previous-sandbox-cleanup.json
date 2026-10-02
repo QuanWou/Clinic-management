@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "container": "clinic-v2-s004-doctor-6820",
+  "databases": [
+    "clinic_v2_s004_catalog_sandbox",
+    "clinic_v2_s004_doctor_sandbox",
+    "postgres"
+  ],
+  "activeClients": 0,
+  "anonymousVolumeRemoved": true,
+  "remainingS004Containers": 0,
+  "finishedAt": "2026-09-30T16:13:56.5793498+00:00"
+}

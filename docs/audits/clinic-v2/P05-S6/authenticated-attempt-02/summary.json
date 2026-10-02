@@ -1,0 +1,49 @@
+{
+  "task": "P05-S6-authenticated-operational-journey",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T19:19:23.1901260+00:00",
+  "modules": [
+    {
+      "skipped": 0,
+      "errors": 0,
+      "tests": 9,
+      "package": "PASS",
+      "service": "patient",
+      "failures": 0,
+      "jarSha256": "5ABA23F96218AECB47AEAE0B750AB7DCC37C7C2CD6010EB6AE04FBEE41362C9E"
+    },
+    {
+      "skipped": 0,
+      "errors": 0,
+      "tests": 29,
+      "package": "PASS",
+      "service": "appointment",
+      "failures": 0,
+      "jarSha256": "A61B5F8359D6583B696C05291AEFF75F8A0C225D10B2598818E7D1636DF03CBE"
+    },
+    {
+      "skipped": 0,
+      "errors": 0,
+      "tests": 30,
+      "package": "PASS",
+      "service": "clinic",
+      "failures": 0,
+      "jarSha256": "BFAB914C4B3F2042F980786A93852CBCB9CC2426D925AF0F0C3EFB44B7D0C172"
+    },
+    {
+      "skipped": 0,
+      "errors": 0,
+      "tests": 13,
+      "package": "PASS",
+      "service": "doctor",
+      "failures": 0,
+      "jarSha256": "46CDF74132B4F40783150C37DB12454C73A232397880CB0F1140B024F851A653"
+    }
+  ],
+  "status": "FAIL",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 44261,
+  "error": "mvn.cmd failed; inspect encounter-test.txt",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\6684d42acf604b479250724652bf1ccf",
+  "finishedAt": "2026-10-01T19:21:18.4459981+00:00"
+}

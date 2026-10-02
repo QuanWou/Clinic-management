@@ -1,0 +1,11 @@
+{
+  "order": "private-Catalog-name-and-price-snapshot",
+  "signature": "DISABLED",
+  "release": "DISABLED",
+  "draft": "immutable-version-one-same-key-replay",
+  "review": "assigned-DOCTOR-unreviewed-blocks-validation",
+  "audit": "seven-exact-identifier-only-events",
+  "result": "canonical-LAB-author-scope-result-replay",
+  "labDraftDenied": 403,
+  "status": "PASS"
+}

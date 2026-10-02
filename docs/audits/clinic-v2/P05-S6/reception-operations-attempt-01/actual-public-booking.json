@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "http": "real-services-no-route-fixtures",
+  "hold": {
+    "holdId": "fcf16123-7b5c-4430-a075-05d3558a6e4e",
+    "slotId": "e93d39af-f6e4-40d2-86ef-0983f8464123",
+    "clinicId": "0bae16b7-b7d2-4f1e-8b35-c6e675714417",
+    "branchId": "e04c72fd-8c47-403d-bee1-3a49f1c71ce3",
+    "patientId": "ce743078-2e3c-4ded-a870-9c8d8fb2a7b2",
+    "state": "ACTIVE",
+    "expiresAt": "2026-10-01T20:38:45.745754700Z",
+    "price": {
+      "priceVersionId": "129f3deb-abac-4aa4-ac75-55ab5c5f45f2",
+      "amountVnd": 100000,
+      "currency": "VND",
+      "effectiveFrom": "2026-10-01T19:28:31.933305Z",
+      "taxPolicyCode": null,
+      "discountPolicyCode": null
+    }
+  },
+  "booking": {
+    "id": "66993398-9ae4-4f42-9e50-0cee182d69f5",
+    "appointmentCode": "AP-20261002-67A24FB4",
+    "clinicId": "0bae16b7-b7d2-4f1e-8b35-c6e675714417",
+    "branchId": "e04c72fd-8c47-403d-bee1-3a49f1c71ce3",
+    "patientId": "ce743078-2e3c-4ded-a870-9c8d8fb2a7b2",
+    "clinicPatientLinkId": "7124d87e-5764-4ee3-8dad-157134a69857",
+    "offeringId": "410745b4-c1b5-47aa-a81c-9b14cbc1a8dc",
+    "doctorId": "35e2e117-8424-4db2-ab9d-102b96474865",
+    "slotId": "e93d39af-f6e4-40d2-86ef-0983f8464123",
+    "status": "CONFIRMED",
+    "startsAt": "2026-10-01T20:30:00Z",
+    "endsAt": "2026-10-01T21:00:00Z",
+    "price": {
+      "priceVersionId": "129f3deb-abac-4aa4-ac75-55ab5c5f45f2",
+      "amountVnd": 100000,
+      "currency": "VND",
+      "effectiveFrom": "2026-10-01T19:28:31.933305Z",
+      "taxPolicyCode": null,
+      "discountPolicyCode": null
+    },
+    "version": 0,
+    "priorEncounterId": null,
+    "priorBranchId": null
+  },
+  "holdKey": "0f718656-d5c6-49f4-9a27-8f9038c9d486",
+  "confirmKey": "4eee7f53-41c9-4b34-bf5c-477643d9b5fc"
+}

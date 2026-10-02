@@ -1,0 +1,22 @@
+{
+  "relayWrites": "DISABLED",
+  "environment": "isolated-restored-synthetic-clone",
+  "applicationRollback": "NOT_EXECUTED",
+  "applications": [
+    "legacy",
+    "identity",
+    "clinic",
+    "patient",
+    "billing"
+  ],
+  "status": "PASS",
+  "paidBills": 2,
+  "schema": "VALIDATE_ONLY_NO_MIGRATIONS",
+  "receipts": "READ_FROM_RESTORED_BILLING",
+  "actualPasswordLogin": 2,
+  "patientIdentity": "SAME_PLATFORM_USER_LINK",
+  "productionTraffic": "UNCHANGED",
+  "patientLinkRevoke": 404,
+  "staffRevoke": 403,
+  "ownerAuthority": "RESTORED_CANONICAL_IAM"
+}

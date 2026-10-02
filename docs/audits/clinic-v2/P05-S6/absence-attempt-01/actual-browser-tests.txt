@@ -1,0 +1,28 @@
+
+Running 2 tests using 1 worker
+
+  x  1 real-e2e\public-booking.real.spec.ts:5:1 › new patient registers through the real Public form and owns a new Patient profile (816ms)
+  ok 2 real-e2e\public-booking.real.spec.ts:10:1 › actual registered patient logs in and books through real Search and source APIs without deposit (2.3s)
+
+
+  1) real-e2e\public-booking.real.spec.ts:5:1 › new patient registers through the real Public form and owns a new Patient profile 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 201
+    Received: 200
+
+       5 | test('new patient registers through the real Public form and owns a new Patient profile',async({page})=>{
+       6 |  const email='synthetic-public-'+crypto.randomUUID()+'@example.invalid',password=crypto.randomUUID();await page.goto('/public');await page.getByRole('button',{name:'Tạo tài khoản mới',exact:true}).click();await page.getByLabel('Email',{exact:true}).fill(email);await page.getByLabel('Mật khẩu',{exact:true}).fill(password);await page.getByLabel('Họ tên',{exact:true}).fill('Synthetic Public Registration');
+    >  7 |  const registration=page.waitForResponse(response=>response.url().endsWith('/api/auth/register')&&response.request().method()==='POST');await page.getByRole('button',{name:'Tạo tài khoản',exact:true}).click();expect((await registration).status()).toBe(201);await expect(page.getByRole('button',{name:'Lưu hồ sơ'})).toBeVisible();await page.getByLabel('Ngày sinh',{exact:true}).fill('1990-01-01');await page.getByLabel('Số điện thoại',{exact:true}).fill('0009988776');const profileResponse=page.waitForResponse(response=>response.url().endsWith('/api/v2/me/patient-profile')&&response.request().method()==='PUT');await page.getByRole('button',{name:'Lưu hồ sơ'}).click();const response=await profileResponse;expect(response.status()).toBe(200);const profile=await response.json();expect(profile.patientId).toBeTruthy();expect(profile.fullName).toBe('Synthetic Public Registration');const storage=await page.evaluate(()=>JSON.stringify([localStorage,sessionStorage]));expect(storage).not.toContain(password);expect(storage).not.toContain(email);expect(storage).not.toContain('accessToken');
+         |                                                                                                                                                                                                                                                        ^
+       8 |  fs.writeFileSync(path.join(config.evidence,'actual-public-registration.json'),JSON.stringify({status:'PASS',http:'actual-Public-register-Patient-profile-no-route-fixtures',registrationStatus:201,profileStatus:200,patientId:profile.patientId,credentialsPersisted:false},null,2));
+       9 | });
+      10 | test('actual registered patient logs in and books through real Search and source APIs without deposit',async({page})=>{
+        at D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\apps\web-shell\real-e2e\public-booking.real.spec.ts:7:248
+
+    Error Context: test-results\public-booking.real-new-pa-339cf--owns-a-new-Patient-profile\error-context.md
+
+  1 failed
+    real-e2e\public-booking.real.spec.ts:5:1 › new patient registers through the real Public form and owns a new Patient profile 
+  1 passed (6.4s)

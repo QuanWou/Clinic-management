@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "http": "actual-source-APIs-no-route-interception",
+  "action": "READ_EXISTING_OPERATIONAL_SOURCE",
+  "mobileWidth": 375,
+  "credentialStorage": false
+}

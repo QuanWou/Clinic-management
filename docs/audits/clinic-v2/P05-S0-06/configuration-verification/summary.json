@@ -1,0 +1,112 @@
+{
+  "task": "P05-S0-06-operational-owner-configuration",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T18:43:57.0040111+00:00",
+  "modules": [
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "patient",
+      "failures": 0,
+      "tests": 9,
+      "package": "PASS",
+      "jarSha256": "08A8875695CBD86C601C5B5FD0B88ADABE3CCE985404A6E267636BB0E03F3442"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "appointment",
+      "failures": 0,
+      "tests": 29,
+      "package": "PASS",
+      "jarSha256": "C2ADACCD71175E5729D77833DF3DCAB547802332E99092583488F5152412092A"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "clinic",
+      "failures": 0,
+      "tests": 29,
+      "package": "PASS",
+      "jarSha256": "864B6D0B53428CA2D9FF0CCD3F894A88952544A666573549409E7D627FE195CE"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "doctor",
+      "failures": 0,
+      "tests": 13,
+      "package": "PASS",
+      "jarSha256": "BB0DB4C527DA8A9212BC6CAB300CBE337C1F42352F74B833A43E8951FD41CC30"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "encounter",
+      "failures": 0,
+      "tests": 20,
+      "package": "PASS",
+      "jarSha256": "BF5D89828344D52D9EEDA5FC9F61E3130639E41E4DB6D584A5690CD09354EE64"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "identity",
+      "failures": 0,
+      "tests": 17,
+      "package": "PASS",
+      "jarSha256": "E0B1805A0E62CB0554C002410C242699CE3BC822D80AE538A27C9A9AF5F5FE67"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "notification",
+      "failures": 0,
+      "tests": 9,
+      "package": "PASS",
+      "jarSha256": "BF5478AB52F191DC687A1D48D1A47898322A0383BC32E71C56F14974D3F46041"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "audit",
+      "failures": 0,
+      "tests": 15,
+      "package": "PASS",
+      "jarSha256": "323BCE31450179C866D54C9F7CF610F506C2F8E23E65DCE1EA95D2B3EE98AC8E"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "catalog",
+      "failures": 0,
+      "tests": 8,
+      "package": "PASS",
+      "jarSha256": "B042D7A73F4AE22225D6E76ACB4B14399FCFD131F6E45678DC6FFA84BDE93076"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "medical",
+      "failures": 0,
+      "tests": 8,
+      "package": "PASS",
+      "jarSha256": "55C173FE996CC7E018A1E13A59555273D34AE70C95B2AE4873DC18F36740979F"
+    },
+    {
+      "errors": 0,
+      "skipped": 0,
+      "service": "billing",
+      "failures": 0,
+      "tests": 23,
+      "package": "PASS",
+      "jarSha256": "7AD5A215823C45404F57B40025E5D7E1A9AB498A251F6C4831DEBF98D0401346"
+    }
+  ],
+  "status": "PASS",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 43394,
+  "receptionFlow": "PASS",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\0f23564611a0494eab73cc26c30b6088",
+  "finishedAt": "2026-10-01T18:48:56.7360310+00:00"
+}

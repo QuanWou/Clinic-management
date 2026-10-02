@@ -1,0 +1,14 @@
+ALTER TABLE patient_v2.patient_identities ALTER COLUMN date_of_birth DROP NOT NULL;
+ALTER TABLE patient_v2.patient_identities ADD COLUMN origin_clinic_id uuid;
+CREATE POLICY reception_patient_read ON patient_v2.patient_identities FOR SELECT USING(current_setting('app.patient_mode',true)='reception' AND (origin_clinic_id=patient_v2.current_clinic_id() OR EXISTS(SELECT 1 FROM patient_v2.clinic_patient_links l WHERE l.patient_id=patient_identities.id AND l.clinic_id=patient_v2.current_clinic_id() AND l.status<>'REVOKED')));
+CREATE POLICY reception_patient_insert ON patient_v2.patient_identities FOR INSERT WITH CHECK(current_setting('app.patient_mode',true)='reception' AND origin_clinic_id=patient_v2.current_clinic_id());
+CREATE POLICY reception_link_read ON patient_v2.clinic_patient_links FOR SELECT USING(current_setting('app.patient_mode',true)='reception' AND clinic_id=patient_v2.current_clinic_id());
+CREATE POLICY reception_link_insert ON patient_v2.clinic_patient_links FOR INSERT WITH CHECK(current_setting('app.patient_mode',true)='reception' AND clinic_id=patient_v2.current_clinic_id() AND status='PROVISIONAL' AND EXISTS(SELECT 1 FROM patient_v2.patient_identities p WHERE p.id=patient_id AND p.origin_clinic_id=clinic_id));
+CREATE POLICY reception_link_review ON patient_v2.clinic_patient_links FOR UPDATE USING(current_setting('app.patient_mode',true)='reception' AND clinic_id=patient_v2.current_clinic_id()) WITH CHECK(current_setting('app.patient_mode',true)='reception' AND clinic_id=patient_v2.current_clinic_id());
+CREATE TABLE patient_v2.reception_receipts(clinic_id uuid NOT NULL,branch_id uuid NOT NULL,actor_user_id uuid NOT NULL,key varchar(120) NOT NULL,payload_hash varchar(64) NOT NULL,patient_id uuid NOT NULL REFERENCES patient_v2.patient_identities(id),PRIMARY KEY(clinic_id,branch_id,actor_user_id,key));
+CREATE TABLE patient_v2.patient_reviews(id uuid PRIMARY KEY,clinic_id uuid NOT NULL,patient_id uuid NOT NULL,actor_user_id uuid NOT NULL,identity_evidence_ref varchar(180) NOT NULL,reason varchar(500) NOT NULL,created_at timestamptz NOT NULL DEFAULT now());
+ALTER TABLE patient_v2.reception_receipts ENABLE ROW LEVEL SECURITY;ALTER TABLE patient_v2.reception_receipts FORCE ROW LEVEL SECURITY;
+ALTER TABLE patient_v2.patient_reviews ENABLE ROW LEVEL SECURITY;ALTER TABLE patient_v2.patient_reviews FORCE ROW LEVEL SECURITY;
+CREATE POLICY reception_receipt_scope ON patient_v2.reception_receipts USING(current_setting('app.patient_mode',true)='reception' AND clinic_id=patient_v2.current_clinic_id() AND branch_id=nullif(current_setting('app.branch_id',true),'')::uuid);
+CREATE POLICY reception_review_scope ON patient_v2.patient_reviews USING(current_setting('app.patient_mode',true)='reception' AND clinic_id=patient_v2.current_clinic_id());
+GRANT SELECT,INSERT ON patient_v2.reception_receipts,patient_v2.patient_reviews TO clinic_v2_patient_runtime;

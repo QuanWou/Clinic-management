@@ -1,0 +1,10 @@
+{
+  "release": "DISABLED",
+  "onlinePayment": "DISABLED",
+  "status": "PASS",
+  "walkIn": "validated-unsigned-complete-close-replay-no-appointment",
+  "signature": "DISABLED",
+  "delivery": "independent-Appointment-ACK-and-Audit",
+  "fulfillmentGuard": 403,
+  "booked": "same-arrival-lab-review-validation-completion-FULFILLED"
+}

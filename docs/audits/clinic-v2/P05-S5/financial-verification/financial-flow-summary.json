@@ -1,0 +1,14 @@
+{
+  "replay": "same-event-id-one-effect",
+  "preview": "fixed-copy-no-money-care-contact",
+  "managerRecovery": "lost-sender-ACK-same-six-messages-money-unchanged",
+  "changedRecipient": 400,
+  "wrongEndpointScope": 403,
+  "identity": "declared-synthetic-legacy-token-and-Patient-link",
+  "status": "PASS",
+  "recoveryAudit": "one-exact-effect",
+  "recipient": "actual-Patient-owner-never-cashier",
+  "onsiteMessages": 3,
+  "financialMessages": 6,
+  "independentDelivery": "Audit-and-Notification-own-ACK"
+}

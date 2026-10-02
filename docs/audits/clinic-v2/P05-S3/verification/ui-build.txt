@@ -1,0 +1,14 @@
+
+> clinic-v2-web-shell@0.1.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 1903 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.56 kB │ gzip:  0.36 kB
+dist/assets/index-CSv9N76u.css   24.32 kB │ gzip:  5.56 kB
+dist/assets/index-CTcIZiz9.js   298.03 kB │ gzip: 88.91 kB
+
+✓ built in 399ms

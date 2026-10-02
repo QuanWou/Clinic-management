@@ -1,0 +1,22 @@
+{
+  "task": "P05-S5-financial-notification-db",
+  "runtime": "isolated-local-postgresql",
+  "startedAt": "2026-10-01T17:33:57.2826831+00:00",
+  "modules": [
+    {
+      "skipped": 0,
+      "jarSha256": "871A4770462E1012F115C76441C6D61AD4066AE5B6FBD85009EBD51F02300099",
+      "errors": 0,
+      "failures": 0,
+      "tests": 8,
+      "package": "PASS",
+      "service": "patient"
+    }
+  ],
+  "status": "FAIL",
+  "cleanup": "RETAINED_BY_CONFIGURATION",
+  "port": 24032,
+  "error": "mvn.cmd failed; inspect notification-test.txt",
+  "sandbox": "D:\\MCP_Plugins_With_ChatGPTWeb\\worktrees\\0b5f260d-5bb9-4508-9999-088885fef174\\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\\v2\\.sandbox\\854fbb868f4245c49a9542f38b27d95a",
+  "finishedAt": "2026-10-01T17:34:34.7797273+00:00"
+}

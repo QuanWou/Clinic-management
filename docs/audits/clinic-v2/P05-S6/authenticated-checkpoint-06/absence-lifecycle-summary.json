@@ -1,0 +1,16 @@
+{
+  "frozenPriceVnd": 100000,
+  "propagation": "actual-Doctor-lease-relay-Appointment-consumer",
+  "status": "PASS",
+  "wrongDoctorRole": 404,
+  "wrongReceptionRole": 403,
+  "changedPayload": 409,
+  "amendment": "old-interval-cancelled-new-source-appended",
+  "onlinePayment": "DISABLED",
+  "replay": "same-source-and-key",
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM",
+  "resolutionEffects": 3,
+  "activeSourceBypass": 409,
+  "finalBooking": "patient-cancelled-not-resurrected",
+  "clinicalRelease": "DISABLED"
+}

@@ -1,0 +1,6 @@
+           event_type            |  status   | attempts | last_error | notified | audited 
+---------------------------------+-----------+----------+------------+----------+---------
+ clinic.appointment.confirmed.v1 | PUBLISHED |        0 |            | t        | t
+ clinic.appointment.cancelled.v1 | PUBLISHED |        0 |            | t        | t
+(2 rows)
+

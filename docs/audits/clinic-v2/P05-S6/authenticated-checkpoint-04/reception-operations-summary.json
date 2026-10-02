@@ -1,0 +1,14 @@
+{
+  "recoveryReplay": "one-checkin-one-ticket-one-recovery-audit",
+  "onlinePayment": "DISABLED",
+  "supervisor": "same-visit-original-staff-receipt-preserved",
+  "changedPayload": 409,
+  "overnight": "same-visit-old-ticket-retained-new-day-ticket",
+  "wrongRole": 403,
+  "clinicalCompletion": "UNCHANGED",
+  "queuePaging": "keyset-no-duplicates",
+  "fault": "isolated-source-claim-committed-local-ACK-lost",
+  "status": "PASS",
+  "branchDenied": 403,
+  "identity": "actual-legacy-signup-password-login-real-V2-IAM"
+}

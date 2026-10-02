@@ -1,0 +1,52 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-10-02T04:56:01.120+07:00  INFO 13848 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterApplication    : Starting EncounterApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 13848 (D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\services\encounter-service\target\encounter-service-0.1.0-SNAPSHOT.jar started by dung0 in D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36)
+2026-10-02T04:56:01.131+07:00  INFO 13848 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-10-02T04:56:05.436+07:00  INFO 13848 --- [encounter-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T04:56:05.504+07:00  INFO 13848 --- [encounter-v2-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 45 ms. Found 0 JPA repository interfaces.
+2026-10-02T04:56:09.935+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 20225 (http)
+2026-10-02T04:56:09.983+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-02T04:56:09.986+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-10-02T04:56:10.196+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-02T04:56:10.207+07:00  INFO 13848 --- [encounter-v2-service] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 8949 ms
+2026-10-02T04:56:11.092+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.s.boot.web.servlet.RegistrationBean    : Filter registration was not registered (disabled)
+2026-10-02T04:56:14.255+07:00  INFO 13848 --- [encounter-v2-service] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:20218/clinic_v2_s1_encounter_sandbox (PostgreSQL 17.6)
+2026-10-02T04:56:14.272+07:00  WARN 13848 --- [encounter-v2-service] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 17.6 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-10-02T04:56:14.334+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.database.base.Schema   : Creating schema "encounter_v2" ...
+2026-10-02T04:56:14.352+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "encounter_v2"."flyway_schema_history" ...
+2026-10-02T04:56:14.646+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "encounter_v2": null
+2026-10-02T04:56:14.681+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "1 - encounter queue"
+2026-10-02T04:56:14.702+07:00  WARN 13848 --- [encounter-v2-service] [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: schema "encounter_v2" already exists, skipping (SQL State: 42P06 - Error Code: 0)
+2026-10-02T04:56:14.839+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "2 - encounter runtime rls"
+2026-10-02T04:56:14.891+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "3 - encounter audit delivery"
+2026-10-02T04:56:14.919+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "4 - arrival recovery"
+2026-10-02T04:56:14.952+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "5 - care command receipts"
+2026-10-02T04:56:14.977+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "6 - clinical completion"
+2026-10-02T04:56:15.010+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "7 - appointment fulfillment delivery"
+2026-10-02T04:56:15.055+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "8 - billing charge delivery"
+2026-10-02T04:56:15.123+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "9 - charge recovery commands"
+2026-10-02T04:56:15.204+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "encounter_v2" to version "10 - doctor worklist paging"
+2026-10-02T04:56:15.250+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 10 migrations to schema "encounter_v2", now at version v10 (execution time 00:00.352s)
+2026-10-02T04:56:15.839+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-02T04:56:16.141+07:00  INFO 13848 --- [encounter-v2-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-02T04:56:16.241+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-02T04:56:17.369+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T04:56:17.446+07:00  INFO 13848 --- [encounter-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-02T04:56:17.558+07:00  INFO 13848 --- [encounter-v2-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@282c5075
+2026-10-02T04:56:17.563+07:00  INFO 13848 --- [encounter-v2-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-02T04:56:18.870+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T04:56:18.914+07:00  INFO 13848 --- [encounter-v2-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T04:56:21.833+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-10-02T04:56:24.369+07:00  INFO 13848 --- [encounter-v2-service] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 20225 (http) with context path '/'
+2026-10-02T04:56:24.411+07:00  INFO 13848 --- [encounter-v2-service] [           main] c.c.v2.encounter.EncounterApplication    : Started EncounterApplication in 24.914 seconds (process running for 26.721)
+2026-10-02T04:56:32.317+07:00  INFO 13848 --- [encounter-v2-service] [.1-20225-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-02T04:56:32.318+07:00  INFO 13848 --- [encounter-v2-service] [.1-20225-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-02T04:56:32.319+07:00  INFO 13848 --- [encounter-v2-service] [.1-20225-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms

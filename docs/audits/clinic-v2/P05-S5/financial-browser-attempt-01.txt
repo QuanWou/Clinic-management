@@ -1,0 +1,63 @@
+
+> clinic-v2-web-shell@0.1.0 test:browser
+> playwright test
+
+[WebServer] (node:37268) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:35024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 9 workers
+
+(node:31396) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38296) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23936) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10564) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26268) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35524) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 3 e2e\portal.spec.ts:4:1 › patient sees linked unpublished-clinic history and own internal receipts on desktop/mobile, then loses data on revoke (3.9s)
+  ok 4 e2e\billing.spec.ts:4:1 › cashier records partial onsite tender, prints an internal receipt and submits counted shift on desktop/mobile (4.1s)
+  ok 6 e2e\public-booking.spec.ts:4:1 › public booking uses API and remains usable on desktop and mobile (5.0s)
+  ok 2 e2e\operations.spec.ts:3:1 › owner overview shows scoped operational sources, withholds failed aggregates and clears on revoke on desktop/mobile (4.9s)
+  ok 1 e2e\followup.spec.ts:2:1 › proposed follow-up starts a new no-deposit booking linked to the prior visit and retries the same hold request (5.0s)
+  ok 8 e2e\doctor.spec.ts:4:1 › assigned doctor waits and returns through reception queue on desktop and mobile (4.9s)
+  ok 9 e2e\reception.spec.ts:5:1 › reception uses an explicit patient selection and supports mobile queue actions (5.9s)
+  ok 7 e2e\medical.spec.ts:4:1 › doctor draft, lab result and doctor review stay separate on desktop and mobile (15.1s)
+  x  5 e2e\financial-notification.spec.ts:3:1 › manager retries only the unchanged notification request after an unknown response and patient sees fixed preview copy (30.0s)
+
+
+  1) e2e\financial-notification.spec.ts:3:1 › manager retries only the unchanged notification request after an unknown response and patient sees fixed preview copy 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Phiếu thu', { exact: true })
+
+
+      24 |   await route.fulfill({json});
+      25 |  });
+    > 26 |  await page.goto('/workspace?view=billing');await page.getByLabel('Email thu ngân').fill('manager@example.invalid');await page.getByLabel('Mật khẩu thu ngân').fill('synthetic-password');await page.getByRole('button',{name:'Đăng nhập thu phí',exact:true}).click();await page.getByLabel('Địa điểm thu phí').selectOption('branch');await page.getByLabel('Phiếu thu',{exact:true}).selectOption('bill');
+         |                                                                                                                                                                                                                                                                                                                                                                                         ^
+      27 |  await page.getByRole('button',{name:'Kiểm tra trạng thái thông báo'}).click();await expect(page.getByRole('button',{name:'Yêu cầu giao lại thông báo'})).toBeDisabled();await page.getByLabel('Lý do lập phiếu hoặc xử lý').fill('Synthetic verified delivery recovery');await page.getByRole('button',{name:'Yêu cầu giao lại thông báo'}).click();await expect(page.getByRole('button',{name:'Thử lại thu phí đang chờ'})).toBeVisible();await expect(page.getByLabel('Lý do lập phiếu hoặc xử lý')).toBeDisabled();await page.getByRole('button',{name:'Thử lại thu phí đang chờ'}).click();await expect(page.getByRole('button',{name:'Thử lại thu phí đang chờ'})).toHaveCount(0);expect(retries).toHaveLength(2);expect(retries[0]).toEqual(retries[1]);expect(bill.paidVnd).toBe(40000);expect(bill.remainingVnd).toBe(60000);
+      28 |  await page.getByRole('button',{name:'Kiểm tra trạng thái thông báo'}).click();await expect(page.getByText('Đã ghi vào thông báo trong ứng dụng: 1')).toBeVisible();
+      29 |  await page.goto('/public');await page.getByLabel('Email',{exact:true}).fill('patient@example.invalid');await page.getByLabel('Mật khẩu',{exact:true}).fill('synthetic-password');await page.getByRole('button',{name:'Đăng nhập',exact:true}).click();await page.getByRole('button',{name:'Tải thông báo và lựa chọn nhắc lịch'}).click();await expect(page.getByText(preview,{exact:false})).toBeVisible();expect(await page.evaluate(()=>JSON.stringify([localStorage,sessionStorage]))).not.toContain('synthetic-active-token');
+        at D:\MCP_Plugins_With_ChatGPTWeb\worktrees\0b5f260d-5bb9-4508-9999-088885fef174\6820c6b7-522a-4a2c-9f1b-b05d2184fb36\v2\apps\web-shell\e2e\financial-notification.spec.ts:26:377
+
+    Error Context: test-results\financial-notification-man-cdb31-ent-sees-fixed-preview-copy\error-context.md
+
+  1 failed
+    e2e\financial-notification.spec.ts:3:1 › manager retries only the unchanged notification request after an unknown response and patient sees fixed preview copy 
+  8 passed (33.5s)
