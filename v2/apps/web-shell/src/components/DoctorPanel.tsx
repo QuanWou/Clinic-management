@@ -71,7 +71,7 @@ export function DoctorPanel({onClinic,onNavigationLock}:{onClinic?:(name:string)
    <fieldset className="reception-actions doctor-queue" disabled={busy||uncertain}>
     <legend>Lượt khám đã tải{visits?` (${visits.length})`:''}</legend>
     <ul className="doctor-worklist" aria-label="Lượt khám được phân công">{visits?.map(v=><li key={v.id}>
-     <strong>{v.ticket?.code??'Lượt chờ kết quả'}</strong><span>{statusText[v.status]??v.status}</span><small>Mã lượt: {v.id}</small>
+     <strong>{v.ticket?.code??statusText[v.status]??'Lượt khám'}</strong><span>{statusText[v.status]??v.status}</span><small>Mã lượt: {v.id}</small>
      {v.ticket&&<small>{v.ticket.state==='CALLED'?'Đã gọi lượt':v.ticket.state==='SERVING'?'Đang phục vụ':'Đang trong hàng đợi'} · {v.ticket.date}</small>}
      <button type="button" disabled={!!medicalLock&&selected!==v.id} onClick={()=>{if(v.id!==selected)setMedicalVersion(null);setSelected(v.id);setReason('');setPoint('');}} aria-pressed={selected===v.id}>Chọn lượt {v.ticket?.code??v.id}</button>
     </li>)}</ul>

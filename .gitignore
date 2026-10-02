@@ -9,5 +9,6 @@
 .env
 v2/.sandbox/
 v2/.runtime/
+*.tsbuildinfo
 **/test-results/
 **/playwright-report/
