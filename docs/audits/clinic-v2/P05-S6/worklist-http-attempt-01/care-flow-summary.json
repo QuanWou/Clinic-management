@@ -1,9 +1,0 @@
-{
-  "audit": "12-exact-events-including-S2",
-  "doctorRevoke": 403,
-  "status": "PASS",
-  "lifecycle": "start-await-results-retire-ticket-requeue-call-resume-same-encounter",
-  "boundary": "actual-legacy-signup-password-login-real-V2-IAM",
-  "replay": "same-key-no-duplicate-event-or-ticket",
-  "directory": "DOCTOR_WORK-branch-grants"
-}

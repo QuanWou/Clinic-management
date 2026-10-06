@@ -1,0 +1,130 @@
+/* S1 public booking uses the locked S0 palette and focus styles. */
+.booking-feedback { max-width: 1240px; margin: auto; padding: 0 32px; }
+.booking-error { background: var(--danger-soft); color: var(--danger); padding: 14px; border-radius: var(--radius); }
+.booking-panel { border: 1px solid var(--line); padding: 24px; border-radius: var(--radius-card); background: var(--surface); }
+.booking-form { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; margin: 16px 0; }
+.reception-panel { min-width: 0; overflow-wrap: anywhere; }
+.reception-actions { border: 0; padding: 0; margin: 0; min-width: 0; }
+.reception-panel label { display: grid; gap: 8px; margin: 12px 0; }
+.reception-panel input,.reception-panel select,.reception-panel textarea { min-width: 0; max-width: 100%; min-height: 44px; padding: 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: white; color: var(--ink); }
+.reception-panel textarea { min-height: 90px; resize: vertical; }
+.doctor-worklist { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); gap: 16px; }
+.doctor-worklist li { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); display: grid; gap: 8px; min-width: 0; }
+.doctor-panel button, .cashier-panel button { min-height: 44px; cursor: pointer; border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 10px 14px; color: var(--ink); background: var(--surface); transition: background-color 150ms ease; }
+.doctor-panel button:not(:disabled):hover, .cashier-panel button:not(:disabled):hover { background: var(--brand-50); }
+.doctor-panel .booking-primary, .cashier-panel .booking-primary { color: white; background: var(--brand-700); }
+.doctor-panel .booking-primary:not(:disabled):hover, .cashier-panel .booking-primary:not(:disabled):hover { background: var(--brand-800,var(--brand-700)); }
+.doctor-panel textarea:focus-visible, .cashier-panel textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.medical-panel { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.doctor-layout { display: grid; gap: 24px; margin-top: 20px; align-items: start; }
+.doctor-case { min-width: 0; }
+.doctor-panel > h1 { margin: 0 0 12px; font-size: 28px; }
+.doctor-panel > p { line-height: 1.6; }
+.doctor-toolbar { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; }
+.doctor-toolbar fieldset { flex: 1 1 220px; }
+.doctor-toolbar label { margin: 0; }
+.doctor-case > fieldset > .booking-confirm { margin-top: 0; }
+.doctor-case > fieldset > .booking-confirm h2 { margin: 0; font-size: 18px; }
+.doctor-case > fieldset > .booking-confirm p { font-size: 14px; line-height: 1.5; }
+.doctor-case > fieldset > .booking-confirm textarea { min-height: 64px; }
+.doctor-queue legend { font-weight: 700; padding: 0 0 8px; }
+.doctor-queue .doctor-worklist { margin: 0; grid-template-columns: 1fr; }
+.doctor-selection-hint { background: var(--surface-soft); border: 1px dashed var(--line-strong); border-radius: var(--radius); padding: 32px 20px; margin: 0; line-height: 1.6; }
+.medical-note-fields { display: grid; gap: 0 20px; }
+.medical-note-fields label { font-size: 14px; font-weight: 600; }
+@media (min-width: 1180px) {
+  .doctor-layout { grid-template-columns: 260px minmax(0,1fr); }
+  .doctor-queue { position: sticky; top: 96px; max-height: calc(100dvh - 120px); overflow-y: auto; padding: 4px; scroll-padding-block: 8px; }
+  .medical-note-fields { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (min-width: 1440px) {
+  .doctor-layout { grid-template-columns: 280px minmax(0,1fr); }
+}
+.configuration-fields { border: 0; padding: 0; min-width: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit,minmax(min(100%,250px),1fr)); align-items: end; margin: 16px 0; }
+.configuration-fields label { min-width: 0; margin: 0; }
+.configuration-fields input[type="checkbox"] { width: 24px; height: 24px; min-height: 24px; justify-self: start; accent-color: var(--brand-700); }
+.configuration-panel input[type="checkbox"] { width: 24px; height: 24px; min-height: 24px; justify-self: start; accent-color: var(--brand-700); }
+.configuration-fields button { justify-self: start; }
+.configuration-panel h2 { margin-top: 28px; }
+.medical-autosave { display: flex!important; align-items: center; }
+.doctor-panel button[aria-pressed="true"] { border: 2px solid var(--brand-700); background: var(--brand-50); }
+@media (max-width: 959px) {
+  .platform-shell:has(.reception-panel) { grid-template-columns: 1fr; }
+  .platform-shell:has(.reception-panel) .platform-sidebar { position: static; height: auto; width: auto; min-height: 0; }
+  .platform-shell:has(.reception-panel) .sidebar-footer { display: none; }
+  .platform-shell:has(.reception-panel) .workspace-topbar { position: static; padding: 12px 16px; }
+  .platform-shell:has(.reception-panel) .workspace-content { padding: 14px; }
+  .platform-shell:has(.reception-panel) .booking-panel { margin: 0; }
+  body:has(.reception-panel) { min-width: 320px; }
+  .workspace-shell:has(.reception-panel) { grid-template-columns: 1fr; }
+  .workspace-shell:has(.reception-panel) .workspace-sidebar { position: static; height: auto; width: auto; min-height: 0; }
+  .workspace-shell:has(.reception-panel) .collapse-button { display: none; }
+  .workspace-shell:has(.reception-panel) .workspace-nav { display: flex; overflow-x: auto; max-width: calc(100vw - 44px); }
+  .workspace-shell:has(.reception-panel) .workspace-nav button { flex: 0 0 auto; width: auto; }
+  .workspace-shell:has(.reception-panel) .sidebar-footer { display: none; }
+  .workspace-shell:has(.reception-panel) .workspace-topbar { position: static; height: auto; flex-wrap: wrap; gap: 12px; padding: 12px 16px; }
+  .workspace-shell:has(.reception-panel) .single-clinic-context { min-width: 0; width: 100%; flex-wrap: wrap; }
+  .workspace-shell:has(.reception-panel) .context-field { min-width: 0; flex: 1 1 170px; }
+  .workspace-shell:has(.reception-panel) .workspace-content { padding: 14px; }
+  .workspace-shell:has(.reception-panel) .booking-panel { margin: 0; }
+}
+.booking-form label { display: grid; gap: 8px; flex: 1 1 180px; font-weight: 600; }
+.booking-form input, .booking-form select { min-height: 44px; min-width: 0; border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 10px; background: white; color: var(--ink); }
+.booking-primary { background: var(--brand-700); color: white; border: 0; border-radius: var(--radius); padding: 12px 18px; min-height: 44px; font-weight: 700; }
+button:disabled { opacity: .55; cursor: default; }
+.booking-slots { display: flex; flex-wrap: wrap; gap: 12px; }
+.booking-confirm, .booking-appointment { padding: 16px; margin-top: 16px; border: 1px solid var(--line); border-radius: var(--radius); }
+.booking-confirm { background: var(--brand-50); }
+.booking-confirm button, .booking-appointment button { margin-right: 12px; }
+@media (max-width: 1179px) { body:has(.public-app) { min-width: 320px; } .public-header { flex-wrap: wrap; gap: 16px; } .public-nav { flex-wrap: wrap; } .hero-section { display: block; } .hero-copy { max-width: 100%; } .clinic-grid { grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); } .hero-search { flex-wrap: wrap; } .hero-search input { min-width: 160px; } .booking-panel { margin: 16px; } .public-footer { flex-wrap: wrap; gap: 12px; } }
+.public-app .hero-section { grid-template-columns: 1fr; gap: 0; }
+@media (max-width: 1179px) {
+  .public-header { position: static; height: auto; min-height: 72px; padding: 20px; }
+  .public-nav { flex-basis: 100%; justify-content: flex-start; gap: 12px 20px; }
+  .hero-section { padding-top: 36px; padding-bottom: 32px; }
+  .hero-copy h1 { font-size: clamp(30px, 7vw, 42px); }
+}
+
+/* Empty, denied and loading screens use the same responsive shell as task screens. */
+@media (max-width: 959px) {
+  .workspace-shell, .platform-shell { grid-template-columns: 1fr; }
+  .workspace-sidebar, .platform-sidebar { position: static; height: auto; min-height: 0; }
+  .workspace-shell .collapse-button { display: none; }
+  .workspace-shell .workspace-nav { display: flex; overflow-x: auto; max-width: calc(100vw - 44px); }
+  .workspace-shell .workspace-nav button { flex: 0 0 auto; width: auto; }
+  .workspace-shell .sidebar-footer, .platform-shell .sidebar-footer { display: none; }
+  .workspace-shell .workspace-topbar, .platform-shell .workspace-topbar { position: static; height: auto; flex-wrap: wrap; gap: 12px; padding: 12px 16px; }
+  .workspace-shell .single-clinic-context { min-width: 0; width: 100%; flex-wrap: wrap; }
+  .workspace-shell .context-field { min-width: 0; flex: 1 1 170px; }
+  .workspace-shell .workspace-content, .platform-shell .workspace-content { padding: 14px; }
+  .state-card { padding: 24px 16px; flex-wrap: wrap; }
+  .state-card > div { min-width: 0; max-width: 100%; }
+}
+.cashier-panel button { min-height: 44px; }
+.patient-fees details, .patient-fees li { overflow-wrap: anywhere; }
+.patient-fees summary { cursor: pointer; min-height: 44px; padding: 10px 0; }
+.patient-fees summary:focus-visible { outline: 3px solid var(--brand-700); outline-offset: 3px; }
+.cashier-panel .booking-confirm ul { padding-left: 1.25rem; }
+.cashier-receipt { margin-top: 1.5rem; padding: 1rem; border: 1px solid #d7e2df; border-radius: 12px; overflow-wrap: anywhere; }
+.cashier-receipt h2 { font-size: 1.1rem; line-height: 1.5; }
+@media print {
+ body:has(.cashier-receipt) .workspace-sidebar,
+ body:has(.cashier-receipt) .workspace-topbar,
+ body:has(.cashier-receipt) .cashier-panel > :not(.cashier-receipt),
+ body:has(.cashier-receipt) .cashier-receipt button { display: none !important; }
+ body:has(.cashier-receipt) .workspace-shell,
+ body:has(.cashier-receipt) .workspace-main { display: block; margin: 0; }
+ body:has(.cashier-receipt) .workspace-content,
+ body:has(.cashier-receipt) .cashier-panel,
+ body:has(.cashier-receipt) .cashier-receipt { padding: 0; margin: 0; border: 0; box-shadow: none; }
+}
+
+
+.patient-identity{display:flex;flex-wrap:wrap;gap:.3rem .65rem;margin:.5rem 0;color:var(--text,#173a43);font-size:.875rem;overflow-wrap:anywhere}
+.patient-identity strong{flex-basis:100%;font-size:1rem}
+.consultation-review{padding:1rem;border:1px solid #c8e4dc;border-radius:12px;background:#f3faf7;margin:1rem 0}
+.consultation-review label{display:flex;align-items:flex-start;gap:.6rem}
+.consultation-review input{width:auto;min-height:20px;margin-top:3px}
+.booking-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:1rem 0}
+.booking-summary dt{font-size:.85rem;color:#506571}.booking-summary dd{margin:.2rem 0;font-weight:600;overflow-wrap:anywhere}
+@media(max-width:640px){.booking-summary{grid-template-columns:1fr}}

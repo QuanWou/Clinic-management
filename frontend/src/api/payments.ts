@@ -1,0 +1,16 @@
+import {requestJson} from './client';
+import {unwrap} from './booking';
+export type PaymentMethod={code:string;name:string;available:boolean;message:string};
+export type PaymentIntent={id:string;billId:string;provider:string;status:string;amountVnd:number;currency:string;checkoutUrl:string|null;qrCode:string|null;expiresAt:string;receiptId:string|null;message:string};
+export type BankTransfer={bankName:string;accountNumber:string;accountName:string;content:string;amountVnd:number;qrUrl:string};
+export type PaymentScope={token:string;clinic:string;branch:string};
+const base=import.meta.env.VITE_BILLING_URL??'/s1/billing';
+const path=(s:PaymentScope,bill:string)=>`${base}/api/me/clinics/${encodeURIComponent(s.clinic)}/branches/${encodeURIComponent(s.branch)}/bills/${encodeURIComponent(bill)}`;
+const get=<T,>(s:PaymentScope,url:string)=>unwrap(requestJson<T>(url,{headers:{Authorization:`Bearer ${s.token}`}}));
+export const methods=(s:PaymentScope,bill:string)=>get<PaymentMethod[]>(s,path(s,bill)+'/payment-methods');
+export const intents=(s:PaymentScope,bill:string)=>get<PaymentIntent[]>(s,path(s,bill)+'/payment-intents');
+export const bank=(s:PaymentScope,bill:string)=>get<BankTransfer>(s,path(s,bill)+'/bank-transfer');
+export const read=(s:PaymentScope,bill:string,id:string,reconcile=true)=>get<PaymentIntent>(s,path(s,bill)+`/payment-intents/${encodeURIComponent(id)}?reconcile=${reconcile}`);
+export const cancel=(s:PaymentScope,bill:string,id:string,key:string)=>unwrap(requestJson<PaymentIntent>(path(s,bill)+`/payment-intents/${encodeURIComponent(id)}/cancel`,{method:'POST',headers:{Authorization:`Bearer ${s.token}`,'Idempotency-Key':key}}));
+export const create=(s:PaymentScope,bill:string,body:{provider:string;expectedVersion:number},key:string)=>unwrap(requestJson<PaymentIntent>(path(s,bill)+'/payment-intents',{method:'POST',headers:{Authorization:`Bearer ${s.token}`,'Content-Type':'application/json','Idempotency-Key':key},body:JSON.stringify(body)}));
+export const staffIntents=(s:PaymentScope,bill:string)=>get<PaymentIntent[]>(s,`${base}/api/clinics/${encodeURIComponent(s.clinic)}/branches/${encodeURIComponent(s.branch)}/bills/${encodeURIComponent(bill)}/online-payments`);

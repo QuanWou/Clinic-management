@@ -1,0 +1,20 @@
+.cashier-redesign .cashier-layout.cashier-tab-payments,.cashier-redesign .cashier-layout.cashier-tab-unbilled{grid-template-columns:minmax(0,1fr)}
+.cashier-redesign .cashier-layout.has-selection{grid-template-columns:minmax(0,1fr) minmax(340px,440px)}
+.cashier-redesign .cashier-selection,.cashier-redesign .cashier-payment{min-width:0;padding:22px}
+.cashier-redesign .cashier-payment{border-top:3px solid #357c98}
+.cashier-redesign .cashier-selection>.muted-copy{font-size:12px;line-height:1.6}
+.cashier-redesign .cashier-selection .desk-table-scroll{max-height:570px;overflow:auto}
+.cashier-redesign .desk-table th{position:sticky;top:0;z-index:1}.cashier-redesign .desk-table td{padding:16px 12px}
+.cashier-session-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#edf7f4;border:1px solid #cfe6dc;border-radius:10px;padding:14px 18px;margin:16px 0;color:#265c4b;font-size:13px}
+.cashier-session-bar small{margin-left:auto;color:#526779}.cashier-session-bar button{font-size:12px;min-height:36px}
+.cashier-redesign .task-summary>div{display:flex;align-items:start;flex-direction:column;padding:16px;gap:12px}.cashier-redesign .task-summary strong{font-size:25px}
+.cashier-redesign .cashier-bill-heading{align-items:start}.cashier-redesign .cashier-bill-heading button{margin-top:10px;font-size:12px;min-height:34px;padding:6px 14px}
+.cashier-redesign .cashier-lines{max-height:240px}.cashier-redesign .cashier-payment .patient-identity{background:#f2f7fa;border-radius:8px;padding:12px;margin:14px 0}
+.cashier-redesign .cashier-fill-balance{border:0;color:#216b88;background:#eef6fa;font-size:12px;min-height:32px;margin:8px 0;padding:6px 10px}
+.cashier-payment-fields{align-items:start}.cashier-payment-fields small{display:block;color:#526779;font-size:12px;line-height:1.6}.cashier-change{display:block;color:#206d51;padding:12px;background:#edf7f1;border-radius:8px;margin-top:10px}.cashier-change.is-short{color:#a53221;background:#fff1ef}
+.cashier-history{margin-top:22px;border-top:1px solid #dce6ec;padding-top:16px}.cashier-history h3{font-size:15px}.cashier-history .cashier-receipt-list{display:grid;gap:8px}.cashier-history button{width:100%;text-align:left}.cashier-history small{display:block;color:#526779;margin-top:7px;font-size:12px}
+.cashier-print-actions{display:flex;gap:8px;flex-wrap:wrap}.cashier-redesign .cashier-receipt{border:1px solid #b9d8cc;background:#f8fcfa;padding:24px}
+.cashier-redesign input:focus-visible,.cashier-redesign button:focus-visible{outline:3px solid #379bc2;outline-offset:2px}
+@media(max-width:1100px){.cashier-redesign .cashier-layout.has-selection{grid-template-columns:1fr}.cashier-redesign .cashier-payment{grid-row:1}.cashier-session-bar small{margin-left:0}}
+@media(max-width:600px){.cashier-redesign .cashier-selection,.cashier-redesign .cashier-payment{padding:14px}.cashier-redesign .cashier-bill-heading{flex-wrap:wrap}.cashier-session-bar{align-items:start;flex-direction:column;gap:8px}.cashier-redesign .task-summary strong{font-size:21px}.cashier-redesign .task-panel-header{padding-right:0}.cashier-redesign .cashier-print-actions{flex-direction:column}}
+@media print{.cashier-redesign .cashier-receipt{background:white}.cashier-receipt .patient-identity{display:block}.cashier-receipt .patient-identity strong,.cashier-receipt .patient-identity span{display:block}}

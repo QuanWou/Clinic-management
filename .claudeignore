@@ -1,4 +1,7 @@
 **/node_modules/
+.archive/
+.runtime/
+.sandbox/
 **/dist/
 **/target/
 **/.mvn/

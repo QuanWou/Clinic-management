@@ -1,0 +1,17 @@
+{
+  "name": "doctor",
+  "modules": [
+    {
+      "name": "clinic",
+      "application": "com.clinic.clinic.ClinicApplication"
+    },
+    {
+      "name": "doctor",
+      "application": "com.clinic.doctor.DoctorApplication"
+    },
+    {
+      "name": "search",
+      "application": "com.clinic.search.SearchApplication"
+    }
+  ]
+}

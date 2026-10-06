@@ -1,0 +1,44 @@
+server:
+  port: ${IAM_PORT:8093}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: identity-service
+  datasource:
+    url: ${IAM_DB_URL}
+    username: ${IAM_DB_USER}
+    password: ${IAM_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: iam
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: iam
+    schemas: iam
+    locations: classpath:/modules/identity/db/migration
+    user: ${IAM_DB_MIGRATOR_USER:${IAM_DB_USER}}
+    password: ${IAM_DB_MIGRATOR_PASSWORD:${IAM_DB_PASSWORD}}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+iam:
+  security:
+    jwt-secret: ${IAM_JWT_SECRET}
+    legacy-identity-url: ${IAM_LEGACY_IDENTITY_URL:http://localhost:8083}
+    workload-inbound-secret: ${IAM_WORKLOAD_INBOUND_SECRET:${IAM_CLINIC_INBOUND_SECRET:}}
+    workload-audience: identity-service
+    allowed-workload-issuers: ${IAM_ALLOWED_WORKLOAD_ISSUERS:clinic-service,doctor-service,catalog-service,patient-service,encounter-service,medical-service,billing-service,appointment-service}
+  clinic:
+    url: ${IAM_CLINIC_URL:http://localhost:8092}
+    workload-issuer: identity-service
+    workload-audience: clinic-service
+    workload-outbound-secret: ${IAM_CLINIC_OUTBOUND_SECRET}

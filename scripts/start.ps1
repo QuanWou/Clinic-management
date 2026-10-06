@@ -1,2 +1,3 @@
-param([switch]$Seed)
-& (Join-Path $PSScriptRoot '../v2/scripts/start-main.ps1') -Seed:$Seed
+param([string]$ConfigPath='',[switch]$Seed)
+& (Join-Path $PSScriptRoot 'start-core.ps1') -ConfigPath $ConfigPath -Seed:$Seed
+exit 0

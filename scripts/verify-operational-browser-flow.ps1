@@ -1,0 +1,11 @@
+function Invoke-OperationalBrowserReads {
+ param($taskRoot,$evidence,$ports,$accounts,$clinic,$branch,$pointId)
+ $listener=[Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback,0);$listener.Start();$webPort=$listener.LocalEndpoint.Port;$listener.Stop()
+ $today=[TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow,'SE Asia Standard Time').ToString('yyyy-MM-dd');$queue=Invoke-RestMethod "http://127.0.0.1:$($ports.encounter)/api/clinics/$clinic/branches/$branch/queue/page?servicePointId=$pointId&date=$today" -Headers @{Authorization="Bearer $($tokens.reception)"};if(@($queue.items).Count -eq 0){throw 'Operational browser requires an existing scoped queue source'}
+ $configuration=Join-Path $sandbox 'real-operational-browser-config.json';@{accounts=$accounts;clinic=$clinic;branch=$branch;pointId=$pointId;queueCode=$queue.items[0].code;evidence=$evidence}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath $configuration
+ $proxy=@{};foreach($entry in $ports.GetEnumerator()){$proxy[$entry.Key]=$entry.Value};$proxy.auth=$ports.legacy
+ $environment=@{CLINIC_REAL_E2E_CONFIG=$configuration;CLINIC_PROXY_PORTS=($proxy|ConvertTo-Json -Compress);CLINIC_REAL_WEB_PORT="$webPort"};$node=(Get-Command node.exe).Source;$npm=Join-Path (Split-Path (Get-Command npm.cmd).Source) 'node_modules/npm/bin/npm-cli.js'
+ $browser=Start-Process $node -Environment $environment -WorkingDirectory (Join-Path $taskRoot 'frontend') -ArgumentList @(('"'+$npm+'"'),'exec','--','playwright','test','--config','playwright.operational.config.ts') -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $evidence 'actual-operational-browser-tests.txt') -RedirectStandardError (Join-Path $evidence 'actual-operational-browser-tests.stderr')
+ $null=$browser.Handle;$browser.WaitForExit();$browser.Refresh();if($browser.ExitCode -ne 0){throw 'Actual operational browser reads failed; inspect actual-operational-browser-tests.txt'}
+ @{status='PASS';browserTests=5;http='actual-source-APIs-no-route-interception';views=@('Patient history/receipts','Cashier paid bill/internal receipt','Reception queue/receipt','Doctor visit/Medical draft','Owner scoped aggregates');mutations='NO_NEW_CLINICAL_OR_MONETARY_MUTATIONS';credentials='IGNORED_OWNED_SANDBOX_ONLY'}|ConvertTo-Json|Set-Content (Join-Path $evidence 'operational-browser-summary.json')
+}

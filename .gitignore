@@ -7,6 +7,9 @@
 **/dist/
 *.log
 .env
+.sandbox/
+.runtime/
+.archive/
 v2/.sandbox/
 v2/.runtime/
 *.tsbuildinfo

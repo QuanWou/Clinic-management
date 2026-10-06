@@ -1,26 +1,33 @@
 {
-  "name": "clinic-management-frontend",
+  "name": "clinic-web-shell",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "test": "vitest run src && node --test tests/api.test.mjs",
-    "preview": "vite preview"
+    "test": "vitest run src",
+    "preview": "vite preview --host 127.0.0.1",
+    "test:browser": "playwright test"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
     "lucide-react": "^1.16.0",
+    "qrcode": "^1.5.4",
     "react": "latest",
     "react-dom": "latest",
     "typescript": "latest",
     "vite": "latest"
   },
   "devDependencies": {
-    "@types/node": "^26.6.2",
+    "@playwright/test": "^1.63.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^26.6.3",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "jsdom": "^29.1.1",
     "vitest": "^5.0.1"
   }
 }

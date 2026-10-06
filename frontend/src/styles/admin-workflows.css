@@ -1,0 +1,146 @@
+.dashboard-toolbar{display:flex;align-items:end;gap:16px;flex-wrap:wrap;margin:20px 0}.dashboard-toolbar label{max-width:300px;flex:1}.dashboard-toolbar button{margin:0;min-height:44px}.dashboard-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:24px 0}.dashboard-metric,.dashboard-card{background:#fff;border:1px solid #dce6ec;border-radius:14px;padding:24px}.dashboard-metric{display:flex;flex-direction:column;gap:10px;position:relative}.dashboard-metric svg{color:#00836c;margin-bottom:6px}.dashboard-metric>strong{font-size:clamp(22px,2.4vw,32px);line-height:1.3;overflow-wrap:anywhere}.dashboard-metric>span{color:#475569;font-weight:600}.dashboard-metric small,.dashboard-card small{color:#52657a}.dashboard-source{display:grid;grid-template-columns:1fr 1fr;gap:20px}.dashboard-card h2{font-size:19px;margin:0 0 20px}.care-stages{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}.care-stages>div{display:flex;flex-direction:column;gap:8px;background:#edf8f5;padding:18px 10px;border-radius:10px;text-align:center}.care-stages strong{font-size:26px;color:#007d66}.care-stages span{font-size:13px}.dashboard-facts{margin:0}.dashboard-facts>div{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #e7edf1}.dashboard-facts dd{font-weight:700;margin:0;text-align:right}.dashboard-facts dt{color:#475569}.dashboard-attention{background:#f6f8fb;padding:16px;border-radius:10px;margin-top:20px}.dashboard-attention p{margin:8px 0}.account-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0}.account-avatar{display:grid;place-items:center;width:56px;height:56px;background:#e4f4ef;color:#007d66;border-radius:50%;font-size:24px;margin-bottom:16px}.account-settings-grid strong{overflow-wrap:anywhere}.account-settings-grid p{line-height:1.7;color:#475569}.danger-button{color:#b42318!important;border-color:#f1c6c3!important}.cashier-tab-shifts{grid-template-columns:1fr!important}.cashier-tab-shifts .cashier-selection{max-width:850px;width:100%;margin:0 auto}.cashier-shift-section>p{line-height:1.7;background:#edf8f5;padding:16px;border-radius:10px}.cashier-panel [hidden],.reception-panel [hidden]{display:none!important}.reception-desk-grid.desk-intake{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}.reception-desk-grid.desk-queue{grid-template-columns:1fr!important}.reception-shared-controls{padding:18px;background:#fff;border:1px solid #dce6ec;border-radius:12px;margin:18px 0;display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px}.reception-shared-controls textarea{min-height:44px;height:64px}.reception-queue-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.review-worklist .booking-appointment{background:#fff;border-radius:10px}.platform-review-panel .review-layout{align-items:start}.platform-review-panel .review-detail:empty{display:none}.platform-review-panel .booking-confirm>label{display:block;margin:18px 0}.platform-review-panel .booking-confirm>label:has(input[type=checkbox]){display:flex;align-items:center;gap:10px}.platform-review-panel input[type=checkbox]{width:18px;height:18px}.dashboard-card,.dashboard-metric{min-width:0}
+@media(max-width:1100px){.dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.reception-desk-grid.desk-intake{grid-template-columns:1fr!important}}
+@media(max-width:700px){.dashboard-source,.account-settings-grid{grid-template-columns:1fr}.dashboard-metric,.dashboard-card{padding:18px}.reception-shared-controls{grid-template-columns:1fr}.dashboard-metrics{gap:10px}.care-stages{gap:6px}.care-stages>div{padding:12px 6px}.dashboard-toolbar{align-items:stretch}.dashboard-toolbar label{max-width:none;min-width:100%}}
+
+.reception-panel .management-tabs button,.cashier-panel .task-tabs button{min-height:44px;padding:10px 16px;border:1px solid #cad9e2;border-radius:8px;background:#fff;color:#163342;cursor:pointer;font:inherit;font-weight:600}.reception-panel .management-tabs button[aria-pressed=true],.cashier-panel .task-tabs button[aria-pressed=true]{background:#00836c;color:#fff;border-color:#00836c}.reception-panel .management-tabs button:hover,.cashier-panel .task-tabs button:hover{box-shadow:0 0 0 2px #bde2d8}.cashier-panel .task-tabs button:disabled{opacity:.55;cursor:wait}
+.internal-visit-reference{margin:8px 0;color:#536575;font-size:13px}.internal-visit-reference summary{cursor:pointer;width:max-content}.internal-visit-reference code{font-size:12px;overflow-wrap:anywhere}.worklist-sync-status{font-size:12px;color:#536575;text-align:right;margin:8px 4px}.doctor-worklist li>strong{font-size:15px}.patient-banner{align-items:center;gap:12px;flex-wrap:wrap}
+.reception-token-card{display:grid;gap:14px;align-content:start;border-color:var(--line);box-shadow:0 4px 16px #173b5310}.reception-token-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.reception-token-heading .task-status{margin:0}.reception-token-number{font-size:25px;line-height:1;font-weight:800;letter-spacing:.02em;color:var(--brand-800);font-variant-numeric:tabular-nums}.reception-token-actions{display:flex;flex-wrap:wrap;gap:8px}.reception-token-actions button{margin:0;flex:1 1 100px}.patient-hub{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 8px 24px #173b530a}.patient-hub .patient-banner{position:static;z-index:auto;margin:0 0 14px;padding:4px 4px 14px;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0}.patient-hub-title h2{margin:3px 0;font-size:20px}.patient-hub-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;width:100%;font-size:13px;color:var(--muted-strong)}.patient-hub-token{font-weight:750;color:var(--brand-800);font-variant-numeric:tabular-nums}.visit-progress{display:flex;list-style:none;gap:7px;padding:0;margin:0;overflow-x:auto}.visit-progress li{display:grid;gap:7px;align-content:start;min-width:95px;flex:1;color:var(--muted);font-size:11px;line-height:1.3}.visit-progress li>span{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;border:1px solid var(--line-strong);font-size:12px;font-weight:750}.visit-progress li[data-state=complete]{color:var(--brand-800)}.visit-progress li[data-state=complete]>span{background:var(--brand-50);border-color:var(--brand-600)}.visit-progress li[data-state=current]{color:var(--brand-800);font-weight:750}.visit-progress li[data-state=current]>span{background:var(--brand-700);border-color:var(--brand-700);color:white}.care-flow-chart{display:grid;gap:16px;margin:4px 0 24px}.care-flow-row>div:first-child{display:flex;justify-content:space-between;gap:14px;color:var(--muted-strong);font-size:13px}.care-flow-row strong{color:var(--ink);font-variant-numeric:tabular-nums}.care-flow-track{height:9px;border-radius:9px;background:var(--surface-muted);overflow:hidden;margin-top:7px}.care-flow-track span{height:100%;display:block;border-radius:inherit;background:linear-gradient(90deg,var(--brand-500),var(--brand-700));transition:width .25s ease}.dashboard-metric,.dashboard-card{border-color:var(--line);box-shadow:0 5px 22px #173b530a}.dashboard-card{line-height:1.55}.dashboard-metric{background:linear-gradient(160deg,#fff,#f8fbfc)}.dashboard-metric svg{color:var(--brand-700)}.management-table th{background:var(--surface-soft);position:sticky;top:0;z-index:1}.management-table tbody tr:nth-child(even){background:#fbfcfd}.management-table tbody tr{transition:background-color .15s ease}.management-table tbody tr:hover{background:#f0f7f6}.management-detail,.management-toolbar,.management-table-scroll{box-shadow:0 5px 20px #173b5308}
+@media(max-width:620px){.patient-hub{padding:12px}.patient-hub .patient-banner{top:0}.reception-token-actions button{flex-basis:100%}.visit-progress li{min-width:83px}.reception-token-number{font-size:22px}}
+
+/* Reception workbench: clear shift context, task switching and queue-first visual hierarchy. */
+.workspace-shell:has(.reception-panel) .workspace-content{max-width:1680px;margin-inline:auto;padding:28px clamp(18px,2.4vw,38px)}
+.workspace-shell .reception-panel>.task-panel-header{padding:0 0 20px;margin-bottom:20px;border-bottom:1px solid var(--line)}
+.workspace-shell .reception-panel>.task-panel-header .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--brand-50);color:var(--brand-800);font-size:11px;font-weight:750;letter-spacing:.06em}
+.workspace-shell .reception-panel>.task-panel-header h1{font-size:clamp(25px,2vw,32px);margin:10px 0 6px}
+.workspace-shell .reception-panel>.task-panel-header p{max-width:700px}
+.workspace-shell .reception-panel>.task-panel-header+div:not([hidden])>p{display:inline-flex;align-items:center;gap:8px;color:var(--muted-strong);font-size:13px}
+.workspace-shell .reception-panel>.task-panel-header+div label{max-width:380px;margin:8px 0 16px}
+.workspace-shell .reception-panel>.task-panel-header+div select{background:#fff}
+.workspace-shell .reception-panel>.task-tabs,.workspace-shell .reception-panel>nav.task-tabs{position:sticky;top:68px;z-index:5;display:flex;gap:8px;overflow-x:auto;padding:10px;margin:0 0 14px;border:1px solid var(--line);border-radius:13px;background:#ffffffed;box-shadow:0 6px 20px #173b530d;backdrop-filter:blur(12px);scrollbar-width:thin}
+.workspace-shell .reception-panel .task-tabs button,.workspace-shell .reception-panel .management-tabs button{min-height:42px;padding:9px 16px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--muted-strong);font-size:13px;font-weight:700;white-space:nowrap;transition:background .16s ease,color .16s ease,border-color .16s ease}
+.workspace-shell .reception-panel .task-tabs button[aria-pressed=true],.workspace-shell .reception-panel .management-tabs button[aria-pressed=true]{background:var(--brand-700);color:#fff;border-color:var(--brand-700);box-shadow:0 3px 9px #176f912e}
+.workspace-shell .reception-panel .task-tabs button:not(:disabled):hover,.workspace-shell .reception-panel .management-tabs button:not(:disabled):hover{border-color:var(--line-strong);background:var(--brand-50);color:var(--brand-800)}
+.workspace-shell .reception-panel .task-tabs button[aria-pressed=true]:hover,.workspace-shell .reception-panel .management-tabs button[aria-pressed=true]:hover{background:var(--brand-800);color:white}
+.workspace-shell .reception-shared-controls{grid-template-columns:minmax(180px,.72fr) minmax(260px,1.5fr) minmax(210px,.8fr);align-items:start;gap:18px;margin:0 0 18px;padding:16px 18px;border-radius:13px;background:linear-gradient(110deg,#fff,#f9fcfd);box-shadow:0 4px 16px #173b5308}
+.workspace-shell .reception-shared-controls label{margin:0;color:var(--ink);font-size:12px;font-weight:700}
+.workspace-shell .reception-shared-controls input,.workspace-shell .reception-shared-controls select,.workspace-shell .reception-shared-controls textarea{font-size:13px;background:#fff}
+.workspace-shell .reception-shared-controls textarea{height:44px;min-height:44px;resize:vertical}
+.workspace-shell .reception-desk-grid{gap:18px;margin-top:0}
+.workspace-shell .reception-desk-grid>.task-card,.workspace-shell .reception-desk-grid>.public-section,.workspace-shell .reception-recovery-tab,.workspace-shell .reception-panel>div>.task-card{padding:22px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 5px 20px #173b5308}
+.workspace-shell .reception-desk-grid h2,.workspace-shell .reception-recovery-tab h2{font-size:17px;line-height:1.4;margin:0 0 9px}
+.workspace-shell .reception-desk-grid>section>p:first-of-type{font-size:13px;color:var(--muted-strong);line-height:1.6}
+.workspace-shell .reception-patient-card .booking-form{gap:0 14px;margin-top:20px}
+.workspace-shell .reception-patient-card .booking-form label:first-child{grid-column:1/-1}
+.workspace-shell .reception-arrival-card .booking-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:4px 14px}
+.workspace-shell .reception-arrival-card .management-tabs{display:flex;gap:8px;border:0;padding:0;margin:16px 0}
+.workspace-shell .reception-arrival-card .booking-primary{width:100%;min-height:48px;margin-top:12px}
+.workspace-shell .reception-arrival-card>.booking-form label{margin-top:0}
+.workspace-shell .reception-panel .booking-appointment{border:1px solid var(--line);border-radius:11px;background:#fff;box-shadow:0 3px 12px #173b5308}
+.workspace-shell .reception-queue-cards{grid-template-columns:repeat(auto-fill,minmax(min(100%,285px),1fr));gap:14px;margin-top:16px}
+.workspace-shell .reception-token-card{padding:17px}
+.workspace-shell .reception-token-number{font-size:28px;letter-spacing:.035em}
+.workspace-shell .reception-queue-card>h2{font-size:21px;margin:0 0 16px}
+.workspace-shell .reception-queue-card>button{min-height:42px;margin:0 8px 10px 0}
+.workspace-shell .reception-queue-card>button{display:none!important}
+.workspace-shell .reception-recovery-tab>button:first-of-type{display:none!important}
+.workspace-shell .reception-panel .task-disclosure>button:nth-of-type(2){display:none!important}
+.workspace-shell .reception-panel .task-card>details:first-of-type>button:nth-of-type(2){display:none!important}
+.workspace-shell .supervisor-arrival-panel fieldset>button{display:none!important}
+.workspace-shell .reception-panel :is(.supervisor-arrival-panel,.absence-lifecycle-panel) button{cursor:pointer}
+.workspace-shell .reception-queue-card>label{display:inline-grid;vertical-align:middle;min-width:min(100%,260px);margin:0 0 10px 8px;font-size:12px;font-weight:700}
+.workspace-shell .reception-queue-card>label select{min-height:42px}
+.workspace-shell .reception-queue-card>.reception-queue-cards{margin-top:14px}
+.workspace-shell .reception-token-card .patient-identity{font-size:14px}
+.workspace-shell .reception-token-card .reception-token-heading{padding-bottom:11px;border-bottom:1px solid var(--line)}
+.workspace-shell .reception-appointments-heading{margin:20px 0 12px;font-size:16px}
+.workspace-shell .reception-appointment-table-wrap{max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+.workspace-shell .reception-appointment-table{width:100%;min-width:690px;border-collapse:collapse;text-align:left;font-size:13px}
+.workspace-shell .reception-appointment-table th{padding:12px 14px;background:var(--surface-soft);color:var(--muted-strong);font-size:11px;letter-spacing:.035em;white-space:nowrap;border-bottom:1px solid var(--line)}
+.workspace-shell .reception-appointment-table td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.workspace-shell .reception-appointment-table tbody tr:last-child td{border-bottom:0}
+.workspace-shell .reception-appointment-table tbody tr:hover,.workspace-shell .reception-appointment-table tbody tr[data-selected=true]{background:var(--brand-50)}
+.workspace-shell .reception-appointment-table td:first-child{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.workspace-shell .reception-appointment-table td:nth-child(2) strong{color:var(--brand-800)}
+.workspace-shell .reception-appointment-table .task-status{margin:0;white-space:nowrap}
+.workspace-shell .reception-appointments-empty{margin:0;padding:22px;text-align:center;color:var(--muted-strong);font-size:13px}
+.workspace-shell .reception-desk-grid.desk-intake{grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr)!important;gap:20px;align-items:stretch}
+.workspace-shell .reception-desk-grid.desk-intake>.reception-patient-card,.workspace-shell .reception-desk-grid.desk-intake>.reception-arrival-card{position:relative;overflow:hidden;padding:24px;border:1px solid #dce7ed;border-radius:16px;box-shadow:0 10px 30px #173b530c}
+.workspace-shell .reception-desk-grid.desk-intake>.reception-patient-card::before,.workspace-shell .reception-desk-grid.desk-intake>.reception-arrival-card::before{content:'';position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--brand-600),var(--brand-100))}
+.workspace-shell .reception-desk-grid.desk-intake .reception-patient-card h2,.workspace-shell .reception-desk-grid.desk-intake .reception-arrival-card h2{display:flex;align-items:center;gap:12px;margin:0 0 8px;font-size:19px;letter-spacing:-.02em}
+.workspace-shell .reception-patient-card h2::before,.workspace-shell .reception-arrival-card h2::before{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:9px;background:var(--brand-50);color:var(--brand-800);font-size:13px;box-shadow:inset 0 0 0 1px var(--brand-100)}
+.workspace-shell .reception-patient-card h2::before{content:'01'}
+.workspace-shell .reception-arrival-card h2::before{content:'02'}
+.workspace-shell .reception-desk-grid.desk-intake .reception-patient-card>p,.workspace-shell .reception-desk-grid.desk-intake .reception-arrival-card>.reception-step-hint{margin:0 0 18px 42px;color:var(--muted-strong);font-size:12px;line-height:1.55}
+.workspace-shell .reception-patient-card .booking-form{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;margin:18px 0 12px}
+.workspace-shell .reception-patient-card .booking-form label:first-child{grid-column:1/-1}
+.workspace-shell .reception-patient-card .booking-form label{margin:0 0 8px;font-size:12px;font-weight:700}
+.workspace-shell .reception-patient-card .booking-form input{min-height:44px}
+.workspace-shell .reception-patient-card .booking-form .reception-search-submit{grid-column:1/-1;justify-self:stretch;min-height:46px;margin-top:4px}
+.workspace-shell .reception-patient-card>button.button-secondary{display:flex;align-items:center;justify-content:center;width:100%;min-height:42px;margin:10px 0 0;border-style:dashed;border-color:var(--line-strong);background:#fbfdfe;color:var(--brand-800);font-weight:700}
+.workspace-shell .reception-patient-card>button.button-secondary:hover{border-color:var(--brand-600);background:var(--brand-50)}
+.workspace-shell .reception-patient-card>.booking-confirm{margin-top:16px;padding:16px;border:1px solid #acd9ca;border-radius:12px;background:linear-gradient(135deg,#f1fbf6,#fff)}
+.workspace-shell .reception-patient-card>.booking-confirm h3{margin:0 0 6px;font-size:15px;color:var(--brand-800)}
+.workspace-shell .reception-patient-card>.booking-confirm>p{margin:0;color:var(--muted-strong);font-size:12px}
+.workspace-shell .reception-patient-card>.booking-appointment{display:grid;gap:8px;padding:14px;margin:10px 0;border-color:var(--line)}
+.workspace-shell .patient-directory-toolbar{display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(170px,.8fr) auto;align-items:end;gap:12px;margin:18px 0 14px}
+.workspace-shell .patient-directory-toolbar label,.workspace-shell .patient-create-form label{display:grid;gap:6px;margin:0;font-size:12px;font-weight:700}
+.workspace-shell .patient-directory-toolbar label span{font-size:11px;font-weight:500;color:var(--muted-strong)}
+.workspace-shell .patient-directory-toolbar input,.workspace-shell .patient-create-form input{min-height:42px}
+.workspace-shell .patient-create-toggle{min-height:42px;white-space:nowrap}
+.workspace-shell .patient-directory-table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+.workspace-shell .patient-directory-table{width:100%;min-width:780px;border-collapse:collapse;text-align:left}
+.workspace-shell .patient-directory-table th,.workspace-shell .patient-directory-table td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:12px;vertical-align:middle}
+.workspace-shell .patient-directory-table th{background:var(--surface-soft);color:var(--muted-strong);font-size:11px;font-weight:750;white-space:nowrap}
+.workspace-shell .patient-directory-table tbody tr:last-child td{border-bottom:0}
+.workspace-shell .patient-directory-table tbody tr[data-selected=true],.workspace-shell .patient-directory-table tbody tr:hover{background:var(--brand-50)}
+.workspace-shell .patient-directory-table td:first-child strong{color:var(--brand-800);white-space:nowrap}
+.workspace-shell .patient-directory-table .task-status{margin:0;white-space:nowrap}
+.workspace-shell .patient-directory-table td:last-child button{min-height:36px;white-space:nowrap}
+.workspace-shell .patient-directory-empty{text-align:center;color:var(--muted-strong);padding:22px!important}
+.workspace-shell .patient-search-status{margin:4px 0 12px;color:var(--muted-strong);font-size:12px}
+.workspace-shell .patient-create-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:12px;margin:14px 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-soft)}
+.workspace-shell .patient-create-form h3{grid-column:1/-1;margin:0;font-size:15px}
+.workspace-shell .patient-create-form .booking-primary{min-height:42px}
+.workspace-shell .reception-arrival-options{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px!important;margin:15px 0 18px!important;padding:0!important}
+.workspace-shell .reception-arrival-options button{display:flex!important;align-items:center;justify-content:flex-start!important;gap:12px;min-height:76px!important;padding:12px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:#fff!important;color:var(--ink)!important;text-align:left;white-space:normal!important;box-shadow:0 3px 12px #173b5307}
+.workspace-shell .reception-arrival-options button[aria-pressed=true]{border-color:var(--brand-600)!important;background:var(--brand-50)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--brand-600) 16%,transparent)!important;color:var(--brand-900)!important}
+.workspace-shell .reception-arrival-options button>span:last-child{display:grid;gap:5px}
+.workspace-shell .reception-arrival-options strong{font-size:13px}
+.workspace-shell .reception-arrival-options small{font-size:11px;font-weight:500;color:var(--muted-strong)}
+.workspace-shell .reception-option-index{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:var(--surface-soft);color:var(--brand-800);font-size:11px;font-weight:800}
+.workspace-shell .reception-arrival-options button[aria-pressed=true] .reception-option-index{background:var(--brand-700);color:#fff}
+.workspace-shell .reception-arrival-card>.booking-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px;margin:0}
+.workspace-shell .reception-arrival-card>.booking-form label{margin:0 0 10px;font-size:12px;font-weight:700}
+.workspace-shell .reception-arrival-card [hidden]{display:none!important}
+.workspace-shell .reception-arrival-card>div[hidden]{display:none!important}
+.workspace-shell .reception-arrival-card>div:not([hidden])>label{display:grid;margin:8px 0 12px;font-size:12px;font-weight:700}
+.workspace-shell .reception-arrival-card>div:not([hidden])>p{padding:11px 12px;border-radius:9px;background:var(--surface-soft);font-size:12px}
+.workspace-shell .reception-arrival-card>div:not([hidden])>.booking-primary{width:100%;min-height:48px;margin:8px 0}
+.workspace-shell .reception-arrival-card>.reception-appointments-heading{margin-top:8px;padding-top:16px;border-top:1px solid var(--line)}
+@media(max-width:1000px){.workspace-shell .reception-desk-grid.desk-intake{grid-template-columns:1fr!important}}
+@media(max-width:620px){.workspace-shell .reception-desk-grid.desk-intake>.reception-patient-card,.workspace-shell .reception-desk-grid.desk-intake>.reception-arrival-card{padding:18px}.workspace-shell .reception-patient-card .booking-form{grid-template-columns:1fr}.workspace-shell .reception-patient-card .booking-form label:first-child{grid-column:auto}.workspace-shell .patient-directory-toolbar,.workspace-shell .patient-create-form{grid-template-columns:1fr}.workspace-shell .patient-create-toggle{width:100%}.workspace-shell .patient-create-form h3{grid-column:auto}.workspace-shell .reception-arrival-options{grid-template-columns:1fr}.workspace-shell .reception-arrival-card>.booking-form{grid-template-columns:1fr}.workspace-shell .reception-desk-grid.desk-intake .reception-patient-card>p,.workspace-shell .reception-desk-grid.desk-intake .reception-arrival-card>.reception-step-hint{margin-left:0}}
+.workspace-shell .reception-intake-stepper{display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:12px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 4px 16px #173b5308}
+.workspace-shell .reception-intake-stepper>button{display:flex;align-items:center;gap:11px;min-width:0;padding:8px 12px;border:1px solid transparent;border-radius:10px;background:transparent;text-align:left;color:var(--muted-strong);cursor:pointer}
+.workspace-shell .reception-intake-stepper>button>span:first-child{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border:1px solid var(--line-strong);border-radius:50%;background:var(--surface-soft);font-size:11px;font-weight:800}
+.workspace-shell .reception-intake-stepper>button>span:last-child{display:grid;gap:3px}
+.workspace-shell .reception-intake-stepper strong{font-size:13px;color:var(--ink)}
+.workspace-shell .reception-intake-stepper small{font-size:11px;color:var(--muted)}
+.workspace-shell .reception-intake-stepper>button[aria-current=step]{border-color:var(--brand-100);background:var(--brand-50);color:var(--brand-800)}
+.workspace-shell .reception-intake-stepper>button[aria-current=step]>span:first-child{border-color:var(--brand-700);background:var(--brand-700);color:#fff}
+.workspace-shell .reception-intake-stepper>button:disabled{opacity:.58;cursor:not-allowed}
+.workspace-shell .reception-step-connector{height:1px;flex:1;min-width:16px;background:var(--line-strong)}
+.workspace-shell .reception-panel[data-intake-step="1"] .reception-arrival-card,.workspace-shell .reception-panel[data-intake-step="2"] .reception-patient-card{display:none!important}
+.workspace-shell .reception-panel[data-intake-step] .reception-desk-grid.desk-intake{grid-template-columns:minmax(0,1fr)!important}
+.workspace-shell .reception-panel[data-intake-step="1"] .reception-shared-controls{grid-template-columns:minmax(0,1fr)}
+.workspace-shell .reception-panel[data-intake-step="1"] .reception-shared-controls>label:first-child{display:none}
+.workspace-shell .reception-panel[data-intake-step="2"] .reception-shared-controls{grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr)}
+.workspace-shell .reception-desk-grid.desk-intake>.reception-patient-card h2::before,.workspace-shell .reception-desk-grid.desk-intake>.reception-arrival-card h2::before{display:none}
+.workspace-shell .reception-desk-grid.desk-intake>.reception-patient-card,.workspace-shell .reception-desk-grid.desk-intake>.reception-arrival-card{width:100%;max-width:none}
+@media(max-width:620px){.workspace-shell .reception-intake-stepper{gap:4px;padding:8px}.workspace-shell .reception-intake-stepper>button{gap:7px;padding:7px 5px}.workspace-shell .reception-intake-stepper strong{font-size:11px}.workspace-shell .reception-intake-stepper small{font-size:10px}.workspace-shell .reception-intake-stepper>button>span:first-child{width:29px;height:29px;flex-basis:29px}.workspace-shell .reception-step-connector{min-width:9px}}
+.workspace-shell .reception-token-actions button{min-height:40px;font-size:12px;padding:8px 10px}
+.workspace-shell .reception-recovery-tab .doctor-worklist-tools,.workspace-shell .reception-recovery-tab .worklist-tools{margin:16px 0}
+.workspace-shell .reception-panel :is(button,select,input,textarea){transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
+.workspace-shell .reception-panel :is(button,select,input,textarea):focus-visible{outline:3px solid color-mix(in srgb,var(--brand-500) 38%,transparent);outline-offset:2px}
+@media(max-width:1000px){.workspace-shell .reception-shared-controls{grid-template-columns:minmax(160px,.7fr) minmax(220px,1.3fr)}.workspace-shell .reception-shared-controls>label:last-child{grid-column:1/-1}.workspace-shell .reception-desk-grid.desk-intake{grid-template-columns:1fr!important}}
+@media(max-width:700px){.workspace-shell:has(.reception-panel) .workspace-content{padding:18px 14px}.workspace-shell .reception-panel>nav.task-tabs{top:0;padding:7px}.workspace-shell .reception-shared-controls{grid-template-columns:1fr;padding:14px}.workspace-shell .reception-shared-controls>label:last-child{grid-column:auto}.workspace-shell .reception-desk-grid>.task-card,.workspace-shell .reception-desk-grid>.public-section,.workspace-shell .reception-recovery-tab{padding:16px}.workspace-shell .reception-arrival-card .booking-form{grid-template-columns:1fr}.workspace-shell .reception-token-actions button{flex:1 1 100%}}
+@media(prefers-reduced-motion:reduce){.workspace-shell .reception-panel *{scroll-behavior:auto!important;transition:none!important}}

@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.clinic.v2.notification.FinancialNotificationPostgresTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.832 s -- in com.clinic.v2.notification.FinancialNotificationPostgresTest

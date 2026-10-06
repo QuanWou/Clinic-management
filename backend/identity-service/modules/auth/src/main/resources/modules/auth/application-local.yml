@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:clinic_db}?currentSchema=identity
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+  flyway:
+    # The existing development DB contains V3__seed_local_admin_user.sql,
+    # which was never tracked in this repository. Keep checksum validation for
+    # available migrations; allow missing legacy versioned scripts locally.
+    ignore-migration-patterns: "versioned:missing,*:future"
+
+app:
+  security:
+    jwt:
+      secret: 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF

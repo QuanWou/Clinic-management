@@ -1,9 +1,0 @@
-{
-  "audit": "PASS",
-  "notification": "PASS",
-  "confirmationReplay": "PASS",
-  "priceSnapshot": "PASS",
-  "identity": "synthetic contract fixture",
-  "status": "PASS",
-  "services": "Patient/Appointment/Clinic/Doctor/Catalog/Notification/Audit real HTTP + PostgreSQL"
-}

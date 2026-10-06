@@ -1,0 +1,31 @@
+server:
+  port: ${SEARCH_PORT:8097}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: search-service
+  datasource:
+    url: ${SEARCH_DB_URL}
+    username: ${SEARCH_DB_USER}
+    password: ${SEARCH_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: search_v2
+        jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: search_v2
+    schemas: search_v2
+    user: ${SEARCH_MIGRATION_DB_USER:${SEARCH_DB_USER}}
+    password: ${SEARCH_MIGRATION_DB_PASSWORD:${SEARCH_DB_PASSWORD}}
+search:
+  security:
+    clinic-secret: ${SEARCH_CLINIC_SECRET:}
+    doctor-secret: ${SEARCH_DOCTOR_SECRET:}
+    catalog-secret: ${SEARCH_CATALOG_SECRET:}
+    audience: search-service

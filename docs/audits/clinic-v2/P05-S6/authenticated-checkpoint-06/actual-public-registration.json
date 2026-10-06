@@ -1,9 +1,0 @@
-{
-  "status": "PASS",
-  "http": "actual-Public-register-Patient-profile-no-route-fixtures",
-  "registrationStatus": 200,
-  "profileStatus": 200,
-  "patientId": "50c60b06-5f64-45f2-ae90-0d3dda88b81c",
-  "credentialsPersisted": false,
-  "keyboardRegistration": "Tab-focus-Enter-submit"
-}

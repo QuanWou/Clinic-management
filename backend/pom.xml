@@ -13,15 +13,26 @@
 
     <modules>
         <module>common-lib</module>
+        <module>core-runtime</module>
         <module>api-gateway</module>
+        <module>identity-service/modules/auth</module>
+        <module>identity-service/modules/identity</module>
+        <module>identity-service/modules/audit</module>
+        <module>doctor-service/modules/clinic</module>
+        <module>doctor-service/modules/doctor</module>
+        <module>doctor-service/modules/search</module>
+        <module>patient-service/modules/patient</module>
+        <module>patient-service/modules/medical</module>
+        <module>appointment-service/modules/appointment</module>
+        <module>appointment-service/modules/encounter</module>
+        <module>billing-service/modules/billing</module>
+        <module>billing-service/modules/catalog</module>
+        <module>billing-service/modules/notification</module>
         <module>identity-service</module>
-        <module>patient-service</module>
         <module>doctor-service</module>
-        <module>catalog-service</module>
+        <module>patient-service</module>
         <module>appointment-service</module>
-        <module>medical-record-service</module>
         <module>billing-service</module>
-        <module>notification-service</module>
     </modules>
 
     <properties>

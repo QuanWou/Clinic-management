@@ -1,0 +1,13 @@
+{
+  "name": "patient",
+  "modules": [
+    {
+      "name": "patient",
+      "application": "com.clinic.patient.PatientApplication"
+    },
+    {
+      "name": "medical",
+      "application": "com.clinic.medical.MedicalApplication"
+    }
+  ]
+}
