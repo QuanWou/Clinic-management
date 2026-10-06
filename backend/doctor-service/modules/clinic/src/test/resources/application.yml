@@ -1,0 +1,46 @@
+server:
+  port: ${CLINIC_PORT:8092}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: clinic-service
+  datasource:
+    url: ${CLINIC_DB_URL}
+    username: ${CLINIC_DB_USER}
+    password: ${CLINIC_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: clinic
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: clinic
+    schemas: clinic
+    locations: classpath:/modules/clinic/db/migration
+    user: ${CLINIC_MIGRATION_DB_USER:${CLINIC_DB_USER}}
+    password: ${CLINIC_MIGRATION_DB_PASSWORD:${CLINIC_DB_PASSWORD}}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+clinic:
+  security:
+    patient-url: ${CLINIC_PATIENT_URL:http://127.0.0.1:8098}
+    iam-url: ${CLINIC_IAM_URL:http://localhost:8093}
+    iam-service-secret: ${CLINIC_IAM_SERVICE_SECRET:}
+    iam-directory-secret: ${CLINIC_IAM_DIRECTORY_SECRET:}
+    doctor-service-secret: ${CLINIC_DOCTOR_SERVICE_SECRET:}
+    catalog-service-secret: ${CLINIC_CATALOG_SERVICE_SECRET:}
+    appointment-service-secret: ${CLINIC_APPOINTMENT_SERVICE_SECRET:}
+  publication:
+    enabled: ${CLINIC_PUBLICATION_ENABLED:false}

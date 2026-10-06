@@ -1,0 +1,175 @@
+:root {
+  --brand-900: #064e3b;
+  --brand-800: #075c50;
+  --brand-700: #087f62;
+  --brand-600: #0b8f6e;
+  --brand-500: #10b981;
+  --brand-100: #dff6ee;
+  --brand-50: #effaf6;
+  --ink: #142936;
+  --muted: #647783;
+  --muted-strong: #4b626e;
+  --surface: #ffffff;
+  --surface-soft: #f7faf9;
+  --surface-muted: #f2f6f5;
+  --line: #e2e9ed;
+  --line-strong: #cfdade;
+  --info: #2563eb;
+  --info-soft: #eff6ff;
+  --success: #15803d;
+  --success-soft: #f0fdf4;
+  --warning: #b45309;
+  --warning-soft: #fff7ed;
+  --danger: #b91c1c;
+  --danger-soft: #fef2f2;
+  --focus: #1d4ed8;
+  --shadow-sm: 0 4px 18px rgba(20, 41, 54, 0.055);
+  --shadow-md: 0 14px 40px rgba(20, 41, 54, 0.08);
+  --radius: 8px;
+  --radius-card: 10px;
+  --sidebar: 252px;
+  color: var(--ink);
+  background: #fff;
+  font-family: Inter, "Segoe UI", Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+
+html { background: #fff; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #fff;
+  color: var(--ink);
+}
+
+button, input, select, textarea { font: inherit; }
+
+button, a, input, select { -webkit-tap-highlight-color: transparent; }
+
+button { cursor: pointer; }
+
+a { color: inherit; text-decoration: none; }
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -60px;
+  z-index: 1000;
+  background: var(--ink);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 7px;
+}
+.skip-link:focus { top: 12px; }
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.eyebrow {
+  color: var(--brand-700);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 190px;
+}
+.brand > span:last-child,
+.workspace-brand > span:last-child {
+  display: grid;
+  gap: 1px;
+}
+.brand strong,
+.workspace-brand strong { font-size: 16px; letter-spacing: -.02em; }
+.brand small,
+.workspace-brand small { color: var(--muted); font-size: 11px; }
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: var(--brand-700);
+  box-shadow: 0 8px 20px rgba(8,127,98,.16);
+}
+
+.button-secondary,
+.public-account,
+.card-link,
+.text-button,
+.chip-button {
+  border: 0;
+  background: transparent;
+}
+
+.button-secondary,
+.public-account {
+  min-height: 40px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  font-weight: 700;
+  box-shadow: none;
+}
+.button-secondary:hover,
+.public-account:hover { border-color: #aebfc5; background: var(--surface-soft); }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 26px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.status-success { color: var(--success); background: var(--success-soft); border-color: #bbf7d0; }
+.status-warning { color: var(--warning); background: var(--warning-soft); border-color: #fed7aa; }
+.status-danger { color: var(--danger); background: var(--danger-soft); border-color: #fecaca; }
+.status-info { color: var(--info); background: var(--info-soft); border-color: #bfdbfe; }
+.status-neutral { color: var(--muted-strong); background: #f8fafc; border-color: var(--line); }
+

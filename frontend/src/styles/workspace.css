@@ -1,0 +1,281 @@
+/* Shared task surfaces; keep patient-facing branding in public.css. */
+:is(.workspace-shell,.login-workspace) {
+  --brand-900:#12344a;
+  --brand-800:#174e6a;
+  --brand-700:#176f91;
+  --brand-600:#2186a8;
+  --brand-500:#46a8c4;
+  --brand-100:#dceff5;
+  --brand-50:#edf7fa;
+  --ink:#172d3b;
+  --muted:#657985;
+  --muted-strong:#4a606d;
+  --surface-soft:#f5f9fb;
+  --surface-muted:#edf3f6;
+  --line:#e1e9ee;
+  --line-strong:#cbd8df;
+  --radius:9px;
+  --radius-card:12px;
+  --shadow-sm:0 1px 2px rgba(23,45,59,.04),0 8px 22px rgba(23,45,59,.035);
+  --shadow-md:0 18px 46px rgba(23,45,59,.10);
+  background:#f4f7f9;
+}
+.workspace-shell .workspace-sidebar { background:#fff; border-right-color:#e0e8ed; }
+.workspace-shell .workspace-brand .brand-mark { background:linear-gradient(145deg,#2385a6,#155a79); box-shadow:0 8px 18px rgba(23,111,145,.18); }
+.workspace-shell .workspace-nav button { min-height:46px; border-radius:9px; transition:background-color .18s ease,color .18s ease; }
+.workspace-shell .workspace-nav button:hover { background:#f2f7f9; color:var(--ink); }
+.workspace-shell .workspace-nav .nav-active { background:#eaf5f8; color:var(--brand-800); box-shadow:inset 3px 0 0 var(--brand-700); }
+.workspace-shell .workspace-nav .nav-active svg { color:var(--brand-700); }
+.workspace-shell .workspace-topbar { border-bottom-color:#e0e8ed; box-shadow:0 2px 10px rgba(23,45,59,.025); }
+.workspace-shell .context-role { background:#f7fafb; }
+.workspace-shell .workspace-content { background:#f4f7f9; }
+.workspace-shell :is(.kpi-card,.chart-card,.table-card,.task-card,.operations-summary,.doctor-queue,.medical-panel) { border-radius:12px; box-shadow:var(--shadow-sm); }
+.workspace-shell :is(.kpi-card,.chart-card,.table-card,.task-card):hover { border-color:#d3e0e7; }
+.workspace-shell .task-status { border-radius:999px; }
+.workspace-shell .doctor-worklist .worklist-selected { background:#eaf5f8; }
+@media(prefers-reduced-motion:reduce) { .workspace-shell .workspace-nav button { transition:none; } }
+.panel-load-state { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:32px; min-height:120px; color:var(--muted-strong); }
+.panel-load-state h2, .panel-load-state p { flex-basis:100%; margin:0; line-height:1.6; }
+.panel-load-indicator { width:18px; height:18px; border:2px solid var(--line); border-top-color:var(--brand-700); border-radius:50%; animation:panel-loading 1s linear infinite; }
+@keyframes panel-loading { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .panel-load-indicator { animation:none; } }
+
+.workspace-shell, .platform-shell { background:#f5f8f7; }
+.workspace-content { padding:24px; }
+.workspace-topbar { min-height:68px; gap:16px; padding:10px 24px; }
+.single-clinic-context { min-width:0; gap:12px; }
+.single-clinic-field { min-width:0; border:0; padding:0; }
+.single-clinic-field strong { font-size:14px; }
+.context-label { font-size:11px; }
+.context-role { font-size:13px; }
+.workspace-account>span { font-size:13px; }
+.workspace-account button { width:44px; height:44px; }
+.workspace-nav { margin-top:16px; }
+.workspace-nav-label { font-size:11px; padding:12px 14px 0; }
+.workspace-sidebar .sidebar-footer small { font-size:12px; }
+.workspace-content>.booking-panel, .workspace-content>.reception-panel { padding:0; border:0; background:transparent; }
+.workspace-content .booking-panel>h1 { margin-top:0; font-size:28px; letter-spacing:-.025em; }
+.task-panel-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.task-panel-header h1 { margin:6px 0 8px; font-size:28px; line-height:1.25; letter-spacing:-.025em; }
+.task-panel-header p { margin:0; color:var(--muted-strong); line-height:1.6; font-size:14px; max-width:760px; }
+.task-card { min-width:0; border:1px solid var(--line); background:#fff; border-radius:12px; padding:20px; }
+.task-card h2 { margin:0 0 16px; font-size:18px; line-height:1.4; }
+.muted-copy, .detail-id { color:var(--muted-strong); font-size:13px; line-height:1.6; }
+.detail-id { overflow-wrap:anywhere; }
+.task-empty { min-height:180px; padding:32px 24px; border:1px dashed var(--line-strong); border-radius:10px; background:#fff; color:var(--muted-strong); line-height:1.65; }
+.task-empty h2 { font-size:18px; color:var(--ink); margin:0 0 12px; }
+.task-empty p { margin:0; }
+.task-success { background:var(--brand-50); color:var(--brand-800); padding:12px 16px; border-radius:8px; }
+.task-status { width:fit-content; display:inline-flex; align-items:center; padding:4px 9px; background:var(--surface-soft); color:var(--muted-strong); border-radius:6px; font-size:12px; font-weight:650; line-height:1.5; }
+.task-status[data-state=IN_PROGRESS], .task-status[data-state=PROCESSING] { background:var(--info-soft); color:#185d83; }
+.task-status[data-state=WAITING], .task-status[data-state=ORDERED], .task-status[data-state=RESULTED], .task-status[data-state=AWAITING_RESULTS] { background:var(--warning-soft); color:#85400b; }
+.task-status[data-state=PAID], .task-status[data-state=CLINICALLY_COMPLETED], .task-status[data-state=REVIEWED] { background:var(--brand-50); color:var(--brand-800); }
+.task-disclosure { border-top:1px solid var(--line); margin-top:16px; padding-top:4px; }
+.task-disclosure summary { cursor:pointer; min-height:44px; padding:12px 0; font-size:14px; font-weight:650; }
+.task-disclosure>p { font-size:13px; line-height:1.6; }
+.reception-panel label { font-size:14px; font-weight:550; }
+.reception-panel textarea { min-height:68px; }
+.reception-panel :is(input,select,textarea) { width:100%; font-size:14px; }
+.reception-panel input[type=checkbox] { width:auto; }
+.task-button-row { display:flex; flex-wrap:wrap; gap:10px; }
+.doctor-panel button, .lab-panel button, .cashier-panel button { min-height:44px; border:1px solid var(--line-strong); background:white; color:var(--ink); border-radius:7px; padding:10px 14px; font-size:14px; cursor:pointer; }
+.doctor-panel .booking-primary, .lab-panel .booking-primary, .cashier-panel .booking-primary { background:var(--brand-700); border-color:var(--brand-700); color:white; }
+.doctor-panel button:not(:disabled):hover, .lab-panel button:not(:disabled):hover, .cashier-panel button:not(:disabled):hover { background:var(--brand-50); }
+.doctor-panel .booking-primary:not(:disabled):hover, .lab-panel .booking-primary:not(:disabled):hover, .cashier-panel .booking-primary:not(:disabled):hover { background:var(--brand-800); }
+.doctor-toolbar { margin-bottom:20px; padding:14px 18px; border:1px solid var(--line); border-radius:10px; background:#fff; }
+.doctor-toolbar fieldset { flex:0 1 360px; }
+.doctor-toolbar label { font-size:13px; }
+.doctor-layout { margin-top:20px; gap:20px; }
+.doctor-queue { padding:16px; border:1px solid var(--line); border-radius:10px; background:white; }
+.doctor-queue legend { padding:0 8px; font-size:14px; }
+.worklist-tools { display:grid; grid-template-columns:1fr auto; gap:0 8px; margin-bottom:12px; }
+.worklist-tools>label { grid-column:1/-1; margin:0 0 8px; }
+.worklist-search { position:relative; }
+.worklist-search svg { position:absolute; top:14px; left:12px; color:var(--muted-strong); }
+.worklist-search input { padding-left:36px; }
+.worklist-tools .worklist-count { align-self:center; margin:0; font-size:12px; color:var(--muted-strong); line-height:1.5; }
+.worklist-tools .worklist-clear { min-height:44px; font-size:12px; padding:8px; border:0; color:var(--brand-700); }
+.doctor-queue .task-empty { min-height:0; padding:16px; font-size:13px; }
+.doctor-queue .doctor-worklist { gap:10px; }
+.doctor-worklist li { padding:12px; gap:6px; }
+.doctor-worklist li>strong { font-size:14px; line-height:1.5; }
+.doctor-worklist li>small { font-size:12px; color:var(--muted-strong); line-height:1.5; }
+.doctor-worklist li>button { width:100%; margin-top:4px; font-size:13px; }
+.doctor-worklist .worklist-selected { border-color:var(--brand-700); box-shadow:inset 3px 0 0 var(--brand-700); background:var(--brand-50); }
+.doctor-case>fieldset>.booking-confirm { background:#fff; border-color:var(--line); padding:20px; }
+.medical-panel { margin-top:20px; border:1px solid var(--line); padding:20px; background:#fff; border-radius:10px; }
+.medical-panel>h2 { margin-top:0; }
+.lab-panel .lab-result-input { min-height:240px; line-height:1.7; }
+.lab-order-detail h2 { margin-top:8px; }
+.result-content { white-space:pre-wrap; }
+
+.task-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:0 0 20px; }
+.task-summary>div { display:grid; gap:8px; background:white; border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+.task-summary span { font-size:13px; color:var(--muted-strong); line-height:1.5; }
+.task-summary strong { font-size:23px; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.cashier-layout { display:grid; gap:20px; align-items:start; }
+.cashier-bill-heading { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+.cashier-bill-heading h2 { margin:6px 0 0; }
+.cashier-balance { display:grid; gap:6px; padding:18px; margin:18px 0; border-radius:8px; background:var(--brand-50); color:var(--brand-800); }
+.cashier-balance span { font-size:13px; }
+.cashier-balance strong { font-size:30px; font-variant-numeric:tabular-nums; }
+.cashier-lines { list-style:none; padding:0; margin:0; }
+.cashier-lines li { display:flex; justify-content:space-between; gap:20px; padding:10px 0; border-bottom:1px solid var(--line); font-size:14px; line-height:1.5; }
+.cashier-lines strong { flex-shrink:0; font-weight:600; font-variant-numeric:tabular-nums; }
+.cashier-totals { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; font-size:13px; margin:16px 0; }
+.cashier-totals>div { display:grid; gap:6px; }
+.cashier-totals dt { color:var(--muted-strong); }
+.cashier-totals dd { margin:0; font-variant-numeric:tabular-nums; }
+.cashier-payment-fields { display:grid; gap:0 14px; grid-template-columns:1fr 1fr; }
+.cashier-payment-fields .field-full { grid-column:1/-1; }
+.cashier-collect { width:100%; margin:6px 0; }
+.cashier-receipt-list { list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
+.cashier-receipt { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; background:white; }
+.cashier-receipt h2 { margin:8px 0; }
+.cashier-receipt p { font-size:14px; line-height:1.5; margin:8px 0; }
+.cashier-receipt button { flex-shrink:0; }
+.reception-panel .reception-desk-grid { display:grid; gap:20px; align-items:start; margin-top:20px; }
+.reception-panel .reception-desk-grid>.task-card { padding:20px; margin:0; }
+.reception-patient-card .booking-form { display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+.reception-patient-card .booking-form label:first-child { grid-column:1/-1; }
+.reception-patient-card .booking-form button { grid-column:1/-1; justify-self:start; }
+.reception-desk-grid p { font-size:14px; line-height:1.6; }
+.reception-desk-grid h2 { font-size:18px; margin-top:0; }
+.reception-queue-cards { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); }
+.reception-queue-cards .booking-appointment { margin:0; background:var(--surface-soft); }
+.operations-summary { margin:20px 0; padding:20px; background:white; border:1px solid var(--line); border-radius:10px; }
+.operations-summary h2 { font-size:18px; margin:0 0 16px; }
+.operations-summary>p { font-size:14px; line-height:1.6; }
+.operations-finance { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px; }
+.operations-finance p { display:grid; gap:12px; margin:0; padding:18px; background:var(--brand-50); border-radius:8px; font-size:14px; }
+.operations-finance strong { font-size:27px; color:var(--brand-800); font-variant-numeric:tabular-nums; }
+.operations-sources { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); }
+.operations-sources .booking-appointment { margin:0; background:white; }
+.operations-sources h2 { font-size:18px; margin-top:0; }
+.operations-sources p { line-height:1.65; font-size:14px; }
+.operations-sources small { font-size:13px; color:var(--muted-strong); }
+
+@media(min-width:960px) {
+  .workspace-shell { --sidebar:232px; }
+  .workspace-shell.sidebar-collapsed { --sidebar:76px; }
+  .doctor-layout { grid-template-columns:290px minmax(0,1fr); }
+  .doctor-queue { position:sticky; top:88px; max-height:calc(100dvh - 108px); overflow-y:auto; scroll-padding:12px; }
+  .cashier-layout { grid-template-columns:minmax(280px,.82fr) minmax(0,1.35fr); }
+  .reception-panel .reception-desk-grid { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .reception-queue-card { grid-column:1/-1; }
+  .doctor-toolbar { align-items:center; padding:12px 16px; }
+  .doctor-toolbar fieldset { flex-basis:460px; }
+  .doctor-toolbar label { grid-template-columns:max-content minmax(0,1fr); align-items:center; gap:12px; }
+  .task-summary>div { padding:12px 16px; gap:6px; }
+  .task-summary strong { font-size:21px; }
+}
+@media(min-width:960px) and (max-width:1199px) {
+  .workspace-shell { --sidebar:76px; }
+  .workspace-brand>span:not(.brand-mark), .workspace-nav-label, .workspace-nav button>span, .workspace-sidebar .sidebar-footer, .workspace-shell .collapse-button { display:none; }
+  .workspace-nav button { justify-content:center; padding:0; }
+  .workspace-brand { justify-content:center; padding:0; }
+  .workspace-content { padding:20px; }
+  .workspace-topbar { padding:10px 20px; }
+  .doctor-layout { grid-template-columns:260px minmax(0,1fr); }
+}
+@media(max-width:959px) {
+  .workspace-content { padding:16px; }
+  .workspace-shell .booking-panel { margin:0; }
+  .task-panel-header h1 { font-size:25px; }
+  .doctor-toolbar { padding:12px; }
+  .doctor-queue { position:static; max-height:none; }
+  .cashier-receipt { flex-wrap:wrap; }
+}
+@media(max-width:620px) {
+  .task-summary { grid-template-columns:1fr; gap:8px; }
+  .task-summary>div { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 16px; }
+  .task-summary strong { font-size:20px; }
+  .cashier-payment-fields { grid-template-columns:1fr; }
+  .task-card { padding:16px; }
+  .workspace-account>span { max-width:170px; }
+  .reception-patient-card .booking-form { grid-template-columns:1fr; }
+  .cashier-balance strong { font-size:26px; }
+  .operations-finance { grid-template-columns:1fr; }
+}
+@media print {
+  body:has(.cashier-receipt) .cashier-receipt { display:block; }
+  body:has(.cashier-receipt) .workspace-content>.navigation-lock { display:none; }
+}
+
+@media(min-width:960px){
+ .cashier-panel{position:relative}
+ .cashier-panel .single-clinic-toolbar{position:absolute;top:0;right:0;margin:0;padding:0;border:0;background:transparent}
+ .cashier-panel .single-clinic-toolbar fieldset[hidden]{display:none}
+ .cashier-panel .task-panel-header{margin-bottom:12px;padding-right:150px}
+ .cashier-panel .task-summary{gap:10px;margin-bottom:12px}
+ .cashier-panel .task-summary>div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px}
+ .cashier-panel .task-summary strong{font-size:20px;white-space:nowrap}
+ .cashier-panel .task-card{padding:16px}
+ .cashier-panel .cashier-balance{padding:12px;margin:10px 0;gap:2px}
+ .cashier-panel .cashier-balance strong{font-size:26px}
+ .cashier-panel .cashier-lines{max-height:110px;overflow:auto;margin:10px 0}
+ .cashier-panel .cashier-totals{margin:10px 0}
+ .cashier-panel .cashier-totals dd{margin-top:3px}
+ .cashier-panel .cashier-payment h2{margin-bottom:4px}
+ .cashier-panel .cashier-payment .patient-identity{margin:4px 0;gap:2px 8px}
+ .cashier-panel .cashier-payment label{margin-bottom:10px}
+}
+/* Work areas remain separate while their in-memory forms stay mounted. */
+[hidden] { display:none !important; }
+.task-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 20px; }
+.task-tabs button { min-height:44px; padding:10px 16px; border:1px solid var(--line-strong); border-radius:8px; background:white; color:var(--ink); cursor:pointer; }
+.task-tabs button[aria-pressed=true] { background:var(--brand-700); color:white; border-color:var(--brand-700); }
+.date-preview { display:block; margin-top:4px; color:var(--muted-strong); font-size:12px; }
+.account-identity { display:flex; gap:16px; justify-content:space-between; align-items:center; padding:20px; background:var(--brand-50); border-radius:12px; }
+.account-identity p { margin:6px 0 0; }
+.confirm-backdrop { position:fixed; inset:0; z-index:1000; display:grid; place-items:center; background:rgba(15,35,31,.55); padding:20px; }
+.confirm-dialog { width:min(100%,620px); max-height:calc(100dvh - 40px); overflow:auto; background:white; color:var(--ink); border-radius:14px; padding:24px; box-shadow:0 24px 80px #12282055; }
+.confirm-dialog h2 { margin:0 0 20px; }
+.confirm-dialog p { line-height:1.6; }
+.confirm-dialog button { min-height:44px; padding:10px 16px; border:1px solid var(--line-strong); border-radius:8px; cursor:pointer; }
+.confirm-dialog .booking-primary { background:var(--brand-700); color:white; }
+.confirm-dialog table { border-collapse:collapse; width:100%; margin:16px 0; font-size:14px; }
+.confirm-dialog :is(th,td) { text-align:right; padding:10px 6px; border-bottom:1px solid var(--line); }
+.confirm-dialog :is(th,td):first-child { text-align:left; }
+:where(button,input,textarea,select,summary,a):focus-visible { outline:3px solid #238a73; outline-offset:3px; }
+.configuration-create { margin:16px 0 24px; border:1px solid var(--line); border-radius:10px; padding:0 16px; }
+.configuration-create>summary, .booking-appointment>summary { cursor:pointer; min-height:44px; padding:12px 0; font-weight:650; }
+.configuration-create[open] { padding-bottom:16px; }
+.draft-comparison { display:grid; gap:12px; }
+.draft-comparison div { border-top:1px solid var(--line); padding-top:10px; }
+.draft-comparison dd { margin:6px 0; white-space:pre-wrap; overflow-wrap:anywhere; }
+.medical-action-bar, .review-action-bar { position:sticky; bottom:12px; display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:12px; border:1px solid var(--line-strong); background:#fff; border-radius:10px; box-shadow:0 -4px 20px #1b493018; z-index:3; }
+.medical-action-bar { margin-top:16px; }
+.medical-action-bar>span { font-size:13px; margin-right:auto; }
+.patient-banner { position:sticky; top:78px; padding:12px 16px; background:var(--brand-50); border:1px solid var(--line-strong); border-radius:10px; z-index:4; margin-bottom:16px; }
+.patient-banner>span { display:block; font-size:13px; margin-top:4px; }
+.doctor-case { min-width:0; }
+.doctor-case :is(input,textarea,button) { scroll-margin-top:180px; scroll-margin-bottom:100px; }
+.review-layout { display:grid; gap:20px; align-items:start; margin-top:20px; }
+.review-detail { min-width:0; }
+@media(min-width:960px) {
+ .review-layout { grid-template-columns:290px minmax(0,1fr); }
+ .review-worklist { position:sticky; top:88px; max-height:calc(100dvh - 108px); overflow:auto; }
+ .reception-desk-grid.desk-queue { grid-template-columns:1fr; }
+ .reception-panel .desk-queue .reception-queue-card { grid-column:auto; }
+}
+@media(min-width:1200px) {
+ .reception-panel .reception-desk-grid.desk-intake { grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) minmax(260px,.9fr); gap:14px; }
+ .reception-panel .desk-intake .reception-queue-card { grid-column:auto; position:sticky; top:88px; max-height:calc(100dvh - 108px); overflow:auto; }
+ .reception-panel .desk-intake .task-card { padding:16px; }
+ .reception-panel .desk-intake .booking-form { grid-template-columns:1fr; }
+}
+@media(max-width:620px) {
+ .confirm-backdrop { padding:12px; }
+ .confirm-dialog { padding:18px; max-height:calc(100dvh - 24px); }
+ .confirm-dialog .task-button-row button { width:100%; }
+ .patient-banner { top:8px; }
+ .account-identity { flex-wrap:wrap; }
+ .medical-action-bar { bottom:4px; }
+}
+@media(min-width:960px) {
+ .workspace-content .medical-action-bar { position:fixed; left:var(--action-left); width:var(--action-width); box-sizing:border-box; bottom:12px; z-index:8; }
+ .workspace-content .medical-panel { padding-bottom:130px; }
+ .reception-shared-controls { display:grid; grid-template-columns:minmax(180px,.4fr) minmax(240px,1fr) minmax(200px,.5fr); gap:16px; align-items:start; }
+ .reception-shared-controls textarea { min-height:44px; }
+}

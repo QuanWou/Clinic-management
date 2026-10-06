@@ -1,0 +1,7 @@
+{
+  "identity": ["auth", "identity", "audit"],
+  "doctor": ["clinic", "doctor", "search"],
+  "patient": ["patient", "medical"],
+  "appointment": ["appointment", "encounter"],
+  "billing": ["billing", "catalog", "notification"]
+}

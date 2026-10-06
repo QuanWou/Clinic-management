@@ -1,49 +1,46 @@
-# Clinic Management System
+# Clinic Management
 
-## Ứng dụng hiện tại: Clinic V2
+Hệ thống quản lý một phòng khám, gồm **5 service core + API Gateway riêng**: Identity, Doctor, Patient (kèm Medical Record), Appointment và Billing (kèm Notification). Java 21 / Spring Boot, React / TypeScript và PostgreSQL.
 
-Chạy Public cho bệnh nhân, Workspace cho một phòng khám và Platform riêng từ code V2 trên nhánh `main`. Database hiện dùng là PostgreSQL `clinic_db` của main, với dữ liệu cũ được giữ và dữ liệu vận hành phòng khám được bổ sung.
+## Cấu trúc
+
+```text
+backend/       Các microservice độc lập và Maven reactor
+frontend/      Giao diện bệnh nhân và workspace nhân viên
+scripts/       Build, khởi động, dừng và kiểm tra hệ thống
+infra/         Công cụ hạ tầng và phục hồi
+docs/          Hướng dẫn và hợp đồng API
+.runtime/      Cấu hình riêng, trạng thái tiến trình, log (không commit)
+.archive/      Bản lưu mã cũ trước khi sắp xếp (không commit)
+```
+
+## Chạy ứng dụng hiện tại
+
+Yêu cầu: Java 21, Maven, Node.js, PowerShell 7 và PostgreSQL đang chạy.
+Cấu hình kết nối và bí mật nằm tại `.runtime/main/config.json`. Không commit hoặc chia sẻ file này.
 
 ```powershell
-pwsh -NoProfile -File v2/scripts/build-main.ps1
+pwsh -NoProfile -File scripts/build-main.ps1
 pwsh -NoProfile -File scripts/start.ps1
+# Dừng các tiến trình do ứng dụng quản lý, không dừng/xóa database:
+pwsh -NoProfile -File scripts/stop.ps1
 ```
 
-Mở [Public](http://127.0.0.1:4176/public), [Workspace](http://127.0.0.1:4176/workspace) hoặc [Platform](http://127.0.0.1:4176/platform). Xem [cách chạy, dữ liệu và tài khoản V2](v2/MAIN.md). Đặt lịch không cọc, khám nội bộ chưa ký và thu phí tại quầy được bật; ký/phát hành và thanh toán online chưa bật.
+- [Bệnh nhân](http://127.0.0.1:4176/public)
+- [Workspace](http://127.0.0.1:4176/workspace)
 
-## Legacy V1 reference
-Micro-service based platform for managing clinics. Built with **Java 21**, **Spring Boot 3**, **PostgreSQL**, and **Docker Compose**. Includes implemented identity, patient, doctor, appointment, medical record, billing, and notification service foundations.
+Launcher 5 core không hỗ trợ `-Seed`. Dữ liệu hiện có được giữ nguyên. Các module nằm trong `backend/<core>-service/modules/`; `common-lib` và `core-runtime` chỉ là thư viện, không chạy riêng.
 
-## Architecture Docs
-- [Root system prompt](system_prompt.md)
-- [AI system prompt](docs/ai-system-prompt.md)
-- [Architecture overview](docs/architecture-overview.md)
-- [Backend service standard](docs/backend-service-standard.md)
-- [Project structure](docs/project-structure.md)
-- [Service interaction guide](docs/service-interaction.md)
-- [API contract](docs/api-contract.md)
-- [ERD](docs/erd.md)
-- [Roadmap](docs/roadmap.md)
-- [Testing and smoke checks](docs/testing.md)
+## Kiến trúc và kiểm thử
 
-## Legacy V1 quick start (reference)
-```bash
-# Start PostgreSQL, backend services, API Gateway, Prometheus, and Grafana
-docker compose up --build
+Xem [kiến trúc](docs/ARCHITECTURE.md), [vận hành](docs/OPERATIONS.md) và [ghi chú chuyển cấu trúc](docs/LAYOUT-MIGRATION.md).
 
-# Verify all backend modules
-cd backend
-mvn clean test
+```powershell
+mvn -f backend/pom.xml test
+npm --prefix frontend run build
+npm --prefix frontend test
+node scripts/verify-front-desk.mjs
+node scripts/verify-cashier-desk.mjs
 ```
 
-Local URLs:
-
-- API Gateway: `http://localhost:8090`
-- Prometheus: `http://localhost:9090`
-- Grafana: `http://localhost:3000` (`admin` / `admin`)
-
-Stop the stack:
-
-```bash
-docker compose down
-```
+Hai script kiểm tra trình duyệt cuối chỉ đọc dữ liệu và chặn ghi nghiệp vụ. Một số bài kiểm thử tích hợp cần PostgreSQL sandbox riêng; không trỏ kiểm thử tạo dữ liệu vào database vận hành.

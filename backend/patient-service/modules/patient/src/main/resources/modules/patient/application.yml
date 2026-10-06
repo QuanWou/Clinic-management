@@ -1,0 +1,36 @@
+server:
+  port: ${PATIENT_PORT:8098}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  datasource:
+    url: ${PATIENT_DB_URL}
+    username: ${PATIENT_DB_USER}
+    password: ${PATIENT_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.default_schema: patient_v2
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: patient_v2
+    schemas: patient_v2
+    user: ${PATIENT_MIGRATION_DB_USER:${PATIENT_DB_USER}}
+    password: ${PATIENT_MIGRATION_DB_PASSWORD:${PATIENT_DB_PASSWORD}}
+patient:
+  reception:
+    enabled: ${PATIENT_RECEPTION_ENABLED:false}
+  security:
+    identity-url: ${PATIENT_IDENTITY_URL:http://127.0.0.1:8093}
+    appointment-secret: ${PATIENT_APPOINTMENT_SECRET:}
+    billing-secret: ${PATIENT_BILLING_SECRET:}
+    audience: patient-service
+
+    iam-url: ${PATIENT_IDENTITY_URL:http://127.0.0.1:8093}
+    iam-service-secret: ${PATIENT_IAM_SERVICE_SECRET:}
+    clinic-url: ${PATIENT_CLINIC_URL:http://127.0.0.1:8092}
+    clinic-service-secret: ${PATIENT_CLINIC_SERVICE_SECRET:}
+

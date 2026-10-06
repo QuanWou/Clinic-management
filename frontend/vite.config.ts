@@ -1,24 +1,11 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
-
+const gateway=process.env.CLINIC_GATEWAY_URL??'http://127.0.0.1:8090';
+const target=new URL(gateway);
+if(target.protocol!=='http:'||target.hostname!=='127.0.0.1')throw new Error('Local gateway URL required');
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:8090',
-        changeOrigin: true,
-        configure(proxy) {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            // Only strip same-origin dev browser origins when proxying to the
-            // Gateway; leave cross-site origins in place for CORS rejection.
-            if (req.headers.origin === `http://${req.headers.host}`) {
-              proxyReq.removeHeader('origin');
-            }
-          });
-        }
-      }
-    }
-  }
+ plugins:[react()],
+ build:{manifest:true},
+ server:{host:'127.0.0.1',port:4176,proxy:{'/s1':{target:gateway}}},
+ preview:{host:'127.0.0.1',port:4177}
 });

@@ -1,0 +1,36 @@
+﻿server:
+  port: ${APPOINTMENT_PORT:8099}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  datasource:
+    url: ${APPOINTMENT_DB_URL}
+    username: ${APPOINTMENT_DB_USER}
+    password: ${APPOINTMENT_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.default_schema: appointment_v2
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: appointment_v2
+    schemas: appointment_v2
+    user: ${APPOINTMENT_MIGRATION_DB_USER:${APPOINTMENT_DB_USER}}
+    password: ${APPOINTMENT_MIGRATION_DB_PASSWORD:${APPOINTMENT_DB_PASSWORD}}
+appointment:
+  follow-up:
+    encounter-url: ${APPOINTMENT_FOLLOW_UP_ENCOUNTER_URL:http://127.0.0.1:8099/modules/encounter}
+    medical-url: ${APPOINTMENT_FOLLOW_UP_MEDICAL_URL:http://127.0.0.1:8098/modules/patient/modules/patient/modules/medical}
+  hold-ttl-seconds: ${APPOINTMENT_HOLD_TTL_SECONDS:600}
+  security:
+    identity-url: ${APPOINTMENT_IDENTITY_URL:http://127.0.0.1:8093/modules/identity/modules/identity/modules/identity}
+    clinic-url: ${APPOINTMENT_CLINIC_URL:http://127.0.0.1:8094/modules/clinic}
+    patient-url: ${APPOINTMENT_PATIENT_URL:http://127.0.0.1:8098/modules/patient/modules/patient/modules/patient}
+    doctor-url: ${APPOINTMENT_DOCTOR_URL:http://127.0.0.1:8094/modules/doctor}
+    catalog-url: ${APPOINTMENT_CATALOG_URL:http://127.0.0.1:8103/modules/catalog}
+    workload-secret: ${APPOINTMENT_WORKLOAD_SECRET}
+
+

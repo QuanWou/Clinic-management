@@ -1,33 +1,20 @@
-# Architecture Design
+# Kiến trúc 5 service core + API Gateway
 
-Tài liệu kiến trúc chi tiết đã được tách thành các file chuyên biệt để agent và developer đọc đúng ngữ cảnh trước khi sửa code.
+| Service | Module nghiệp vụ | Cổng local |
+|---|---|---|
+| api-gateway | Định tuyến API, chuyển tiếp token và mã chống lặp | 8090 |
+| identity-service | Authentication, Account, IAM, Audit | 8093 |
+| doctor-service | Doctor, Specialty, Schedule, Clinic, Search | 8094 |
+| patient-service | Patient, Medical Record, chỉ định/kết quả | 8098 |
+| appointment-service | Appointment, Booking, tiếp nhận, hàng đợi/lượt khám | 8099 |
+| billing-service | Billing, Payment, Notification, Catalog/bảng giá | 8103 |
 
-## Canonical Docs
+Mỗi core có một JAR triển khai, một tiến trình Java và một HTTP listener. Source nghiệp vụ nằm trong `<core>-service/modules/`; các module là thư viện, không triển khai thành service độc lập. `common-lib` và `core-runtime` là thư viện dùng chung, không có tiến trình/cổng riêng.
 
-- [Architecture overview](architecture-overview.md): kiến trúc tổng thể, service ownership, request flow, consistency strategy.
-- [Project structure](project-structure.md): cấu trúc thư mục, module, package, nơi đặt code mới.
-- [Backend service standard](backend-service-standard.md): chuẩn Controller, Service, Repository, DTO, Entity, Exception, Security, Migration, Test.
-- [Service interaction guide](service-interaction.md): Feign, JWT propagation, event-driven flow, ownership ID, failure handling.
-- [AI system prompt](ai-system-prompt.md): prompt hệ thống dùng cho Claude/Codex/Cursor.
+Đây là gộp ở cấp triển khai: các module vẫn có Spring context, datasource và transaction boundary riêng, nhằm giữ nguyên phân quyền và dữ liệu. Lời gọi nội bộ hiện vẫn qua HTTP loopback; chưa chuyển toàn bộ thành gọi hàm trực tiếp. Không phải một Spring context duy nhất cho mỗi core.
 
-## Current Architecture Summary
+Frontend → Vite proxy `/s1` → API Gateway độc lập → core sở hữu module. Gateway có JAR/JVM riêng, không dùng database hoặc bí mật JWT. Gateway chỉ định tuyến tới danh sách địa chỉ loopback cố định, chuyển tiếp token và Idempotency-Key, không tự cấp quyền. Module đích vẫn xác thực và kiểm tra scope. Các core chỉ bind loopback trong launcher local; đây chưa phải cấu hình production.
 
-Hệ thống dùng kiến trúc microservices theo Maven multi-module:
+Module phục vụ tại `/modules/<module>/api/...`. Gateway giữ alias `/s1/<module>/api/...` để frontend không cần đổi luồng. Health tổng hợp của mỗi core: `/actuator/health`.
 
-- `api-gateway`: entry point cho client.
-- `identity-service`: auth, user, role, JWT, refresh token.
-- `patient-service`: hồ sơ bệnh nhân.
-- `doctor-service`: hồ sơ bác sĩ, chuyên khoa, lịch làm việc.
-- `appointment-service`: đặt lịch và điều phối khám.
-- `medical-record-service`: bệnh án và đơn thuốc.
-- `billing-service`: hóa đơn và thanh toán.
-- `notification-service`: thông báo.
-- `common-lib`: response wrapper, error code, business exception.
-
-Database dùng PostgreSQL theo hướng schema-per-service. Service chỉ sở hữu schema của chính nó, không truy cập trực tiếp schema của service khác.
-
-## Important Notes
-
-- Code hiện tại và gateway đang dùng route `/api/...`.
-- Chuẩn dài hạn là `/api/v1/...`, nhưng chỉ migrate khi cập nhật đồng bộ controller, gateway, docs và test.
-- OpenFeign, resilience, async messaging và Docker Compose là phần cần hoàn thiện ở các phase sau.
+Database, schema, quyền runtime và checksum migration giữ nguyên. Migration được phân tách resource theo module để không trùng version khi đóng chung JAR. Xem [vận hành](OPERATIONS.md).

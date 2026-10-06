@@ -1,0 +1,17 @@
+{
+  "name": "identity",
+  "modules": [
+    {
+      "name": "auth",
+      "application": "com.clinic.identity.IdentityServiceApplication"
+    },
+    {
+      "name": "identity",
+      "application": "com.clinic.iam.IamApplication"
+    },
+    {
+      "name": "audit",
+      "application": "com.clinic.audit.AuditApplication"
+    }
+  ]
+}

@@ -1,9 +1,0 @@
-{
-  "replay": "same-key-no-duplicate-event-or-ticket",
-  "lifecycle": "start-await-results-retire-ticket-requeue-call-resume-same-encounter",
-  "status": "PASS",
-  "boundary": "legacy-token-fixture-seeded-booking-no-medical-order-or-completion",
-  "doctorRevoke": 403,
-  "directory": "DOCTOR_WORK-branch-grants",
-  "audit": "12-exact-events-including-S2"
-}

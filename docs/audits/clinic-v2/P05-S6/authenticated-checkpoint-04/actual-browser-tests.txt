@@ -1,7 +1,0 @@
-
-Running 2 tests using 1 worker
-
-  ok 1 real-e2e\public-booking.real.spec.ts:5:1 › new patient registers through the real Public form and owns a new Patient profile (1.0s)
-  ok 2 real-e2e\public-booking.real.spec.ts:10:1 › actual registered patient logs in and books through real Search and source APIs without deposit (2.1s)
-
-  2 passed (5.5s)

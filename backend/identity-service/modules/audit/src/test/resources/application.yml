@@ -1,0 +1,41 @@
+server:
+  port: ${AUDIT_PORT:8096}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: audit-service
+  datasource:
+    url: ${AUDIT_DB_URL}
+    username: ${AUDIT_DB_USER}
+    password: ${AUDIT_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: audit_v2
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: audit_v2
+    schemas: audit_v2
+    locations: classpath:/modules/audit/db/migration
+    user: ${AUDIT_MIGRATION_DB_USER:${AUDIT_DB_USER}}
+    password: ${AUDIT_MIGRATION_DB_PASSWORD:${AUDIT_DB_PASSWORD}}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+audit:
+  security:
+    identity-secret: ${AUDIT_IDENTITY_SECRET:}
+    clinic-secret: ${AUDIT_CLINIC_SECRET:}
+    doctor-secret: ${AUDIT_DOCTOR_SECRET:}
+    catalog-secret: ${AUDIT_CATALOG_SECRET:}
+    audience: audit-service
+  outbox:
+    max-attempts: ${AUDIT_OUTBOX_MAX_ATTEMPTS:5}

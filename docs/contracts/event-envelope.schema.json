@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.example.invalid/clinic-v2/event-envelope.schema.json",
+  "title": "Clinic Management non-PHI integration event envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specversion",
+    "id",
+    "source",
+    "type",
+    "subject",
+    "time",
+    "datacontenttype",
+    "clinicid",
+    "correlationid",
+    "aggregateversion",
+    "data"
+  ],
+  "properties": {
+    "specversion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^clinic\\.[a-z_]+\\.[a-z_]+\\.v[1-9][0-9]*$"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "datacontenttype": {
+      "const": "application/json"
+    },
+    "clinicid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "branchid": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "correlationid": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causationid": {
+      "type": "string"
+    },
+    "aggregateversion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Only minimal safe metadata: IDs, states, amount where necessary. Do not include contact details, diagnosis or clinical body."
+    }
+  }
+}

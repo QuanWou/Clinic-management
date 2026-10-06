@@ -1,0 +1,5 @@
+package com.clinic.iam.repo;
+import com.clinic.iam.domain.UserSecurityState;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.UUID;
+public interface UserSecurityStateRepository extends JpaRepository<UserSecurityState,UUID>{}

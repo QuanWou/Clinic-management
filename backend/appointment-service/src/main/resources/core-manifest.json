@@ -1,0 +1,13 @@
+{
+  "name": "appointment",
+  "modules": [
+    {
+      "name": "appointment",
+      "application": "com.clinic.appointment.AppointmentApplication"
+    },
+    {
+      "name": "encounter",
+      "application": "com.clinic.encounter.EncounterApplication"
+    }
+  ]
+}
