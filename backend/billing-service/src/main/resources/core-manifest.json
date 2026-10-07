@@ -1,0 +1,17 @@
+{
+  "name": "billing",
+  "modules": [
+    {
+      "name": "billing",
+      "application": "com.clinic.billing.BillingApplication"
+    },
+    {
+      "name": "catalog",
+      "application": "com.clinic.catalog.CatalogApplication"
+    },
+    {
+      "name": "notification",
+      "application": "com.clinic.notification.NotificationApplication"
+    }
+  ]
+}

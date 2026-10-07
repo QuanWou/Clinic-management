@@ -1,0 +1,41 @@
+server:
+  port: ${CATALOG_PORT:8095}
+spring:
+  jackson:
+    deserialization:
+      accept-float-as-int: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: catalog-service
+  datasource:
+    url: ${CATALOG_DB_URL}
+    username: ${CATALOG_DB_USER}
+    password: ${CATALOG_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: catalog_v2
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: catalog_v2
+    schemas: catalog_v2
+    locations: classpath:/modules/catalog/db/migration
+    user: ${CATALOG_MIGRATION_DB_USER:${CATALOG_DB_USER}}
+    password: ${CATALOG_MIGRATION_DB_PASSWORD:${CATALOG_DB_PASSWORD}}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+catalog:
+  security:
+    iam-url: ${CATALOG_IAM_URL:http://localhost:8093}
+    iam-service-secret: ${CATALOG_IAM_SERVICE_SECRET}
+    clinic-url: ${CATALOG_CLINIC_URL:http://localhost:8092}
+    clinic-service-secret: ${CATALOG_CLINIC_SERVICE_SECRET}
