@@ -1,0 +1,46 @@
+server:
+  port: ${ENCOUNTER_PORT:8101}
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: encounter-service
+  datasource:
+    url: ${ENCOUNTER_DB_URL}
+    username: ${ENCOUNTER_DB_USER}
+    password: ${ENCOUNTER_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: encounter_v2
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    default-schema: encounter_v2
+    schemas: encounter_v2
+    locations: classpath:/modules/encounter/db/migration
+    user: ${ENCOUNTER_MIGRATION_DB_USER:${ENCOUNTER_DB_USER}}
+    password: ${ENCOUNTER_MIGRATION_DB_PASSWORD:${ENCOUNTER_DB_PASSWORD}}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+encounter:
+  charges:
+    enabled: ${ENCOUNTER_CHARGES_ENABLED:false}
+    billing-url: ${ENCOUNTER_CHARGES_BILLING_URL:http://127.0.0.1:8103}
+    delay-ms: ${ENCOUNTER_CHARGES_DELAY_MS:1000}
+  portal:
+    patient-url: ${ENCOUNTER_PORTAL_PATIENT_URL:http://127.0.0.1:8098}
+  security:
+    service-secret: ${ENCOUNTER_SERVICE_SECRET}
+    iam-url: ${ENCOUNTER_IAM_URL:http://localhost:8093}
+    iam-service-secret: ${ENCOUNTER_IAM_SERVICE_SECRET}
+    clinic-url: ${ENCOUNTER_CLINIC_URL:http://localhost:8092}
+    clinic-service-secret: ${ENCOUNTER_CLINIC_SERVICE_SECRET}
+
