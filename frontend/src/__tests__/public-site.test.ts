@@ -1,8 +1,16 @@
 // @vitest-environment jsdom
 import {afterEach,it,expect,vi} from 'vitest';
-import {getSiteClinic} from '../api/booking';
+import {getSiteClinic,getPublicContent} from '../api/booking';
 const source={id:'site-clinic',name:'Phòng khám đã công bố',publicDescription:'Thông tin từ nguồn',branches:[{id:'branch',name:'Điểm khám',address:'Địa chỉ từ nguồn',openingHours:'08–17',active:true}]};
 afterEach(()=>vi.unstubAllGlobals());
+it('uses the directory fallback when editorial content has not been published',async()=>{
+ vi.stubGlobal('fetch',vi.fn().mockResolvedValue(Response.json({error:{code:'NOT_FOUND'}},{status:404})));
+ await expect(getPublicContent('site-clinic')).resolves.toBeNull();
+});
+it.each([401,403,500])('keeps a content HTTP %s failure visible for recovery',async(status)=>{
+ vi.stubGlobal('fetch',vi.fn().mockResolvedValue(Response.json({error:{code:'ERROR'}},{status})));
+ await expect(getPublicContent('site-clinic')).rejects.toMatchObject({status});
+});
 it('opens the sole published clinic without any search request',async()=>{
  const fetcher=vi.fn().mockResolvedValue(Response.json({content:[source],totalElements:1}));vi.stubGlobal('fetch',fetcher);
  const clinic=await getSiteClinic('');expect(clinic.clinicId).toBe('site-clinic');expect(clinic.branches[0].branchId).toBe('branch');expect(fetcher).toHaveBeenCalledTimes(1);expect(fetcher.mock.calls[0][0]).toContain('/public/clinics?page=0&size=2');

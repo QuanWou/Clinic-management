@@ -1,9 +1,13 @@
+import {useAuthoritativeSync} from './useAuthoritativeSync';
+import {patientSubscription} from '../api/realtime';
 import { useEffect, useRef, useState } from 'react';
 import { ownFollowUps, type FollowUpPlan } from '../api/portal';
 export function PatientFollowUpPanel({token,clinic,branch,onChoose}:{token:string;clinic:string;branch:string;onChoose:(plan:FollowUpPlan)=>Promise<void>}) {
  const [plans,setPlans]=useState<FollowUpPlan[]|null>(null);const [busy,setBusy]=useState(false);const [error,setError]=useState('');const epoch=useRef(0);
  useEffect(()=>{epoch.current++;setPlans(null);setError('');setBusy(false);return()=>{epoch.current++;};},[token,clinic,branch]);
  async function load(){if(busy)return;const current=++epoch.current;setPlans(null);setError('');setBusy(true);try{const list=await ownFollowUps(token,clinic,branch);if(current===epoch.current)setPlans(list);}catch(e){if(current===epoch.current)setError(e instanceof Error?e.message:'Không thể tải lịch tái khám đề xuất.');}finally{if(current===epoch.current)setBusy(false);}}
+ useEffect(()=>{if(token&&clinic&&branch)void load();},[token,clinic,branch]);
+ useAuthoritativeSync({key:token+clinic+branch,enabled:!!token&&!!branch,blocked:busy,subscriptions:[patientSubscription({token,clinic,branch},'encounter')],refresh:async context=>{const current=epoch.current;const list=await ownFollowUps(token,clinic,branch);if(context.current()&&current===epoch.current){setPlans(list);setError('');}},onDenied:()=>{epoch.current++;setPlans(null);}});
  async function choose(plan:FollowUpPlan){if(busy)return;const current=++epoch.current;setError('');setBusy(true);try{await onChoose(plan);}catch(e){if(current===epoch.current)setError(e instanceof Error?e.message:'Không thể chọn giờ tái khám.');}finally{if(current===epoch.current)setBusy(false);}}
  return <section className="public-section booking-panel"><h2>Lịch tái khám đề xuất</h2><p>Chọn giờ để tạo lịch khám mới, gắn với lượt khám trước.</p><button className="button-secondary" disabled={busy||!branch} onClick={()=>void load()}>Tải lịch tái khám đề xuất</button>{busy&&<p role="status">Đang xử lý tái khám…</p>}{error&&<p role="alert" className="booking-error">{error}</p>}{plans?.length===0&&<p>Chưa có ngày tái khám đề xuất tại chi nhánh này.</p>}{plans?.map(p=><article className="booking-appointment" key={p.encounterId}><p>Ngày đề xuất: {new Intl.DateTimeFormat('vi-VN',{dateStyle:'medium',timeZone:'Asia/Ho_Chi_Minh'}).format(new Date(p.proposedDate+'T00:00:00+07:00'))}</p><button className="button-secondary" disabled={busy} onClick={()=>void choose(p)}>Chọn giờ tái khám</button></article>)}</section>;
 }

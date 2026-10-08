@@ -22,6 +22,7 @@ public class OnlinePaymentService {
  private <T>T local(UUID c,UUID b,Supplier<T> work){return tx.execute(t->{db.scope(c,b);return work.get();});}
  private UUID owner(Actor actor,UUID clinic){UUID owner=patient.ownPatient(actor,clinic);if(owner==null)throw ApiProblem.forbidden();return owner;}
  private Map<String,Object> bill(UUID id,UUID owner){var rows=jdbc.queryForList("select * from billing_v2.bills where id=? and patient_id=? for update",id,owner);if(rows.isEmpty())throw ApiProblem.missing();return rows.getFirst();}
+ private Map<String,Object> bill(UUID id){var rows=jdbc.queryForList("select * from billing_v2.bills where id=? for update",id);if(rows.isEmpty())throw ApiProblem.missing();return rows.getFirst();}
  private Map<String,Object> intent(UUID id){var rows=jdbc.queryForList("select * from billing_v2.payment_intents where id=?",id);if(rows.isEmpty())throw ApiProblem.missing();return rows.getFirst();}
  private static long value(Map<String,Object> row,String name){return ((Number)row.get(name)).longValue();}
  private static long remaining(Map<String,Object> row){return value(row,"subtotal_vnd")-value(row,"adjustment_vnd")-value(row,"paid_vnd");}
@@ -33,6 +34,8 @@ public class OnlinePaymentService {
  public PaymentGateways.BankDetails bank(Actor actor,UUID c,UUID b,UUID billId){UUID owner=owner(actor,c);return local(c,b,()->{var bill=bill(billId,owner);long due=remaining(bill);if(due<=0)throw ApiProblem.conflict("Phiếu đã thanh toán đủ.");ensureUnreserved(jdbc,billId);return gateways.bank(c,billId,due);});}
  public List<Intent> list(Actor actor,UUID c,UUID b,UUID billId){UUID owner=owner(actor,c);return local(c,b,()->{bill(billId,owner);return jdbc.queryForList("select * from billing_v2.payment_intents where bill_id=? order by created_at desc limit 20",billId).stream().map(OnlinePaymentService::view).toList();});}
  public List<Intent> staffList(UUID c,UUID b,UUID billId){return local(c,b,()->jdbc.queryForList("select * from billing_v2.payment_intents where bill_id=? order by created_at desc limit 20",billId).stream().map(OnlinePaymentService::view).toList());}
+ public List<PaymentGateways.Method> staffMethods(UUID c,UUID b,UUID billId){return local(c,b,()->{bill(billId);return gateways.methods(c);});}
+ public PaymentGateways.BankDetails staffBank(UUID c,UUID b,UUID billId){return local(c,b,()->{var current=bill(billId);long due=remaining(current);if(due<=0)throw ApiProblem.conflict("Phiếu đã thanh toán đủ.");ensureUnreserved(jdbc,billId);return gateways.bank(c,billId,due);});}
  public Intent create(Actor actor,UUID c,UUID b,UUID billId,String key,Create input,String ip){
   UUID owner=owner(actor,c);if(input==null||!Set.of("PAYOS","VNPAY").contains(input.provider()))throw ApiProblem.invalid("Chọn cổng thanh toán phù hợp.");gateways.require(c,input.provider());
   if(key==null||!key.matches("[A-Za-z0-9_.:-]{1,120}"))throw ApiProblem.invalid("Yêu cầu cần mã chống ghi trùng.");String digest=hash(List.of(billId,input));
@@ -47,6 +50,25 @@ public class OnlinePaymentService {
   });
   return initialize(c,b,id);
  }
+ public Intent createStaff(Actor actor,UUID c,UUID b,UUID billId,String key,Create input,String ip){
+  if(actor==null||input==null||!Set.of("PAYOS","VNPAY").contains(input.provider()))throw ApiProblem.invalid("Chọn cổng thanh toán phù hợp.");gateways.require(c,input.provider());
+  if(key==null||!key.matches("[A-Za-z0-9_.:-]{1,120}"))throw ApiProblem.invalid("Yêu cầu cần mã chống ghi trùng.");String digest=hash(List.of(billId,input));
+  UUID id=local(c,b,()->{
+   var current=bill(billId);db.lock("online-bill:"+billId);db.lock("online-command:"+actor.id()+":"+key);
+   var previous=jdbc.queryForList("select resource_id,payload_hash from billing_v2.commands where actor_user_id=? and operation='online-staff-create' and key=?",actor.id(),key);
+   if(!previous.isEmpty()){if(!digest.equals(previous.getFirst().get("payload_hash")))throw ApiProblem.conflict("Mã yêu cầu đã được dùng với thông tin khác.");return (UUID)previous.getFirst().get("resource_id");}
+   long amount=remaining(current);if(amount<=0||amount>9999999999L)throw ApiProblem.conflict("Phiếu không còn số dư phù hợp để thanh toán online.");if(input.expectedVersion()!=value(current,"row_version"))throw ApiProblem.conflict("Phiếu thu vừa thay đổi. Tải lại số tiền trước khi thanh toán.");
+   var reusable=jdbc.queryForList("select * from billing_v2.payment_intents where bill_id=? and provider=? and status in ('CREATING','PENDING') and expires_at>now() order by created_at desc limit 1",billId,input.provider());
+   if(!reusable.isEmpty()){
+    var row=reusable.getFirst();if(value(row,"amount_vnd")!=amount)throw ApiProblem.conflict("Giao dịch đang chờ có số tiền khác. Đối chiếu giao dịch hiện tại trước khi tiếp tục.");UUID existing=(UUID)row.get("id");
+    jdbc.update("insert into billing_v2.commands(clinic_id,branch_id,actor_user_id,operation,key,payload_hash,resource_id) values(?,?,?,'online-staff-create',?,?,?)",c,b,actor.id(),key,digest,existing);return existing;
+   }
+   ensureUnreserved(jdbc,billId);UUID created=UUID.randomUUID();String code=input.provider().equals("PAYOS")?Long.toString((created.getLeastSignificantBits()&0xFFFFFFFFFFFFL)+1):created.toString().replace("-","");
+   jdbc.update("insert into billing_v2.payment_intents(id,clinic_id,branch_id,bill_id,patient_id,initiated_by,provider,provider_order_code,amount_vnd,client_ip,expires_at) values(?,?,?,?,?,?,?,?,?,?,now()+interval '15 minutes')",created,c,b,billId,current.get("patient_id"),actor.id(),input.provider(),code,amount,ip);
+   jdbc.update("insert into billing_v2.commands(clinic_id,branch_id,actor_user_id,operation,key,payload_hash,resource_id) values(?,?,?,'online-staff-create',?,?,?)",c,b,actor.id(),key,digest,created);return created;
+  });
+  return initialize(c,b,id);
+ }
  private Intent initialize(UUID c,UUID b,UUID id){
   var current=local(c,b,()->intent(id));if(!"CREATING".equals(current.get("status"))||!((Timestamp)current.get("expires_at")).toInstant().isAfter(Instant.now()))return view(current);
   // HTTP is outside any database transaction; retries reuse this durable order code.
@@ -57,6 +79,19 @@ public class OnlinePaymentService {
  }
  public Intent read(Actor actor,UUID c,UUID b,UUID billId,UUID id,boolean reconcile){
   UUID owner=owner(actor,c);var current=local(c,b,()->{bill(billId,owner);var row=intent(id);if(!billId.equals(row.get("bill_id")))throw ApiProblem.missing();return row;});
+  if(!reconcile||Set.of("PAID","REVIEW_REQUIRED").contains(current.get("status")))return view(current);
+  if("CREATING".equals(current.get("status"))&&((Timestamp)current.get("expires_at")).toInstant().isAfter(Instant.now()))return initialize(c,b,id);
+  if("PAYOS".equals(current.get("provider"))){
+   var data=gateways.payment(current.get("provider_order_code").toString());if(!current.get("provider_order_code").toString().equals(data.path("orderCode").asText()))throw ApiProblem.dependency("Mã giao dịch từ cổng thanh toán chưa khớp.");
+   String state=data.path("status").asText();if("PAID".equals(state)){
+    var transactions=data.path("transactions");String reference=transactions.isArray()&&transactions.size()>0?transactions.get(0).path("reference").asText():data.path("id").asText();
+    confirm(c,b,"PAYOS",new PaymentGateways.Confirmation(data.path("orderCode").asText(),data.path("amountPaid").asLong(-1),"VND",reference,data.path("id").asText(),true));
+   }else if(Set.of("CANCELLED","EXPIRED").contains(state))local(c,b,()->jdbc.update("update billing_v2.payment_intents set status=? where id=? and status in ('PENDING','CREATING')",state,id));
+  }
+  return local(c,b,()->view(intent(id)));
+ }
+ public Intent systemRead(UUID c,UUID b,UUID id,boolean reconcile){
+  var current=local(c,b,()->intent(id));
   if(!reconcile||Set.of("PAID","REVIEW_REQUIRED").contains(current.get("status")))return view(current);
   if("CREATING".equals(current.get("status"))&&((Timestamp)current.get("expires_at")).toInstant().isAfter(Instant.now()))return initialize(c,b,id);
   if("PAYOS".equals(current.get("provider"))){

@@ -1,0 +1,45 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #F5F9FF
+skinparam usecaseBorderColor #334155
+skinparam actorBorderColor #334155
+skinparam ArrowColor #475569
+title Use case chi tiết — Quản trị phòng khám
+actor "Quản trị phòng khám" as Admin
+rectangle "QUẢN TRỊ PHÒNG KHÁM" {
+ usecase "Quản lý hồ sơ phòng khám\nvà chi nhánh" as Clinic
+ usecase "Gửi hồ sơ kiểm duyệt" as Submit
+ usecase "Quản lý tài khoản nhân viên" as Staff
+ usecase "Gán vai trò và\nphạm vi chi nhánh" as Permissions
+ usecase "Quản lý bác sĩ\nvà lịch làm việc" as Doctors
+ usecase "Quản lý khoảng vắng bác sĩ" as Absence
+ usecase "Quản lý chuyên khoa / dịch vụ\nvà bảng giá" as Catalog
+ usecase "Cấu hình điểm phục vụ" as Points
+ usecase "Xem tổng quan vận hành" as Operations
+ usecase "Xem tài chính / đối soát" as Finance
+ usecase "Xử lý ngoại lệ vận hành\nvà thử lại đồng bộ lỗi" as Recovery
+ usecase "Xem nhật ký hoạt động" as Audit
+}
+Admin -- Clinic
+Admin -- Submit
+Admin -- Staff
+Admin -- Permissions
+Admin -- Doctors
+Admin -- Absence
+Admin -- Catalog
+Admin -- Points
+Admin -- Operations
+Admin -- Finance
+Admin -- Recovery
+Admin -- Audit
+note bottom of Permissions
+ ADMIN không mặc nhiên có RECEPTION, BILLING,
+ DOCTOR_WORK hoặc LAB_WORK.
+ Quyền quản trị tài chính khác quyền thu tiền tại quầy.
+end note
+@enduml
+

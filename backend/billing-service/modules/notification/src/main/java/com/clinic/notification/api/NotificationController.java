@@ -13,6 +13,8 @@ public class NotificationController{
   return Map.of("applied",service.ingest(event));
  }
  @GetMapping("/api/me/notifications") public List<Map<String,Object>> mine(@AuthenticationPrincipal Actor actor){return service.mine(actor);}
+ @GetMapping("/api/me/notifications/unread-count") public Map<String,Long> unreadCount(@AuthenticationPrincipal Actor actor){return Map.of("count",service.unreadCount(actor));}
+ @PostMapping("/api/me/notifications/{id}/read") public Map<String,Boolean> markRead(@AuthenticationPrincipal Actor actor,@PathVariable UUID id){service.markRead(actor,id);return Map.of("read",true);}
  public record Preference(boolean remindersEnabled){}
  @GetMapping("/api/me/notification-preferences") public Preference preference(@AuthenticationPrincipal Actor actor){return new Preference(service.preference(actor));}
  @PutMapping("/api/me/notification-preferences") public Preference preference(@AuthenticationPrincipal Actor actor,@RequestBody Preference input){return new Preference(service.preference(actor,input.remindersEnabled()));}

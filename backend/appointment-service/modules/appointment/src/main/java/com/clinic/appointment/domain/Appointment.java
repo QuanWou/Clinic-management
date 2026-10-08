@@ -27,6 +27,7 @@ public class Appointment{
  @Column(name="updated_at",nullable=false) public Instant updatedAt;
  @Column(name="cancelled_at") public Instant cancelledAt;
  @Column(name="prior_encounter_id") public UUID priorEncounterId;
+ @Column(name="encounter_id") public UUID encounterId;
  @Column(name="prior_branch_id") public UUID priorBranchId;
  @Column(name="prior_medical_version") public Long priorMedicalVersion;
  @Column(name="prior_proposed_date") public java.time.LocalDate priorProposedDate;

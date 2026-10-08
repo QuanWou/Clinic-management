@@ -14,6 +14,7 @@ const clinicBase = import.meta.env.VITE_CLINIC_URL ?? "http://127.0.0.1:8092";
 export async function requestJson<T>(url: string, init: RequestInit = {}): Promise<ApiResult<T>> {
   try {
     const response = await fetch(url, {
+      cache: 'no-store',
       ...init,
       headers: {
         Accept: "application/json",

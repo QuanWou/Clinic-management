@@ -5,11 +5,12 @@ export type Branch = { branchId: string; name: string; address: string; openingH
 export type Clinic = { clinicId: string; name: string; description?: string; locationText?: string;phone?:string|null; branches: Branch[] };
 export type Doctor = { doctorId: string; clinicId: string; branchId: string; displayName: string; specialtyName?: string;professionalTitle?:string };
 export type Offering = { offeringId: string; clinicId: string; branchId: string; name: string; amountVnd: number; priceVersionId: string };
-export type PublicClinicContent = { heroMessage?: string; shortIntroduction?: string; detailedIntroduction?: string; facilities?: string; careProcess?: string };
+export type PublicMediaItem = { src: string; alt: string; caption?: string };
+export type PublicClinicContent = { heroMessage?: string; shortIntroduction?: string; detailedIntroduction?: string; facilities?: string; careProcess?: string; media?: { hero?: PublicMediaItem; reception?: PublicMediaItem; contact?: PublicMediaItem; gallery?: PublicMediaItem[] } };
 export type PublicSpecialtyProfile = { specialtyId: string; databaseName: string; displayName: string; slug: string; shortDescription: string; description: string; commonConditions: string[]; keyExpertise: string[]; doctorCount: number; cta: string };
-export type PublicDoctorProfile = { sourceDoctorId: string; doctorId: string; code: string; displayName: string; title: string; specialtyName: string; specialtySlug: string; yearsExperience: number; headline: string; summary: string; expertise: string[]; consultationAreas: string[]; education: string[]; experience: string[]; cta: string };
+export type PublicDoctorProfile = { sourceDoctorId: string; doctorId: string; code: string; displayName: string; title: string; specialtyName: string; specialtySlug: string; yearsExperience?: number|null; headline: string; summary: string; expertise: string[]; consultationAreas: string[]; education: string[]; experience: string[]; cta: string; imageUrl?: string|null; imageKind?: string|null };
 export type PublicServiceProfile = { offeringId: string; code: string; name: string; specialtyName: string; specialtySlug: string; description: string; suitableFor: string; preparation: string; cta: string };
-export type PublicWebContent = { clinic: PublicClinicContent; specialties: PublicSpecialtyProfile[]; doctors: PublicDoctorProfile[]; services: PublicServiceProfile[] };
+export type PublicWebContent = { clinic: PublicClinicContent; specialties: PublicSpecialtyProfile[]; doctors: PublicDoctorProfile[]; services: PublicServiceProfile[]; dataset?: { classification?: string; note?: string; legacyDoctorCount?: number; publicDoctorCount?: number } };
 export type SearchResult = { clinics: Clinic[]; doctors: Doctor[]; offerings: Offering[] };
 export type Profile = { patientId: string; fullName: string; dateOfBirth: string; sex: string; phone: string; email: string; version: number };
 export type ProfileInput = Omit<Profile, 'patientId' | 'version'> & { expectedVersion: number };
@@ -33,8 +34,10 @@ const patient = import.meta.env.VITE_PATIENT_URL ?? '/s1/patient';
 const appointment = import.meta.env.VITE_APPOINTMENT_URL ?? '/s1/appointment';
 const auth = import.meta.env.VITE_AUTH_URL ?? '/s1/auth';
 const notification = import.meta.env.VITE_NOTIFICATION_URL ?? '/s1/notification';
-export type Notification = { id: string; message: string; kind: string; created_at: string };
+export type Notification = { id: string; message: string; kind: string; created_at: string; read_at?:string|null };
 export const getNotifications = (token: string) => unwrap(requestJson<Notification[]>(`${notification}/api/me/notifications`, { headers: { Authorization: `Bearer ${token}` } }));
+export const getUnreadNotificationCount = (token:string) => unwrap(requestJson<{count:number}>(`${notification}/api/me/notifications/unread-count`, {headers:{Authorization:`Bearer ${token}`}}));
+export const markNotificationRead=(token:string,id:string)=>write<{read:boolean}>(notification+'/api/me/notifications/'+encodeURIComponent(id)+'/read',token,{},undefined,'POST');
 export const getReminderPreference = (token: string) => unwrap(requestJson<{remindersEnabled: boolean}>(`${notification}/api/me/notification-preferences`, { headers: { Authorization: `Bearer ${token}` } }));
 export const setReminderPreference = (token: string, remindersEnabled: boolean) => write<{remindersEnabled: boolean}>(`${notification}/api/me/notification-preferences`, token, { remindersEnabled }, undefined, 'PUT');
 export class RequestError extends Error {
@@ -63,7 +66,12 @@ export async function getSiteClinic(configuredId=(import.meta.env.VITE_PUBLIC_CL
 export const getClinic = (id: string) => unwrap(requestJson<Clinic>(`${search}/api/public/clinics/${encodeURIComponent(id)}`));
 export const getDoctors = (id: string, branch?: string) => unwrap(requestJson<Doctor[]>(`${search}/api/public/clinics/${id}/doctors${branch?'?branchId='+encodeURIComponent(branch):''}`));
 export const getOfferings = (id: string, branch?: string) => unwrap(requestJson<Offering[]>(`${search}/api/public/clinics/${id}/offerings${branch?'?branchId='+encodeURIComponent(branch):''}`));
-export const getPublicContent = (id: string) => unwrap(requestJson<PublicWebContent>(`${search}/api/public/clinics/${encodeURIComponent(id)}/content`));
+/** Editorial content is optional; missing content uses the public directory data. */
+export async function getPublicContent(id: string): Promise<PublicWebContent | null> {
+  const result = await requestJson<PublicWebContent>(`${search}/api/public/clinics/${encodeURIComponent(id)}/content`);
+  if (result.status === 404) return null;
+  return unwrap(Promise.resolve(result));
+}
 export const getSlots = (query: Record<string, string>) => unwrap(requestJson<Slot[]>(`${appointment}/api/public/availability?${new URLSearchParams(query)}`));
 export const getBookingOptions = (clinicId:string,branchId:string) => unwrap(requestJson<BookingOptions>(`${appointment}/api/public/booking-options?${new URLSearchParams({clinicId,branchId})}`));
 export const getAvailabilityResult = (query: Record<string,string>) => unwrap(requestJson<AvailabilityResult>(`${appointment}/api/public/availability/evaluate?${new URLSearchParams(query)}`));
@@ -77,4 +85,15 @@ export const confirmHold = (token: string, clinicId: string, patientId: string, 
 export const myAppointments = (token: string, clinicId: string, patientId: string) => unwrap(requestJson<Appointment[]>(`${appointment}/api/me/appointments?${new URLSearchParams({ clinicId, patientId })}`, { headers: { Authorization: `Bearer ${token}` } }));
 export const cancelAppointment = (token: string, a: Appointment, patientId: string) => write<Appointment>(`${appointment}/api/appointments/${a.id}/cancel`, token, { clinicId: a.clinicId, patientId, reason: 'Patient requested cancellation' });
 export const rescheduleAppointment = (token: string, a: Pick<Appointment, 'id'|'clinicId'>, patientId: string, newHoldId: string) => write<Appointment>(`${appointment}/api/appointments/${a.id}/reschedule`, token, { clinicId: a.clinicId, patientId, newHoldId, reason: 'Patient requested reschedule' });
-export const signIn = (email: string, password: string, fullName?: string) => write<{ data: { accessToken: string } }>(`${auth}/api/auth/${fullName ? 'register' : 'login'}`, '', { email, password, ...(fullName ? { fullName } : {}) });
+export type AuthPayload={userId?:string;email?:string;fullName?:string;roles?:string[];accessToken:string;refreshToken?:string;accountCode?:string|null};
+export type AuthChannel='patient'|'workspace';
+const authSessionWrite=<T>(path:string,channel:AuthChannel,body:unknown={})=>unwrap(requestJson<T>(`${auth}/api/auth/${path}`,{
+ method:'POST',
+ headers:{'Content-Type':'application/json','X-Auth-Channel':channel},
+ body:JSON.stringify(body)
+}));
+export const signIn = (email: string, password: string, fullName?: string, channel:AuthChannel='patient') => authSessionWrite<{ data: AuthPayload }>(fullName ? 'register' : 'login',channel,{ email, password, ...(fullName ? { fullName } : {}) });
+export const refreshAuth = (refreshToken:string) => write<{data:AuthPayload}>(`${auth}/api/auth/refresh`,'',{refreshToken});
+export const logoutAuth = (refreshToken:string) => write<{data:null}>(`${auth}/api/auth/logout`,'',{refreshToken});
+export const refreshSession = (channel:AuthChannel) => authSessionWrite<{data:AuthPayload}>('session/refresh',channel);
+export const logoutSession = (channel:AuthChannel) => authSessionWrite<{data:null}>('session/logout',channel);

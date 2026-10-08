@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
 @EnabledIfSystemProperty(named="billing.it.enabled",matches="true")
 class BillingPostgresTest {
  @Autowired SourceChargeOperations chargeOperations;
- @Autowired OnlinePaymentService online;@MockBean PaymentGateways gateways;
+ @Autowired OnlinePaymentService online;@Autowired PaymentDisplayService displays;@MockBean PaymentGateways gateways;
  @Test void shiftPreviewRejectsMoneyAddedAfterReviewAndAllowsFreshTotals(){
   var billed=bill();var shift=shift(cashier);
   s.collect(cashier,c,b,billed.id(),"preview-first",new PaymentInput(0,shift.id(),40000,"CASH",null,"First collection"));
@@ -209,6 +209,24 @@ class BillingPostgresTest {
    assertEquals(0,count("shifts"));var receipt=s.payments(cashier,c,b,billed.id()).getFirst();assertNull(receipt.shiftId());assertNull(receipt.collectorUserId());assertEquals("VNPAY",receipt.method());assertEquals("GATEWAY_CLEARING",local(()->jdbc.queryForObject("select account from billing_v2.journal_lines where side='D' and account<>'RECEIVABLE'",String.class)));
    var report=operations.read(managerActor,c,b,LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")));assertEquals(0,report.collectedOnlineVnd());assertEquals(100000,report.collectedSandboxVnd());assertTrue(receipt.label().contains("THỬ NGHIỆM"));assertEquals(2,local(()->jdbc.queryForObject("select (payload_json::jsonb->>'aggregateversion')::integer from billing_v2.outbox_events where event_type='clinic.billing.online_collected.v1'",Integer.class)));assertEquals(0,report.collectedBankVnd());assertEquals(0,report.outstandingVnd());assertEquals("PAID",portal.read(actor,c,b,billed.id()).paymentIntents().getFirst().status());
   }finally{pool.shutdownNow();}
+ }
+ @Test void staffPayosReusesPendingIntentAcrossDifferentIdempotencyKeys(){
+  var billed=bill();
+  when(gateways.create(eq(c),eq(b),any(),eq("PAYOS"),anyString(),eq(100000L),any(),eq("127.0.0.1"))).thenReturn(new PaymentGateways.Link("https://pay.payos.vn/web/synthetic","000201010212synthetic-qr","synthetic-link"));
+  var first=online.createStaff(cashier,c,b,billed.id(),"staff-create-1",new OnlinePaymentService.Create("PAYOS",0),"127.0.0.1");
+  var second=online.createStaff(cashier,c,b,billed.id(),"staff-create-2",new OnlinePaymentService.Create("PAYOS",0),"127.0.0.1");
+  assertEquals(first.id(),second.id());assertEquals("PENDING",second.status());assertEquals(1,count("payment_intents"));assertEquals(0,count("payments"));
+  verify(gateways,times(1)).create(eq(c),eq(b),eq(first.id()),eq("PAYOS"),anyString(),eq(100000L),any(),eq("127.0.0.1"));
+ }
+ @Test void bankDisplayUsesOpaqueTokenAndExposesOnlySafeProjection()throws Exception{
+  var billed=bill();when(gateways.bank(c,billed.id(),100000)).thenReturn(new PaymentGateways.BankDetails("Synthetic Bank","0123456789","PHONG KHAM SYNTHETIC","PKSAFE001",100000,"https://img.vietqr.io/image/synthetic.png"));
+  var request=mock(jakarta.servlet.http.HttpServletRequest.class);when(request.getRemoteAddr()).thenReturn("127.0.0.1");
+  var launch=displays.create(cashier,c,b,billed.id(),"display-bank-1",new PaymentDisplayService.Create("BANK_TRANSFER",0),request);
+  assertEquals("BANK_TRANSFER",launch.method());assertNotNull(launch.displayUrl());String token=launch.displayUrl().substring(launch.displayUrl().lastIndexOf('/')+1);assertTrue(token.length()>=30);
+  assertEquals(1,count("payment_display_sessions"));String stored=local(()->jdbc.queryForObject("select token_hash from billing_v2.payment_display_sessions",String.class));assertNotEquals(token,stored);assertEquals(64,stored.length());
+  var view=displays.read(token);assertEquals("BANK_TRANSFER",view.method());assertEquals("PENDING",view.status());assertEquals(100000,view.amountVnd());assertEquals("PKSAFE001",view.transferContent());assertEquals("0123456789",view.accountNumber());
+  String payload=json.writeValueAsString(view);for(String forbidden:List.of(billed.id().toString(),patient.toString(),c.toString(),b.toString(),"createdBy","paymentIntentId","tokenHash"))assertFalse(payload.contains(forbidden));
+  assertThrows(ApiProblem.class,()->displays.read("not-a-valid-display-token"));
  }
  @Test void onlineReservationBlocksOnsiteAndAdjustmentsAndChangedKeys(){
   var billed=bill();var shift=shift(cashier);var actor=onlinePatient();var intent=online.create(actor,c,b,billed.id(),"create",new OnlinePaymentService.Create("VNPAY",0),"127.0.0.1");

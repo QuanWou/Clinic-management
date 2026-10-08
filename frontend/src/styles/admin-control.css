@@ -1,0 +1,45 @@
+/* Clinic Admin control surfaces. Role-specific workspaces keep their own styles. */
+.workspace-shell .workspace-nav .workspace-nav-label{
+ margin:14px 10px 5px;
+ padding:8px 8px 5px;
+ border-top:1px solid var(--line);
+ color:var(--muted);
+ font-size:10px;
+ font-weight:800;
+ letter-spacing:.08em;
+ line-height:1.3;
+}
+.workspace-shell .workspace-nav .workspace-nav-label:first-child{margin-top:2px;border-top:0}
+.workspace-shell .admin-system-panel{max-width:1480px;margin-inline:auto}
+.permission-role-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0}
+.permission-role{display:grid;align-content:start;gap:10px}
+.permission-role h2{margin:0;font-size:18px}
+.permission-role p{margin:0;color:var(--muted-strong);line-height:1.6}
+.permission-role dl{display:grid;gap:10px;margin:4px 0 0}
+.permission-role dl>div{padding:12px;border-radius:9px;background:var(--surface-soft)}
+.permission-role dt{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.permission-role dd{margin:5px 0 0;line-height:1.55;font-size:13px}
+.admin-table-section{margin-top:24px;padding:22px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm)}
+.admin-section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}
+.admin-section-heading h2{margin:0 0 5px;font-size:18px}
+.admin-section-heading p{margin:0;color:var(--muted-strong);font-size:13px;line-height:1.6}
+.admin-table{overflow:auto;border:1px solid var(--line);border-radius:10px}
+.admin-table-row{display:grid;grid-template-columns:minmax(180px,1.2fr) minmax(130px,.8fr) minmax(110px,.7fr) minmax(140px,.8fr);gap:14px;align-items:center;min-width:720px;padding:13px 15px;border-bottom:1px solid var(--line);font-size:13px}
+.admin-table-row:last-child{border-bottom:0}
+.admin-table-row>span{min-width:0;overflow-wrap:anywhere}
+.admin-table-row>span>strong,.admin-table-row>span>small{display:block}
+.admin-table-row>span>small{margin-top:4px;color:var(--muted)}
+.admin-table-head{background:var(--surface-soft);color:var(--muted-strong);font-size:11px;font-weight:800;letter-spacing:.035em;text-transform:uppercase}
+.audit-table .admin-table-row{grid-template-columns:150px 140px minmax(210px,1.25fr) minmax(170px,1fr) minmax(170px,1fr) 120px;min-width:1120px}
+.admin-audit-summary,.admin-audit-scope,.admin-data-warning{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.admin-audit-summary{align-items:center;margin:18px 0}
+.admin-audit-summary span{display:flex;gap:5px;align-items:baseline}
+.admin-audit-summary small{margin-left:auto;color:var(--muted)}
+.admin-audit-scope{margin-top:18px;color:var(--muted-strong)}
+.admin-audit-scope p,.admin-data-warning p{margin:0;line-height:1.6}
+.admin-data-warning{margin:16px 0;border-color:#ecd9a5;background:#fffaf0;color:#744c00}
+.admin-data-warning strong{display:block;margin-bottom:4px}
+.workspace-shell .dashboard-card>.booking-appointment{margin:12px 0;padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--surface-soft)}
+.workspace-shell .dashboard-card>.booking-appointment button{margin-top:10px}
+@media(max-width:980px){.permission-role-grid{grid-template-columns:1fr}.admin-section-heading{flex-direction:column}}
+@media(max-width:700px){.admin-table-section{padding:16px}.admin-audit-summary{align-items:flex-start;flex-direction:column}.admin-audit-summary small{margin-left:0}}

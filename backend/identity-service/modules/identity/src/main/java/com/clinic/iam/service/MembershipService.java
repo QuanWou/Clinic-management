@@ -63,6 +63,16 @@ public class MembershipService {
         return all.stream().map(this::view).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<MembershipEventView> membershipEvents(Actor actor, UUID clinicId) {
+        activateClinicScope(actor.id(), clinicId, null, Capability.MEMBERSHIP_READ);
+        List<MembershipEvent> rows = new ArrayList<>(events.findByClinicIdOrderByOccurredAtAsc(clinicId));
+        Collections.reverse(rows);
+        return rows.stream().limit(200).map(e -> new MembershipEventView(
+            e.id, e.membershipId, e.actorUserId, e.targetUserId, e.action, e.reason, e.occurredAt
+        )).toList();
+    }
+
     @Transactional
     public MembershipView invite(Actor actor, UUID clinicId, CreateMembership input) {
         activateClinicScope(actor.id(), clinicId, null, Capability.MEMBERSHIP_MANAGE);
@@ -303,7 +313,8 @@ public class MembershipService {
             case ADMIN -> EnumSet.of(Capability.CLINIC_MEMBER, Capability.CLINIC_READ,
                 Capability.CLINIC_CONFIG, Capability.MEMBERSHIP_READ, Capability.MEMBERSHIP_MANAGE,
                 Capability.CATALOG_READ, Capability.CATALOG_MANAGE, Capability.SCHEDULE_READ,
-                Capability.SCHEDULE_MANAGE, Capability.RECEPTION, Capability.BILLING);
+                Capability.SCHEDULE_MANAGE, Capability.OPERATIONS_VIEW, Capability.OPERATIONS_MANAGE,
+                Capability.FINANCE_VIEW, Capability.FINANCE_MANAGE, Capability.AUDIT_VIEW);
             case STAFF -> EnumSet.of(Capability.CLINIC_MEMBER, Capability.CLINIC_READ,
                 Capability.RECEPTION, Capability.BILLING, Capability.CATALOG_READ,
                 Capability.SCHEDULE_READ, Capability.SCHEDULE_MANAGE);

@@ -16,4 +16,26 @@ class GatewayServletTest {
   backend.createContext("/modules/patient/api/me",exchange->{assertEquals("Bearer test-only",exchange.getRequestHeaders().getFirst("Authorization"));byte[] body="{\"denied\":true}".getBytes();exchange.getResponseHeaders().set("Content-Type","application/json");exchange.sendResponseHeaders(403,body.length);exchange.getResponseBody().write(body);exchange.close();});backend.start();
   try{var gateway=new GatewayServlet("{\"patient\":\"http://127.0.0.1:"+backend.getAddress().getPort()+"/modules/patient\"}");var request=new MockHttpServletRequest("GET","/s1/patient/api/me");request.addHeader("Authorization","Bearer test-only");var response=new MockHttpServletResponse();gateway.service(request,response);assertEquals(403,response.getStatus());assertTrue(response.getContentAsString().contains("denied"));}finally{backend.stop(0);}
  }
+ @Test void authRouteCarriesChannelCookieAndReturnsRotatedSetCookie()throws Exception{
+  var backend=HttpServer.create(new InetSocketAddress("127.0.0.1",0),0);
+  backend.createContext("/modules/auth/api/auth/session/refresh",exchange->{
+   assertEquals("workspace",exchange.getRequestHeaders().getFirst("X-Auth-Channel"));
+   assertEquals("clinic_refresh_workspace=old-refresh",exchange.getRequestHeaders().getFirst("Cookie"));
+   byte[] body="{\"data\":{\"accessToken\":\"fresh-access\"}}".getBytes();
+   exchange.getResponseHeaders().set("Content-Type","application/json");
+   exchange.getResponseHeaders().add("Set-Cookie","clinic_refresh_workspace=new-refresh; Path=/s1/auth/api/auth; HttpOnly; SameSite=Strict");
+   exchange.sendResponseHeaders(200,body.length);exchange.getResponseBody().write(body);exchange.close();
+  });backend.start();
+  try{
+   var gateway=new GatewayServlet("{\"auth\":\"http://127.0.0.1:"+backend.getAddress().getPort()+"/modules/auth\"}");
+   var request=new MockHttpServletRequest("POST","/s1/auth/api/auth/session/refresh");
+   request.addHeader("X-Auth-Channel","workspace");
+   request.addHeader("Cookie","clinic_refresh_workspace=old-refresh");
+   var response=new MockHttpServletResponse();
+   gateway.service(request,response);
+   assertEquals(200,response.getStatus());
+   assertEquals("clinic_refresh_workspace=new-refresh; Path=/s1/auth/api/auth; HttpOnly; SameSite=Strict",response.getHeader("Set-Cookie"));
+   assertTrue(response.getContentAsString().contains("fresh-access"));
+  }finally{backend.stop(0);}
+ }
 }

@@ -14,14 +14,16 @@ import java.security.MessageDigest;
 @Service public class ChargeDeliveryOperations{
  private final JdbcTemplate jdbc;private final EncounterDb db;private final IamAuthorizationClient iam;private final ObjectMapper json;private final TransactionTemplate tx;
  public ChargeDeliveryOperations(JdbcTemplate jdbc,EncounterDb db,IamAuthorizationClient iam,ObjectMapper json,PlatformTransactionManager manager){this.jdbc=jdbc;this.db=db;this.iam=iam;this.json=json;tx=new TransactionTemplate(manager);}
- private void require(Actor actor,UUID clinic,UUID branch,boolean retry){if(actor==null)throw ApiProblem.forbidden();var decision=iam.decide(actor.id(),"BILLING",clinic,branch);if(!decision.allowed()||decision.role()==null||!(retry?Set.of("ADMIN"):Set.of("ADMIN","STAFF")).contains(decision.role()))throw ApiProblem.forbidden();}
+ private boolean allowed(Actor actor,UUID clinic,UUID branch,String capability){return actor!=null&&iam.decide(actor.id(),capability,clinic,branch).allowed();}
+ private void requireRead(Actor actor,UUID clinic,UUID branch){if(!allowed(actor,clinic,branch,"BILLING")&&!allowed(actor,clinic,branch,"FINANCE_VIEW"))throw ApiProblem.forbidden();}
+ private void requireManage(Actor actor,UUID clinic,UUID branch){if(!allowed(actor,clinic,branch,"FINANCE_MANAGE"))throw ApiProblem.forbidden();}
  private <T>T local(UUID clinic,UUID branch,Supplier<T> body){return tx.execute(t->{db.scope(clinic,branch);return body.get();});}
  public record EventState(UUID eventId,String status,int attempts,String lastError,String kind){}
  public record State(List<EventState> events,Long chargeCount){}
  private State state(UUID encounter){return new State(jdbc.query("select * from encounter_v2.billing_deliveries where event_id in (select event_id from encounter_v2.outbox_events where aggregate_id=?) order by created_at,event_id limit 100",(rs,n)->new EventState(rs.getObject("event_id",UUID.class),rs.getString("status"),rs.getInt("attempts"),rs.getString("last_error"),null),encounter),null);}
- public State read(Actor actor,UUID clinic,UUID branch,UUID encounter){require(actor,clinic,branch,false);return local(clinic,branch,()->state(encounter));}
+ public State read(Actor actor,UUID clinic,UUID branch,UUID encounter){requireRead(actor,clinic,branch);return local(clinic,branch,()->state(encounter));}
  public State retry(Actor actor,UUID clinic,UUID branch,UUID encounter,UUID eventId,String key,String reason){
-  require(actor,clinic,branch,true);if(key==null||key.isBlank()||key.length()>120||reason==null||reason.isBlank()||reason.length()>500)throw ApiProblem.invalid("Bounded recovery key and reason required");
+  requireManage(actor,clinic,branch);if(key==null||key.isBlank()||key.length()>120||reason==null||reason.isBlank()||reason.length()>500)throw ApiProblem.invalid("Bounded recovery key and reason required");
   String digest;try{digest=HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(json.writeValueAsBytes(List.of(encounter,eventId,reason))));}catch(Exception ex){throw new IllegalStateException(ex);}
   return local(clinic,branch,()->{
    db.lock("charge-recovery:"+actor.id()+":"+key);var receipts=jdbc.queryForList("select payload_hash from encounter_v2.charge_recovery_commands where actor_user_id=? and key=?",actor.id(),key);

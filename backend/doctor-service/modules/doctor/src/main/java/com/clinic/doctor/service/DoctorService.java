@@ -138,6 +138,17 @@ public class DoctorService {
 
     public record Assignment(UUID doctorId,UUID clinicId,UUID branchId,UUID userId){}
     @Transactional(readOnly=true)
+    public List<Assignment> receptionCandidates(UUID clinicId,UUID branchId,String specialtyCode){
+        db.tenant(clinicId);var now=Instant.now();var today=now.atZone(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDate();
+        if(specialtyCode==null||specialtyCode.isBlank())return List.of();
+        return affiliations.findByClinicIdAndBranchIdOrderByCreatedAtAsc(clinicId,branchId).stream()
+            .filter(a->a.active&&a.specialtyCode.equalsIgnoreCase(specialtyCode)&&!today.isBefore(a.effectiveFrom)&&(a.effectiveUntil==null||today.isBefore(a.effectiveUntil)))
+            .filter(a->schedules.findByAffiliationIdAndClinicIdAndBranchIdOrderByDayOfWeekAscStartMinuteAsc(a.id,clinicId,branchId).stream().anyMatch(s->{
+                var local=now.atZone(ZoneId.of(s.timezone));var date=local.toLocalDate();int minute=local.getHour()*60+local.getMinute();
+                return s.active&&s.dayOfWeek==date.getDayOfWeek().getValue()&&!date.isBefore(s.effectiveFrom)&&(s.effectiveUntil==null||date.isBefore(s.effectiveUntil))&&minute>=s.startMinute&&minute<s.endMinute;
+            })).map(a->{try{return assignment(clinicId,branchId,a.practitionerId);}catch(ApiProblem e){return null;}}).filter(Objects::nonNull).distinct().toList();
+    }
+    @Transactional(readOnly=true)
     public Assignment assignment(UUID clinicId,UUID branchId,UUID id){
         db.tenant(clinicId);LocalDate today=LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         boolean active=affiliations.findByPractitionerIdAndClinicIdAndBranchIdOrderByEffectiveFromDesc(id,clinicId,branchId).stream().anyMatch(a->a.active&&!today.isBefore(a.effectiveFrom)&&(a.effectiveUntil==null||today.isBefore(a.effectiveUntil)));

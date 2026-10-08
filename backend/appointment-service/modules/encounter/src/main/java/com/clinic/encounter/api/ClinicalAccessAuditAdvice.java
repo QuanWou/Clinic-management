@@ -35,7 +35,8 @@ public class ClinicalAccessAuditAdvice implements ResponseBodyAdvice<Object> {
    else if(denied&&suffix.matches("/orders/[0-9a-fA-F-]{36}/(accept|process|reject|cancel|results|reviews)")){resource=UUID.fromString(suffix.split("/")[2]);operation="CARE_MUTATION";}
    else return body;
   }else{
-   if(suffix.equals("/doctor/worklist")||suffix.equals("/doctor/worklist/page"))operation="READ_WORKLIST";
+   if(suffix.matches("/admin/patients/[0-9a-fA-F-]{36}/visits")){resource=UUID.fromString(suffix.split("/")[3]);operation="ADMIN_READ_PATIENT_HISTORY";}
+   else if(suffix.equals("/doctor/worklist")||suffix.equals("/doctor/worklist/page"))operation="READ_WORKLIST";
    else if(suffix.matches("/doctor/visits/[0-9a-fA-F-]{36}(/(start|await-results|resume-queue|complete|close))?")){resource=UUID.fromString(suffix.split("/")[3]);operation=HttpMethod.GET.equals(request.getMethod())?"READ_ENCOUNTER":"CARE_MUTATION";}
    else if(suffix.matches("/visits/[0-9a-fA-F-]{36}(/start)?")){resource=UUID.fromString(suffix.split("/")[2]);operation=HttpMethod.GET.equals(request.getMethod())?"READ_ENCOUNTER":"CARE_MUTATION";}
    else return body;

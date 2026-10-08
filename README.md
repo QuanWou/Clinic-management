@@ -16,6 +16,9 @@ docs/          Hướng dẫn và hợp đồng API
 
 ## Chạy ứng dụng hiện tại
 
+Trong IntelliJ, chọn **Clinic - Run All** rồi bấm Run (`Shift+F10`). Xem
+[hướng dẫn IntelliJ](docs/INTELLIJ.md) để dừng, build lại và cấu hình SDK.
+
 Yêu cầu: Java 21, Maven, Node.js, PowerShell 7 và PostgreSQL đang chạy.
 Cấu hình kết nối và bí mật nằm tại `.runtime/main/config.json`. Không commit hoặc chia sẻ file này.
 
@@ -26,8 +29,10 @@ pwsh -NoProfile -File scripts/start.ps1
 pwsh -NoProfile -File scripts/stop.ps1
 ```
 
-- [Bệnh nhân](http://127.0.0.1:4176/public)
-- [Workspace](http://127.0.0.1:4176/workspace)
+- [Bệnh nhân](http://127.0.0.1:5173/public)
+- [Workspace](http://127.0.0.1:5173/workspace)
+
+Cổng web trên máy này là `5173` (đọc từ `.runtime/main/config.json`).
 
 Launcher 5 core không hỗ trợ `-Seed`. Dữ liệu hiện có được giữ nguyên. Các module nằm trong `backend/<core>-service/modules/`; `common-lib` và `core-runtime` chỉ là thư viện, không chạy riêng.
 

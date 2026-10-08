@@ -56,7 +56,9 @@ public class NotificationService {
    jdbc.update("insert into notification_v2.event_inbox(source,event_id) values('appointment-service',?)",id);return apply;
   }catch(IllegalArgumentException|java.time.DateTimeException e){throw ApiProblem.invalid("Invalid notification identifiers or time");}
  }
- @Transactional(readOnly=true) public List<Map<String,Object>> mine(Actor actor){user(actor);return jdbc.queryForList("select id,clinic_id,appointment_id,billing_id,kind,message,created_at from notification_v2.notifications order by created_at desc limit 50");}
+ @Transactional(readOnly=true) public List<Map<String,Object>> mine(Actor actor){user(actor);return jdbc.queryForList("select id,clinic_id,appointment_id,billing_id,kind,message,created_at,read_at from notification_v2.notifications order by created_at desc limit 50");}
+ @Transactional(readOnly=true) public long unreadCount(Actor actor){user(actor);return jdbc.queryForObject("select count(*) from notification_v2.notifications where user_id=? and read_at is null",Long.class,actor.id());}
+ @Transactional public void markRead(Actor actor,UUID id){user(actor);jdbc.update("update notification_v2.notifications set read_at=coalesce(read_at,now()) where id=? and user_id=?",id,actor.id());}
  @Transactional public boolean preference(Actor actor,boolean enabled){
   user(actor);jdbc.update("insert into notification_v2.preferences(user_id,reminders_enabled) values(?,?) on conflict(user_id) do update set reminders_enabled=excluded.reminders_enabled,updated_at=now()",actor.id(),enabled);return enabled;
  }

@@ -1,0 +1,64 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #F5F9FF
+skinparam usecaseBorderColor #334155
+skinparam actorBorderColor #334155
+skinparam ArrowColor #475569
+title Use case chi tiết — Bệnh nhân
+actor "Khách truy cập" as Guest
+actor "Bệnh nhân" as Patient
+actor "Cổng thanh toán\n(payOS / VNPAY)" as Gateway
+rectangle "CỔNG BỆNH NHÂN" {
+ usecase "Đăng ký tài khoản" as Register
+ usecase "Đăng nhập / đăng xuất" as Login
+ usecase "Tra cứu thông tin\nvà lịch trống" as Search
+ usecase "Cập nhật hồ sơ cá nhân" as Profile
+ usecase "Đặt lịch khám" as Book
+ usecase "Giữ chỗ khung giờ" as Hold
+ usecase "Xác nhận lịch hẹn" as Confirm
+ usecase "Xem lịch hẹn của tôi" as List
+ usecase "Đổi lịch hẹn" as Reschedule
+ usecase "Hủy lịch hẹn" as Cancel
+ usecase "Đặt lịch tái khám" as FollowUp
+ usecase "Xem hồ sơ khám\nvà kết quả đã duyệt" as Records
+ usecase "Xem hóa đơn / biên nhận" as Bills
+ usecase "Thanh toán hóa đơn online" as Pay
+ usecase "Xem hướng dẫn chuyển khoản QR" as QR
+ usecase "Xem thông báo\nvà bật/tắt nhắc lịch" as Notify
+}
+Guest -- Register
+Guest -- Search
+Patient -- Login
+Patient -- Search
+Patient -- Profile
+Patient -- Book
+Patient -- List
+Patient -- Reschedule
+Patient -- Cancel
+Patient -- FollowUp
+Patient -- Records
+Patient -- Bills
+Patient -- Pay
+Patient -- QR
+Patient -- Notify
+Book ..> Hold : <<include>>
+Book ..> Confirm : <<include>>
+Reschedule ..> Hold : <<include>>
+FollowUp ..> Hold : <<include>>
+FollowUp ..> Confirm : <<include>>
+Gateway -- Pay
+note bottom of Records
+ Chỉ xem hồ sơ của chính tài khoản:
+ hồ sơ VALIDATED, lượt khám đã hoàn tất,
+ kết quả xét nghiệm đã REVIEWED.
+end note
+note bottom of QR
+ QR thủ công chỉ là hướng dẫn.
+ Nhân viên xác minh và ghi nhận tiền nhận được.
+end note
+@enduml
+

@@ -50,6 +50,11 @@ public class MembershipController {
         return memberships.clinicMemberships(actor, clinicId);
     }
 
+    @GetMapping("/clinics/{clinicId}/membership-events")
+    public List<MembershipEventView> events(@AuthenticationPrincipal Actor actor, @PathVariable UUID clinicId) {
+        return memberships.membershipEvents(actor, clinicId);
+    }
+
     @PostMapping("/clinics/{clinicId}/memberships")
     @ResponseStatus(HttpStatus.CREATED)
     public MembershipView invite(@AuthenticationPrincipal Actor actor, @PathVariable UUID clinicId,

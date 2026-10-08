@@ -8,8 +8,16 @@ const billing = import.meta.env.VITE_BILLING_URL ?? '/s1/billing';
 const clinic = import.meta.env.VITE_CLINIC_URL ?? '/s1/clinic';
 const medical = import.meta.env.VITE_MEDICAL_URL ?? '/s1/medical';
 export type FollowUpPlan = { encounterId: string; clinicId: string; branchId: string; caseVersion: number; proposedDate: string };
+export type PatientMedicalRecord = {
+ encounterId:string;clinicId:string;branchId:string;caseVersion:number;savedAt:string;
+ content:{reasonForVisit:string;medicalHistory:string;allergies:string;vitals:string;examination:string;preliminaryDiagnosis:string;conclusion:string;instructions:string;followUpDate:string|null};
+ results:{name:string;content:string;resultAt:string;reviewedAt:string|null}[];
+};
 export function ownFollowUps(token: string, clinic: string, branch: string) {
  return unwrap(requestJson<FollowUpPlan[]>(`${medical}/api/me/clinics/${encodeURIComponent(clinic)}/branches/${encodeURIComponent(branch)}/follow-up-plans`, { headers: { Authorization: `Bearer ${token}` } }));
+}
+export function ownMedicalRecords(token:string,clinic:string,branch:string){
+ return unwrap(requestJson<PatientMedicalRecord[]>(`${medical}/api/me/clinics/${encodeURIComponent(clinic)}/branches/${encodeURIComponent(branch)}/medical-records`,{headers:{Authorization:`Bearer ${token}`}}));
 }
 export type PatientClinic = { clinicId: string; name: string; branches: { branchId: string; name: string; active: boolean }[] };
 export function ownClinics(token: string) {

@@ -1,0 +1,59 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #F5F9FF
+skinparam usecaseBorderColor #334155
+skinparam actorBorderColor #334155
+skinparam ArrowColor #475569
+title Use case chi tiết — Thu phí và ca thu
+actor "Nhân viên\n(lễ tân / thu ngân)" as Staff
+actor "Bệnh nhân" as Patient
+actor "Quản trị phòng khám" as Admin
+actor "Cổng thanh toán\n(payOS / VNPAY)" as Gateway
+rectangle "THU PHÍ VÀ THANH TOÁN" {
+ usecase "Xem lượt khám\nđủ điều kiện lập phiếu" as Visits
+ usecase "Lập phiếu thu" as Issue
+ usecase "Đối chiếu dịch vụ đã thực hiện\nvà giá đã chốt" as Charges
+ usecase "Mở ca thu" as Open
+ usecase "Ghi nhận thu tiền tại quầy\ntiền mặt / chuyển khoản / POS" as Collect
+ usecase "Xem / in biên nhận nội bộ" as Receipt
+ usecase "Chốt và gửi ca thu" as Submit
+ usecase "Thanh toán hóa đơn online" as Online
+ usecase "Xác minh giao dịch\nvới cổng thanh toán" as Verify
+ usecase "Giảm trừ hóa đơn" as Reduction
+ usecase "Duyệt ca thu" as Approve
+ usecase "Xem tổng hợp tài chính\nvà đối soát" as Finance
+}
+Staff -- Visits
+Staff -- Issue
+Staff -- Open
+Staff -- Collect
+Staff -- Receipt
+Staff -- Submit
+Patient -- Online
+Gateway -- Verify
+Issue ..> Charges : <<include>>
+Online ..> Verify : <<include>>
+Admin -- Reduction
+Admin -- Approve
+Admin -- Finance
+note bottom of Collect
+ Tiền tại quầy được ghi vào ca OPEN của người thu.
+ Chuyển khoản / POS cần mã giao dịch đã xác minh.
+end note
+note bottom of Approve
+ Người duyệt phải khác người thu.
+end note
+note bottom of Online
+ Chỉ cho hóa đơn đã lập; không thu cọc lịch hẹn.
+ VNPAY hiện dùng sandbox.
+ Giao dịch chờ xác minh không tự coi là đã thu tiền.
+end note
+note bottom of Receipt
+ Biên nhận nội bộ không phải hóa đơn thuế.
+end note
+@enduml
+

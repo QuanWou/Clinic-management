@@ -287,7 +287,7 @@ public class ClinicOnboardingService {
         if(actor==null)throw ApiProblem.forbidden();db.tenant(clinicId);
         Clinic clinic=clinics.findById(clinicId).orElseThrow(ApiProblem::missing);
         var visible=branches.findByClinicIdAndActiveTrueOrderByCreatedAtAsc(clinicId).stream()
-            .filter(b->iam.allowed(actor.id(),"BILLING",clinicId,b.id)).map(this::branchView).toList();
+            .filter(b->iam.allowed(actor.id(),"BILLING",clinicId,b.id)||iam.allowed(actor.id(),"FINANCE_VIEW",clinicId,b.id)).map(this::branchView).toList();
         if(visible.isEmpty())throw ApiProblem.forbidden();return new ReceptionDirectory(clinicId,clinic.name,visible);
     }
     @Transactional(readOnly=true)
@@ -311,7 +311,7 @@ public class ClinicOnboardingService {
         if(actor==null)throw ApiProblem.forbidden();db.tenant(clinicId);
         Clinic clinic=clinics.findById(clinicId).orElseThrow(ApiProblem::missing);
         var visible=branches.findByClinicIdAndActiveTrueOrderByCreatedAtAsc(clinicId).stream()
-            .filter(b->iam.allowed(actor.id(),"RECEPTION",clinicId,b.id)).map(this::branchView).toList();
+            .filter(b->iam.allowed(actor.id(),"RECEPTION",clinicId,b.id)||iam.allowed(actor.id(),"OPERATIONS_VIEW",clinicId,b.id)).map(this::branchView).toList();
         if(visible.isEmpty())throw ApiProblem.forbidden();return new ReceptionDirectory(clinicId,clinic.name,visible);
     }
     private boolean eligible(Clinic c,Branch branch) {

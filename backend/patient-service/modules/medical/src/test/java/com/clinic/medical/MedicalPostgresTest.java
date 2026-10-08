@@ -52,7 +52,7 @@ class MedicalPostgresTest{
  @DynamicPropertySource static void database(DynamicPropertyRegistry r){S1Postgres.configure(r);}
  @Autowired MedicalService s;@Autowired JdbcTemplate jdbc;@Autowired MedicalDb db;@Autowired PlatformTransactionManager manager;
  @MockBean IamAuthorizationClient iam;@MockBean MedicalSources source;
- @MockBean PatientOwnershipClient patientOwner;@Autowired PatientFollowUpService patientFollowUp;
+ @MockBean PatientOwnershipClient patientOwner;@MockBean PatientEncounterSource patientEncounter;@Autowired PatientFollowUpService patientFollowUp;@Autowired PatientRecordService patientRecords;
  UUID c,b,e,patient,practitioner,offering;Actor doctor,lab;Note note;
  @BeforeEach void fixture(){c=UUID.randomUUID();b=UUID.randomUUID();e=UUID.randomUUID();patient=UUID.randomUUID();practitioner=UUID.randomUUID();offering=UUID.randomUUID();doctor=new Actor(UUID.randomUUID(),Set.of("ROLE_DOCTOR"),"Bearer synthetic");lab=doctor;
   when(iam.decide(any(),anyString(),any(),any())).thenAnswer(i->{boolean allowed=c.equals(i.getArgument(2))&&b.equals(i.getArgument(3));String role="DOCTOR";return new IamAuthorizationClient.Decision(allowed,UUID.randomUUID(),role,1,"Synthetic");});
@@ -82,6 +82,16 @@ class MedicalPostgresTest{
   var valid=s.validate(doctor,c,b,e,"validate",new Transition(draft.caseVersion(),"Synthetic immutable plan"));var list=patientFollowUp.list(actor,c,b);assertEquals(1,list.size());assertEquals(date,list.getFirst().proposedDate());assertEquals(valid.caseVersion(),patientFollowUp.proof(actor,c,b,e).caseVersion());
   var encoded=new com.fasterxml.jackson.databind.ObjectMapper().findAndRegisterModules().writeValueAsString(list);for(String secret:List.of("Synthetic reason","Synthetic diagnosis","Synthetic history","Synthetic instructions","patientId","content"))assertFalse(encoded.contains(secret));
   assertTrue(patientFollowUp.list(actor,c,UUID.randomUUID()).isEmpty());when(patientOwner.ownPatient(actor,c)).thenReturn(UUID.randomUUID());assertTrue(patientFollowUp.list(actor,c,b).isEmpty());assertThrows(ApiProblem.class,()->patientFollowUp.proof(actor,c,b,e));when(patientOwner.ownPatient(actor,c)).thenThrow(ApiProblem.forbidden());assertThrows(ApiProblem.class,()->patientFollowUp.list(actor,c,b));assertEquals(0,jdbc.queryForObject("select count(*) from medical_v2.cases",Integer.class));
+ }
+ @Test void patientPortalOnlyReleasesValidatedCompletedRecordAndReviewedResults(){
+  var actor=new Actor(UUID.randomUUID(),Set.of("ROLE_USER"),"Bearer synthetic-patient");when(patientOwner.ownPatient(actor,c)).thenReturn(patient);
+  var o=order();o=s.transition(lab,c,b,o.id(),"accept","portal-accept",new Transition(o.version(),"Accept"));o=s.transition(lab,c,b,o.id(),"process","portal-process",new Transition(o.version(),"Process"));o=s.result(lab,c,b,o.id(),"portal-result",new ResultInput(o.version(),"PORTAL-LAB","Synthetic reviewed result for patient","Result authored"));o=s.review(doctor,c,b,o.id(),"portal-review",new ReviewInput(o.version(),o.resultVersion(),"Doctor reviewed patient result"));
+  var current=s.draft(doctor,c,b,e);var valid=s.validate(doctor,c,b,e,"portal-validate",new Transition(current.caseVersion(),"Validate patient record"));
+  when(patientEncounter.completed(eq(actor),eq(c),eq(b),anyList())).thenReturn(List.of());assertTrue(patientRecords.list(actor,c,b).isEmpty());
+  when(patientEncounter.completed(eq(actor),eq(c),eq(b),anyList())).thenReturn(List.of(new PatientEncounterSource.Proof(e,c,b,patient,"CLINICALLY_COMPLETED",valid.caseVersion())));
+  var records=patientRecords.list(actor,c,b);assertEquals(1,records.size());var record=records.getFirst();assertEquals(e,record.encounterId());assertEquals("Synthetic conclusion",record.content().conclusion());assertEquals(1,record.results().size());assertEquals("Synthetic reviewed result for patient",record.results().getFirst().content());assertNotNull(record.results().getFirst().reviewedAt());
+  when(patientEncounter.completed(eq(actor),eq(c),eq(b),anyList())).thenReturn(List.of(new PatientEncounterSource.Proof(e,c,b,patient,"CLINICALLY_COMPLETED",valid.caseVersion()+1)));assertTrue(patientRecords.list(actor,c,b).isEmpty());
+  when(patientOwner.ownPatient(actor,c)).thenReturn(UUID.randomUUID());assertTrue(patientRecords.list(actor,c,b).isEmpty());
  }
  @Test void concurrentDraftReplayHasOneAppendOnlyVersionAndChangedPayloadConflicts()throws Exception{
   var executor=Executors.newFixedThreadPool(6);try{var pending=new ArrayList<Future<DraftView>>();for(int n=0;n<18;n++)pending.add(executor.submit(this::save));for(var f:pending)assertEquals(1,f.get(20,TimeUnit.SECONDS).documentVersion());}finally{executor.shutdownNow();}

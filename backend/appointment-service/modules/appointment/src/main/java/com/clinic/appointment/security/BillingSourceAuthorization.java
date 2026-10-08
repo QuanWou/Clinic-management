@@ -14,10 +14,14 @@ import java.nio.charset.StandardCharsets;
  private final RestClient iam;private final javax.crypto.SecretKey key;
  public BillingSourceAuthorization(@Value("${appointment.security.identity-url}") String url,@Value("${appointment.security.iam-service-secret:${APPOINTMENT_IAM_SERVICE_SECRET:}}") String secret){var f=new SimpleClientHttpRequestFactory();f.setConnectTimeout(Duration.ofSeconds(2));f.setReadTimeout(Duration.ofSeconds(2));iam=RestClient.builder().baseUrl(url).requestFactory(f).build();key=secret.isBlank()?null:Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));}
  public record Decision(boolean allowed){}
+ public void requireOperationalRead(UUID actor,UUID clinic,UUID branch){try{requireCapability(actor,clinic,branch,"RECEPTION");}catch(ApiProblem denied){if(denied.status!=org.springframework.http.HttpStatus.FORBIDDEN)throw denied;requireCapability(actor,clinic,branch,"OPERATIONS_VIEW");}}
  public void require(UUID actor,UUID clinic,UUID branch){
+  requireCapability(actor,clinic,branch,"BILLING");
+ }
+ public void requireCapability(UUID actor,UUID clinic,UUID branch,String capability){
   if(key==null||actor==null)throw ApiProblem.forbidden();
   try{var now=Instant.now();String token=Jwts.builder().issuer("appointment-service").subject("appointment-service").audience().add("identity-service").and().id(UUID.randomUUID().toString()).claim("token_type","workload").claim("scopes",List.of("iam.authorize")).issuedAt(Date.from(now)).expiration(Date.from(now.plusSeconds(30))).signWith(key).compact();
-   var decision=iam.post().uri("/api/internal/iam/authorization/check").header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).body(Map.of("actorUserId",actor,"clinicId",clinic,"branchId",branch,"capability","BILLING")).retrieve().body(Decision.class);if(decision==null||!decision.allowed())throw ApiProblem.forbidden();
+   var decision=iam.post().uri("/api/internal/iam/authorization/check").header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).body(Map.of("actorUserId",actor,"clinicId",clinic,"branchId",branch,"capability",capability)).retrieve().body(Decision.class);if(decision==null||!decision.allowed())throw ApiProblem.forbidden();
   }catch(ApiProblem e){throw e;}catch(Exception e){throw ApiProblem.forbidden();}
  }
 }

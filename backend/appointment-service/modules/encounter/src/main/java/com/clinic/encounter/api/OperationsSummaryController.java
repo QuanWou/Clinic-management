@@ -15,7 +15,7 @@ import java.util.*;
  private long count(String where,Object... args){return jdbc.queryForObject("select count(*) from encounter_v2.visits where "+where,Long.class,args);}
  @GetMapping("/api/clinics/{c}/branches/{b}/operations-summary")
  public Summary read(@AuthenticationPrincipal Actor actor,@PathVariable UUID c,@PathVariable UUID b,@RequestParam LocalDate date){
-  if(actor==null)throw ApiProblem.forbidden();var decision=iam.decide(actor.id(),"RECEPTION",c,b);if(!decision.allowed()||decision.role()==null||!Set.of("ADMIN").contains(decision.role()))throw ApiProblem.forbidden();
+  if(actor==null)throw ApiProblem.forbidden();var decision=iam.decide(actor.id(),"OPERATIONS_VIEW",c,b);if(!decision.allowed())throw ApiProblem.forbidden();
   var start=Timestamp.from(date.atStartOfDay(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant());var end=Timestamp.from(date.plusDays(1).atStartOfDay(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant());
   return tx.execute(t->{db.scope(c,b);long check=count("checked_in_at>=? and checked_in_at<?",start,end),complete=count("clinically_completed_at>=? and clinically_completed_at<?",start,end),open=count("status not in ('CLOSED','CANCELLED')"),overnight=count("status not in ('CLOSED','CANCELLED') and created_at<?",Timestamp.from(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")).atStartOfDay(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant())),waiting=count("status='AWAITING_RESULTS'"),pending=count("status='ARRIVAL_PENDING'");
    long queue=jdbc.queryForObject("select count(*) from encounter_v2.queue_tickets where queue_date=? and state in ('WAITING','CALLED')",Long.class,date),serving=jdbc.queryForObject("select count(*) from encounter_v2.queue_tickets where queue_date=? and state='SERVING'",Long.class,date);

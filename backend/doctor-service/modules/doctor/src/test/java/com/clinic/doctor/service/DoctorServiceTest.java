@@ -53,6 +53,21 @@ class DoctorServiceTest {
         return new IamAuthorizationClient.Decision(false,null,null,0,"NO_ACTIVE_GRANT");
     }
 
+    @Test void receptionRoutingOnlyUsesMatchingActiveScheduledCanonicalDoctors(){
+        var today=LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));affiliation.effectiveFrom=today.minusDays(1);
+        schedule.dayOfWeek=(short)today.getDayOfWeek().getValue();schedule.startMinute=0;schedule.endMinute=1440;schedule.effectiveFrom=today.minusDays(1);
+        when(affiliations.findByClinicIdAndBranchIdOrderByCreatedAtAsc(clinicA,branchA)).thenReturn(List.of(affiliation));
+        when(schedules.findByAffiliationIdAndClinicIdAndBranchIdOrderByDayOfWeekAscStartMinuteAsc(affiliation.id,clinicA,branchA)).thenReturn(List.of(schedule));
+        when(affiliations.findByPractitionerIdAndClinicIdAndBranchIdOrderByEffectiveFromDesc(practitioner.id,clinicA,branchA)).thenReturn(List.of(affiliation));
+        when(practitioners.findById(practitioner.id)).thenReturn(Optional.of(practitioner));
+        when(iam.decide(doctorUser,"DOCTOR_WORK",clinicA,branchA)).thenReturn(allow("DOCTOR"));
+        assertEquals(practitioner.id,service.receptionCandidates(clinicA,branchA,"GEN").getFirst().doctorId());
+        assertTrue(service.receptionCandidates(clinicA,branchA,"OTHER").isEmpty());
+        schedule.active=false;assertTrue(service.receptionCandidates(clinicA,branchA,"GEN").isEmpty());schedule.active=true;
+        affiliation.active=false;assertTrue(service.receptionCandidates(clinicA,branchA,"GEN").isEmpty());affiliation.active=true;
+        when(iam.decide(doctorUser,"DOCTOR_WORK",clinicA,branchA)).thenReturn(deny());assertTrue(service.receptionCandidates(clinicA,branchA,"GEN").isEmpty());
+    }
+
     @Test void affiliationRequiresBranchAdminAndTargetDoctorMembership(){
         Actor actor=new Actor(manager,Set.of("ROLE_ADMIN"));
         when(iam.decide(manager,"CLINIC_CONFIG",clinicA,branchA)).thenReturn(allow("ADMIN"));

@@ -47,7 +47,7 @@ class MembershipSecurityTest {
             .thenReturn(List.of());
 
         AuthorizationDecision result=service.authorize(
-            new AuthorizationRequest(user,clinic,branch,Capability.RECEPTION));
+            new AuthorizationRequest(user,clinic,branch,Capability.OPERATIONS_VIEW));
 
         assertFalse(result.allowed());
         verify(scope).user(user);
@@ -64,7 +64,7 @@ class MembershipSecurityTest {
         when(grants.findByMembershipIdAndActiveTrueOrderByBranchId(manager.id)).thenReturn(List.of(g));
 
         assertTrue(service.authorize(
-            new AuthorizationRequest(user,clinic,branch,Capability.RECEPTION)).allowed());
+            new AuthorizationRequest(user,clinic,branch,Capability.OPERATIONS_VIEW)).allowed());
 
         InOrder order=inOrder(scope);
         order.verify(scope).user(user);

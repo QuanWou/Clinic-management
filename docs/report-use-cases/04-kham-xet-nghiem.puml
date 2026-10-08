@@ -1,0 +1,54 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #F5F9FF
+skinparam usecaseBorderColor #334155
+skinparam actorBorderColor #334155
+skinparam ArrowColor #475569
+title Use case chi tiết — Khám và xét nghiệm
+actor "Bác sĩ" as Doctor
+rectangle "KHÁM VÀ HỒ SƠ Y TẾ" {
+ usecase "Xem danh sách khám\nđược phân công" as Worklist
+ usecase "Gọi / bắt đầu khám" as Start
+ usecase "Ghi và cập nhật hồ sơ khám" as Note
+ usecase "Chỉ định xét nghiệm" as Order
+ usecase "Tiếp nhận / xử lý /\ntừ chối chỉ định" as Process
+ usecase "Ghi kết quả xét nghiệm" as Result
+ usecase "Duyệt kết quả xét nghiệm" as Review
+ usecase "Chuyển chờ kết quả /\nđưa lại vào hàng đợi" as Wait
+ usecase "Xác nhận hồ sơ khám\n(VALIDATED)" as Validate
+ usecase "Hoàn tất lượt khám" as Complete
+ usecase "Kiểm tra hồ sơ\nđã được xác nhận" as Proof
+ usecase "Đóng lượt khám" as Close
+}
+Doctor -- Worklist
+Doctor -- Start
+Doctor -- Note
+Doctor -- Order
+Doctor -- Process
+Doctor -- Result
+Doctor -- Review
+Doctor -- Wait
+Doctor -- Validate
+Doctor -- Complete
+Doctor -- Close
+Complete ..> Proof : <<include>>
+note bottom of Validate
+ Phải đủ trường bắt buộc.
+ Các chỉ định phải được duyệt / từ chối / hủy.
+ Xác nhận hồ sơ không phải ký số.
+end note
+note bottom of Complete
+ Lượt khám đang SERVING; bác sĩ được phân công;
+ đã xác nhận dịch vụ khám được thực hiện.
+ Việc đóng lượt khám độc lập với thanh toán.
+end note
+note bottom of Result
+ Mã nguồn hiện dùng vai trò DOCTOR cho LAB_WORK;
+ phạm vi chỉ định và lượt khám vẫn được kiểm tra.
+end note
+@enduml
+

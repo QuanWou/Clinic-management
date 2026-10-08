@@ -1,3 +1,5 @@
+import {useAuthoritativeSync} from './useAuthoritativeSync';
+import {receptionSubscription} from '../api/realtime';
 import {PatientIdentity} from './PatientIdentity';
 import {useEffect,useRef,useState} from 'react';
 import * as api from '../api/reception';
@@ -9,6 +11,9 @@ export function SupervisorArrivalPanel({scope,canManage,onPending,disabled=false
  useEffect(()=>{epoch.current++;setRows([]);setError('');setMessage('');setBusy(false);setUnknown(false);attempt.current=null;running.current=false;return()=>{epoch.current++;};},[scope.token,scope.clinic,scope.branch]);
  async function read(){if(running.current||unknown||disabled)return;const generation=epoch.current;running.current=true;setBusy(true);setError('');setRows([]);try{const all:api.Visit[]=[];let cursor:string|undefined;do{const result=await api.pendingArrivals(scope,cursor);if(generation!==epoch.current)return;all.push(...result.items);cursor=result.nextAfter??undefined;}while(cursor);if(generation===epoch.current)setRows(all);}catch(e){if(generation===epoch.current)setError(e instanceof Error?e.message:'Chưa đọc được lượt chờ.');}finally{if(generation===epoch.current){running.current=false;setBusy(false);}}}
  useEffect(()=>{if(active&&canManage)void read();},[active,canManage,scope.token,scope.clinic,scope.branch]);
+ useAuthoritativeSync({key:scope.token+scope.clinic+scope.branch,enabled:active&&canManage&&!!scope.token,blocked:busy||unknown||disabled,subscriptions:[receptionSubscription(scope,'encounter')],refresh:async context=>{
+  const generation=epoch.current,all:api.Visit[]=[];let cursor:string|undefined;do{const result=await api.pendingArrivals(scope,cursor);if(!context.current()||generation!==epoch.current)return;all.push(...result.items);cursor=result.nextAfter??undefined;}while(cursor);setRows(all);setError('');
+ },onDenied:()=>{epoch.current++;setRows([]);}});
  async function recover(visit?:api.Visit){if(running.current||disabled||!canManage)return;const generation=epoch.current;running.current=true;setBusy(true);setError('');onPending(true);
   try{if(!attempt.current){if(!visit)return;const captured={...scope},body={expectedVersion:visit.version,reason:reason.trim()};attempt.current={scope:captured,visit:{...visit},body,key:await stableOperationKey('supervisor-arrival',{clinic:scope.clinic,branch:scope.branch,id:visit.id,...body})};}if(generation!==epoch.current)return;setUnknown(true);const original=attempt.current!,result=await api.superviseArrival(original.scope,original.visit,original.body,original.key);if(generation!==epoch.current)return;attempt.current=null;setUnknown(false);onPending(false);setRows(old=>old.filter(v=>v.id!==result.id));setMessage('Đã đối chiếu và phục hồi cùng lượt. Hàng đợi đã được đồng bộ.');await onUpdated?.(result);}
   catch(e){if(generation!==epoch.current)return;if(e instanceof RequestError&&e.status>=400&&e.status<500){attempt.current=null;setUnknown(false);onPending(false);}else setUnknown(true);setError(e instanceof Error?e.message:'Chưa xác định được kết quả phục hồi.');}

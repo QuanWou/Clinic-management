@@ -13,7 +13,7 @@ final class S1Postgres {
   String migrationPassword=System.getenv("DOCTOR_IT_MIGRATION_PASSWORD");
   String runtime=System.getenv("DOCTOR_IT_RUNTIME_USER");
   if(runtime==null||!runtime.matches("[a-z][a-z0-9_]{0,62}"))throw new IllegalStateException("Missing isolated runtime");
-  Flyway.configure().dataSource(url,migrator,migrationPassword).schemas("doctor").defaultSchema("doctor").load().migrate();
+  Flyway.configure().locations("classpath:modules/doctor/db/migration").dataSource(url,migrator,migrationPassword).schemas("doctor").defaultSchema("doctor").load().migrate();
   try(var connection=DriverManager.getConnection(url,migrator,migrationPassword);var statement=connection.createStatement()){
    statement.execute("GRANT clinic_v2_doctor_runtime TO "+runtime);
   }catch(java.sql.SQLException ex){throw new IllegalStateException(ex);}

@@ -1,0 +1,146 @@
+[
+  {
+    "id": "01-quan-ly-phong-kham",
+    "title": "Quản lý phòng khám",
+    "width": 1290,
+    "height": 1027,
+    "children": 5,
+    "mode": "management"
+  },
+  {
+    "id": "02-quan-ly-nhan-su",
+    "title": "Quản lý nhân sự",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "management"
+  },
+  {
+    "id": "03-quan-ly-bac-si",
+    "title": "Quản lý bác sĩ",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "management"
+  },
+  {
+    "id": "04-dich-vu-bang-gia",
+    "title": "Quản lý dịch vụ, bảng giá",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "management"
+  },
+  {
+    "id": "05-giam-sat-van-hanh",
+    "title": "Giám sát vận hành",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "abstract"
+  },
+  {
+    "id": "06-tai-chinh-nhat-ky",
+    "title": "Tài chính và nhật ký",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "abstract"
+  },
+  {
+    "id": "07-tiep-nhan-benh-nhan",
+    "title": "Tiếp nhận bệnh nhân",
+    "width": 1550,
+    "height": 1159,
+    "children": 6,
+    "mode": "abstract"
+  },
+  {
+    "id": "08-quan-ly-hang-doi",
+    "title": "Quản lý hàng đợi",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "management"
+  },
+  {
+    "id": "09-quan-ly-ca-thu",
+    "title": "Quản lý ca thu",
+    "width": 1550,
+    "height": 1159,
+    "children": 6,
+    "mode": "abstract"
+  },
+  {
+    "id": "10-kham-ghi-ho-so",
+    "title": "Khám và ghi hồ sơ",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "abstract"
+  },
+  {
+    "id": "11-chi-dinh-ket-qua",
+    "title": "Quản lý chỉ định, kết quả xét nghiệm",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "abstract"
+  },
+  {
+    "id": "12-xac-nhan-hoan-tat",
+    "title": "Xác nhận hồ sơ, hoàn tất lượt khám",
+    "width": 1550,
+    "height": 1027,
+    "children": 5,
+    "mode": "abstract"
+  },
+  {
+    "id": "13-dang-ky-tai-khoan",
+    "title": "Đăng ký tài khoản",
+    "width": 1290,
+    "height": 775,
+    "children": 3,
+    "mode": "concrete"
+  },
+  {
+    "id": "14-tra-cuu-cong-khai",
+    "title": "Tra cứu phòng khám, bác sĩ…",
+    "width": 1290,
+    "height": 1027,
+    "children": 5,
+    "mode": "abstract"
+  },
+  {
+    "id": "15-quan-ly-lich-hen",
+    "title": "Quản lý lịch hẹn",
+    "width": 1550,
+    "height": 1097,
+    "children": 5,
+    "mode": "abstract"
+  },
+  {
+    "id": "16-xem-lich-su-kham",
+    "title": "Xem lịch sử khám",
+    "width": 1290,
+    "height": 1159,
+    "children": 6,
+    "mode": "abstract"
+  },
+  {
+    "id": "17-thanh-toan-online",
+    "title": "Thanh toán hóa đơn online",
+    "width": 1550,
+    "height": 895,
+    "children": 4,
+    "mode": "concrete"
+  },
+  {
+    "id": "18-dang-nhap",
+    "title": "Đăng nhập",
+    "width": 1290,
+    "height": 895,
+    "children": 4,
+    "mode": "concrete"
+  }
+]

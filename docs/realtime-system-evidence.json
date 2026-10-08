@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "environment": "isolated PostgreSQL snapshot + five real cores + gateway + browser",
+  "provider": "signed simulated payOS webhook; no real bank transaction",
+  "checks": [
+    "Doctor, Patient, Reception and Admin streams are authorized through the real gateway",
+    "Unauthorized clinical, tenant and other-patient subscriptions are rejected server-side",
+    "Five simultaneously open authorized browser sessions are ready",
+    "Booking rejects a stale second-session slot; Reception and Patient lists update without navigation",
+    "Notification badge changes automatically in the already-open patient session",
+    "Reception check-in appears automatically in the already-open Doctor worklist",
+    "Doctor call and start update Reception to Đã gọi / Đang khám automatically",
+    "Unreleased clinical records are withheld",
+    "Lab result reaches Doctor worklist but emits no unreleased patient hint",
+    "Only validated, completed records and reviewed results are released",
+    "Already-open Patient record view updates automatically through the release-filtered source",
+    "Verified simulated payOS webhook commits Billing PAID",
+    "Duplicate webhook produces one persisted receipt",
+    "Already-open Cashier balance and Admin financial counters update automatically",
+    "Customer payment display updates automatically through its own bill capability",
+    "Patient reconnect restores the authoritative payment and receipt",
+    "Notification inbox updates for its recipient without leaking to the other patient",
+    "Persisted notification read state is idempotent",
+    "Rolled-back invalidation is not published",
+    "A delayed older hint cannot regress committed payment state",
+    "Realtime never forwards sensitive PostgreSQL payloads",
+    "Assigned-doctor channels isolate unrelated worklists",
+    "Reconnect starts with authoritative refetch readiness",
+    "Admin disables doctor eligibility; already-open public selection updates and stale hold confirmation is rejected",
+    "Cashier and Admin retain active operational subscriptions",
+    "No synchronization reload occurs on Reception, Doctor, Cashier, Admin or Display",
+    "All open browser surfaces remain free of JavaScript errors"
+  ],
+  "browserErrors": [],
+  "navigation": {
+    "reception": 1,
+    "doctor": 1,
+    "cashier": 1,
+    "admin": 1,
+    "patient": 1,
+    "display": 1
+  },
+  "latencyMs": {
+    "receptionToDoctor": 424
+  },
+  "checkedAt": "2026-10-07T08:40:16.561Z"
+}

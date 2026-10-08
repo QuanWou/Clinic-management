@@ -37,6 +37,7 @@ class DoctorExternalPostgresTest {
     @DynamicPropertySource
     static void db(DynamicPropertyRegistry registry){
         String url=System.getProperty("doctor.it.jdbc-url","");
+        if(url.matches("jdbc:postgresql://127\\.0\\.0\\.1:[0-9]+/clinic_v2_s1_doctor_sandbox")){S1Postgres.configure(registry);return;}
         if(!url.matches("jdbc:postgresql://127\\.0\\.0\\.1:[0-9]+/clinic_v2_s004_doctor_sandbox"))
             throw new IllegalStateException("S0-04 Doctor test refuses non-disposable DB: "+url);
         registry.add("spring.datasource.url",()->url);
@@ -131,7 +132,7 @@ class DoctorExternalPostgresTest {
         assertEquals(1,countB);
         assertEquals(0,jdbc.queryForObject("select count(*) from doctor.doctor_affiliations",Integer.class));
         assertEquals(2,jdbc.queryForObject("select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace "+
-            "where n.nspname='doctor' and c.relkind='r' and c.relrowsecurity and c.relforcerowsecurity",Integer.class));
+            "where n.nspname='doctor' and c.relname in ('doctor_affiliations','working_schedules') and c.relkind='r' and c.relrowsecurity and c.relforcerowsecurity",Integer.class));
         assertThrows(DataIntegrityViolationException.class,()->new TransactionTemplate(tx).executeWithoutResult(status->{
             db.tenant(clinicA);
             jdbc.update("insert into doctor.working_schedules(id,affiliation_id,practitioner_id,clinic_id,branch_id,"+

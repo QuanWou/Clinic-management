@@ -31,6 +31,7 @@ public class AppointmentService {
   private final DoctorSourceClient doctor;
   private final CatalogSourceClient catalog;
   private final long holdTtlSeconds;
+  @org.springframework.beans.factory.annotation.Autowired private BillingSourceAuthorization receptionAuthorization;
 
   public AppointmentService(CapacitySlotRepository slots,SlotReservationRepository holds,AppointmentRepository appointments,
       AppointmentHistoryRepository histories,OutboxEventRepository outbox,ObjectMapper json,TenantDbContext db,
@@ -138,12 +139,12 @@ public class AppointmentService {
 
   @Transactional
   public HoldView hold(Actor actor,String idempotencyKey,HoldInput in){
-    return createHold(actor,idempotencyKey,in,null,null);
+    return createHold(actor,idempotencyKey,in,null,null,false);
   }
   @Transactional
   public HoldView holdFollowUp(Actor actor,String key,HoldInput in,FollowUpSources.Proof proof){
     if(proof==null||proof.encounterId()==null||proof.branchId()==null||!in.patientId().equals(proof.patientId())||proof.medicalVersion()<1||proof.proposedDate()==null)throw ApiProblem.invalid("Verified follow-up source proof required");
-    return createHold(actor,key,in,proof,null);
+    return createHold(actor,key,in,proof,null,false);
   }
   @Transactional
   public HoldView holdReschedule(Actor actor,UUID appointmentId,String key,HoldInput in){
@@ -152,7 +153,7 @@ public class AppointmentService {
     db.tenant(in.clinicId());
     var original=appointments.lockById(appointmentId).filter(a->a.clinicId.equals(in.clinicId())&&a.patientId.equals(in.patientId())).orElseThrow(ApiProblem::missing);
     if(!"CONFIRMED".equals(original.status))throw ApiProblem.conflict("Chỉ có thể đổi lịch chưa tiếp nhận.");
-    return createHold(actor,key,in,null,appointmentId);
+    return createHold(actor,key,in,null,appointmentId,false);
   }
   // The facade resolves active Patient ownership before this local replay read.
   @Transactional(readOnly=true)
@@ -167,11 +168,11 @@ public class AppointmentService {
     String raw=in.clinicId()+"|"+in.branchId()+"|"+in.offeringId()+"|"+in.doctorId()+"|"+in.slotId()+"|"+in.patientId();
     if(proof!=null)raw+="|follow-up|"+proof.encounterId()+"|"+proof.branchId()+"|"+proof.medicalVersion()+"|"+proof.proposedDate();return hash(raw);
   }
-  private HoldView createHold(Actor actor,String idempotencyKey,HoldInput in,FollowUpSources.Proof prior,UUID rescheduleId){
+  private HoldView createHold(Actor actor,String idempotencyKey,HoldInput in,FollowUpSources.Proof prior,UUID rescheduleId,boolean reception){
     requireKey(idempotencyKey);
     clinic.requireEligible(in.clinicId(),in.branchId());
-    var identity=patient.booking(in.patientId());
-    if(actor==null||!actor.id().equals(identity.platformUserId()))throw ApiProblem.forbidden();
+    if(reception){if(actor==null)throw ApiProblem.forbidden();receptionAuthorization.requireCapability(actor.id(),in.clinicId(),in.branchId(),"RECEPTION");}
+    else {var identity=patient.booking(in.patientId());if(actor==null||!actor.id().equals(identity.platformUserId()))throw ApiProblem.forbidden();}
     var d=doctor.requireDoctor(in.clinicId(),in.branchId(),in.doctorId());
     var o=catalog.requireOffering(in.clinicId(),in.branchId(),in.offeringId());
     db.tenant(in.clinicId());db.lockKey(in.patientId(),"hold",idempotencyKey);db.lockDoctor(in.doctorId());Instant now=Instant.now();
@@ -186,7 +187,7 @@ public class AppointmentService {
 
     CapacitySlot slot=slots.lockById(in.slotId()).filter(s->s.clinicId.equals(in.clinicId())&&s.branchId.equals(in.branchId())
       &&s.offeringId.equals(in.offeringId())&&s.doctorId.equals(in.doctorId())).orElseThrow(ApiProblem::missing);
-    if(!slot.active||!slot.startsAt.isAfter(now)||!slotValidAgainstSources(slot,d,o))throw ApiProblem.unavailable("Selected slot is no longer available");
+    if(!sameSpecialty(d.specialtyCode(),o.specialtyCode())||!slot.active||!slot.startsAt.isAfter(now)||!slotValidAgainstSources(slot,d,o))throw ApiProblem.unavailable("Selected slot is no longer available");
     long used=slots.countOverlapping(slot.doctorId,slot.startsAt,slot.endsAt,now,null,null);
     if(used>=slot.capacity)throw ApiProblem.unavailable("Selected slot has just been taken");
 
@@ -255,8 +256,9 @@ public class AppointmentService {
   }
 
   @Transactional
-  public AppointmentView reschedule(Actor actor,UUID appointmentId,RescheduleInput in){
-    var identity=patient.booking(in.patientId());if(actor==null||!actor.id().equals(identity.platformUserId()))throw ApiProblem.forbidden();
+  public AppointmentView reschedule(Actor actor,UUID appointmentId,RescheduleInput in){return doReschedule(actor,appointmentId,in,false);}
+  private AppointmentView doReschedule(Actor actor,UUID appointmentId,RescheduleInput in,boolean reception){
+    if(!reception){var identity=patient.booking(in.patientId());if(actor==null||!actor.id().equals(identity.platformUserId()))throw ApiProblem.forbidden();}
     db.tenant(in.clinicId());
     Appointment a=appointments.lockById(appointmentId).filter(x->x.clinicId.equals(in.clinicId())&&x.patientId.equals(in.patientId())).orElseThrow(ApiProblem::missing);
     if(!"CONFIRMED".equals(a.status))throw ApiProblem.invalid("Only confirmed appointments can be rescheduled");
@@ -269,7 +271,7 @@ public class AppointmentService {
     CapacitySlot newSlot=slots.lockById(nh.slotId).orElseThrow(ApiProblem::missing);
     var sourceDoctor=doctor.requireDoctor(nh.clinicId,nh.branchId,newSlot.doctorId);
     var sourceOffering=catalog.requireOffering(nh.clinicId,nh.branchId,newSlot.offeringId);
-    if(!newSlot.active||!newSlot.startsAt.isAfter(Instant.now())||!slotValidAgainstSources(newSlot,sourceDoctor,sourceOffering))throw ApiProblem.unavailable("New slot source changed after hold");
+    if(!sameSpecialty(sourceDoctor.specialtyCode(),sourceOffering.specialtyCode())||!newSlot.active||!newSlot.startsAt.isAfter(Instant.now())||!slotValidAgainstSources(newSlot,sourceDoctor,sourceOffering))throw ApiProblem.unavailable("New slot source changed after hold");
     if(slots.countOverlapping(newSlot.doctorId,newSlot.startsAt,newSlot.endsAt,Instant.now(),nh.id.toString(),a.id.toString())>=newSlot.capacity)
       throw ApiProblem.unavailable("New slot is no longer available");
 
@@ -291,6 +293,27 @@ public class AppointmentService {
     return appointments.findByPatientIdOrderByCreatedAtDesc(patientId).stream().filter(a->a.clinicId.equals(clinicId)).map(this::appointmentView).toList();
   }
 
+  @Transactional(readOnly=true)
+  public AppointmentView receptionRead(Actor actor,UUID clinicId,UUID branchId,UUID id){
+    if(actor==null)throw ApiProblem.forbidden();receptionAuthorization.requireCapability(actor.id(),clinicId,branchId,"RECEPTION");db.tenant(clinicId);
+    return appointmentView(appointments.findById(id).filter(a->a.clinicId.equals(clinicId)&&a.branchId.equals(branchId)).orElseThrow(ApiProblem::missing));
+  }
+  @Transactional
+  public HoldView receptionHold(Actor actor,UUID id,String key,HoldInput in,long expectedVersion){
+    if(actor==null)throw ApiProblem.forbidden();receptionAuthorization.requireCapability(actor.id(),in.clinicId(),in.branchId(),"RECEPTION");db.tenant(in.clinicId());
+    var original=appointments.lockById(id).filter(a->a.clinicId.equals(in.clinicId())&&a.branchId.equals(in.branchId())&&a.patientId.equals(in.patientId())).orElseThrow(ApiProblem::missing);
+    if(!"CONFIRMED".equals(original.status)||original.encounterId!=null||original.version!=expectedVersion)throw ApiProblem.conflict("Lịch đã tiếp nhận hoặc thay đổi. Tải lại trước khi đổi.");
+    return createHold(actor,key,in,null,id,true);
+  }
+  @Transactional
+  public AppointmentView receptionReschedule(Actor actor,UUID clinicId,UUID branchId,UUID id,RescheduleInput in,long expectedVersion){
+    if(actor==null)throw ApiProblem.forbidden();receptionAuthorization.requireCapability(actor.id(),clinicId,branchId,"RECEPTION");db.tenant(clinicId);
+    var original=appointments.lockById(id).filter(a->a.clinicId.equals(clinicId)&&a.branchId.equals(branchId)&&a.patientId.equals(in.patientId())&&in.clinicId().equals(clinicId)).orElseThrow(ApiProblem::missing);
+    if(original.reservationId.equals(in.newHoldId())&&"CONFIRMED".equals(original.status))return appointmentView(original);
+    if(!"CONFIRMED".equals(original.status)||original.encounterId!=null||original.version!=expectedVersion)throw ApiProblem.conflict("Lượt khám đã tiếp nhận. Lễ tân không có quyền điều chuyển bác sĩ.");
+    var hold=holds.findById(in.newHoldId()).filter(h->h.clinicId.equals(clinicId)&&h.branchId.equals(branchId)).orElseThrow(ApiProblem::missing);
+    return doReschedule(actor,id,in,true);
+  }
   private boolean validOn(DoctorSourceClient.Schedule s,LocalDate date){
     if(s.effectiveFrom()==null||s.startTime()==null||s.endTime()==null)return false;
     return s.dayOfWeek()==date.getDayOfWeek().getValue()&&!date.isBefore(s.effectiveFrom())&&(s.effectiveUntil()==null||date.isBefore(s.effectiveUntil()));

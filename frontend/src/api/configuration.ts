@@ -8,6 +8,7 @@ export type License={licenseNumber:string|null;issuingAuthority:string|null;scop
 export type Clinic=ClinicOwnerView&{contactName:string|null;contactEmail:string|null;contactPhone:string|null;license:License|null;version:number};
 export type Draft={name:string;slug:string;publicDescription:string;contactName:string;contactEmail:string;contactPhone:string;license:License;expectedVersion?:number};
 export type Membership={id:string;userId:string;clinicId:string;role:string;status:string;allBranches:boolean;version:number;branchIds:string[];clinicOwner?:boolean};
+export type MembershipEvent={id:string;membershipId:string|null;actorUserId:string;targetUserId:string;action:string;reason:string;occurredAt:string};
 export type StaffAccount={userId:string;fullName:string;email:string;phone:string|null;accountCode:string|null;status:'ACTIVE'|'INACTIVE'|'LOCKED'};
 export type StaffRow={membership:Membership;account:StaffAccount|null};
 export type Affiliation={id:string;practitionerId:string;userId:string;displayName:string;registrationCode:string|null;specialtyCode:string;specialtyName:string;professionalTitle:string|null;effectiveFrom:string;effectiveUntil:string|null;active:boolean;publicVisible:boolean;version:number};
@@ -31,6 +32,7 @@ export const saveClinic=(s:Session,draft:Draft)=>write<Clinic>(bases.clinic,clin
 export const saveBranch=(s:Session,branch:Omit<ClinicBranchView,'id'>&{expectedVersion?:number},id?:string)=>write<Clinic>(bases.clinic,clinicPath(s)+'/branches'+(id?'/'+encodeURIComponent(id):''),s.token,branch,id?'PUT':'POST');
 export const submitClinic=(s:Session)=>write<Clinic>(bases.clinic,clinicPath(s)+'/submit',s.token,{});
 export const memberships=(s:Session)=>get<Membership[]>(bases.identity,clinicPath(s)+'/memberships',s.token);
+export const membershipEvents=(s:Session)=>get<MembershipEvent[]>(bases.identity,clinicPath(s)+'/membership-events',s.token);
 const staffPath=(s:Session)=>`/api/clinic-staff/${encodeURIComponent(s.clinic)}`;
 const authBase=import.meta.env.VITE_AUTH_URL??'/s1/auth';
 export const staff=(s:Session)=>get<StaffRow[]>(authBase,staffPath(s),s.token);

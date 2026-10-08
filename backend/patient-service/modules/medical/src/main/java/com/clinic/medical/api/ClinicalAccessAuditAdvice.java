@@ -30,7 +30,8 @@ public class ClinicalAccessAuditAdvice implements ResponseBodyAdvice<Object> {
   UUID clinic,branch;try{clinic=UUID.fromString(match.group(1));branch=UUID.fromString(match.group(2));}catch(IllegalArgumentException ex){return body;}
   String suffix=match.group(3),operation;UUID resource=branch;
   if("medical".equals("medical")){
-   if(suffix.equals("/lab/orders")||suffix.equals("/lab/orders/history"))operation="READ_LAB_WORKLIST";
+   if(suffix.matches("/admin/patients/[0-9a-fA-F-]{36}/visits/[0-9a-fA-F-]{36}/medical-record")){resource=UUID.fromString(suffix.split("/")[5]);operation="ADMIN_READ_MEDICAL_RECORD";}
+   else if(suffix.equals("/lab/orders")||suffix.equals("/lab/orders/history"))operation="READ_LAB_WORKLIST";
    else if(suffix.matches("/orders/[0-9a-fA-F-]{36}/result-history")){resource=UUID.fromString(suffix.split("/")[2]);operation="READ_ORDERS";}
    else if(suffix.matches("/visits/[0-9a-fA-F-]{36}/(draft|orders|readiness|validate)")){resource=UUID.fromString(suffix.split("/")[2]);operation=denied&&!HttpMethod.GET.equals(request.getMethod())?"CARE_MUTATION":switch(suffix.substring(suffix.lastIndexOf('/')+1)){case "draft"->"READ_DRAFT";case "orders"->"READ_ORDERS";default->"READ_READINESS";};}
    else if(denied&&suffix.matches("/orders/[0-9a-fA-F-]{36}/(accept|process|reject|cancel|results|reviews)")){resource=UUID.fromString(suffix.split("/")[2]);operation="CARE_MUTATION";}

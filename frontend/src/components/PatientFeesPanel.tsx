@@ -1,3 +1,5 @@
+import {useAuthoritativeSync,type SyncContext} from './useAuthoritativeSync';
+import {patientSubscription} from '../api/realtime';
 import {PatientPaymentPanel} from './PatientPaymentPanel';
 import { useEffect, useRef, useState } from 'react';
 import { ownBills, type PatientBill } from '../api/portal';
@@ -14,13 +16,14 @@ export function PatientFeesPanel({ token, clinic, branch, branchName }: { token:
  const [error,setError] = useState('');
  const epoch = useRef(0);
  useEffect(() => { epoch.current++; setBills(null);setError('');setBusy(false);void reload();return () => { epoch.current++; }; },[token,clinic,branch]);
- async function reload() {
+ async function reload(background=false,context?:SyncContext) {
   if(busy || !token || !branch) return;
-  const current=++epoch.current;setBusy(true);setBills(null);setError('');
-  try { const rows=await ownBills(token,clinic,branch); if(current===epoch.current)setBills(rows); }
-  catch(e) { if(current===epoch.current)setError(e instanceof Error ? e.message : 'Không thể tải khoản phải thu. Hãy thử lại.'); }
+  const current=++epoch.current;if(!background){setBusy(true);setBills(null);}setError('');
+  try { const rows=await ownBills(token,clinic,branch); if(current===epoch.current&&(!context||context.current()))setBills(rows); }
+  catch(e) { if(current===epoch.current&&(!context||context.current()))setError(e instanceof Error ? e.message : 'Không thể tải khoản phải thu. Hãy thử lại.');if(background)throw e; }
   finally { if(current===epoch.current)setBusy(false); }
  }
+ useAuthoritativeSync({key:token+clinic+branch,enabled:!!token&&!!clinic&&!!branch,blocked:busy,subscriptions:[patientSubscription({token,clinic,branch},'billing')],refresh:context=>reload(true,context),onDenied:()=>{epoch.current++;setBills(null);setError('Quyền truy cập khoản phí đã thay đổi.');}});
  const singleUnpaid=bills?.filter(b=>b.remainingVnd>0).length===1;
  return <section className="public-section booking-panel patient-fees" aria-labelledby="patient-fees-title">
   <header className="patient-fees-heading"><div><span className="payment-eyebrow">{branchName||'Hồ sơ của bạn'}</span><h2 id="patient-fees-title">Chi phí & thanh toán</h2><p>Xem chi tiết dịch vụ, trả phí và tra cứu biên nhận tại đây.</p></div>
@@ -28,13 +31,13 @@ export function PatientFeesPanel({ token, clinic, branch, branchName }: { token:
   </header>
   {!branch&&<p>Chọn địa điểm để xem khoản phải thu của bạn.</p>}
   {busy&&<p role="status" className="payment-loading"><RefreshCw size={17} aria-hidden="true"/>Đang tải khoản phải thu…</p>}{error&&<p role="alert" className="booking-error">{error}</p>}
-  {bills?.length===0&&<div className="patient-fees-empty" role="status"><ReceiptText size={30} aria-hidden="true"/><h3>Chưa có khoản phí cần xem</h3><p>Chưa có phiếu thu cho hồ sơ của bạn tại địa điểm này.</p></div>}
+  {bills?.length===0&&<div className="patient-fees-empty account-empty-state" role="status"><ReceiptText size={30} aria-hidden="true"/><h3>Bạn chưa có hóa đơn.</h3><p>Các phiếu thu và thông tin thanh toán sẽ xuất hiện tại đây khi được phát hành.</p></div>}
   {!!bills?.length&&<div className="patient-fees-overview" aria-label="Tổng hợp chi phí của các phiếu đã tải">
    <div className="is-outstanding"><span><Wallet size={18} aria-hidden="true"/>Cần thanh toán</span><strong>{money(bills.reduce((sum,b)=>sum+b.remainingVnd,0))}</strong></div>
    <div><span><ArrowDownLeft size={18} aria-hidden="true"/>Đã thanh toán</span><strong>{money(bills.reduce((sum,b)=>sum+b.paidVnd,0))}</strong></div>
    <div><span><ReceiptText size={18} aria-hidden="true"/>Phiếu thu đã tải</span><strong>{bills.length.toLocaleString('vi-VN')}</strong></div>
   </div>}
-  {bills?.map(b=><article className="booking-appointment patient-invoice" key={b.id}>
+  {bills?.map(b=><article className="booking-appointment patient-invoice" key={b.id} data-bill-id={b.id}>
    <header className="patient-invoice-heading"><div><span className="patient-invoice-icon"><ReceiptText size={23} aria-hidden="true"/></span><div><h3>Phiếu thu khám bệnh</h3><time dateTime={b.issuedAt}>{when(b.issuedAt)}</time></div></div><span className={'invoice-badge '+(b.status==='PAID'?'is-paid':'is-unpaid')}>{b.status==='PAID'?<Check size={15} aria-hidden="true"/>:<Clock3 size={15} aria-hidden="true"/>}{status[b.status]??b.status}</span></header>
    <div className={'patient-invoice-layout'+(b.remainingVnd>0?' has-payment':'')}>
     <div className="patient-invoice-detail"><h4>Chi tiết dịch vụ</h4>

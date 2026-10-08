@@ -7,7 +7,7 @@ public class SecurityConfiguration{
  @Bean FilterRegistrationBean<UserAuthenticationFilter> reg(UserAuthenticationFilter f){var r=new FilterRegistrationBean<>(f);r.setEnabled(false);return r;}
  @Bean SecurityFilterChain chain(HttpSecurity http,UserAuthenticationFilter f)throws Exception{
   return http.csrf(c->c.disable()).sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-   .authorizeHttpRequests(a->a.requestMatchers("/actuator/health/**","/api/public/**","/api/internal/**").permitAll().anyRequest().authenticated())
+   .authorizeHttpRequests(a->a.dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ASYNC).permitAll().requestMatchers("/actuator/health/**","/api/public/**","/api/internal/**").permitAll().anyRequest().authenticated())
    .addFilterBefore(f,UsernamePasswordAuthenticationFilter.class).build();
  }
 }

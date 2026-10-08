@@ -1,7 +1,7 @@
 /* Public */
 /* Booking: one clear primary flow plus a compact patient sidebar. */
 .public-booking-page { padding-bottom:44px; background:linear-gradient(180deg,#f7fbf9 0,#fff 420px); }
-.booking-steps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; list-style:none; padding:0; margin:0; }
+.booking-steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; list-style:none; padding:0; margin:0; }
 .booking-steps li { min-height:50px; display:flex; align-items:center; justify-content:center; gap:9px; padding:10px 14px; border:1px solid var(--line); border-radius:12px; background:#fff; color:var(--muted-strong); font-size:13px; font-weight:650; text-align:center; }
 .booking-steps li>span { display:grid; place-items:center; width:28px; height:28px; border:1px solid var(--line-strong); border-radius:50%; font-weight:800; flex-shrink:0; background:#fff; }
 .booking-steps li[aria-current=step] { color:var(--brand-800); border-color:#b9ddcf; background:var(--brand-50); }
@@ -83,9 +83,43 @@
 .booking-confirm-note { margin:13px 0; color:var(--muted); font-size:12px; }
 .booking-confirm-actions { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; }
 .booking-confirm-actions button { margin:0; min-height:46px; }
+.booking-confirm-section { display:grid; gap:4px; padding:16px 0; border-bottom:1px solid #cee4da; }
+.booking-confirm-section>strong { color:#193622; font-size:16px; }
+.booking-confirm-section>small { color:var(--muted); font-size:11px; }
+.booking-confirm-label { color:var(--brand-700); font-size:10px; font-weight:800; letter-spacing:.075em; text-transform:uppercase; }
+.booking-confirm-summary { margin:8px 0 0; }
+.booking-confirm-summary>div { display:grid; grid-template-columns:120px minmax(0,1fr); gap:14px; padding:8px 0; }
+.booking-confirm-summary dt { color:var(--muted); font-size:11px; }
+.booking-confirm-summary dd { margin:0; color:var(--ink); font-size:12px; font-weight:700; text-align:right; }
+.booking-success { animation:booking-state-enter 180ms ease-out both; }
+.booking-success h3 { margin:5px 0 18px; color:#18351f; font-size:22px; }
+.booking-success dl { margin:0; border-top:1px solid #dfe8dc; }
+.booking-success dl>div { display:grid; grid-template-columns:120px minmax(0,1fr); gap:16px; padding:11px 0; border-bottom:1px solid #edf1ec; }
+.booking-success dt { color:var(--muted); font-size:11px; }
+.booking-success dd { margin:0; color:var(--ink); font-size:12px; font-weight:700; text-align:right; }
+.booking-success-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:18px; }
+.booking-success-actions button { min-height:44px; margin:0; }
 .booking-profile-card { align-self:start; }
 .booking-profile-head { padding-bottom:16px; border-bottom:1px solid var(--line); }
 .booking-profile-card .booking-form { display:grid; gap:12px; margin-top:18px; }
+.patient-records { margin-top:26px; padding-top:24px; border-top:1px solid var(--line); }
+.patient-records-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin-bottom:14px; }
+.patient-records-heading h2 { margin:5px 0 0; font-size:20px; }
+.patient-records-heading>small { max-width:360px; color:var(--muted-strong); font-size:11px; line-height:1.55; text-align:right; }
+.patient-record-list { display:grid; gap:12px; }
+.patient-medical-record { margin:0; background:#fbfcfa; }
+.patient-medical-record>header>div { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.patient-medical-record>header h3 { margin:10px 0 14px; color:#203b29; font-size:16px; line-height:1.45; }
+.patient-medical-record dl { display:grid; gap:0; margin:0; }
+.patient-medical-record dl>div { display:grid; grid-template-columns:140px minmax(0,1fr); gap:14px; padding:9px 0; border-top:1px solid #e8eee8; }
+.patient-medical-record dt { color:var(--muted-strong); font-size:10px; }
+.patient-medical-record dd { margin:0; color:var(--ink); font-size:11px; line-height:1.55; }
+.patient-medical-record details { margin-top:10px; padding-top:10px; border-top:1px solid #e8eee8; }
+.patient-medical-record summary { cursor:pointer; color:var(--brand-700); font-size:11px; font-weight:700; }
+.patient-medical-record details ul { display:grid; gap:9px; margin:10px 0 0; padding:0; list-style:none; }
+.patient-medical-record details li { padding:10px; border-left:2px solid #79a981; background:#f4f8f3; }
+.patient-medical-record details li p { margin:5px 0; white-space:pre-wrap; overflow-wrap:anywhere; font-size:11px; line-height:1.55; }
+.patient-medical-record details li small { color:var(--muted-strong); font-size:9px; }
 .booking-side-summary { margin-top:17px; padding:15px; border:1px solid #dfe8dc; border-radius:11px; background:#fbfcf9; }
 .booking-side-summary-head { display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:11px; border-bottom:1px solid #e7ede5; }
 .booking-side-summary-head>strong { color:#18351f; font-size:12px; }
@@ -97,6 +131,24 @@
 .booking-side-summary dl>div:last-child { border-bottom:0; }
 .booking-side-summary dt { color:#748078; font-size:9px; }
 .booking-side-summary dd { margin:0; overflow-wrap:anywhere; color:#263d2d; font-size:10px; font-weight:700; text-align:right; }
+.booking-summary-panel { align-self:start; }
+.booking-summary-panel .booking-side-summary-head { margin-bottom:4px; }
+.booking-summary-live { margin:0; }
+.booking-summary-live>div { display:grid; grid-template-columns:92px minmax(0,1fr); gap:12px; padding:10px 0; border-bottom:1px solid #edf1ec; }
+.booking-summary-live dt { color:#748078; font-size:10px; }
+.booking-summary-live dd { margin:0; overflow-wrap:anywhere; color:#263d2d; font-size:11px; font-weight:700; text-align:right; }
+.booking-summary-person { display:grid; gap:4px; margin-top:15px; padding-top:14px; border-top:1px solid #dfe8dc; }
+.booking-summary-person>span { color:#748078; font-size:10px; }
+.booking-summary-person>strong { color:#193622; font-size:14px; }
+.booking-summary-person>small,.booking-summary-person>p { margin:0; color:#647268; font-size:10px; line-height:1.55; }
+.booking-summary-auth { display:grid; gap:10px; margin-top:14px; padding-top:14px; border-top:1px solid #dfe8dc; }
+.booking-summary-auth p { margin:0; color:#647268; font-size:11px; line-height:1.55; }
+.booking-summary-auth button,.booking-summary-continue { width:100%; min-height:43px; margin:0; }
+.booking-missing-profile { display:grid; gap:11px; margin-top:14px; padding-top:14px; border-top:1px solid #dfe8dc; }
+.booking-missing-profile label { display:grid; gap:6px; margin:0; color:#334b3c; font-size:11px; font-weight:700; }
+.booking-missing-profile input { width:100%; min-height:44px; box-sizing:border-box; }
+.booking-missing-profile .date-preview { margin:0; color:#748078; font-size:10px; }
+.booking-missing-profile button { min-height:43px; margin:0; }
 .booking-login-required { padding:13px 14px; border:1px solid #dfe8dc; border-radius:9px; background:#f6f9f3; }
 .booking-login-required strong { display:block; color:#193622; font-size:12px; }
 .booking-login-required p { margin:5px 0 0; color:#647268; font-size:10px; line-height:1.55; }
@@ -121,7 +173,7 @@
   .public-booking-page>.booking-feedback:empty { display:none; }
   .public-booking-page>.booking-panel { margin:0; width:100%; max-width:none; padding:26px; border:1px solid var(--line); border-radius:15px; background:#fff; box-shadow:0 8px 28px #173b5309; }
   .public-booking-page>.booking-steps { margin:2px 0 2px; }
-  .public-booking-page>#profile { position:sticky; top:92px; }
+  .public-booking-page>#booking-summary { position:sticky; top:92px; }
 }
 @media(max-width:959px) {
   .public-booking-page>.booking-panel { margin:16px 20px 0; padding:22px; border:1px solid var(--line); border-radius:14px; background:#fff; }
@@ -130,7 +182,7 @@
   .booking-profile-card { order:initial; }
 }
 @media(max-width:760px) {
-  .booking-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .booking-steps { grid-template-columns:repeat(3,minmax(0,1fr)); }
   .booking-auth-required { grid-template-columns:1fr; }
   .booking-auth-required button { width:100%; }
 }
@@ -144,9 +196,14 @@
   .booking-slot-count,.booking-profile-ready { justify-self:start; }
   .booking-confirm-card .booking-summary { grid-template-columns:1fr; }
   .booking-confirm-actions { grid-template-columns:1fr; }
+  .booking-confirm-summary>div,.booking-success dl>div { grid-template-columns:1fr; gap:3px; }
+  .booking-confirm-summary dd,.booking-success dd { text-align:left; }
   .booking-profile-actions { grid-template-columns:1fr; }
   .booking-profile-actions .booking-primary { grid-column:1; }
   .public-booking-page .booking-slots { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .patient-records-heading { display:grid; }
+  .patient-records-heading>small { max-width:none; text-align:left; }
+  .patient-medical-record dl>div { grid-template-columns:1fr; gap:3px; }
 }
 @keyframes booking-spin { to { transform:rotate(360deg); } }
 @media(prefers-reduced-motion:reduce) {
@@ -749,6 +806,124 @@
   .fresh-final-cta>.fresh-container { padding-block:30px; align-items:flex-start; flex-direction:column; }
   .fresh-doctor-profile { grid-template-columns:1fr; }
   .fresh-doctor-profile-photo { min-height:200px; }
+}
+
+/* Patient authentication is a Public Web view, not a separate auth surface. */
+.public-auth-page {
+  min-height:calc(100vh - 180px);
+  padding:56px 0 72px;
+  background:linear-gradient(180deg,var(--fresh-lime-50) 0,rgba(245,252,232,.42) 180px,#fff 520px);
+}
+.public-auth-shell {
+  display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(420px,.72fr);
+  gap:56px;
+  align-items:start;
+}
+.public-auth-intro { max-width:620px; padding:28px 0; }
+.public-auth-intro .eyebrow { color:var(--fresh-forest-700); }
+.public-auth-intro h1 {
+  margin:12px 0 14px;
+  color:var(--fresh-forest-950);
+  font-size:clamp(36px,4vw,56px);
+  line-height:1.05;
+  letter-spacing:-.04em;
+}
+.public-auth-intro>p {
+  max-width:560px;
+  margin:0;
+  color:var(--fresh-muted);
+  font-size:16px;
+  line-height:1.7;
+}
+.public-auth-intro ul { display:grid; gap:10px; margin:28px 0 0; padding:0; list-style:none; }
+.public-auth-intro li {
+  position:relative;
+  padding-left:22px;
+  color:var(--fresh-forest-800);
+  font-size:14px;
+  line-height:1.55;
+}
+.public-auth-intro li::before {
+  content:"";
+  position:absolute;
+  left:0;
+  top:.62em;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--fresh-lime-500);
+  box-shadow:0 0 0 4px var(--fresh-lime-100);
+}
+.public-auth-form-panel {
+  padding:28px;
+  border:1px solid var(--fresh-line);
+  border-radius:14px;
+  background:#fff;
+}
+.public-auth-form-head { margin-bottom:22px; padding-bottom:18px; border-bottom:1px solid var(--fresh-line); }
+.public-auth-form-head h2 {
+  margin:5px 0 6px;
+  color:var(--fresh-forest-950);
+  font-size:24px;
+  letter-spacing:-.025em;
+}
+.public-auth-form-head p { margin:0; color:var(--fresh-muted); font-size:13px; line-height:1.6; }
+.public-auth-page .login-form fieldset { gap:16px; margin:0; }
+.public-auth-page .login-form label { gap:7px; color:var(--fresh-text); font-size:13px; font-weight:650; }
+.public-auth-page .login-form input {
+  height:44px;
+  min-height:44px;
+  padding:0 12px;
+  border:1px solid var(--fresh-line-strong);
+  border-radius:9px;
+  color:var(--fresh-text);
+  background:#fff;
+  font:inherit;
+  transition:border-color 180ms ease,box-shadow 180ms ease,background-color 180ms ease;
+}
+.public-auth-page .login-form input:focus {
+  outline:0;
+  border-color:var(--fresh-lime-600);
+  box-shadow:0 0 0 3px rgba(181,238,69,.18);
+}
+.public-auth-page .password-field button { color:var(--fresh-muted); }
+.public-auth-page .password-field button:hover { color:var(--fresh-forest-800); background:var(--fresh-lime-50); }
+.public-auth-page .login-submit {
+  min-height:46px;
+  margin-top:2px;
+  border-color:var(--fresh-lime-500);
+  border-radius:9px;
+  color:var(--fresh-forest-950);
+  background:var(--fresh-lime-500);
+}
+.public-auth-page .login-submit:hover:not(:disabled) {
+  border-color:var(--fresh-lime-600);
+  color:var(--fresh-forest-950);
+  background:var(--fresh-lime-600);
+}
+.public-auth-page .login-register {
+  margin:18px 0 0;
+  padding-top:16px;
+  border-top:1px solid var(--fresh-line);
+  color:var(--fresh-muted);
+  font-size:13px;
+  text-align:left;
+}
+.public-auth-page .login-register a { color:var(--fresh-forest-800); }
+.public-auth-page .login-notice {
+  margin:0 0 16px;
+  border:1px solid #d9e6d5;
+  background:var(--fresh-surface-soft);
+}
+@media(max-width:900px) {
+  .public-auth-shell { grid-template-columns:1fr; gap:24px; }
+  .public-auth-intro { max-width:none; padding:8px 0; }
+}
+@media(max-width:620px) {
+  .public-auth-page { padding:28px 0 48px; }
+  .public-auth-intro h1 { font-size:36px; }
+  .public-auth-form-panel { padding:22px 18px; border-radius:11px; }
 }
 
 

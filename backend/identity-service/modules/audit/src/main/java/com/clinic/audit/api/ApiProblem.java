@@ -8,4 +8,5 @@ public class ApiProblem extends RuntimeException {
     public ApiProblem(HttpStatus status,String code,String message){super(message);this.status=status;this.code=code;}
     public static ApiProblem invalid(String message){return new ApiProblem(HttpStatus.UNPROCESSABLE_ENTITY,"INVALID_AUDIT_EVENT",message);}
     public static ApiProblem forbidden(){return new ApiProblem(HttpStatus.FORBIDDEN,"FORBIDDEN","Required workload scope is missing");}
+    public static ApiProblem accessDenied(){return new ApiProblem(HttpStatus.FORBIDDEN,"FORBIDDEN","Not authorized to read this clinic audit feed");}
 }

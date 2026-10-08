@@ -10,6 +10,7 @@ public final class IamDto{
  public record GrantBranch(@NotNull UUID branchId,@Size(max=500) String reason){}
  public record Reason(@NotBlank @Size(max=500) String reason){}
  public record MembershipView(UUID id,UUID userId,UUID clinicId,MembershipRole role,MembershipStatus status,boolean allBranches,long version,List<UUID> branchIds,Instant activatedAt,Instant revokedAt,boolean clinicOwner){}
+ public record MembershipEventView(UUID id,UUID membershipId,UUID actorUserId,UUID targetUserId,String action,String reason,Instant occurredAt){}
  public record ContextView(UUID membershipId,UUID clinicId,MembershipRole role,boolean allBranches,List<UUID> branchIds,long version){}
  public record AuthorizationRequest(@NotNull UUID actorUserId,UUID clinicId,UUID branchId,@NotNull Capability capability){}
  public record AuthorizationDecision(boolean allowed,UUID membershipId,MembershipRole role,long membershipVersion,String reason){}

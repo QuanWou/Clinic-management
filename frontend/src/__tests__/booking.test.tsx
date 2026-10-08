@@ -2,11 +2,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {useEffect,useState} from 'react';
 import { PublicShell } from '../shells/PublicShell';
+import {SessionProvider,useSession} from '../auth/SessionProvider';
+import {readBookingReturnState,saveBookingReturnState} from '../auth/bookingReturn';
 import * as api from '../api/booking';
 import { requestJson } from '../api/client';
 
-vi.mock('../api/booking', () => ({ getSiteClinic: vi.fn(), getClinic: vi.fn(), getDoctors: vi.fn(), getOfferings: vi.fn(), getPublicContent: vi.fn(), getBookingOptions: vi.fn(), getAvailabilityResult: vi.fn(), signIn: vi.fn(), saveProfile: vi.fn(), getSlots: vi.fn(), holdSlot: vi.fn(), holdReschedule: vi.fn(), getPendingHolds: vi.fn(), confirmHold: vi.fn(), myAppointments: vi.fn(), cancelAppointment: vi.fn(), rescheduleAppointment: vi.fn() }));
+vi.mock('../api/booking', async importOriginal => { const actual=await importOriginal<typeof import('../api/booking')>(); return {...actual,getSiteClinic:vi.fn(),getClinic:vi.fn(),getDoctors:vi.fn(),getOfferings:vi.fn(),getPublicContent:vi.fn(),getBookingOptions:vi.fn(),getAvailabilityResult:vi.fn(),signIn:vi.fn(),refreshAuth:vi.fn(),logoutAuth:vi.fn(),saveProfile:vi.fn(),getSlots:vi.fn(),holdSlot:vi.fn(),holdReschedule:vi.fn(),getPendingHolds:vi.fn(),confirmHold:vi.fn(),myAppointments:vi.fn(),cancelAppointment:vi.fn(),rescheduleAppointment:vi.fn()};});
 vi.mock('../api/client', () => ({ requestJson: vi.fn() }));
 vi.mock('../api/idempotency', () => ({ stableOperationKey: vi.fn(async () => crypto.randomUUID()), forgetOperationKey: vi.fn() }));
 const clinic = { clinicId: 'clinic-a', name: 'Synthetic Clinic', branches: [{ branchId: 'branch-a', name: 'Synthetic Branch', address: 'Synthetic address', openingHours: '08-17' }] };
@@ -45,6 +48,7 @@ const bookingOptions:api.BookingOptions={
 };
 beforeEach(() => {
  window.history.replaceState(null,'','/public/booking');
+ sessionStorage.clear();
  vi.resetAllMocks();
  vi.mocked(api.getSiteClinic).mockResolvedValue(clinic);
  vi.mocked(api.getClinic).mockResolvedValue(clinic);
@@ -52,32 +56,57 @@ beforeEach(() => {
  vi.mocked(api.getOfferings).mockResolvedValue(offerings);
  vi.mocked(api.getPublicContent).mockResolvedValue(publicContent);
  vi.mocked(api.getBookingOptions).mockResolvedValue(bookingOptions);
- vi.mocked(api.signIn).mockResolvedValue({ data: { accessToken: 'synthetic-token' } });
- vi.mocked(requestJson).mockResolvedValue({ ok: true, status: 200, data: profile });
+ vi.mocked(api.signIn).mockResolvedValue({ data: { accessToken: 'synthetic-token',email:'synthetic@example.invalid',fullName:'Synthetic Patient' } });
+ vi.mocked(requestJson).mockImplementation(async url=>{
+  const path=String(url);
+  if(path.endsWith('/api/me/current'))return {ok:true,status:200,data:{userId:'patient-a',legacyRoles:['ROLE_PATIENT'],platformOperator:false}} as never;
+  if(path.endsWith('/api/me/contexts'))return {ok:true,status:200,data:[]} as never;
+  if(path.endsWith('/api/me/patient-profile'))return {ok:true,status:200,data:profile} as never;
+  return {ok:true,status:200,data:profile} as never;
+ });
  vi.mocked(api.getAvailabilityResult).mockImplementation(async query=>({available:true,reason:'AVAILABLE',doctorId:query.doctorId,doctorName:query.doctorId==='doctor-a'?'Bác sĩ Nhi':'Bác sĩ Nội',date:query.date,slots:[{ slotId: 'slot-a', doctorId:query.doctorId, offeringId:query.offeringId, startsAt: '2026-12-01T01:00:00Z', endsAt: '2026-12-01T01:30:00Z', remaining: 1, price }]}));
  vi.mocked(api.holdSlot).mockResolvedValue({ holdId: 'hold-a', state: 'ACTIVE', purpose: 'BOOKING', expiresAt: new Date(Date.now() + 600000).toISOString(), price });
  vi.mocked(api.confirmHold).mockResolvedValue({ id: 'appointment-a', appointmentCode: 'AP-SYN', clinicId: 'clinic-a', status: 'CONFIRMED', startsAt: '2026-12-01T01:00:00Z', endsAt: '2026-12-01T01:30:00Z', price });
  vi.mocked(api.myAppointments).mockResolvedValue([]);
+ vi.mocked(api.getPendingHolds).mockResolvedValue([]);
 });
 afterEach(cleanup);
+it('keeps the public page healthy when optional content is absent during background refresh',async()=>{
+ window.history.replaceState(null,'','/public');
+ vi.mocked(api.getPublicContent).mockResolvedValue(null);
+ render(<PublicShell state="ready"/>);
+ await waitFor(()=>expect(api.getPublicContent).toHaveBeenCalled());
+ const initialCalls=vi.mocked(api.getPublicContent).mock.calls.length;
+ window.dispatchEvent(new Event('focus'));
+ await waitFor(()=>expect(vi.mocked(api.getPublicContent).mock.calls.length).toBeGreaterThan(initialCalls));
+ expect(screen.queryByText('Chưa cập nhật được thông tin phòng khám. Hệ thống sẽ thử lại.')).toBeNull();
+ expect(screen.getAllByText('Synthetic Clinic').length).toBeGreaterThan(0);
+});
 async function waitForBookingOptions(){await screen.findByRole('option',{name:'Nhi'});}
-async function reachSlot() {
- const user=userEvent.setup();render(<PublicShell state="ready" />);
- await screen.findByRole('heading',{name:'Chọn thông tin khám'});
- await waitForBookingOptions();
+function AuthenticatedPublicShell(){
+ const auth=useSession();
+ useEffect(()=>{if(!auth?.patientSession)void auth?.authenticatePatient('synthetic@example.invalid','synthetic-password');},[]);
+ if(!auth?.patientSession)return <p role="status">Đang đăng nhập bệnh nhân kiểm thử…</p>;
+ return <PublicShell state="ready"/>;
+}
+function renderAuthenticatedPublic(){render(<SessionProvider><AuthenticatedPublicShell/></SessionProvider>);}
+function StickyAuthenticatedPublicShell(){
+ const auth=useSession(),[ready,setReady]=useState(false);
+ useEffect(()=>{if(!ready&&!auth?.patientSession)void auth?.authenticatePatient('synthetic@example.invalid','synthetic-password').then(()=>setReady(true));},[ready,auth?.patientSession?.token]);
+ if(!ready)return <p role="status">Đang đăng nhập bệnh nhân kiểm thử…</p>;
+ return <PublicShell state="ready"/>;
+}
+function renderStickyAuthenticatedPublic(){render(<SessionProvider><StickyAuthenticatedPublicShell/></SessionProvider>);}
+async function reachSlot(renderShell=renderAuthenticatedPublic) {
+ saveBookingReturnState({branch:'branch-a',specialty:'Nhi',specialtyCode:'nhi',offering:'offering-a',doctorMode:'recommended',doctor:'',date:'2026-12-01',slotId:'slot-a',slotDoctorId:'doctor-a',slotOfferingId:'offering-a',slotStartsAt:'2026-12-01T01:00:00Z'});
+ const user=userEvent.setup();renderShell();
+ await screen.findByRole('heading',{name:'Xác nhận lịch khám'});
+ expect(screen.queryByText('Đăng nhập / Hồ sơ')).toBeNull();
+ expect(screen.getByRole('list',{name:'Các bước đặt lịch'}).querySelectorAll('li')).toHaveLength(3);
  expect(screen.queryByRole('searchbox')).toBeNull();
  expect(screen.queryByRole('combobox',{name:'Địa điểm khám'})).toBeNull();
- expect(await screen.findByLabelText('Email')).toBeTruthy();
- await user.selectOptions(screen.getByLabelText('Chuyên khoa'),'Nhi');
- await user.selectOptions(screen.getByLabelText('Dịch vụ'),'offering-a');
- await user.click(screen.getByRole('button',{name:'Tìm giờ khám'}));
- const slot=await screen.findByRole('button',{name:/Bác sĩ Nhi/});
- await user.click(slot);
- await user.type(screen.getByLabelText('Email'),'synthetic@example.invalid');
- await user.type(screen.getByLabelText('Mật khẩu'),'synthetic-password');
- await user.click(screen.getByRole('button',{name:'Đăng nhập để tiếp tục đặt lịch'}));
- const hold=await screen.findByRole('button',{name:/Giữ giờ/});
- return {user,slot,hold};
+ const confirm=await screen.findByRole('button',{name:'Xác nhận đặt lịch'});
+ return {user,confirm};
 }
 
 it('filters Nhi doctors and services and resets invalid selections when specialty changes',async()=>{
@@ -107,17 +136,62 @@ it('filters Nhi doctors and services and resets invalid selections when specialt
 });
 
 it('lets guests inspect a slot but blocks holding and confirmation until login',async()=>{
- const user=userEvent.setup();render(<PublicShell state="ready" />);
+ const user=userEvent.setup();render(<SessionProvider><PublicShell state="ready" /></SessionProvider>);
  await screen.findByRole('heading',{name:'Chọn thông tin khám'});
+ expect(screen.getByRole('list',{name:'Các bước đặt lịch'}).querySelectorAll('li')).toHaveLength(3);
+ expect(screen.queryByText('Đăng nhập / Hồ sơ')).toBeNull();
  await waitForBookingOptions();
  await user.selectOptions(screen.getByLabelText('Chuyên khoa'),'Nhi');
  await user.selectOptions(screen.getByLabelText('Dịch vụ'),'offering-a');
  await user.click(screen.getByRole('button',{name:'Tìm giờ khám'}));
  const slot=await screen.findByRole('button',{name:/Bác sĩ Nhi/});
  await user.click(slot);
- expect(screen.getByRole('button',{name:'Đăng nhập để tiếp tục đặt lịch'})).toBeTruthy();
+ const login=screen.getByRole('button',{name:'Đăng nhập để tiếp tục'});
+ expect(login).toBeTruthy();
  expect(api.holdSlot).not.toHaveBeenCalled();
  expect(screen.queryByRole('button',{name:'Xác nhận đặt lịch'})).toBeNull();
+ await user.click(login);
+ expect(window.location.pathname).toBe('/public/login');
+ expect(new URLSearchParams(window.location.search).get('returnTo')).toBe('/dat-lich');
+ expect(readBookingReturnState()).toEqual(expect.objectContaining({specialty:'Nhi',specialtyCode:'nhi',offering:'offering-a',slotId:'slot-a',slotDoctorId:'doctor-a',slotOfferingId:'offering-a'}));
+});
+
+it('returns to step 2 when the slot saved before login is no longer available',async()=>{
+ saveBookingReturnState({branch:'branch-a',specialty:'Nhi',specialtyCode:'nhi',offering:'offering-a',doctorMode:'recommended',doctor:'',date:'2026-12-01',slotId:'slot-a',slotDoctorId:'doctor-a',slotOfferingId:'offering-a',slotStartsAt:'2026-12-01T01:00:00Z'});
+ vi.mocked(api.getAvailabilityResult).mockResolvedValue({available:false,reason:'FULLY_BOOKED',doctorId:'doctor-a',doctorName:'Bác sĩ Nhi',date:'2026-12-01',slots:[]});
+ renderAuthenticatedPublic();
+ expect(await screen.findByText('Khung giờ bạn đã chọn vừa không còn khả dụng. Vui lòng chọn khung giờ khác.')).toBeTruthy();
+ const steps=screen.getByRole('list',{name:'Các bước đặt lịch'}).querySelectorAll('li');
+ expect(steps).toHaveLength(3);
+ expect(steps[1].getAttribute('aria-current')).toBe('step');
+ expect(steps[2].getAttribute('data-state')).toBe('upcoming');
+ expect(api.holdSlot).not.toHaveBeenCalled();
+ expect(screen.queryByRole('button',{name:'Xác nhận đặt lịch'})).toBeNull();
+});
+
+it('asks only for backend-required profile fields before confirmation when the patient has no profile',async()=>{
+ saveBookingReturnState({branch:'branch-a',specialty:'Nhi',specialtyCode:'nhi',offering:'offering-a',doctorMode:'recommended',doctor:'',date:'2026-12-01',slotId:'slot-a',slotDoctorId:'doctor-a',slotOfferingId:'offering-a',slotStartsAt:'2026-12-01T01:00:00Z'});
+ vi.mocked(requestJson).mockImplementation(async url=>{
+  const path=String(url);
+  if(path.endsWith('/api/me/current'))return {ok:true,status:200,data:{userId:'patient-a',legacyRoles:['ROLE_PATIENT'],platformOperator:false}} as never;
+  if(path.endsWith('/api/me/contexts'))return {ok:true,status:200,data:[]} as never;
+  if(path.endsWith('/api/me/patient-profile'))return {ok:false,status:404,message:'Chưa có hồ sơ'} as never;
+  return {ok:true,status:200,data:profile} as never;
+ });
+ vi.mocked(api.saveProfile).mockResolvedValue(profile);
+ const user=userEvent.setup();renderAuthenticatedPublic();
+ const continueButton=await screen.findByRole('button',{name:'Bổ sung và tiếp tục'});
+ expect(screen.getByLabelText('Họ tên')).toBeTruthy();
+ expect(screen.getByLabelText('Ngày sinh')).toBeTruthy();
+ expect(screen.queryByLabelText('Giới tính')).toBeNull();
+ expect(screen.queryByLabelText('Số điện thoại')).toBeNull();
+ expect(screen.queryByLabelText('Email')).toBeNull();
+ await user.clear(screen.getByLabelText('Ngày sinh'));
+ await user.type(screen.getByLabelText('Ngày sinh'),'1990-01-01');
+ await user.click(continueButton);
+ expect(await screen.findByRole('heading',{name:'Xác nhận lịch khám'})).toBeTruthy();
+ expect(api.saveProfile).toHaveBeenCalledWith('synthetic-token',expect.objectContaining({fullName:'Synthetic Patient',dateOfBirth:'1990-01-01',expectedVersion:0}));
+ expect(api.holdSlot).toHaveBeenCalledTimes(1);
 });
 
 it('shows a clear empty state with recovery actions when no slot exists',async()=>{
@@ -177,27 +251,36 @@ it('shows loading feedback while availability is being fetched',async()=>{
 
 describe('S1 booking workflow',()=>{
  it('confirms using the owned profile, stable hold and frozen displayed price',async()=>{
-  const {user,hold}=await reachSlot();await user.click(hold);
-  await user.click(await screen.findByRole('button',{name:'Xác nhận đặt lịch'}));
-  await screen.findByText(/Đã xác nhận: AP-SYN/);
+  const {user,confirm}=await reachSlot();
+  await user.click(confirm);
+  await screen.findByRole('heading',{name:'Đặt lịch thành công'});
+  expect(screen.getByText('AP-SYN')).toBeTruthy();
+  expect(screen.getByRole('button',{name:'Xem lịch khám của tôi'})).toBeTruthy();
+  expect(screen.getByRole('button',{name:'Về trang chủ'})).toBeTruthy();
   expect(api.holdSlot).toHaveBeenCalledWith('synthetic-token',expect.objectContaining({patientId:'patient-a',clinicId:'clinic-a',branchId:'branch-a',slotId:'slot-a'}),expect.any(String));
   expect(api.confirmHold).toHaveBeenCalledWith('synthetic-token','clinic-a','patient-a','hold-a',expect.any(String));
  });
+ it('sends an expired confirmation session to Public Patient Login and preserves booking return state',async()=>{
+  const {user,confirm}=await reachSlot(renderStickyAuthenticatedPublic);
+  vi.mocked(api.confirmHold).mockRejectedValueOnce(new api.RequestError('Phiên đăng nhập đã hết hạn.',401));
+  await user.click(confirm);
+  await waitFor(()=>expect(window.location.pathname).toBe('/public/login'));
+  expect(new URLSearchParams(window.location.search).get('returnTo')).toBe('/dat-lich');
+  expect(window.location.pathname).not.toBe('/workspace/login');
+  expect(readBookingReturnState()).toEqual(expect.objectContaining({specialtyCode:'nhi',offering:'offering-a',slotId:'slot-a',slotDoctorId:'doctor-a'}));
+ });
  it('retries an uncertain confirmation with the same idempotency key',async()=>{
   vi.mocked(api.confirmHold).mockRejectedValueOnce(new Error('Chưa xác định được kết quả.'));
-  const {user,hold}=await reachSlot();await user.click(hold);
-  await user.click(await screen.findByRole('button',{name:'Xác nhận đặt lịch'}));
+  const {user,confirm}=await reachSlot();
+  await user.click(confirm);
   await screen.findByRole('alert');
   await user.click(screen.getByRole('button',{name:'Xác nhận đặt lịch'}));
-  await screen.findByText(/Đã xác nhận: AP-SYN/);
+  await screen.findByRole('heading',{name:'Đặt lịch thành công'});
   const calls=vi.mocked(api.confirmHold).mock.calls;expect(calls).toHaveLength(2);expect(calls[0]).toEqual(calls[1]);
  });
- it('blocks confirmation after TTL and displays a recoverable slot conflict',async()=>{
-  vi.mocked(api.holdSlot).mockRejectedValueOnce(new Error('Giờ khám vừa được chọn.'));
-  const {user,hold}=await reachSlot();await user.click(hold);
-  expect((await screen.findByRole('alert')).textContent).toContain('Giờ khám vừa được chọn');
-  vi.mocked(api.holdSlot).mockResolvedValueOnce({holdId:'hold-a',state:'ACTIVE',purpose:'BOOKING',expiresAt:new Date(Date.now()-1000).toISOString(),price});
-  await user.click(hold);const confirm=await screen.findByRole('button',{name:'Xác nhận đặt lịch'});
+ it('blocks confirmation after the server hold TTL expires',async()=>{
+  vi.mocked(api.holdSlot).mockResolvedValue({holdId:'hold-a',state:'ACTIVE',purpose:'BOOKING',expiresAt:new Date(Date.now()-1000).toISOString(),price});
+  const {confirm}=await reachSlot();
   expect((confirm as HTMLButtonElement).disabled).toBe(true);expect(api.confirmHold).not.toHaveBeenCalled();
  });
 });
@@ -211,9 +294,7 @@ it('recovers a reschedule hold from server intent and never confirms it as a new
  vi.mocked(api.rescheduleAppointment).mockResolvedValue({...original,startsAt:'2026-12-01T01:00:00Z'});
  await user.click(screen.getByRole('button',{name:'Tải giờ đang giữ'}));
  await user.click(await screen.findByRole('button',{name:/Tiếp tục đổi lịch/}));
- expect(screen.getByLabelText('Ngày khám')).toHaveProperty('value','2026-12-01');
- await screen.findByRole('option',{name:'Nhi'});
- expect((await screen.findAllByText('Khám Nhi')).length).toBeGreaterThan(0);
+ expect(await screen.findByRole('heading',{name:'Xác nhận giờ khám thay thế'})).toBeTruthy();
  await user.click(screen.getByRole('button',{name:'Xác nhận đổi lịch'}));
  await screen.findByText(/Đã đổi lịch: AP-ORIGINAL/);
  expect(api.rescheduleAppointment).toHaveBeenCalledWith('synthetic-token',{id:'original-a',clinicId:'clinic-a'},'patient-a','moving-hold');
@@ -222,8 +303,8 @@ it('recovers a reschedule hold from server intent and never confirms it as a new
 
 it('opens upcoming appointments first and reviews cancellation before changing server state',async()=>{
  const appointment={id:'ap',appointmentCode:'AP-UPCOMING',clinicId:'clinic-a',status:'CONFIRMED',startsAt:'2026-12-01T01:00:00Z',endsAt:'2026-12-01T01:30:00Z',price};vi.mocked(api.myAppointments).mockResolvedValue([appointment]);
- const user=userEvent.setup();window.history.replaceState(null,'','/public/account');render(<PublicShell state="ready"/>);
- await user.type(await screen.findByLabelText('Email'),'synthetic@example.invalid');await user.type(screen.getByLabelText('Mật khẩu'),'password');await user.click(screen.getByRole('button',{name:'Đăng nhập'}));
+ const user=userEvent.setup();window.history.replaceState(null,'','/public/account');renderAuthenticatedPublic();
+ await screen.findByRole('button',{name:'Lịch khám'});
  await screen.findByText('AP-UPCOMING');expect(screen.queryByLabelText('Họ tên người khám')).toBeNull();expect(screen.getByRole('button',{name:'Lịch khám'})).toHaveProperty('ariaPressed','true');
  await user.click(screen.getByRole('button',{name:'Hủy lịch'}));await screen.findByRole('dialog');expect(api.cancelAppointment).not.toHaveBeenCalled();
  await user.click(screen.getByRole('button',{name:'Quay lại kiểm tra'}));expect(api.cancelAppointment).not.toHaveBeenCalled();

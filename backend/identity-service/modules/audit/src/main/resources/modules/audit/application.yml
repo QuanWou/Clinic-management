@@ -32,6 +32,9 @@ management:
         include: health,info
 audit:
   security:
+    identity-url: ${AUDIT_IDENTITY_URL:http://127.0.0.1:8093/modules/identity}
+    iam-url: ${AUDIT_IAM_URL:http://127.0.0.1:8093/modules/identity}
+    iam-service-secret: ${AUDIT_IAM_SERVICE_SECRET:}
     identity-secret: ${AUDIT_IDENTITY_SECRET:}
     clinic-secret: ${AUDIT_CLINIC_SECRET:}
     doctor-secret: ${AUDIT_DOCTOR_SECRET:}

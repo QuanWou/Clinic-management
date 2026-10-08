@@ -10,11 +10,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfiguration {
+    @Bean FilterRegistrationBean<UserAuthenticationFilter> userRegistration(UserAuthenticationFilter f){
+        var r=new FilterRegistrationBean<>(f);r.setEnabled(false);return r;
+    }
     @Bean FilterRegistrationBean<WorkloadAuthenticationFilter> registration(WorkloadAuthenticationFilter f){
         var r=new FilterRegistrationBean<>(f);r.setEnabled(false);return r;
     }
 
-    @Bean SecurityFilterChain chain(HttpSecurity http,WorkloadAuthenticationFilter f)throws Exception{
+    @Bean SecurityFilterChain chain(HttpSecurity http,UserAuthenticationFilter user,WorkloadAuthenticationFilter f)throws Exception{
         return http.csrf(c->c.disable())
             .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(a->a
@@ -26,7 +29,9 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST,"/api/internal/audit/billing-events").hasAuthority("SCOPE_audit.write")
                 .requestMatchers(HttpMethod.GET,"/api/internal/audit/**").hasAuthority("SCOPE_audit.read")
                 .requestMatchers(HttpMethod.POST,"/api/internal/event-envelope/validate").hasAuthority("SCOPE_event.validate")
+                .requestMatchers(HttpMethod.GET,"/api/clinics/*/audit-events").authenticated()
                 .anyRequest().denyAll())
-            .addFilterBefore(f,UsernamePasswordAuthenticationFilter.class).build();
+            .addFilterBefore(f,UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(user,WorkloadAuthenticationFilter.class).build();
     }
 }

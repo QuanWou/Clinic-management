@@ -1,0 +1,29 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #F5F9FF
+skinparam usecaseBorderColor #334155
+skinparam actorBorderColor #334155
+skinparam ArrowColor #475569
+title Use case bổ sung — Kiểm duyệt nền tảng
+actor "Quản trị phòng khám" as Admin
+actor "Quản trị nền tảng\n(platformOperator)" as Operator
+rectangle "KIỂM DUYỆT PHÒNG KHÁM" {
+ usecase "Gửi hồ sơ phòng khám" as Submit
+ usecase "Xem hồ sơ và\nlịch sử kiểm duyệt" as Review
+ usecase "Yêu cầu bổ sung /\ntừ chối / phê duyệt hồ sơ" as Decision
+ usecase "Công khai / ẩn /\ntạm đình chỉ phòng khám" as Publication
+}
+Admin -- Submit
+Operator -- Review
+Operator -- Decision
+Operator -- Publication
+note bottom of Publication
+ Khả năng công khai phụ thuộc cấu hình nền tảng.
+ Dùng sơ đồ này khi báo cáo bao gồm kiểm duyệt.
+end note
+@enduml
+

@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-06",
+  "status": "PASS",
+  "mainUrl": "http://127.0.0.1:4176/workspace?view=reception",
+  "database": "clinic_db",
+  "backendBuild": "isolated clean package: PASS",
+  "frontendBuild": "PASS",
+  "focusedFrontendTests": {"passed": 32, "failed": 0},
+  "fullFrontendTests": {"passed": 136, "failed": 10, "note": "Existing unresolved expectations documented in the report"},
+  "healthyModules": ["auth", "identity", "audit", "clinic", "doctor", "search", "patient", "medical", "appointment", "encounter", "billing", "catalog", "notification"],
+  "appliedMigrations": {"appointment": [13], "encounter": [12, 13, 14], "billing": [9]},
+  "browser": {"status": "PASS", "viewportWidths": [1440, 1024, 768, 375, 320], "realtime": "PASS", "pageErrors": 0},
+  "recordCountsBeforeAndAfter": {"patients": 571, "appointments": 60, "visits": 26, "checkIns": 26, "tickets": 26, "bills": 7, "payments": 6},
+  "mainBusinessQaMutations": false,
+  "backupDirectory": ".runtime/main/backups/reception-20261006-174150"
+}

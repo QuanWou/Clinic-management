@@ -1,9 +1,13 @@
+import {useAuthoritativeSync} from './useAuthoritativeSync';
+import {receptionSubscription} from '../api/realtime';
 import { useEffect,useRef,useState } from 'react';
 import { notificationState,type NotificationState } from '../api/billing';
 import type { Scope } from '../api/reception';
+import {RequestError} from '../api/booking';
 export function CashierNotificationPanel({scope,billId,version,onRetry,canRetry}:{scope:Scope;billId:string;version:number;onRetry?:()=>void;canRetry:boolean}){
  const [state,setState]=useState<NotificationState|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);const epoch=useRef(0);
  useEffect(()=>{epoch.current++;setState(null);setError('');setBusy(false);return ()=>{epoch.current++;};},[scope.token,scope.clinic,scope.branch,billId,version]);
+ useAuthoritativeSync({key:scope.token+scope.clinic+scope.branch+billId,enabled:!!scope.token&&!!billId,blocked:busy,subscriptions:[receptionSubscription(scope,'billing')],intervalMs:30000,refresh:async context=>{const current=epoch.current;try{const value=await notificationState(scope,billId);if(context.current()&&current===epoch.current){setState(value);setError('');}}catch(e){if(context.current()&&current===epoch.current){if(e instanceof RequestError&&[401,403].includes(e.status))setState(null);setError('Chưa cập nhật được trạng thái giao thông báo. Hệ thống sẽ thử lại.');}throw e;}},onDenied:()=>{epoch.current++;setState(null);}});
  async function read(){const current=++epoch.current;setState(null);setError('');setBusy(true);try{const source=await notificationState(scope,billId);if(current===epoch.current)setState(source);}catch(e){if(current===epoch.current)setError(e instanceof Error?e.message:'Chưa đồng bộ được trạng thái thông báo.');}finally{if(current===epoch.current)setBusy(false);}}
  useEffect(()=>{if(billId)void read();},[scope.token,scope.clinic,scope.branch,billId,version]);
  return <article className="booking-appointment"><h2>Thông báo phiếu thu</h2>{busy&&<p role="status">Đang kiểm tra nguồn giao thông báo…</p>}{error&&<p role="alert">{error}</p>}

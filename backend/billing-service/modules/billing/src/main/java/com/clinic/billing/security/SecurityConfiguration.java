@@ -14,7 +14,7 @@ public class SecurityConfiguration {
     @Bean FilterRegistrationBean<ChargeAuthenticationFilter> chargeRegistration(ChargeAuthenticationFilter f){var r=new FilterRegistrationBean<>(f);r.setEnabled(false);return r;}
     @Bean SecurityFilterChain chain(HttpSecurity http,ApiAuthenticationFilter f,ChargeAuthenticationFilter charge)throws Exception{
         return http.csrf(c->c.disable()).sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(a->a.requestMatchers("/actuator/health/**","/api/public/**").permitAll().requestMatchers("/api/internal/**").hasAuthority("SCOPE_billing.charge.consume").anyRequest().authenticated())
+            .authorizeHttpRequests(a->a.dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ASYNC).permitAll().requestMatchers("/actuator/health/**","/api/public/**").permitAll().requestMatchers("/api/internal/**").hasAuthority("SCOPE_billing.charge.consume").anyRequest().authenticated())
             .addFilterBefore(charge,UsernamePasswordAuthenticationFilter.class).addFilterAfter(f,ChargeAuthenticationFilter.class).build();
     }
 }

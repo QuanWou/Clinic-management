@@ -1,0 +1,58 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #F5F9FF
+skinparam usecaseBorderColor #334155
+skinparam actorBorderColor #334155
+skinparam ArrowColor #475569
+title Use case tổng quát — Hệ thống quản lý phòng khám
+actor "Khách truy cập" as Guest
+actor "Bệnh nhân" as Patient
+actor "Nhân viên\n(lễ tân / thu ngân)" as Staff
+actor "Bác sĩ" as Doctor
+actor "Quản trị phòng khám" as Admin
+actor "Cổng thanh toán\n(payOS / VNPAY)" as Gateway
+rectangle "HỆ THỐNG QUẢN LÝ PHÒNG KHÁM" {
+ usecase "Tra cứu phòng khám,\nbác sĩ, dịch vụ, lịch trống" as Public
+ usecase "Đăng ký tài khoản" as Register
+ usecase "Quản lý lịch hẹn\nđặt / đổi / hủy / tái khám" as Appointments
+ usecase "Xem lịch sử khám,\nkết quả và chi phí cá nhân" as History
+ usecase "Thanh toán hóa đơn online" as Online
+ usecase "Tiếp nhận bệnh nhân" as Intake
+ usecase "Quản lý hàng đợi\nvà ngoại lệ lịch hẹn" as Queue
+ usecase "Lập phiếu thu, thu tiền\nvà chốt ca thu" as Billing
+ usecase "Khám và ghi hồ sơ" as Care
+ usecase "Quản lý chỉ định\nvà kết quả xét nghiệm" as Lab
+ usecase "Xác nhận hồ sơ\nvà hoàn tất lượt khám" as Complete
+ usecase "Quản lý phòng khám,\nnhân sự và phân quyền" as Config
+ usecase "Quản lý bác sĩ,\nlịch làm việc, dịch vụ, giá" as Catalog
+ usecase "Giám sát vận hành,\ntài chính và nhật ký" as Monitor
+}
+Guest -- Public
+Guest -- Register
+Patient -- Public
+Patient -- Appointments
+Patient -- History
+Patient -- Online
+Staff -- Intake
+Staff -- Queue
+Staff -- Billing
+Doctor -- Care
+Doctor -- Lab
+Doctor -- Complete
+Admin -- Config
+Admin -- Catalog
+Admin -- Monitor
+Gateway -- Online
+note bottom of Online
+ Chỉ thanh toán hóa đơn đã lập sau khám.
+ Không đặt cọc khi đặt lịch.
+end note
+note bottom of Lab
+ Vai trò DOCTOR hiện thực hiện cả phần xét nghiệm.
+end note
+@enduml
+

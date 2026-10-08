@@ -1,0 +1,10 @@
+import path from 'node:path';import {fileURLToPath} from 'node:url';import fs from 'node:fs';import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';
+assert.ok(process.argv.includes('--sandbox'),'Use --sandbox to prepare the copied QA database');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const file=path.join(root,'.runtime/reception-e2e/config.json'),cfg=JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));
+assert.match(cfg.databaseName,/^clinic_reception_e2e_[a-f0-9]+$/);
+const sql=`update encounter_v2.queue_tickets set state='CANCELLED' where visit_id in (select id from encounter_v2.visits where status='IN_PROGRESS'); update encounter_v2.visits set status='INTERRUPTED',row_version=row_version+1 where status='IN_PROGRESS'; update identity.users u set password_hash=src.password_hash from identity.users src where src.id='${cfg.accounts.doctor.userId}' and u.id in (select platform_user_id from doctor.practitioners); select coalesce(json_agg(x),'[]'::json)::text from (select p.id as doctor_id,u.id as user_id,u.email from doctor.practitioners p join identity.users u on u.id=p.platform_user_id) x;`;
+const text=execFileSync('C:/Program Files/PostgreSQL/17/bin/psql.exe',['-X','-h',cfg.databaseHost,'-p',String(cfg.databasePort),'-U',cfg.databaseUser,'-d',cfg.databaseName,'-A','-t','-v','ON_ERROR_STOP=1'],{input:sql,encoding:'utf8',env:{...process.env,PGPASSWORD:cfg.databasePassword}});
+const list=JSON.parse(text.slice(text.indexOf('[')).trim());cfg.receptionQaDoctorAccounts={};
+for(const d of list)cfg.receptionQaDoctorAccounts[d.doctor_id]={email:d.email,userId:d.user_id,password:cfg.accounts.doctor.password};
+fs.writeFileSync(file,JSON.stringify(cfg,null,2));console.log('Copied sandbox doctor accounts have QA credentials; production credentials unchanged.');

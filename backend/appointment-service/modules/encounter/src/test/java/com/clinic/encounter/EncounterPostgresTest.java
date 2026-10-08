@@ -96,10 +96,18 @@ class EncounterPostgresTest {
   when(sources.consultation(eq(receptionist),eq(clinicId),eq(branchId),eq(offeringId))).thenReturn(new Consultation(offeringId,"Khám tổng quát",new PriceSnapshot(UUID.randomUUID(),180000,"VND",Instant.now().minusSeconds(60),null,null)));
   when(sources.identities(eq(clinicId),anyList())).thenAnswer(i->{assertFalse(org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive());return List.of(new PatientSummary(patientId,"PT-SYN","Synthetic Patient",LocalDate.of(1990,1,1)));});
   when(sources.patient(clinicId,patientId)).thenReturn(new EncounterSources.PatientLink(linkId,clinicId,patientId,"PROVISIONAL"));
+  when(sources.receptionCandidates(any(),eq(clinicId),eq(branchId),eq(offeringId))).thenAnswer(i->List.of(new EncounterSources.DoctorAssignment(doctorId,clinicId,branchId,doctorUser)));
   when(sources.doctor(clinicId,branchId,doctorId)).thenReturn(new EncounterSources.DoctorAssignment(doctorId,clinicId,branchId,doctorUser));
   when(sources.booking(clinicId,branchId,appointmentId)).thenReturn(new EncounterSources.Booking(appointmentId,clinicId,branchId,patientId,linkId,doctorId,"CONFIRMED",Instant.now(),0,null));
   when(sources.claim(eq(clinicId),eq(branchId),eq(appointmentId),eq(patientId),any(),any(),anyLong())).thenAnswer(i->new EncounterSources.Booking(appointmentId,clinicId,branchId,patientId,linkId,doctorId,"CHECKED_IN",Instant.now(),1,i.getArgument(4)));
   point=service.point(receptionist,clinicId,branchId,new PointInput("R1","Synthetic Room")).id();
+ }
+ @Test void successfulArrivalAcknowledgementWinsOverAStalePreChangeDoctorSnapshot(){
+  UUID replacement=UUID.randomUUID(),replacementUser=UUID.randomUUID();
+  when(sources.doctor(clinicId,branchId,replacement)).thenReturn(new EncounterSources.DoctorAssignment(replacement,clinicId,branchId,replacementUser));
+  when(sources.claim(eq(clinicId),eq(branchId),eq(appointmentId),eq(patientId),any(),any(),anyLong())).thenAnswer(i->new EncounterSources.Booking(appointmentId,clinicId,branchId,patientId,linkId,replacement,"CHECKED_IN",Instant.now(),2,i.getArgument(4)));
+  var v=service.checkIn(receptionist,clinicId,branchId,appointmentId,"concurrent-prechange",new CheckInInput(patientId,point,"Patient changed doctor before source arrival claim"));
+  assertEquals(replacement,v.doctorId());assertEquals(replacement,v.ticket().doctorId());assertEquals("WAITING",v.status());assertEquals(1,count("visits"));assertEquals(1,count("check_ins"));assertEquals(1,count("queue_tickets"));
  }
  @Test void operationsCountsOwnedCurrentExceptionsAndDailyEventsWithoutRevealingPatients()throws Exception{
   var date=LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));var v=visit("operational");
@@ -143,18 +151,46 @@ class EncounterPostgresTest {
   var executor=Executors.newFixedThreadPool(2);var barrier=new CyclicBarrier(2);var input=new CheckInInput(patientId,point,"Synthetic arrival");
   try{var a=executor.submit(()->{barrier.await();return service.checkIn(receptionist,clinicId,branchId,appointmentId,"one",input);});var b=executor.submit(()->{barrier.await();return service.checkIn(receptionist,clinicId,branchId,appointmentId,"two",input);});assertEquals(a.get(20,TimeUnit.SECONDS).id(),b.get(20,TimeUnit.SECONDS).id());assertEquals(1,count("check_ins"));assertEquals(1,count("queue_tickets"));}finally{executor.shutdownNow();}
  }
+ @Test void autoRoutingChoosesLeastLoadedEligibleDoctorAndRejectsUnverifiedDoctor(){
+  var existing=visit("occupied");UUID other=UUID.randomUUID(),otherUser=UUID.randomUUID(),newPatient=UUID.randomUUID();
+  when(sources.patient(clinicId,newPatient)).thenReturn(new EncounterSources.PatientLink(UUID.randomUUID(),clinicId,newPatient,"VERIFIED"));
+  when(sources.receptionCandidates(any(),eq(clinicId),eq(branchId),eq(offeringId))).thenReturn(List.of(new EncounterSources.DoctorAssignment(doctorId,clinicId,branchId,doctorUser),new EncounterSources.DoctorAssignment(other,clinicId,branchId,otherUser)));
+  var routed=service.walkIn(receptionist,clinicId,branchId,"auto",new WalkInInput(newPatient,null,point,"Auto route verified service",offeringId));assertEquals(other,routed.doctorId());assertNull(routed.appointmentId());assertEquals("WAITING",routed.ticket().state());
+  assertEquals(routed.id(),service.walkIn(receptionist,clinicId,branchId,"auto",new WalkInInput(newPatient,null,point,"Auto route verified service",offeringId)).id());
+  assertThrows(ApiProblem.class,()->service.walkIn(receptionist,clinicId,branchId,"duplicate-patient",new WalkInInput(newPatient,null,point,"Duplicate should be rejected",offeringId)));
+  when(sources.receptionCandidates(any(),eq(clinicId),eq(branchId),eq(offeringId))).thenReturn(List.of());
+  var denied=assertThrows(ApiProblem.class,()->service.walkIn(receptionist,clinicId,branchId,"no-doctor",walk()));assertEquals("NO_ELIGIBLE_DOCTOR",denied.code);assertEquals(2,count("visits"));
+ }
+ @Test void sharedReceptionSeesBothCollectorsAndAdminRequestsAreAuditableAndReplaySafe(){
+  var v=service.checkIn(receptionist,clinicId,branchId,appointmentId,"shared",new CheckInInput(patientId,point,"Online arrival"));
+  var colleague=new Actor(UUID.randomUUID(),Set.of());var page=service.receptionWorkload(colleague,clinicId,branchId,LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")),null);assertEquals(v.id(),page.items().getFirst().visit().id());assertNotNull(page.items().getFirst().visit().patient());
+  var body=new EncounterService.RequestInput(v.id(),patientId,"DOCTOR_CHANGE","Patient requested a doctor change after queue entry");var request=service.request(colleague,clinicId,branchId,"request",body);assertEquals(request.id(),service.request(colleague,clinicId,branchId,"request",body).id());assertEquals(1,service.requests(receptionist,clinicId,branchId).size());assertEquals(doctorId,service.read(receptionist,clinicId,branchId,v.id()).doctorId());
+  assertThrows(ApiProblem.class,()->service.resolveRequest(colleague,clinicId,branchId,request.id(),"Staff cannot resolve"));assertEquals(1,count("reception_requests"));
+  when(iam.decide(colleague.id(),"RECEPTION",clinicId,branchId)).thenReturn(new IamAuthorizationClient.Decision(false,null,null,2,"Revoked"));assertThrows(ApiProblem.class,()->service.requests(colleague,clinicId,branchId));assertThrows(ApiProblem.class,()->service.request(colleague,clinicId,branchId,"request",body));
+ }
+ @Test void recallAbsenceAndConcurrentReturnToEndHaveSingleOperationalEffects()throws Exception{
+  var v=visit("absence");var called=service.move(receptionist,clinicId,branchId,v.ticket().id(),"call",new QueueInput(0,"Call",null),"call");
+  var recalled=service.move(receptionist,clinicId,branchId,called.id(),"recall",new QueueInput(called.version(),"Recall",null),"recall");assertEquals("CALLED",recalled.state());
+  var absent=service.move(receptionist,clinicId,branchId,recalled.id(),"absent",new QueueInput(recalled.version(),"Patient absent",null),"absent");assertEquals("ABSENT",absent.state());assertNull(service.read(receptionist,clinicId,branchId,v.id()).ticket());
+  var body=new QueueInput(absent.version(),"Patient returned",null);var pool=Executors.newFixedThreadPool(4);try{var results=new ArrayList<Future<TicketView>>();for(int n=0;n<8;n++)results.add(pool.submit(()->service.move(receptionist,clinicId,branchId,absent.id(),"requeue",body,"return")));for(var f:results)assertEquals("TRANSFERRED",f.get(20,TimeUnit.SECONDS).state());}finally{pool.shutdownNow();}
+  assertEquals(1,count("visits"));assertEquals(1,count("check_ins"));assertEquals(2,count("queue_tickets"));var returned=service.read(receptionist,clinicId,branchId,v.id()).ticket();assertEquals(2,returned.number());assertEquals("WAITING",returned.state());
+  assertThrows(ApiProblem.class,()->service.move(receptionist,clinicId,branchId,absent.id(),"requeue",new QueueInput(absent.version(),"Changed request",null),"return"));
+ }
  @Test void queueCallSkipTransferPreservesIdsAndAllowsOneActiveTicket(){
   var a=visit("one");var b=visit("two");var destination=service.point(receptionist,clinicId,branchId,new PointInput("R2","Synthetic other room")).id();
   assertThrows(ApiProblem.class,()->service.move(receptionist,clinicId,branchId,b.ticket().id(),"call",new QueueInput(0,"Synthetic call",null)));
   var called=service.move(receptionist,clinicId,branchId,a.ticket().id(),"call",new QueueInput(0,"Synthetic call",null));
   assertThrows(ApiProblem.class,()->service.move(receptionist,clinicId,branchId,b.ticket().id(),"call",new QueueInput(0,"Synthetic call",null)));
   var skipped=service.move(receptionist,clinicId,branchId,called.id(),"skip",new QueueInput(called.version(),"Synthetic skip",null));
+  assertEquals(403,assertThrows(ApiProblem.class,()->service.move(receptionist,clinicId,branchId,skipped.id(),"transfer",new QueueInput(skipped.version(),"Staff denied",destination))).status.value());
+  when(iam.decide(receptionist.id(),"RECEPTION",clinicId,branchId)).thenReturn(new IamAuthorizationClient.Decision(true,UUID.randomUUID(),"ADMIN",1,"Admin transfer"));
   var moved=service.move(receptionist,clinicId,branchId,skipped.id(),"transfer",new QueueInput(skipped.version(),"Synthetic transfer",destination));assertEquals("TRANSFERRED",moved.state());assertEquals(a.id(),moved.visitId());
   var current=service.read(receptionist,clinicId,branchId,a.id());assertNotEquals(moved.id(),current.ticket().id());assertEquals(destination,current.ticket().servicePointId());
   assertEquals(1,service.queue(receptionist,clinicId,branchId,destination,LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).size());
  }
  @Test void differentDoctorsAtTheSameServicePointCanBeCalledIndependently(){
   var first=visit("doctor-one");UUID otherDoctorId=UUID.randomUUID(),otherDoctorUser=UUID.randomUUID();when(sources.doctor(clinicId,branchId,otherDoctorId)).thenReturn(new EncounterSources.DoctorAssignment(otherDoctorId,clinicId,branchId,otherDoctorUser));
+  when(sources.receptionCandidates(any(),eq(clinicId),eq(branchId),eq(offeringId))).thenReturn(List.of(new EncounterSources.DoctorAssignment(doctorId,clinicId,branchId,doctorUser),new EncounterSources.DoctorAssignment(otherDoctorId,clinicId,branchId,otherDoctorUser)));
   var second=service.walkIn(receptionist,clinicId,branchId,"doctor-two",new WalkInInput(patientId,otherDoctorId,point,"Synthetic second doctor",offeringId));
   var calledFirst=service.move(receptionist,clinicId,branchId,first.ticket().id(),"call",new QueueInput(0,"Call doctor one",null));
   var calledSecond=service.move(receptionist,clinicId,branchId,second.ticket().id(),"call",new QueueInput(0,"Call doctor two",null));
@@ -167,6 +203,25 @@ class EncounterPostgresTest {
   assertTrue(service.worklist(new Actor(UUID.randomUUID(),Set.of("ROLE_DOCTOR")),clinicId,branchId).isEmpty());
   assertEquals("IN_PROGRESS",service.start(doctor,clinicId,branchId,v.id(),new QueueInput(v.version(),"Synthetic start",null)).status());
   assertThrows(ApiProblem.class,()->service.move(receptionist,clinicId,branchId,ready.ticket().id(),"skip",new QueueInput(ready.ticket().version()+1,"Synthetic skip",null)));
+ }
+ @Test void doctorCallCommandRespectsQueuePriorityAndOneActiveEncounterInvariant(){
+  var first=visit("doctor-call-first");var second=visit("doctor-call-second");
+  assertThrows(ApiProblem.class,()->service.care(doctor,clinicId,branchId,second.id(),"call","call-second-too-early",new CareInput(second.version(),"Cannot skip first patient",null)));
+  var called=service.care(doctor,clinicId,branchId,first.id(),"call","call-first",new CareInput(first.version(),"Doctor calls first patient",null));assertEquals("CALLED",called.ticket().state());
+  var active=service.care(doctor,clinicId,branchId,called.id(),"start","start-first",new CareInput(called.version(),"Begin first consultation",null));assertEquals("IN_PROGRESS",active.status());
+  new TransactionTemplate(manager).execute(t->{db.scope(clinicId,branchId);UUID otherPoint=UUID.randomUUID();jdbc.update("insert into encounter_v2.service_points(id,clinic_id,branch_id,code,name) values(?,?,?,?,?)",otherPoint,clinicId,branchId,"G2","Second test point");jdbc.update("update encounter_v2.queue_tickets set service_point_id=?,state='CALLED',row_version=row_version+1 where id=?",otherPoint,second.ticket().id());jdbc.update("update encounter_v2.visits set service_point_id=?,row_version=row_version+1 where id=?",otherPoint,second.id());return null;});
+  var forcedReady=service.read(receptionist,clinicId,branchId,second.id());assertThrows(ApiProblem.class,()->service.care(doctor,clinicId,branchId,forcedReady.id(),"start","blocked-second",new CareInput(forcedReady.version(),"Must not open two active encounters",null)));
+  var waiting=service.care(doctor,clinicId,branchId,active.id(),"await-results","release-first",new CareInput(active.version(),"Await external result",null));assertEquals("AWAITING_RESULTS",waiting.status());
+  var secondReady=service.read(receptionist,clinicId,branchId,second.id());assertEquals("IN_PROGRESS",service.care(doctor,clinicId,branchId,secondReady.id(),"start","start-second",new CareInput(secondReady.version(),"Begin second consultation after release",null)).status());
+  assertEquals(1,new TransactionTemplate(manager).execute(t->{db.scope(clinicId,branchId);return jdbc.queryForObject("select count(*) from encounter_v2.visits where doctor_user_id=? and status='IN_PROGRESS'",Integer.class,doctor.id());}).intValue());
+ }
+ @Test void patientCompletedBatchOnlyReturnsOwnedClinicallyCompletedVisits(){
+  var v=beginCare("patient-batch");var actor=new Actor(UUID.randomUUID(),Set.of("ROLE_USER"),"Bearer synthetic-patient");when(patientOwner.ownPatient(actor,clinicId)).thenReturn(patientId);
+  assertTrue(patientFollowUp.completed(actor,clinicId,branchId,List.of(v.id())).isEmpty());
+  when(medical.read(doctor,clinicId,branchId,v.id())).thenReturn(new MedicalReadinessClient.Proof(v.id(),clinicId,branchId,11,"VALIDATED",true));
+  service.complete(doctor,clinicId,branchId,v.id(),"patient-batch-complete",new CompletionInput(v.version(),11,"Complete for patient release",true));
+  var list=patientFollowUp.completed(actor,clinicId,branchId,List.of(v.id(),UUID.randomUUID()));assertEquals(1,list.size());assertEquals(v.id(),list.getFirst().encounterId());assertEquals(11,list.getFirst().medicalCaseVersion());
+  when(patientOwner.ownPatient(actor,clinicId)).thenReturn(UUID.randomUUID());assertTrue(patientFollowUp.completed(actor,clinicId,branchId,List.of(v.id())).isEmpty());
  }
  @Test void auditRelayRetriesTheSameEventThenAcknowledges()throws Exception{
   var v=visit("relay");var attempts=new java.util.concurrent.atomic.AtomicInteger();Set<String> received=new HashSet<>();

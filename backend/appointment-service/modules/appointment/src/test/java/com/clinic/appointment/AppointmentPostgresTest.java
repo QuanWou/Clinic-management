@@ -33,6 +33,7 @@ class AppointmentPostgresTest{
  @Autowired com.clinic.appointment.service.ReceptionExceptionService exceptions;
  @Autowired com.clinic.appointment.service.AbsenceConsumer absenceConsumer;
  @Autowired JdbcTemplate jdbc;@Autowired PlatformTransactionManager manager;@Autowired ObjectMapper json;
+ @MockBean BillingSourceAuthorization receptionAuthorization;
  @MockBean ClinicSourceClient clinic;@MockBean PatientSourceClient patient;
  @MockBean DoctorSourceClient doctor;@MockBean CatalogSourceClient catalog;
  @MockBean FollowUpSources followUpSources;@Autowired com.clinic.appointment.service.FollowUpBookingService followUp;
@@ -50,6 +51,8 @@ class AppointmentPostgresTest{
   when(clinic.requireEligible(clinicId,branchId)).thenReturn(new ClinicSourceClient.BookingEligibility(clinicId,true,1));
   when(doctor.requireDoctor(clinicId,branchId,doctorId)).thenReturn(sourceDoctor);
   when(catalog.requireOffering(clinicId,branchId,offeringId)).thenReturn(sourceOffering);
+  when(doctor.findDoctor(any(),any(),any())).thenAnswer(i->Optional.ofNullable(doctor.requireDoctor(i.getArgument(0),i.getArgument(1),i.getArgument(2))));
+  when(catalog.findOffering(any(),any(),any())).thenAnswer(i->Optional.ofNullable(catalog.requireOffering(i.getArgument(0),i.getArgument(1),i.getArgument(2))));
   when(patient.booking(patientId)).thenReturn(new PatientSourceClient.BookingIdentity(patientId,userId,true));
   when(patient.clinicLink(patientId,clinicId)).thenReturn(new PatientSourceClient.ClinicLink(UUID.randomUUID(),clinicId,patientId,"SYN","VERIFIED",0));
  }
@@ -245,6 +248,15 @@ class AppointmentPostgresTest{
       LocalTime.of(8,0),LocalTime.of(17,0),"Asia/Ho_Chi_Minh",date.minusDays(1),date.plusDays(1),3))));
   assertThrows(ApiProblem.class,()->confirm(h));
   assertEquals(0,tenant(()->jdbc.queryForObject("select count(*) from appointment_v2.appointments",Integer.class)));
+ }
+ @Test void receptionChangesReuseCapacityAndDenyAfterSourceCheckInOrRevocation(){
+  var slots=availability();var original=confirm(hold(slots.getFirst().slotId(),"old-staff-change"));var staff=new Actor(UUID.randomUUID(),Set.of());
+  var hold=service.receptionHold(staff,original.id(),"staff-hold",input(slots.get(1).slotId()),original.version());
+  var request=new RescheduleInput(clinicId,patientId,hold.holdId(),"Patient requested change before arrival",null);
+  var changed=service.receptionReschedule(staff,clinicId,branchId,original.id(),request,original.version());assertEquals(original.id(),changed.id());assertEquals(hold.slotId(),changed.slotId());assertEquals(changed.id(),service.receptionReschedule(staff,clinicId,branchId,original.id(),request,original.version()).id());
+  tenant(()->{jdbc.update("update appointment_v2.appointments set status='CHECKED_IN',encounter_id=?,row_version=row_version+1 where id=?",UUID.randomUUID(),original.id());return null;});
+  assertThrows(ApiProblem.class,()->service.receptionHold(staff,original.id(),"after-check-in",input(slots.get(2).slotId()),changed.version()+1));assertThrows(ApiProblem.class,()->service.receptionReschedule(staff,clinicId,branchId,original.id(),request,changed.version()+1));
+  doThrow(ApiProblem.forbidden()).when(receptionAuthorization).requireCapability(staff.id(),clinicId,branchId,"RECEPTION");assertThrows(ApiProblem.class,()->service.receptionRead(staff,clinicId,branchId,original.id()));
  }
  @Test void rescheduleConsumesNewHoldAndRetryReturnsSameAppointment(){
   var slots=availability();var a=confirm(hold(slots.get(0).slotId(),"old"));

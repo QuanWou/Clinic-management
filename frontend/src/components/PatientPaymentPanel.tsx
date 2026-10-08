@@ -1,3 +1,5 @@
+import {useAuthoritativeSync} from './useAuthoritativeSync';
+import {patientSubscription} from '../api/realtime';
 import {useEffect,useRef,useState} from 'react';
 import QRCode from 'qrcode';
 import * as api from '../api/payments';
@@ -26,19 +28,21 @@ export function PatientPaymentPanel({scope,bill,onPaid,initiallyOpen=false}:{sco
  useEffect(()=>{active.current=true;return()=>{active.current=false;};},[]);
  useEffect(()=>{if(open&&!loaded.current){loaded.current=true;void run(async()=>{const rows=await api.methods(scope,bill.id);if(active.current)setMethods(rows);});}},[open]);
  useEffect(()=>{if(!intent||!['PENDING','CREATING'].includes(intent.status))return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[intent?.id,intent?.status]);
- useEffect(()=>{
-  if(!intent||!['PENDING','CREATING'].includes(intent.status))return;let tries=0;
-  const timer=setInterval(()=>{if(++tries>60){clearInterval(timer);return;}if(!document.hidden)void check(false);},5000);
-  return()=>clearInterval(timer);
- },[intent?.id,intent?.status]);
+
+
+ const completed=useRef(false);
+ useAuthoritativeSync({key:scope.token+scope.clinic+scope.branch+bill.id,enabled:!!scope.token&&!!intent&&['PENDING','CREATING','REVIEW_REQUIRED'].includes(intent.status),blocked:busy||!!unknown,subscriptions:[patientSubscription(scope,'billing')],intervalMs:15000,refresh:async context=>{
+  if(!intent||running.current)return;const current=await api.read(scope,bill.id,intent.id,false);if(!context.current()||!active.current)return;setIntent(current);if(current.status==='PAID'&&!completed.current){completed.current=true;paid.current();}
+ }});
+ useEffect(()=>{const current=bill.paymentIntents?.find(item=>item.id===intent?.id);if(current&&current.status!==intent?.status){setIntent(current);if(current.status==='PAID'&&!completed.current){completed.current=true;paid.current();}}},[bill.version,bill.paymentIntents,intent?.id]);
  async function run(work:()=>Promise<void>){if(running.current)return;running.current=true;setBusy(true);setError('');try{await work();}catch(e){if(active.current)setError(e instanceof Error?e.message:'Chưa kiểm tra được thanh toán. Hãy thử lại.');}finally{running.current=false;if(active.current)setBusy(false);}}
  async function check(showBusy=true){
   if(!intent||running.current)return;
-  const work=async()=>{const current=await api.read(scope,bill.id,intent.id,intent.provider==='PAYOS');if(!active.current)return;setIntent(current);if(current.status==='PAID')paid.current();};
+  const work=async()=>{const current=await api.read(scope,bill.id,intent.id,intent.provider==='PAYOS');if(!active.current)return;setIntent(current);if(current.status==='PAID'&&!completed.current){completed.current=true;paid.current();}};
   if(showBusy)await run(work);else{running.current=true;try{await work();}catch{/* Keep the source state on transient poll failures; manual check reports errors. */}finally{running.current=false;}}
  }
  async function send(body:{provider:string;expectedVersion:number},key:string){
-  try{const result=await api.create(scope,bill.id,body,key);if(!active.current)return;setIntent(result);setUnknown(null);if(result.status==='PAID')paid.current();}
+  try{const result=await api.create(scope,bill.id,body,key);if(!active.current)return;setIntent(result);setUnknown(null);if(result.status==='PAID'&&!completed.current){completed.current=true;paid.current();}}
   catch(e){if(active.current){if(!(e instanceof RequestError)||e.status===0||e.status>=500)setUnknown({body,key});else setUnknown(null);}throw e;}
  }
  async function start(){
@@ -46,7 +50,7 @@ export function PatientPaymentPanel({scope,bill,onPaid,initiallyOpen=false}:{sco
   if(provider==='BANK_TRANSFER'){const details=await api.bank(scope,bill.id);if(active.current)setTransfer(details);return;}
   const body={provider,expectedVersion:bill.version??0};const key=await stableOperationKey('invoice-online-create',{clinic:scope.clinic,branch:scope.branch,bill:bill.id,attempt:attempt.current,...body});await send(body,key);
  }
- async function cancel(){if(!intent)return;const key=await stableOperationKey('invoice-online-cancel',{clinic:scope.clinic,branch:scope.branch,bill:bill.id,id:intent.id});const result=await api.cancel(scope,bill.id,intent.id,key);if(active.current){setIntent(result);if(result.status==='PAID')paid.current();}}
+ async function cancel(){if(!intent)return;const key=await stableOperationKey('invoice-online-cancel',{clinic:scope.clinic,branch:scope.branch,bill:bill.id,id:intent.id});const result=await api.cancel(scope,bill.id,intent.id,key);if(active.current){setIntent(result);if(result.status==='PAID'&&!completed.current){completed.current=true;paid.current();}}}
  const reserved=!!intent&&['CREATING','PENDING','REVIEW_REQUIRED'].includes(intent.status)&&!(intent.status==='PENDING'&&Date.parse(intent.expiresAt)<=now);
  const seconds=intent?Math.max(0,Math.ceil((Date.parse(intent.expiresAt)-now)/1000)):0;
  const selected=methods?.find(m=>m.code===provider);

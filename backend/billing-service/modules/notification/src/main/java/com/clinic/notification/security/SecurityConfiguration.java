@@ -11,7 +11,7 @@ public class SecurityConfiguration{
  @Bean FilterRegistrationBean<WorkloadAuthenticationFilter> workloadReg(WorkloadAuthenticationFilter f){var r=new FilterRegistrationBean<>(f);r.setEnabled(false);return r;}
  @Bean SecurityFilterChain chain(HttpSecurity http,UserAuthenticationFilter uf,WorkloadAuthenticationFilter wf)throws Exception{
   return http.csrf(c->c.disable()).sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-   .authorizeHttpRequests(a->a.requestMatchers("/actuator/health/**").permitAll().requestMatchers("/api/internal/notifications/billing-events").hasAuthority("SCOPE_notification.billing.consume").requestMatchers("/api/internal/**").hasAuthority("SCOPE_notification.consume").anyRequest().authenticated())
+   .authorizeHttpRequests(a->a.dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ASYNC).permitAll().requestMatchers("/actuator/health/**").permitAll().requestMatchers("/api/internal/notifications/billing-events").hasAuthority("SCOPE_notification.billing.consume").requestMatchers("/api/internal/**").hasAuthority("SCOPE_notification.consume").anyRequest().authenticated())
    .addFilterBefore(wf,UsernamePasswordAuthenticationFilter.class).addFilterAfter(uf,WorkloadAuthenticationFilter.class).build();
  }
 }

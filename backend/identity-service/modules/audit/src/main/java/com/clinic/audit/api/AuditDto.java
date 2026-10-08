@@ -27,6 +27,9 @@ public final class AuditDto {
         String category,String action,String resourceType,String resourceId,String outcome,String reason,
         String correlationId,Instant occurredAt,String previousHash,String eventHash,Map<String,Object> metadata){}
 
+    public record AdminAuditView(UUID id,UUID branchId,UUID actorUserId,String category,String action,
+        String resourceType,String resourceId,String outcome,String correlationId,Instant occurredAt){}
+
     public record ChainVerification(String scopeKey,int events,boolean valid,String lastHash){}
 
     public record EventEnvelopeInput(

@@ -17,7 +17,8 @@ public class WorkloadAuthenticationFilter extends OncePerRequestFilter {
     public WorkloadAuthenticationFilter(WorkloadTokenVerifier verifier){this.verifier=verifier;}
 
     @Override protected boolean shouldNotFilter(HttpServletRequest req){
-        return req.getRequestURI().substring(req.getContextPath().length()).startsWith("/actuator/");
+        String path=req.getRequestURI().substring(req.getContextPath().length());
+        return path.startsWith("/actuator/")||!path.startsWith("/api/internal/");
     }
 
     @Override protected void doFilterInternal(HttpServletRequest req,HttpServletResponse res,FilterChain chain)

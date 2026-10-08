@@ -1,5 +1,6 @@
 /* Ordered layers: tokens, surfaces, workflows, then shared desktop refinements. */
 @import "./styles/base.css";
+@import "./styles/fresh-tokens.css";
 @import "./styles/public.css";
 @import "./styles/shell.css";
 @import "./styles/workflows.css";
@@ -8,6 +9,10 @@
 @import './styles/payments.css';
 @import './styles/management.css';
 @import './styles/admin-workflows.css';
+@import './styles/admin-control.css';
 @import './styles/front-desk.css';
 @import './styles/cashier-desk.css';
 @import './styles/fresh-public-overrides.css';
+@import './styles/reception-workspace.css';
+@import './styles/admin-fresh-clinical.css';
+@import './styles/patient-accounts.css';

@@ -29,7 +29,7 @@ import {
   Venus,
   Wind,
 } from 'lucide-react';
-import type {Clinic, Doctor, Offering, PublicDoctorProfile, PublicWebContent} from '../api/booking';
+import type {Clinic, Doctor, Offering, PublicDoctorProfile, PublicMediaItem, PublicWebContent} from '../api/booking';
 
 export type PublicInfoView = 'about' | 'specialties' | 'specialty' | 'doctors' | 'doctor' | 'services' | 'service' | 'contact';
 
@@ -130,7 +130,7 @@ export function PublicHomeV2({clinic, doctors, offerings, content, navigate, boo
             <li><Check size={15} /> Đăng nhập sau khi chọn lịch</li>
           </ul>
         </div>
-        <ClinicIllustration clinicName={clinic?.name ?? 'Phòng khám'} />
+        <ClinicIllustration clinicName={clinic?.name ?? 'Phòng khám'} media={content?.clinic.media?.hero} />
       </div>
     </section>
 
@@ -213,7 +213,7 @@ export function PublicHomeV2({clinic, doctors, offerings, content, navigate, boo
 
     <section className="fresh-band" id="co-so">
       <div className="fresh-container fresh-section fresh-facility">
-        <FacilityPhoto />
+        <FacilityPhoto media={content?.clinic.media?.reception} />
         <div className="fresh-facility-copy"><span className="fresh-kicker">Phòng khám của chúng tôi</span><h2>{clinic?.name ?? 'Thông tin phòng khám'}</h2><p>{content?.clinic.facilities || content?.clinic.shortIntroduction || clinic?.description || 'Thông tin giới thiệu phòng khám đang được cập nhật từ dữ liệu công khai.'}</p>{clinic?.branches[0]?.address && <p className="fresh-address-line"><MapPin size={18} /> {clinic.branches[0].address}</p>}<button className="fresh-link" onClick={() => navigate('/gioi-thieu')}>Tìm hiểu phòng khám <ArrowRight size={16} /></button></div>
       </div>
     </section>
@@ -250,7 +250,7 @@ export function PublicInfoPage({view, slug = '', clinic, doctors, offerings, con
   const [specialtyFilter, setSpecialtyFilter] = useState('');
   const filteredDoctors = team.filter(item => `${item.displayName} ${item.specialtyName ?? ''}`.toLocaleLowerCase('vi').includes(doctorQuery.trim().toLocaleLowerCase('vi')) && (!specialtyFilter || item.specialtyName === specialtyFilter));
   if (view === 'about') return <AboutClinicPage clinic={clinic} content={content} team={team} specialties={specialties} doctorProfiles={doctorProfiles} navigate={navigate} book={book} />;
-  if (view === 'contact') return <ContactClinicPage clinic={clinic} book={book} />;
+  if (view === 'contact') return <ContactClinicPage clinic={clinic} content={content} book={book} />;
   const title = view === 'specialties' ? 'Chuyên khoa' : view === 'specialty' ? (specialty ?? 'Chuyên khoa') : view === 'doctors' ? 'Đội ngũ bác sĩ' : view === 'doctor' ? (doctor?.displayName ?? 'Hồ sơ bác sĩ') : view === 'services' ? 'Dịch vụ' : view === 'service' ? (service?.name ?? 'Chi tiết dịch vụ') : 'Liên hệ & địa chỉ';
 
   return <div className="fresh-info-page">
@@ -296,7 +296,7 @@ export function PublicInfoPage({view, slug = '', clinic, doctors, offerings, con
 
       {view === 'doctors' && <><div className="fresh-doctor-filters"><label><span>Tìm tên bác sĩ</span><span className="fresh-filter-control"><Search size={17} /><input type="search" value={doctorQuery} onChange={event => setDoctorQuery(event.target.value)} placeholder="Nhập tên bác sĩ..." /></span></label><label><span>Chuyên khoa</span><select value={specialtyFilter} onChange={event => setSpecialtyFilter(event.target.value)}><option value="">Tất cả chuyên khoa</option>{specialties.map(item => <option key={item} value={item}>{item}</option>)}</select></label></div><div className="fresh-listing-intro"><p>Chọn bác sĩ theo thông tin chuyên khoa, học vị và kinh nghiệm đang được phòng khám công bố.</p><span>{filteredDoctors.length} kết quả</span></div><div className="fresh-doctor-grid">{filteredDoctors.map(item => <DoctorCard key={item.doctorId} doctor={item} profile={doctorProfiles.get(item.doctorId)} onProfile={() => navigate(`/bac-si/${item.doctorId}`)} onBook={() => book(item)} />)}</div>{!filteredDoctors.length && <Empty>Không tìm thấy bác sĩ phù hợp với bộ lọc.</Empty>}</>}
 
-      {view === 'doctor' && (doctor ? <><div className="fresh-doctor-profile"><div className="fresh-doctor-profile-photo"><DoctorPortrait name={doctor.displayName} profile={doctorProfile} large /></div><div><span className="fresh-kicker">{doctor.specialtyName ?? 'Bác sĩ tại phòng khám'}</span><h2>{doctor.displayName}</h2><p>{doctorProfile?.headline ?? doctor.professionalTitle}</p>{doctorProfile && <div className="fresh-profile-meta"><span>{doctorProfile.title}</span><span>{doctorProfile.yearsExperience} năm kinh nghiệm</span></div>}<button className="fresh-primary" onClick={() => book(doctor)}>Đặt lịch với bác sĩ <ArrowRight size={17} /></button></div></div><div className="fresh-detail-layout fresh-doctor-detail-layout"><div className="fresh-profile-sections"><article><h3>Giới thiệu</h3>{doctorProfile ? <p>{doctorProfile.summary}</p> : <Empty>Phần giới thiệu chuyên môn chưa được phòng khám công bố.</Empty>}</article>{doctorProfile && <article><h3>Chuyên môn nổi bật</h3><ContentList items={doctorProfile.expertise}/></article>}{doctorProfile && <article><h3>Khám và tư vấn</h3><ContentList items={doctorProfile.consultationAreas}/></article>}<article><h3>Quá trình đào tạo</h3>{doctorProfile ? <ContentList items={doctorProfile.education}/> : <Empty>Thông tin chưa được phòng khám công bố.</Empty>}</article><article><h3>Quá trình công tác</h3>{doctorProfile ? <ContentList items={doctorProfile.experience}/> : <Empty>Thông tin chưa được phòng khám công bố.</Empty>}</article><article><h3>Lịch làm việc</h3><p>Chọn “Xem lịch trống” để tải các khung giờ thực tế đang còn nhận lịch.</p></article></div><AsideBooking title={`Khám với ${doctor.displayName}`} description="Xem ngày và khung giờ thực tế đang còn trống." onBook={() => book(doctor)} /></div></> : <Empty>Không tìm thấy bác sĩ được công bố.</Empty>)}
+      {view === 'doctor' && (doctor ? <><div className="fresh-doctor-profile"><div className="fresh-doctor-profile-photo"><DoctorPortrait name={doctor.displayName} profile={doctorProfile} large /></div><div><span className="fresh-kicker">{doctor.specialtyName ?? 'Bác sĩ tại phòng khám'}</span><h2>{doctor.displayName}</h2><p>{doctorProfile?.headline ?? doctor.professionalTitle}</p>{doctorProfile && <div className="fresh-profile-meta"><span>{doctorProfile.title}</span>{doctorProfile.yearsExperience != null && doctorProfile.yearsExperience > 0 && <span>{doctorProfile.yearsExperience} năm kinh nghiệm</span>}</div>}<button className="fresh-primary" onClick={() => book(doctor)}>Đặt lịch với bác sĩ <ArrowRight size={17} /></button></div></div><div className="fresh-detail-layout fresh-doctor-detail-layout"><div className="fresh-profile-sections"><article><h3>Giới thiệu</h3>{doctorProfile?.summary ? <p>{doctorProfile.summary}</p> : <Empty>Phần giới thiệu chuyên môn chưa được phòng khám công bố.</Empty>}</article>{doctorProfile?.expertise?.length ? <article><h3>Chuyên môn nổi bật</h3><ContentList items={doctorProfile.expertise}/></article> : null}{doctorProfile?.consultationAreas?.length ? <article><h3>Khám và tư vấn</h3><ContentList items={doctorProfile.consultationAreas}/></article> : null}<article><h3>Quá trình đào tạo</h3>{doctorProfile?.education?.length ? <ContentList items={doctorProfile.education}/> : <Empty>Thông tin chưa được phòng khám công bố.</Empty>}</article><article><h3>Quá trình công tác</h3>{doctorProfile?.experience?.length ? <ContentList items={doctorProfile.experience}/> : <Empty>Thông tin chưa được phòng khám công bố.</Empty>}</article><article><h3>Lịch làm việc</h3><p>Chọn “Xem lịch trống” để tải các khung giờ thực tế đang còn nhận lịch.</p></article></div><AsideBooking title={`Khám với ${doctor.displayName}`} description="Xem ngày và khung giờ thực tế đang còn trống." onBook={() => book(doctor)} /></div></> : <Empty>Không tìm thấy bác sĩ được công bố.</Empty>)}
 
       {view === 'services' && <><div className="fresh-listing-intro"><p>Khám phá các dịch vụ đang được phòng khám mở cho người bệnh.</p><span>{services.length} dịch vụ</span></div><div className="fresh-service-list">{services.map((item, index) => <article key={item.offeringId}><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{item.name}</h3><p>{serviceProfiles.get(item.offeringId)?.description ?? 'Thông tin và lịch khám được đồng bộ từ phòng khám.'}</p></div><div className="fresh-service-actions"><button onClick={() => navigate(`/dich-vu/${item.offeringId}`)}>Tìm hiểu <ArrowRight size={16} /></button><button aria-label={`Đặt lịch dịch vụ ${item.name}`} onClick={() => book(undefined, item)}>Đặt lịch</button></div></article>)}</div>{!services.length && <Empty>Chưa có dịch vụ được công bố.</Empty>}</>}
 
@@ -320,6 +320,13 @@ function AboutClinicPage({clinic, content, team, specialties, doctorProfiles, na
   const directionsUrl = address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}` : '';
   const clinicName = clinic?.name ?? 'Phòng khám Đa khoa Clinic V2';
   const featuredDoctors = team.slice(0, 3);
+  const heroMedia = content?.clinic.media?.hero ?? {src:'/images/generated/clinic-exterior-ai.png',alt:'Hình ảnh minh họa ngoại thất phòng khám',caption:'Hình ảnh minh họa'};
+  const receptionMedia = content?.clinic.media?.reception ?? {src:'/images/generated/clinic-reception-ai.png',alt:'Hình ảnh minh họa khu vực tiếp đón',caption:'Không gian tiếp đón · Hình ảnh minh họa'};
+  const gallery = content?.clinic.media?.gallery?.length ? content.clinic.media.gallery : [
+    {src:'/images/generated/clinic-waiting-area-ai.png',alt:'Hình ảnh minh họa không gian chờ',caption:'Không gian chờ · Minh họa'},
+    {src:'/images/generated/clinic-consultation-room-ai.png',alt:'Hình ảnh minh họa phòng khám',caption:'Phòng khám · Minh họa'},
+    {src:'/images/generated/clinic-corridor-ai.png',alt:'Hình ảnh minh họa khu vực hỗ trợ',caption:'Khu vực hỗ trợ · Minh họa'},
+  ];
 
   return <div className="fresh-info-page fresh-about-v2">
     <main id="main-content">
@@ -332,8 +339,8 @@ function AboutClinicPage({clinic, content, team, specialties, doctorProfiles, na
             <button className="fresh-primary" type="button" onClick={() => book()}>Đặt lịch khám <ArrowRight size={18} /></button>
           </div>
           <figure className="fresh-about-hero-media">
-            <img src="/images/generated/clinic-exterior-ai.png" alt="Hình ảnh minh họa ngoại thất phòng khám" fetchPriority="high" />
-            <figcaption>Hình ảnh minh họa</figcaption>
+            <img src={heroMedia.src} alt={heroMedia.alt} fetchPriority="high" />
+            <figcaption>{heroMedia.caption ?? 'Hình ảnh minh họa'}</figcaption>
           </figure>
         </div>
       </section>
@@ -341,8 +348,8 @@ function AboutClinicPage({clinic, content, team, specialties, doctorProfiles, na
       <AboutReveal className="fresh-about-intro">
         <div className="fresh-container fresh-about-split">
           <figure className="fresh-about-editorial-image">
-            <img src="/images/generated/clinic-reception-ai.png" alt="Hình ảnh minh họa khu vực tiếp đón" loading="lazy" decoding="async" />
-            <figcaption>Không gian tiếp đón · Hình ảnh minh họa</figcaption>
+            <img src={receptionMedia.src} alt={receptionMedia.alt} loading="lazy" decoding="async" />
+            <figcaption>{receptionMedia.caption ?? 'Hình ảnh minh họa'}</figcaption>
           </figure>
           <div className="fresh-about-intro-copy">
             <span className="fresh-kicker">Về phòng khám</span>
@@ -375,9 +382,7 @@ function AboutClinicPage({clinic, content, team, specialties, doctorProfiles, na
             <p>{content?.clinic.facilities || 'Các hình ảnh dưới đây minh họa cách tổ chức một không gian khám hiện đại, sáng rõ và dễ tiếp cận.'}</p>
           </div>
           <div className="fresh-about-gallery">
-            <AboutGalleryImage src="/images/generated/clinic-waiting-area-ai.png" alt="Hình ảnh minh họa không gian chờ" caption="Không gian chờ · Minh họa" large />
-            <AboutGalleryImage src="/images/generated/clinic-consultation-room-ai.png" alt="Hình ảnh minh họa phòng khám" caption="Phòng khám · Minh họa" />
-            <AboutGalleryImage src="/images/generated/clinic-corridor-ai.png" alt="Hình ảnh minh họa khu vực hỗ trợ" caption="Khu vực hỗ trợ · Minh họa" />
+            {gallery.slice(0,3).map((item,index)=><AboutGalleryImage key={item.src} src={item.src} alt={item.alt} caption={item.caption ?? 'Hình ảnh minh họa'} large={index===0} />)}
           </div>
         </div>
       </AboutReveal>
@@ -425,12 +430,13 @@ function AboutClinicPage({clinic, content, team, specialties, doctorProfiles, na
   </div>;
 }
 
-function ContactClinicPage({clinic, book}: {clinic: Clinic | null; book: SharedProps['book']}) {
+function ContactClinicPage({clinic, content, book}: {clinic: Clinic | null; content: PublicWebContent | null; book: SharedProps['book']}) {
   const branches = clinic?.branches ?? [];
   const primaryBranch = branches[0];
   const clinicName = clinic?.name ?? 'Phòng khám Đa khoa Clinic V2';
   const primaryAddress = primaryBranch?.address || clinic?.locationText;
   const directionsUrl = primaryAddress ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(primaryAddress)}` : '';
+  const contactMedia = content?.clinic.media?.contact ?? {src:'/images/generated/clinic-corridor-ai.png',alt:'Hình ảnh minh họa không gian phòng khám',caption:'Hình ảnh minh họa'};
 
   return <div className="fresh-info-page fresh-contact-v2">
     <main id="main-content">
@@ -446,8 +452,8 @@ function ContactClinicPage({clinic, book}: {clinic: Clinic | null; book: SharedP
             </div>
           </div>
           <figure className="fresh-contact-hero-media">
-            <img src="/images/generated/clinic-corridor-ai.png" alt="Hình ảnh minh họa không gian phòng khám" fetchPriority="high" />
-            <figcaption>Hình ảnh minh họa</figcaption>
+            <img src={contactMedia.src} alt={contactMedia.alt} fetchPriority="high" />
+            <figcaption>{contactMedia.caption ?? 'Hình ảnh minh họa'}</figcaption>
             {(primaryBranch?.name || primaryAddress) && <div className="fresh-contact-hero-address"><MapPin size={21} /><span>{primaryBranch?.name && <strong>{primaryBranch.name}</strong>}{primaryAddress && <small>{primaryAddress}</small>}</span></div>}
           </figure>
         </div>
@@ -547,12 +553,14 @@ function pageDescription(view: PublicInfoView) {
   return 'Tìm hiểu cách phòng khám tổ chức hành trình chăm sóc và hỗ trợ người bệnh.';
 }
 
-function ClinicIllustration({clinicName}: {clinicName: string}) {
-  return <div className="fresh-hero-visual"><span className="fresh-visual-caption">Hình ảnh minh họa</span><img src="/images/generated/clinic-exterior-ai.png" alt="Hình ảnh minh họa ngoại thất phòng khám hiện đại" fetchPriority="high" /><div className="fresh-visual-card"><span><CalendarCheck2 size={22} /></span><div><small>Đặt lịch trực tiếp</small><strong>{clinicName}</strong><p>Chọn bác sĩ · Chọn giờ · Xác nhận</p></div></div></div>;
+function ClinicIllustration({clinicName, media}: {clinicName: string; media?: PublicMediaItem}) {
+  const item=media ?? {src:'/images/generated/clinic-exterior-ai.png',alt:'Hình ảnh minh họa ngoại thất phòng khám hiện đại',caption:'Hình ảnh minh họa'};
+  return <div className="fresh-hero-visual"><span className="fresh-visual-caption">{item.caption ?? 'Hình ảnh minh họa'}</span><img src={item.src} alt={item.alt} fetchPriority="high" /><div className="fresh-visual-card"><span><CalendarCheck2 size={22} /></span><div><small>Đặt lịch trực tiếp</small><strong>{clinicName}</strong><p>Chọn bác sĩ · Chọn giờ · Xác nhận</p></div></div></div>;
 }
 
-function FacilityPhoto() {
-  return <figure className="fresh-facility-photo"><img src="/images/generated/clinic-reception-ai.png" alt="Hình ảnh minh họa khu tiếp đón của phòng khám" loading="lazy" decoding="async" /><figcaption>Hình ảnh minh họa khu tiếp đón</figcaption></figure>;
+function FacilityPhoto({media}: {media?: PublicMediaItem}) {
+  const item=media ?? {src:'/images/generated/clinic-reception-ai.png',alt:'Hình ảnh minh họa khu tiếp đón của phòng khám',caption:'Hình ảnh minh họa khu tiếp đón'};
+  return <figure className="fresh-facility-photo"><img src={item.src} alt={item.alt} loading="lazy" decoding="async" /><figcaption>{item.caption ?? 'Hình ảnh minh họa'}</figcaption></figure>;
 }
 
 function SearchGroup({title, children}: {title: string; children: ReactNode}) { return <section><strong>{title}</strong>{children}</section>; }
@@ -565,6 +573,8 @@ function ContentList({items}: {items: string[]}) { return <ul className="fresh-d
 function DoctorMonogram({name, large = false}: {name: string; large?: boolean}) { return <span className={`fresh-doctor-monogram${large ? ' is-large' : ''}`} aria-hidden="true"><UserRound size={large ? 36 : 18} /><strong>{doctorInitials(name)}</strong></span>; }
 
 function DoctorPortrait({name, profile, large = false, compact = false}: {name: string; profile?: PublicDoctorProfile; large?: boolean; compact?: boolean}) {
+  const className = `fresh-doctor-portrait${large ? ' is-large' : ''}${compact ? ' is-compact' : ''}`;
+  if (profile?.imageUrl) return <span className={className} role="img" aria-label={`Ảnh minh họa bác sĩ ${name}`}><img src={profile.imageUrl} alt="" aria-hidden="true" loading="lazy" decoding="async" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} />{!compact && <small>Ảnh minh họa</small>}</span>;
   const codeNumber = Number(profile?.code?.replace(/\D/g, ''));
   const portraitIndex = codeNumber - 5;
   if (!Number.isInteger(portraitIndex) || portraitIndex < 0 || portraitIndex > 17) return <DoctorMonogram name={name} large={large} />;
@@ -572,12 +582,12 @@ function DoctorPortrait({name, profile, large = false, compact = false}: {name: 
   const position = portraitIndex % 6;
   const column = position % 3;
   const row = Math.floor(position / 3);
-  const className = `fresh-doctor-portrait${large ? ' is-large' : ''}${compact ? ' is-compact' : ''}`;
   return <span className={className} role="img" aria-label={`Ảnh minh họa bác sĩ ${name}`}><img src={`/images/generated/doctor-portraits-0${sheet}-ai.png`} alt="" aria-hidden="true" loading="lazy" decoding="async" style={{left: `-${column * 100}%`, top: `-${row * 100}%`}} />{!compact && <small>Ảnh minh họa</small>}</span>;
 }
 
 function DoctorCard({doctor, profile, onProfile, onBook}: {doctor: Doctor; profile?: PublicDoctorProfile; onProfile: () => void; onBook: () => void}) {
-  return <article><div className="fresh-doctor-photo"><DoctorPortrait name={doctor.displayName} profile={profile} /></div><span>{doctor.specialtyName ?? 'Bác sĩ tại phòng khám'}</span><h3>{doctor.displayName}</h3><p>{profile ? `${profile.title} · ${profile.yearsExperience} năm kinh nghiệm` : doctor.professionalTitle}</p>{profile?.summary && <small className="fresh-doctor-summary">{profile.summary}</small>}<div><button onClick={onProfile}>Xem hồ sơ</button><button aria-label={`Đặt lịch với ${doctor.displayName}`} onClick={onBook}>Đặt lịch</button></div></article>;
+  const profileLine=profile ? [profile.title,profile.yearsExperience != null && profile.yearsExperience > 0 ? `${profile.yearsExperience} năm kinh nghiệm` : null].filter(Boolean).join(' · ') : doctor.professionalTitle;
+  return <article><div className="fresh-doctor-photo"><DoctorPortrait name={doctor.displayName} profile={profile} /></div><span>{doctor.specialtyName ?? 'Bác sĩ tại phòng khám'}</span><h3>{doctor.displayName}</h3><p>{profileLine}</p>{profile?.summary && <small className="fresh-doctor-summary">{profile.summary}</small>}<div><button onClick={onProfile}>Xem hồ sơ</button><button aria-label={`Đặt lịch với ${doctor.displayName}`} onClick={onBook}>Đặt lịch</button></div></article>;
 }
 
 function AsideBooking({title, description, onBook}: {title: string; description: string; onBook: () => void}) {

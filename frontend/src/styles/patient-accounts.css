@@ -1,0 +1,22 @@
+.admin-workspace .patient-account-section{min-width:0}
+.admin-workspace .patient-account-filter{display:grid;gap:5px;font-size:12px;color:var(--muted-strong)}
+.admin-workspace .patient-account-filter select{min-width:175px;min-height:44px}
+.admin-workspace .patient-account-summary{display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--surface-soft);font-size:13px}
+.admin-workspace .patient-account-pagination{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;font-size:13px;color:var(--muted-strong)}
+.admin-workspace .patient-account-pagination>div{display:flex;gap:8px}
+.patient-profile-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+.patient-profile-tabs button[aria-pressed=true]{background:var(--surface-soft);border-color:var(--brand);font-weight:700}
+.patient-clinical-records{min-width:0}
+.patient-clinical-records>.patient-account-filter{max-width:360px;margin-bottom:18px}
+.patient-clinical-visit{padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:18px}
+.patient-clinical-document dl{display:grid;gap:14px;margin:20px 0}
+.patient-clinical-document dl>div{display:grid;grid-template-columns:180px minmax(0,1fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}
+.patient-clinical-document dt{font-weight:600}
+.patient-clinical-document dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.patient-clinical-orders{display:grid;gap:14px}
+.patient-clinical-orders>article{border:1px solid var(--line);border-radius:10px;padding:18px}
+.patient-clinical-orders header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.patient-clinical-orders h5{font-size:15px;margin:0}
+.patient-clinical-result{white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:700px){.patient-clinical-document dl>div{grid-template-columns:1fr;gap:8px}.patient-profile-tabs button{flex:1;min-width:140px}}
+@media(max-width:700px){.admin-workspace .patient-account-pagination{align-items:flex-start;flex-direction:column}.admin-workspace .patient-account-filter,.admin-workspace .patient-account-filter select{width:100%}}

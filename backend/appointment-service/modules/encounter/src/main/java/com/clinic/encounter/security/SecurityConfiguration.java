@@ -13,7 +13,7 @@ public class SecurityConfiguration {
     }
     @Bean SecurityFilterChain chain(HttpSecurity http,ApiAuthenticationFilter f)throws Exception{
         return http.csrf(c->c.disable()).sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(a->a.requestMatchers("/actuator/health/**","/api/public/**","/api/internal/clinics/*/branches/*/visits/*/billing-proof","/api/internal/clinics/*/branches/*/visits/*/billing-sync-proof").permitAll().anyRequest().authenticated())
+            .authorizeHttpRequests(a->a.dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ASYNC).permitAll().requestMatchers("/actuator/health/**","/api/public/**","/api/internal/clinics/*/branches/*/visits/*/billing-proof","/api/internal/clinics/*/branches/*/visits/*/billing-sync-proof").permitAll().anyRequest().authenticated())
             .addFilterBefore(f,UsernamePasswordAuthenticationFilter.class).build();
     }
 }

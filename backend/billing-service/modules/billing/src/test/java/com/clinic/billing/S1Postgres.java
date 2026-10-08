@@ -13,7 +13,7 @@ final class S1Postgres {
   String migrationPassword=System.getenv("BILLING_IT_MIGRATION_PASSWORD");
   String runtime=System.getenv("BILLING_IT_RUNTIME_USER");
   if(runtime==null||!runtime.matches("[a-z][a-z0-9_]{0,62}"))throw new IllegalStateException("Missing isolated runtime");
-  Flyway.configure().dataSource(url,migrator,migrationPassword).schemas("billing_v2").defaultSchema("billing_v2").load().migrate();
+  Flyway.configure().locations("classpath:modules/billing/db/migration").dataSource(url,migrator,migrationPassword).schemas("billing_v2").defaultSchema("billing_v2").load().migrate();
   try(var connection=DriverManager.getConnection(url,migrator,migrationPassword);var statement=connection.createStatement()){
    statement.execute("GRANT clinic_v2_billing_runtime TO "+runtime);
   }catch(java.sql.SQLException ex){throw new IllegalStateException(ex);}

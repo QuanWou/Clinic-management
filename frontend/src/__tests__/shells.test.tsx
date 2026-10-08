@@ -37,8 +37,15 @@ describe("S0-06 application shells", () => {
     expect(canOpen('doctor',context('DOCTOR'))).toBe(true);
     expect(canOpen('lab',context('DOCTOR'))).toBe(true);
     expect(canOpen('billing',context('DOCTOR'))).toBe(false);
-    expect(canOpen('system',context('ADMIN'))).toBe(true);
+    expect(canOpen('operations',context('ADMIN'))).toBe(true);
+    expect(canOpen('finance',context('ADMIN'))).toBe(true);
+    expect(canOpen('exceptions',context('ADMIN'))).toBe(true);
+    expect(canOpen('permissions',context('ADMIN'))).toBe(true);
+    expect(canOpen('audit',context('ADMIN'))).toBe(true);
+    expect(canOpen('reception',context('ADMIN'))).toBe(false);
+    expect(canOpen('billing',context('ADMIN'))).toBe(false);
     expect(canOpen('doctor',context('ADMIN'))).toBe(false);
+    expect(canOpen('system',context('ADMIN'))).toBe(false);
   });
 
   it("denied and error states provide recovery guidance", () => {

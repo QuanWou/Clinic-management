@@ -55,7 +55,7 @@ class MembershipServiceTest {
     }
 
     @Test
-    void branchScopedManagerCanOperateOnlyGrantedBranch(){
+    void branchScopedManagerCanMonitorOnlyGrantedBranch(){
         Membership manager=active(MembershipRole.ADMIN,false);
         BranchGrant grant=new BranchGrant();
         grant.id=UUID.randomUUID();grant.membershipId=manager.id;grant.userId=user;grant.clinicId=clinic;
@@ -64,8 +64,8 @@ class MembershipServiceTest {
             .thenReturn(List.of(manager));
         when(grants.findByMembershipIdAndActiveTrueOrderByBranchId(manager.id)).thenReturn(List.of(grant));
 
-        assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.RECEPTION)).allowed());
-        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchB,Capability.RECEPTION)).allowed());
+        assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.OPERATIONS_VIEW)).allowed());
+        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchB,Capability.OPERATIONS_VIEW)).allowed());
     }
 
     @Test
@@ -80,6 +80,11 @@ class MembershipServiceTest {
         when(memberships.findByUserIdAndClinicIdAndStatusOrderByInvitedAt(user,clinic,MembershipStatus.ACTIVE)).thenReturn(List.of(staff));
         assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.RECEPTION)).allowed());
         assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.BILLING)).allowed());
+        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.OPERATIONS_VIEW)).allowed());
+        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.OPERATIONS_MANAGE)).allowed());
+        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.FINANCE_VIEW)).allowed());
+        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.FINANCE_MANAGE)).allowed());
+        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.AUDIT_VIEW)).allowed());
         assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.DOCTOR_WORK)).allowed());
         assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.MEMBERSHIP_MANAGE)).allowed());
     }
@@ -103,10 +108,16 @@ class MembershipServiceTest {
         assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.MEMBERSHIP_MANAGE)).allowed());
     }
 
-    @Test void administratorDoesNotAcquireClinicalDoctorPermissions(){
+    @Test void administratorMonitorsButDoesNotAcquireDeskOrClinicalPermissions(){
         Membership admin=active(MembershipRole.ADMIN,true);
         when(memberships.findByUserIdAndClinicIdAndStatusOrderByInvitedAt(user,clinic,MembershipStatus.ACTIVE)).thenReturn(List.of(admin));
-        assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.BILLING)).allowed());
+        assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.OPERATIONS_VIEW)).allowed());
+        assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.OPERATIONS_MANAGE)).allowed());
+        assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.FINANCE_VIEW)).allowed());
+        assertTrue(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.FINANCE_MANAGE)).allowed());
+        assertTrue(service.authorize(new AuthorizationRequest(user,clinic,null,Capability.AUDIT_VIEW)).allowed());
+        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.RECEPTION)).allowed());
+        assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.BILLING)).allowed());
         assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.DOCTOR_WORK)).allowed());
         assertFalse(service.authorize(new AuthorizationRequest(user,clinic,branchA,Capability.LAB_WORK)).allowed());
     }

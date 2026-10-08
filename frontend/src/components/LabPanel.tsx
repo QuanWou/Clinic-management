@@ -1,3 +1,5 @@
+import {useAuthoritativeSync} from './useAuthoritativeSync';
+import {doctorSubscription} from '../api/realtime';
 import {DatePreview} from './DatePreview';
 import {PatientIdentity} from './PatientIdentity';
 import {usePanelSession,useSessionBranch} from '../auth/SessionProvider';
@@ -24,6 +26,10 @@ export function LabPanel({onClinic,onNavigationLock}:{onClinic?:(name:string)=>v
  const filtered=orders?.filter(o=>(!filter||o.state===filter)&&(!query.trim()||`${o.patient?.fullName??''} ${o.patient?.patientCode??''} ${o.patient?.dateOfBirth??''} ${o.name} ${o.encounterId} ${o.id}`.toLocaleLowerCase('vi-VN').includes(query.trim().toLocaleLowerCase('vi-VN'))))??[];
  const navigationReason=uncertain?'Thử lại thao tác kết quả đang chờ trước khi rời màn hình.':busy?'Đợi thao tác kết quả xử lý xong trước khi rời màn hình.':resultDirty?'Ghi phiên bản kết quả hoặc xóa nội dung đang sửa trước khi đổi chỉ định, địa điểm hoặc rời màn hình.':null;
  useNavigationLock(navigationReason,onNavigationLock);
+ useAuthoritativeSync({key:scope.token+scope.clinic+scope.branch+historyMode+from+to,enabled:!!token&&!!branch&&!historyMode,blocked:scopeLocked,subscriptions:[doctorSubscription(scope,'medical')],refresh:async context=>{
+  try{const rows=await api.lab(scope);if(!context.current()||running.current)return;setOrders(rows);setNextHistory(null);const chosen=rows.find(row=>row.id===selected);if(chosen){setContent(chosen.result?.content??'');setSource(chosen.result?.sourceRef??'');}setError('');}
+  catch(e){if(context.current())setError('Chưa cập nhật được chỉ định. Hệ thống sẽ thử lại.');throw e;}
+ },onDenied:()=>{setOrders(null);setError('Quyền truy cập chỉ định đã thay đổi.');}});
  async function run(work:()=>Promise<void>){if(running.current)return;running.current=true;setBusy(true);setError('');setMessage('');try{await work();}catch(e){setError(e instanceof Error?e.message:'Chưa xác định kết quả');}finally{running.current=false;setBusy(false);}}
  async function login(){let auth:string;try{auth=shared?.session?.token??(await signIn(email,password)).data.accessToken;setEmail(shared?.session?.email??email);}finally{setPassword('');}const list=await contexts(auth);const ids=[...new Set(list.filter(m=>m.role==='DOCTOR').map(m=>m.clinicId))];const requested=new URLSearchParams(location.search).get('clinicId');const id=requested?(ids.includes(requested)?requested:null):ids.length===1?ids[0]:null;if(!id)throw new Error('Cần quyền Bác sĩ tại phòng khám được cấp.');const d=await api.labDirectory(auth,id);setToken(auth);setDirectory(d);onClinic?.(d.name);}
  useSessionBranch(shared,token,directory,branch,id=>run(()=>chooseBranch(id)));

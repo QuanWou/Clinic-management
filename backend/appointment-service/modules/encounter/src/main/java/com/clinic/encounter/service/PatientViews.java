@@ -28,6 +28,7 @@ public class PatientViews {
   else if(value instanceof EncounterService.ArrivalRecovery a)collect(a.visit(),ids);
   else if(value instanceof EncounterService.WorklistPage p)collect(p.items(),ids);
   else if(value instanceof EncounterService.QueuePage p)collect(p.items(),ids);
+  else if(value instanceof EncounterService.ReceptionPage p)collect(p.items(),ids);
   else if(value instanceof EncounterService.PendingPage p)collect(p.items(),ids);
   else if(value instanceof List<?> rows)rows.forEach(r->collect(r,ids));
  }
@@ -36,6 +37,7 @@ public class PatientViews {
   if(value instanceof TicketView t){var r=patients.get(t.visitId());return r==null?t:t.withPatient(summaries.get(r.patientId())).withReception(r.doctorId(),r.checkedInAt());}
   if(value instanceof EncounterService.ArrivalRecovery a)return new EncounterService.ArrivalRecovery(a.operation(),a.createdAt(),(VisitView)apply(a.visit(),patients,summaries));
   if(value instanceof EncounterService.WorklistPage p)return new EncounterService.WorklistPage(p.items().stream().map(v->(VisitView)apply(v,patients,summaries)).toList(),p.nextAfter());
+  if(value instanceof EncounterService.ReceptionPage p)return new EncounterService.ReceptionPage(p.items().stream().map(v->(EncounterService.ArrivalRecovery)apply(v,patients,summaries)).toList(),p.nextAfter());
   if(value instanceof EncounterService.QueuePage p)return new EncounterService.QueuePage(p.items().stream().map(v->(TicketView)apply(v,patients,summaries)).toList(),p.nextAfterNumber());
   if(value instanceof EncounterService.PendingPage p)return new EncounterService.PendingPage(p.items().stream().map(v->(VisitView)apply(v,patients,summaries)).toList(),p.nextAfter());
   if(value instanceof List<?> rows)return rows.stream().map(r->apply(r,patients,summaries)).toList();return value;

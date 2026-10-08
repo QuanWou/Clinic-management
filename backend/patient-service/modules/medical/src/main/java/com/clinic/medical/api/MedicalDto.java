@@ -14,8 +14,8 @@ public final class MedicalDto{
  public record ResultInput(@Min(0) long expectedVersion,@NotBlank @Size(max=200) String sourceRef,@NotBlank @Size(max=8000) String content,@NotBlank @Size(max=500) String reason){}
  public record ReviewInput(@Min(0) long expectedVersion,@Min(1) long resultVersion,@NotBlank @Size(max=500) String reason){}
  public record ResultView(UUID id,long version,String sourceRef,String content,String contentHash,UUID authorUserId,Instant createdAt){}
- public record OrderView(UUID id,UUID encounterId,UUID offeringId,String name,String state,long version,long resultVersion,UUID acceptedBy,ResultView result,UUID reviewedBy,com.clinic.medical.service.MedicalSources.PatientSummary patient,String visitCode){
-  public OrderView(UUID id,UUID encounterId,UUID offeringId,String name,String state,long version,long resultVersion,UUID acceptedBy,ResultView result,UUID reviewedBy){this(id,encounterId,offeringId,name,state,version,resultVersion,acceptedBy,result,reviewedBy,null,null);}
-  public OrderView withIdentity(com.clinic.medical.service.MedicalSources.Visit v){return new OrderView(id,encounterId,offeringId,name,state,version,resultVersion,acceptedBy,result,reviewedBy,v.patient(),v.ticket()==null?null:v.ticket().code());}
+ public record OrderView(UUID id,UUID encounterId,UUID offeringId,String name,String state,long version,long resultVersion,UUID acceptedBy,ResultView result,UUID reviewedBy,Instant orderedAt,Instant reviewedAt,com.clinic.medical.service.MedicalSources.PatientSummary patient,String visitCode){
+  public OrderView(UUID id,UUID encounterId,UUID offeringId,String name,String state,long version,long resultVersion,UUID acceptedBy,ResultView result,UUID reviewedBy,Instant orderedAt,Instant reviewedAt){this(id,encounterId,offeringId,name,state,version,resultVersion,acceptedBy,result,reviewedBy,orderedAt,reviewedAt,null,null);}
+  public OrderView withIdentity(com.clinic.medical.service.MedicalSources.Visit v){return new OrderView(id,encounterId,offeringId,name,state,version,resultVersion,acceptedBy,result,reviewedBy,orderedAt,reviewedAt,v.patient(),v.ticket()==null?null:v.ticket().code());}
  }
 }

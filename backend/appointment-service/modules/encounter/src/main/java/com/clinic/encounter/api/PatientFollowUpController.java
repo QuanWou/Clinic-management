@@ -15,4 +15,13 @@ import java.util.*;
   UUID patient=owner.ownPatient(actor,c);if(patient==null)throw ApiProblem.forbidden();
   return tx.execute(t->{db.scope(c,b);var rows=jdbc.queryForList("select patient_id,status,medical_case_version from encounter_v2.visits where id=? and patient_id=?",id,patient);if(rows.isEmpty())throw ApiProblem.missing();var v=rows.getFirst();if(!Set.of("CLINICALLY_COMPLETED","CLOSED").contains(v.get("status"))||v.get("medical_case_version")==null)throw ApiProblem.conflict("Prior visit is not clinically completed");return new Proof(id,c,b,patient,v.get("status").toString(),((Number)v.get("medical_case_version")).longValue());});
  }
+ @PostMapping("/api/me/clinics/{c}/branches/{b}/completed-visits")
+ public List<Proof> completed(@AuthenticationPrincipal Actor actor,@PathVariable UUID c,@PathVariable UUID b,@RequestBody List<UUID> ids){
+  UUID patient=owner.ownPatient(actor,c);if(patient==null)throw ApiProblem.forbidden();
+  if(ids==null||ids.isEmpty()||ids.size()>100||ids.stream().anyMatch(Objects::isNull))throw ApiProblem.invalid("Use 1 to 100 visit references");
+  var unique=ids.stream().distinct().toList();
+  return tx.execute(t->{db.scope(c,b);String marks=String.join(",",Collections.nCopies(unique.size(),"?"));var args=new ArrayList<Object>();args.add(patient);args.addAll(unique);
+   return jdbc.query("select id,status,medical_case_version from encounter_v2.visits where patient_id=? and id in ("+marks+") and status in ('CLINICALLY_COMPLETED','CLOSED') and medical_case_version is not null",(rs,n)->new Proof(rs.getObject("id",UUID.class),c,b,patient,rs.getString("status"),rs.getLong("medical_case_version")),args.toArray());
+  });
+ }
 }

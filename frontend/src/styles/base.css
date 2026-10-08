@@ -173,3 +173,5 @@ summary:focus-visible {
 .status-info { color: var(--info); background: var(--info-soft); border-color: #bfdbfe; }
 .status-neutral { color: var(--muted-strong); background: #f8fafc; border-color: var(--line); }
 
+
+.notification-inbox{position:relative;display:inline-flex}.notification-count{background:#b42318;color:white;border-radius:1rem;padding:1px 6px;font-size:.75rem}.notification-popover{position:absolute;right:0;top:calc(100% + 8px);width:min(360px,85vw);max-height:65vh;overflow:auto;background:white;color:#1c2937;border:1px solid #dbe4eb;border-radius:12px;padding:16px;box-shadow:0 8px 30px #15334820;z-index:100}.notification-popover h2{font-size:1.1rem}.notification-popover ul{padding:0;list-style:none}.notification-popover li{padding:10px 0;border-bottom:1px solid #e5eaef}.notification-popover p{margin:0 0 6px}.notification-popover time{display:block;font-size:.75rem;color:#526476}

@@ -253,4 +253,28 @@ class ClinicOnboardingServiceTest {
         assertEquals(ReviewStatus.NEEDS_CHANGES,result.reviewStatus());
         verify(reviews).save(argThat(e->e.action.equals("NEEDS_CHANGES") && e.reason.contains("missing")));
     }
+    @Test void financeViewerCanResolveBillingDirectoryWithoutCashierCapability(){
+        UUID adminId=UUID.randomUUID();Actor admin=new Actor(adminId,Set.of());
+        when(clinics.findById(clinicId)).thenReturn(Optional.of(clinic));
+        when(branches.findByClinicIdAndActiveTrueOrderByCreatedAtAsc(clinicId)).thenReturn(List.of(branch));
+        when(iam.allowed(adminId,"BILLING",clinicId,branch.id)).thenReturn(false);
+        when(iam.allowed(adminId,"FINANCE_VIEW",clinicId,branch.id)).thenReturn(true);
+
+        var result=service(false).billingDirectory(admin,clinicId);
+
+        assertEquals(clinicId,result.id());assertEquals(1,result.branches().size());assertEquals(branch.id,result.branches().getFirst().id());
+        verify(iam).allowed(adminId,"FINANCE_VIEW",clinicId,branch.id);
+    }
+    @Test void operationsViewerCanResolveReceptionDirectoryWithoutReceptionCapability(){
+        UUID adminId=UUID.randomUUID();Actor admin=new Actor(adminId,Set.of());
+        when(clinics.findById(clinicId)).thenReturn(Optional.of(clinic));
+        when(branches.findByClinicIdAndActiveTrueOrderByCreatedAtAsc(clinicId)).thenReturn(List.of(branch));
+        when(iam.allowed(adminId,"RECEPTION",clinicId,branch.id)).thenReturn(false);
+        when(iam.allowed(adminId,"OPERATIONS_VIEW",clinicId,branch.id)).thenReturn(true);
+
+        var result=service(false).receptionDirectory(admin,clinicId);
+
+        assertEquals(clinicId,result.id());assertEquals(1,result.branches().size());assertEquals(branch.id,result.branches().getFirst().id());
+        verify(iam).allowed(adminId,"OPERATIONS_VIEW",clinicId,branch.id);
+    }
 }

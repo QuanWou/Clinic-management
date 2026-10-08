@@ -7,6 +7,7 @@ import com.clinic.audit.repo.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +64,15 @@ public class AuditService {
         if(correlationId==null||correlationId.isBlank()||correlationId.length()>128)
             throw ApiProblem.invalid("Invalid correlation id");
         return events.findByCorrelationIdOrderByOccurredAtAscIdAsc(correlationId.trim()).stream().map(this::view).toList();
+    }
+
+    @Transactional(readOnly=true)
+    public List<AdminAuditView> adminFeed(UUID clinicId,int limit){
+        if(clinicId==null||limit<1||limit>200)throw ApiProblem.invalid("Audit feed limit must be between 1 and 200");
+        return events.findByClinicIdOrderByOccurredAtDescIdDesc(clinicId,PageRequest.of(0,limit)).stream()
+            .map(e->new AdminAuditView(e.id,e.branchId,e.actorUserId,e.category,e.action,e.resourceType,
+                e.resourceId,e.outcome,e.correlationId,e.occurredAt))
+            .toList();
     }
 
     @Transactional(readOnly=true)

@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "scope": "actual project data copied into isolated database",
+  "checks": [
+    "staff has canonical STAFF scope",
+    "staff2 has canonical STAFF scope",
+    "Authoritative current-day booking capacity exists",
+    "B: Pre-check-in change validates schedule/service and replays one appointment",
+    "A/E: Two receptionists receive one appointment with one encounter/ticket",
+    "Reception workload is shared across collectors",
+    "C/N: Post-check-in reassignment and Admin-only resolution are denied; request persists",
+    "F: Recall records a real versioned queue action",
+    "F: Temporary skip is persisted",
+    "G: Absence is persisted",
+    "H: Concurrent retry moves to tail without a second encounter/check-in",
+    "D: Auto-routed walk-in has no fake appointment and retries uniquely",
+    "Payment is not required for care; billing is refused before completion",
+    "I: Doctor call emits a gateway-delivered realtime invalidation",
+    "J: IN_PROGRESS is visible in realtime and staff cannot mutate it",
+    "K: Professional completion produces authoritative payable bill and realtime events",
+    "L: Concurrent collection retry has one persisted receipt and one money effect",
+    "M: Reconnection emits ready and refetch restores authoritative state",
+    "SSE subscription is denied to a patient",
+    "SSE subscription is denied outside the granted branch",
+    "Authorized management can resolve a persisted exception"
+  ],
+  "resources": {
+    "pointId": "3a5bfcdf-2a73-44c5-9e35-62d067156c87",
+    "appointmentId": "fca1097d-24ac-4217-b338-c7f99e773374",
+    "onlineVisitId": "8cafe156-9544-486c-b3b8-3c540589c6f8",
+    "walkInVisitId": "528ea553-55a6-4fb8-97d9-3c70e722623d",
+    "billId": "08c5a0de-0b23-4591-a1ed-57c8284d73db",
+    "receiptId": "5c554c8b-b7ff-4055-b5df-4c84c0ac51e4"
+  },
+  "checkedAt": "2026-10-06T09:40:12.858Z"
+}

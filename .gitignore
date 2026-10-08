@@ -15,3 +15,7 @@ v2/.runtime/
 *.tsbuildinfo
 **/test-results/
 **/playwright-report/
+
+# Local export packages and temporary report rendering files
+/exports/
+/.report-staging/

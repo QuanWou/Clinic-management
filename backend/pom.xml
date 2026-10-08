@@ -13,6 +13,7 @@
 
     <modules>
         <module>common-lib</module>
+        <module>realtime-lib</module>
         <module>core-runtime</module>
         <module>api-gateway</module>
         <module>identity-service/modules/auth</module>

@@ -1,0 +1,837 @@
+[
+  {
+    "id": "01-quan-ly-phong-kham",
+    "title": "Quản lý phòng khám",
+    "actor": "Admin",
+    "mode": "management",
+    "pre": "Đã đăng nhập; có quyền cấu hình phòng khám.",
+    "children": [
+      {
+        "label": "Xem hồ sơ phòng khám",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Cập nhật thông tin\nphòng khám",
+        "relation": "extend",
+        "condition": "Chọn cập nhật hồ sơ",
+        "includes": []
+      },
+      {
+        "label": "Thêm / sửa chi nhánh",
+        "relation": "extend",
+        "condition": "Chọn quản lý chi nhánh",
+        "includes": []
+      },
+      {
+        "label": "Cập nhật thông tin\ngiấy phép",
+        "relation": "extend",
+        "condition": "Chọn sửa giấy phép",
+        "includes": []
+      },
+      {
+        "label": "Gửi hồ sơ kiểm duyệt",
+        "relation": "extend",
+        "condition": "Hồ sơ đủ điều kiện gửi",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Luồng cơ sở: xem hồ sơ; điểm mở rộng: chọn thao tác quản lý.",
+      "Phạm vi phòng khám / chi nhánh được kiểm tra trên máy chủ."
+    ]
+  },
+  {
+    "id": "02-quan-ly-nhan-su",
+    "title": "Quản lý nhân sự",
+    "actor": "Admin",
+    "mode": "management",
+    "pre": "Đã đăng nhập; có quyền quản lý nhân sự tại phòng khám.",
+    "children": [
+      {
+        "label": "Xem danh sách nhân sự",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Thêm / liên kết\ntài khoản nhân viên",
+        "relation": "extend",
+        "condition": "Chọn thêm nhân viên",
+        "includes": []
+      },
+      {
+        "label": "Sửa thông tin nhân viên",
+        "relation": "extend",
+        "condition": "Chọn sửa thông tin",
+        "includes": []
+      },
+      {
+        "label": "Gán vai trò và\nphạm vi chi nhánh",
+        "relation": "extend",
+        "condition": "Chọn phân quyền",
+        "includes": []
+      },
+      {
+        "label": "Khóa / vô hiệu hóa\ntài khoản nhân viên",
+        "relation": "extend",
+        "condition": "Chọn đổi trạng thái",
+        "includes": []
+      },
+      {
+        "label": "Đặt lại mật khẩu\nnhân viên",
+        "relation": "extend",
+        "condition": "Chọn đặt lại mật khẩu",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Luồng cơ sở: xem danh sách; điểm mở rộng: chọn thao tác nhân sự.",
+      "Vai trò nhân sự hiện tại: ADMIN, STAFF, DOCTOR."
+    ]
+  },
+  {
+    "id": "03-quan-ly-bac-si",
+    "title": "Quản lý bác sĩ",
+    "actor": "Admin",
+    "mode": "management",
+    "pre": "Đã đăng nhập; có quyền quản lý bác sĩ và lịch làm việc.",
+    "children": [
+      {
+        "label": "Xem danh sách bác sĩ",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Thêm / cập nhật\nliên kết bác sĩ",
+        "relation": "extend",
+        "condition": "Chọn quản lý bác sĩ",
+        "includes": []
+      },
+      {
+        "label": "Cập nhật chuyên khoa\nvà thông tin công khai",
+        "relation": "extend",
+        "condition": "Chọn sửa thông tin",
+        "includes": []
+      },
+      {
+        "label": "Thêm / sửa\nlịch làm việc",
+        "relation": "extend",
+        "condition": "Chọn quản lý lịch",
+        "includes": []
+      },
+      {
+        "label": "Ghi nhận khoảng vắng\ncủa bác sĩ",
+        "relation": "extend",
+        "condition": "Bác sĩ có lịch vắng",
+        "includes": []
+      },
+      {
+        "label": "Sửa / hủy\nkhoảng vắng",
+        "relation": "extend",
+        "condition": "Khoảng vắng được chọn",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Luồng cơ sở: xem danh sách; điểm mở rộng: chọn thao tác bác sĩ.",
+      "Khoảng vắng và lịch làm việc ảnh hưởng khả năng đặt lịch."
+    ]
+  },
+  {
+    "id": "04-dich-vu-bang-gia",
+    "title": "Quản lý dịch vụ, bảng giá",
+    "actor": "Admin",
+    "mode": "management",
+    "pre": "Đã đăng nhập; có quyền quản lý danh mục và bảng giá.",
+    "children": [
+      {
+        "label": "Xem danh mục dịch vụ",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Thêm / sửa dịch vụ\nvà chuyên khoa",
+        "relation": "extend",
+        "condition": "Chọn quản lý dịch vụ",
+        "includes": []
+      },
+      {
+        "label": "Gán dịch vụ cho\nchi nhánh",
+        "relation": "extend",
+        "condition": "Chọn phạm vi cung cấp",
+        "includes": []
+      },
+      {
+        "label": "Cấu hình thời lượng\nvà trạng thái dịch vụ",
+        "relation": "extend",
+        "condition": "Chọn sửa cấu hình",
+        "includes": []
+      },
+      {
+        "label": "Xem các phiên bản giá",
+        "relation": "extend",
+        "condition": "Chọn xem bảng giá",
+        "includes": []
+      },
+      {
+        "label": "Thêm giá và\nngày bắt đầu áp dụng",
+        "relation": "extend",
+        "condition": "Chọn tạo giá mới",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Luồng cơ sở: xem danh mục; điểm mở rộng: chọn thao tác dịch vụ / giá.",
+      "Giá mới không sửa lại giá đã chốt của dịch vụ đã thực hiện."
+    ]
+  },
+  {
+    "id": "05-giam-sat-van-hanh",
+    "title": "Giám sát vận hành",
+    "actor": "Admin",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; có quyền xem / quản lý vận hành.",
+    "children": [
+      {
+        "label": "Xem tổng quan\nlượt khám trong ngày",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem trạng thái hàng đợi\nvà lượt chờ kết quả",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem xu hướng\nlượt khám 7 ngày",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem ngoại lệ lịch hẹn\nvà yêu cầu tiếp nhận",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xử lý yêu cầu\ncần quản trị",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Phục hồi tiếp nhận /\nđồng bộ lỗi đủ điều kiện",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Các hình bên phải là mục tiêu chuyên biệt của nhóm giám sát.",
+      "Quyền xem và quyền phục hồi dữ liệu được kiểm tra riêng."
+    ]
+  },
+  {
+    "id": "06-tai-chinh-nhat-ky",
+    "title": "Tài chính và nhật ký",
+    "actor": "Admin",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; có quyền tài chính / nhật ký tương ứng.",
+    "children": [
+      {
+        "label": "Xem phát sinh, đã thu\nvà số còn phải thu",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem cơ cấu phương thức\nvà xu hướng tài chính",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Đối soát và duyệt\nca thu đã chốt",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Phê duyệt giảm trừ\nhóa đơn",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem giao dịch cần\nđối chiếu / đồng bộ phí",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem nhật ký hoạt động\nvà thay đổi phân quyền",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "ADMIN quản trị tài chính; không mặc nhiên được thu tiền tại quầy.",
+      "Người duyệt ca phải khác người thu. Biên nhận nội bộ không phải hóa đơn thuế."
+    ]
+  },
+  {
+    "id": "07-tiep-nhan-benh-nhan",
+    "title": "Tiếp nhận bệnh nhân",
+    "actor": "Lễ tân / Thu ngân",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; STAFF có quyền tiếp nhận tại phòng khám.",
+    "children": [
+      {
+        "label": "Tra cứu và xác minh\nhồ sơ bệnh nhân",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Tạo hồ sơ bệnh nhân\nđến trực tiếp",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem lịch hẹn trong ngày",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Tiếp nhận bệnh nhân\ncó lịch hẹn",
+        "relation": "generalization",
+        "condition": "",
+        "includes": [
+          "Tạo lượt khám\nvà số thứ tự"
+        ]
+      },
+      {
+        "label": "Tiếp nhận bệnh nhân\nđến trực tiếp",
+        "relation": "generalization",
+        "condition": "",
+        "includes": [
+          "Tạo lượt khám\nvà số thứ tự"
+        ]
+      },
+      {
+        "label": "Đổi lịch tại quầy /\nghi nhận yêu cầu tiếp nhận",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Tạo hồ sơ mới chỉ cần khi chưa có hồ sơ bệnh nhân phù hợp.",
+      "Hai hình thức tiếp nhận tạo lượt khám và vé hàng đợi; không thu cọc."
+    ]
+  },
+  {
+    "id": "08-quan-ly-hang-doi",
+    "title": "Quản lý hàng đợi",
+    "actor": "Lễ tân / Thu ngân",
+    "mode": "management",
+    "pre": "Đã đăng nhập; có quyền tiếp nhận; chọn chi nhánh / điểm phục vụ.",
+    "children": [
+      {
+        "label": "Xem hàng đợi theo\nđiểm phục vụ / ngày",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Gọi / gọi lại\nbệnh nhân",
+        "relation": "extend",
+        "condition": "Chọn gọi vé đủ điều kiện",
+        "includes": []
+      },
+      {
+        "label": "Bỏ qua / ghi vắng\nbệnh nhân",
+        "relation": "extend",
+        "condition": "Vé có thể bỏ qua / ghi vắng",
+        "includes": []
+      },
+      {
+        "label": "Xếp lại bệnh nhân\nvào hàng đợi",
+        "relation": "extend",
+        "condition": "Vé đủ điều kiện xếp lại",
+        "includes": []
+      },
+      {
+        "label": "Chuyển điểm phục vụ",
+        "relation": "extend",
+        "condition": "Chọn điểm đích hợp lệ",
+        "includes": []
+      },
+      {
+        "label": "Chuyển tiếp vé\nsang ngày mới",
+        "relation": "extend",
+        "condition": "Vé đủ điều kiện chuyển tiếp",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Luồng cơ sở: xem hàng đợi; điểm mở rộng: chọn thao tác trên vé.",
+      "Mỗi thao tác chỉ được thực hiện ở trạng thái vé và phạm vi được phép."
+    ]
+  },
+  {
+    "id": "09-quan-ly-ca-thu",
+    "title": "Quản lý ca thu",
+    "actor": "Lễ tân / Thu ngân",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; STAFF có quyền BILLING tại chi nhánh.",
+    "children": [
+      {
+        "label": "Mở ca thu",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem ca thu và\ncác phiếu / khoản thu",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Lập phiếu thu\ncho lượt khám hoàn tất",
+        "relation": "generalization",
+        "condition": "",
+        "includes": [
+          "Đối chiếu dịch vụ\nvà giá đã chốt"
+        ]
+      },
+      {
+        "label": "Ghi nhận thu tiền\nmặt / chuyển khoản / POS",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem / in\nbiên nhận nội bộ",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Kiểm đếm, chốt\nvà gửi ca thu",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Nghiệp vụ thu phí được đặt cùng ca thu theo nhóm chức năng trong hình tổng quát.",
+      "Thu tiền cần ca OPEN của người thu; ca đã chốt chờ Admin duyệt; không tự duyệt."
+    ]
+  },
+  {
+    "id": "10-kham-ghi-ho-so",
+    "title": "Khám và ghi hồ sơ",
+    "actor": "Bác sĩ",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; DOCTOR được phân công lượt khám.",
+    "children": [
+      {
+        "label": "Xem danh sách khám\nđược phân công",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Gọi và bắt đầu khám",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem / ghi / cập nhật\nhồ sơ khám",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Ghi chẩn đoán, kết luận\nvà hướng dẫn",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Ghi đề xuất\nngày tái khám",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Chuyển chờ kết quả /\nđưa lại vào hàng đợi",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Nội dung hồ sơ gồm lý do khám, tiền sử, dị ứng, sinh hiệu, khám và kết luận.",
+      "Ghi ngày tái khám mới tạo đề xuất; bệnh nhân cần đặt lịch tái khám riêng."
+    ]
+  },
+  {
+    "id": "11-chi-dinh-ket-qua",
+    "title": "Quản lý chỉ định, kết quả xét nghiệm",
+    "actor": "Bác sĩ",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; có quyền DOCTOR_WORK / LAB_WORK và đúng phạm vi.",
+    "children": [
+      {
+        "label": "Tạo chỉ định\nxét nghiệm",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem chỉ định và\nlịch sử kết quả",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Tiếp nhận / xử lý\nchỉ định",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Từ chối / hủy\nchỉ định đủ điều kiện",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Ghi / cập nhật\nkết quả xét nghiệm",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Duyệt kết quả\nxét nghiệm",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Mã nguồn hiện dùng vai trò DOCTOR cho chức năng xét nghiệm.",
+      "Các thao tác kiểm tra phân công lượt khám, người xử lý và trạng thái chỉ định."
+    ]
+  },
+  {
+    "id": "12-xac-nhan-hoan-tat",
+    "title": "Xác nhận hồ sơ, hoàn tất lượt khám",
+    "actor": "Bác sĩ",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; bác sĩ được phân công; lượt khám đúng trạng thái.",
+    "children": [
+      {
+        "label": "Kiểm tra hồ sơ\nvà trạng thái chỉ định",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xác nhận hồ sơ khám\n(VALIDATED)",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xác nhận dịch vụ khám\nđã thực hiện",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Hoàn tất lượt khám",
+        "relation": "generalization",
+        "condition": "",
+        "includes": [
+          "Kiểm tra bằng chứng\nhồ sơ đã xác nhận"
+        ]
+      },
+      {
+        "label": "Đóng lượt khám\nđã hoàn tất",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "VALIDATED yêu cầu đủ trường hồ sơ và các chỉ định đã xử lý đúng điều kiện.",
+      "Xác nhận không phải ký số; hoàn tất / đóng lượt khám độc lập với thanh toán."
+    ]
+  },
+  {
+    "id": "13-dang-ky-tai-khoan",
+    "title": "Đăng ký tài khoản",
+    "actor": "Bệnh nhân",
+    "mode": "concrete",
+    "pre": "Chưa cần đăng nhập; đăng ký tài khoản bệnh nhân.",
+    "children": [
+      {
+        "label": "Kiểm tra thông tin\nđăng ký hợp lệ",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Kiểm tra email\nchưa được sử dụng",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Tạo tài khoản\nbệnh nhân",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Dữ liệu đăng ký: họ tên, email, mật khẩu; mật khẩu từ 8 đến 100 ký tự.",
+      "Hệ thống lưu mật khẩu dạng băm. Không có căn cứ cho OTP / xác thực email trong luồng này."
+    ]
+  },
+  {
+    "id": "14-tra-cuu-cong-khai",
+    "title": "Tra cứu phòng khám, bác sĩ…",
+    "actor": "Bệnh nhân",
+    "mode": "abstract",
+    "pre": "Không bắt buộc đăng nhập; thông tin phải đủ điều kiện công khai.",
+    "children": [
+      {
+        "label": "Xem thông tin\nphòng khám / chi nhánh",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Tra cứu bác sĩ\nvà chuyên khoa",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem dịch vụ\nvà bảng giá",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem lịch làm việc\nvà khung giờ còn chỗ",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem thông tin\nđịa chỉ / liên hệ",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Giữ actor Bệnh nhân như hình tổng quát; khách chưa có tài khoản cũng có thể tra cứu.",
+      "Tra cứu lịch trống không đồng nghĩa đã giữ chỗ hay tạo lịch hẹn."
+    ]
+  },
+  {
+    "id": "15-quan-ly-lich-hen",
+    "title": "Quản lý lịch hẹn",
+    "actor": "Bệnh nhân",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; hồ sơ hợp lệ; chỉ thao tác lịch thuộc tài khoản.",
+    "children": [
+      {
+        "label": "Đặt lịch khám",
+        "relation": "generalization",
+        "condition": "",
+        "includes": [
+          "Giữ chỗ\nkhung giờ",
+          "Xác nhận\nlịch hẹn"
+        ]
+      },
+      {
+        "label": "Xem lịch hẹn\ncủa tôi",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Đổi lịch hẹn",
+        "relation": "generalization",
+        "condition": "",
+        "includes": [
+          "Giữ chỗ\nkhung giờ mới"
+        ]
+      },
+      {
+        "label": "Hủy lịch hẹn",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Đặt lịch tái khám",
+        "relation": "generalization",
+        "condition": "",
+        "includes": [
+          "Giữ chỗ và\nxác nhận lịch tái khám"
+        ]
+      }
+    ],
+    "notes": [
+      "Đặt / đổi / hủy là các mục tiêu chuyên biệt của quản lý lịch; không mở rộng lẫn nhau.",
+      "Khung giờ và lịch hẹn phải đủ điều kiện; đặt lịch không thu cọc."
+    ]
+  },
+  {
+    "id": "16-xem-lich-su-kham",
+    "title": "Xem lịch sử khám",
+    "actor": "Bệnh nhân",
+    "mode": "abstract",
+    "pre": "Đã đăng nhập; xác minh quyền sở hữu hồ sơ của chính tài khoản.",
+    "children": [
+      {
+        "label": "Xem hồ sơ khám\nđã hoàn tất",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem kết quả xét nghiệm\nđã được duyệt",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem hướng dẫn và\nđề xuất tái khám",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem hóa đơn,\nsố đã trả / còn lại",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem biên nhận\nthanh toán",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xem hướng dẫn QR\nchuyển khoản",
+        "relation": "generalization",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Hồ sơ VALIDATED và lượt CLINICALLY_COMPLETED / CLOSED, phiên bản phù hợp.",
+      "Không đọc hồ sơ người khác; chưa có quyền người giám hộ / đại diện trong phạm vi này."
+    ]
+  },
+  {
+    "id": "17-thanh-toan-online",
+    "title": "Thanh toán hóa đơn online",
+    "actor": "Bệnh nhân",
+    "mode": "concrete",
+    "pre": "Đã đăng nhập; hóa đơn thuộc bệnh nhân, còn dư và được phép thanh toán.",
+    "children": [
+      {
+        "label": "Chọn phương thức\nđang khả dụng",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Tạo yêu cầu\nthanh toán online",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xác minh kết quả\nvới cổng thanh toán",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Hủy liên kết payOS\nchưa thanh toán",
+        "relation": "extend",
+        "condition": "Chọn hủy; cổng cho phép",
+        "includes": []
+      }
+    ],
+    "secondary": {
+      "actor": "Cổng thanh toán\n(payOS / VNPAY)",
+      "child": 2
+    },
+    "notes": [
+      "payOS / VNPAY xác nhận qua máy chủ; VNPAY hiện dùng sandbox.",
+      "Chỉ thanh toán hóa đơn sau khám; không thu cọc. QR thủ công được tách ở phần xem lịch sử / chi phí."
+    ]
+  },
+  {
+    "id": "18-dang-nhap",
+    "title": "Đăng nhập",
+    "actor": "Admin / Bác sĩ /\nLễ tân / Bệnh nhân",
+    "mode": "concrete",
+    "pre": "Người dùng có tài khoản; truy cập đúng cổng bệnh nhân hoặc workspace.",
+    "children": [
+      {
+        "label": "Kiểm tra thông tin\nđăng nhập",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Kiểm tra trạng thái\ntài khoản",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Xác định quyền và\nphạm vi truy cập",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      },
+      {
+        "label": "Thiết lập phiên\nđăng nhập",
+        "relation": "include",
+        "condition": "",
+        "includes": []
+      }
+    ],
+    "notes": [
+      "Tài khoản phải ACTIVE; cổng workspace kiểm tra quyền nhân sự / nền tảng.",
+      "Đăng nhập được mô tả riêng; trong sơ đồ nghiệp vụ, ghi là tiền điều kiện."
+    ]
+  }
+]

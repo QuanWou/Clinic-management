@@ -36,7 +36,7 @@ iam:
     legacy-identity-url: ${IAM_LEGACY_IDENTITY_URL:http://localhost:8083}
     workload-inbound-secret: ${IAM_WORKLOAD_INBOUND_SECRET:${IAM_CLINIC_INBOUND_SECRET:}}
     workload-audience: identity-service
-    allowed-workload-issuers: ${IAM_ALLOWED_WORKLOAD_ISSUERS:clinic-service,doctor-service,catalog-service,patient-service,encounter-service,medical-service,billing-service,appointment-service}
+    allowed-workload-issuers: ${IAM_ALLOWED_WORKLOAD_ISSUERS:clinic-service,doctor-service,catalog-service,patient-service,encounter-service,medical-service,billing-service,appointment-service,audit-service}
   clinic:
     url: ${IAM_CLINIC_URL:http://localhost:8092}
     workload-issuer: identity-service

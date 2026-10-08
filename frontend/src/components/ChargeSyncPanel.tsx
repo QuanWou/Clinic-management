@@ -1,3 +1,5 @@
+import {useAuthoritativeSync} from './useAuthoritativeSync';
+
 import {useEffect,useRef,useState} from 'react';
 import * as api from '../api/billing';
 import type {Scope} from '../api/reception';
@@ -7,6 +9,10 @@ const states:Record<string,string>={PENDING:'Đang chờ',CLAIMED:'Đang xử l�
 export function ChargeSyncPanel({scope,encounterId,onRetry,canRetry}:{scope:Scope;encounterId:string;onRetry?:(source:Source,eventId:string)=>void;canRetry:boolean}){
  const [sources,setSources]=useState<Partial<Record<Source,api.ChargeSyncState>>>({}),[errors,setErrors]=useState<Source[]>([]),[busy,setBusy]=useState(false);const epoch=useRef(0);
  useEffect(()=>{epoch.current++;setSources({});setErrors([]);setBusy(false);return()=>{epoch.current++;};},[scope.token,scope.clinic,scope.branch,encounterId]);
+ useAuthoritativeSync({key:scope.token+scope.clinic+scope.branch+encounterId,enabled:!!scope.token&&!!encounterId,blocked:busy,intervalMs:30000,refresh:async context=>{
+  const current=epoch.current,names:Source[]=['billing','medical','encounter'];const results=await Promise.allSettled(names.map(name=>name==='billing'?api.chargeState(scope,encounterId):api.deliveryState(scope,encounterId,name)));if(!context.current()||current!==epoch.current)return;
+  const received:Partial<Record<Source,api.ChargeSyncState>>={},missing:Source[]=[];results.forEach((result,i)=>{if(result.status==='fulfilled')received[names[i]]=result.value;else missing.push(names[i]);});setSources(received);setErrors(missing);if(missing.length)throw new Error('Charge delivery unavailable');
+ }});
  async function read(){const current=++epoch.current;setSources({});setErrors([]);setBusy(true);const names:Source[]=['billing','medical','encounter'];const results=await Promise.allSettled(names.map(name=>name==='billing'?api.chargeState(scope,encounterId):api.deliveryState(scope,encounterId,name)));if(current!==epoch.current)return;const received:Partial<Record<Source,api.ChargeSyncState>>={},missing:Source[]=[];results.forEach((result,i)=>{if(result.status==='fulfilled')received[names[i]]=result.value;else missing.push(names[i]);});setSources(received);setErrors(missing);setBusy(false);}
  useEffect(()=>{if(encounterId)void read();},[scope.token,scope.clinic,scope.branch,encounterId]);
  return <article className="booking-appointment"><h2>Đồng bộ khoản phí</h2>{busy&&<p role="status">Đang kiểm tra các nguồn dịch vụ…</p>}

@@ -1,3 +1,5 @@
+import {useAuthoritativeSync} from './useAuthoritativeSync';
+
 import {useEffect,useRef,useState} from 'react';
 import * as api from '../api/reception';
 import {RequestError} from '../api/booking';
@@ -9,6 +11,7 @@ export function AbsenceLifecyclePanel({scope,doctor,canManage,onPending,appointm
  useEffect(()=>{epoch.current++;setSources([]);setError('');setMessage('');setBusy(false);setPending(false);attempt.current=null;running.current=false;return()=>{epoch.current++;};},[scope.token,scope.clinic,scope.branch,doctor]);
  async function read(){if(running.current||pending||!doctor||!canManage)return;const generation=epoch.current;running.current=true;setBusy(true);setSources([]);setError('');try{const rows=await api.doctorAbsences(scope,doctor);if(epoch.current===generation)setSources(rows);}catch(e){if(epoch.current===generation)setError(e instanceof Error?e.message:'Chưa đồng bộ được nguồn khoảng vắng.');}finally{if(epoch.current===generation){running.current=false;setBusy(false);}}}
  useEffect(()=>{if(active&&canManage&&doctor)void read();},[active,canManage,doctor,scope.token,scope.clinic,scope.branch]);
+ useAuthoritativeSync({key:scope.token+scope.clinic+scope.branch+doctor,enabled:active&&canManage&&!!doctor,blocked:busy||pending||disabled,refresh:async context=>{const generation=epoch.current;const rows=await api.doctorAbsences(scope,doctor);if(context.current()&&generation===epoch.current){setSources(rows);setError('');}}});
  async function send(){if(running.current||!attempt.current)return;const generation=epoch.current,current=attempt.current;running.current=true;setBusy(true);setError('');setPending(true);onPending?.(true);
   try{await current.send();if(epoch.current!==generation)return;attempt.current=null;setPending(false);onPending?.(false);try{if(doctor)setSources(await api.doctorAbsences(scope,doctor));}catch{setSources([]);}setMessage(current.label+' đã được ghi nhận; danh sách nguồn đã đồng bộ.');}
   catch(e){if(epoch.current!==generation)return;if(e instanceof RequestError&&e.status>=400&&e.status<500){attempt.current=null;setPending(false);onPending?.(false);}setError(e instanceof Error?e.message:'Chưa xác định được kết quả.');}

@@ -1,18 +1,19 @@
 import type {PatientSummary} from '../components/PatientIdentity';
 import { requestJson } from './client';
+import {stableOperationKey} from './idempotency';
 import { unwrap } from './booking';
 import type { IamContextView } from '../types/contracts';
 export type Directory={id:string;name:string;branches:{id:string;name:string;active:boolean}[]};
 export type Patient={patientId:string;clinicPatientLinkId:string;patientCode:string;fullName:string;dateOfBirth:string|null;phoneLast4:string|null;status:string;version:number};
 export type Point={id:string;code:string;name:string;active:boolean};
-export type Ticket={id:string;visitId:string;servicePointId:string;date:string;number:number;code:string;state:string;version:number;patient?:PatientSummary|null;doctorId?:string|null;checkedInAt?:string|null};
-export type Visit={id:string;appointmentId:string|null;status:string;version:number;ticket:Ticket|null;patient?:PatientSummary|null;consultation?:{offeringId:string;name:string;price:{amountVnd:number;priceVersionId:string;effectiveFrom:string}}|null;consultationPerformedAt?:string|null};
+export type Ticket={id:string;visitId:string;servicePointId:string;date:string;number:number;code:string;state:string;version:number;patient?:PatientSummary|null;doctorId?:string|null;checkedInAt?:string|null;issuedAt?:string|null};
+export type Visit={id:string;appointmentId:string|null;status:string;checkedInAt?:string|null;version:number;ticket:Ticket|null;patient?:PatientSummary|null;consultation?:{offeringId:string;name:string;price:{amountVnd:number;priceVersionId:string;effectiveFrom:string}}|null;consultationPerformedAt?:string|null};
 export type ArrivalRecovery={operation:string;createdAt:string;visit:Visit};
 export type Absence={id:string;doctorId:string;startsAt:string;endsAt:string;state?:'ACTIVE'|'CANCELLED';version?:number};
 export type AbsenceBatch={recorded:number;retryRequired:string[];hasMore:boolean};
 export type Appointment={id:string;appointmentCode:string;patientId:string;startsAt:string;status:string;version?:number;patient?:PatientSummary|null};
 export type Exception={id:string;appointmentId:string;type:string;state:string;notificationMode:string};
-export type Doctor={practitionerId:string;displayName:string;active:boolean;effectiveFrom:string;effectiveUntil:string|null};
+export type Doctor={practitionerId:string;displayName:string;active:boolean;effectiveFrom:string;effectiveUntil:string|null;specialtyCode?:string;specialtyName?:string};
 const bases={identity:import.meta.env.VITE_IDENTITY_URL??'/s1/identity',clinic:import.meta.env.VITE_CLINIC_URL??'/s1/clinic',doctor:import.meta.env.VITE_DOCTOR_URL??'/s1/doctor',patient:import.meta.env.VITE_PATIENT_URL??'/s1/patient',encounter:import.meta.env.VITE_ENCOUNTER_URL??'/s1/encounter'};
 export type Scope={token:string;clinic:string;branch:string};
 const path=(s:Scope)=>`/api/clinics/${encodeURIComponent(s.clinic)}/branches/${encodeURIComponent(s.branch)}`;
@@ -30,7 +31,7 @@ export const review=(s:Scope,p:Patient,evidence:string,reason:string)=>post<Pati
 export const appointments=(s:Scope,date:string)=>get<Appointment[]>(bases.encounter,path(s)+'/reception/appointments?'+new URLSearchParams({date}),s.token);
 export const arrivals=(s:Scope,date:string)=>get<ArrivalRecovery[]>(bases.encounter,path(s)+'/reception/arrivals?'+new URLSearchParams({date}),s.token);
 export const recoverArrival=(s:Scope,v:Visit,reason:string)=>post<Visit>(bases.encounter,path(s)+`/reception/arrivals/${v.id}/recover`,s,{expectedVersion:v.version,reason});
-export const walkIn=(s:Scope,patientId:string,doctorId:string,servicePointId:string,reason:string,key:string,offeringId:string)=>post<Visit>(bases.encounter,path(s)+'/visits/walk-in',s,{patientId,doctorId,servicePointId,reason,offeringId},key);
+export const walkIn=(s:Scope,patientId:string,doctorId:string,servicePointId:string,reason:string,key:string,offeringId:string)=>post<Visit>(bases.encounter,path(s)+'/visits/walk-in',s,{patientId,doctorId:doctorId||null,servicePointId,reason,offeringId},key);
 export const checkIn=(s:Scope,a:Appointment,patientId:string,servicePointId:string,reason:string,key:string)=>post<Visit>(bases.encounter,path(s)+`/appointments/${a.id}/check-in`,s,{patientId,servicePointId,reason},key);
 export const queue=(s:Scope,point:string,date:string)=>get<Ticket[]>(bases.encounter,path(s)+'/queue?'+new URLSearchParams({servicePointId:point,date}),s.token);
 export type QueuePage={items:Ticket[];nextAfterNumber:number|null};
@@ -39,7 +40,7 @@ export type PendingPage={items:Visit[];nextAfter:string|null};
 export const pendingArrivals=(s:Scope,after?:string)=>get<PendingPage>(bases.encounter,path(s)+'/reception/pending-arrivals?'+new URLSearchParams({limit:'25',...(after?{after}:{})}),s.token);
 export const superviseArrival=(s:Scope,visit:Visit,body:{expectedVersion:number;reason:string},key:string)=>post<Visit>(bases.encounter,path(s)+`/reception/pending-arrivals/${visit.id}/recover`,s,body,key);
 export const rollForward=(s:Scope,ticket:Ticket,body:{expectedVersion:number;reason:string;destinationPointId?:string},key:string)=>post<Ticket>(bases.encounter,path(s)+`/queue/${ticket.id}/roll-forward`,s,body,key);
-export const move=(s:Scope,t:Ticket,action:'call'|'skip'|'transfer',reason:string,destination?:string)=>post<Ticket>(bases.encounter,path(s)+`/queue/${t.id}/${action}`,s,{expectedVersion:t.version,reason,...(destination?{destinationPointId:destination}:{})});
+export const move=async(s:Scope,t:Ticket,action:'call'|'skip'|'transfer'|'recall'|'absent'|'requeue',reason:string,destination?:string)=>post<Ticket>(bases.encounter,path(s)+`/queue/${t.id}/${action}`,s,{expectedVersion:t.version,reason,...(destination?{destinationPointId:destination}:{})},await stableOperationKey('queue-'+action,{clinic:s.clinic,branch:s.branch,ticket:t.id,version:t.version,reason,destination:destination??null}));
 export const exceptions=(s:Scope,a:Appointment)=>get<Exception[]>(bases.encounter,path(s)+`/appointments/${a.id}/exceptions`,s.token);
 export const recordException=(s:Scope,a:Appointment,type:string,reason:string,key:string)=>post<Exception>(bases.encounter,path(s)+`/appointments/${a.id}/exceptions`,s,{type,reason},key);
 export const doctorAbsences=(s:Scope,doctor:string)=>get<Absence[]>(bases.doctor,path(s)+`/doctors/${doctor}/absences`,s.token);
@@ -49,9 +50,26 @@ export type AbsenceChange={previous:Absence;replacement:Absence|null};
 export const changeAbsence=(s:Scope,a:Absence,operation:'cancel'|'amend',body:{expectedVersion:number;reason:string;startsAt?:string;endsAt?:string},key:string)=>post<AbsenceChange>(bases.doctor,path(s)+`/doctors/${a.doctorId}/absences/${a.id}/${operation}`,s,body,key);
 export const resolveException=(s:Scope,a:Appointment,e:Exception,body:{expectedVersion:number;reason:string},key:string)=>post<Exception>(bases.encounter,path(s)+`/appointments/${a.id}/exceptions/${e.id}/resolve`,s,body,key);
 
-export type ReceptionOffering={offering:{id:string;name:string;active:boolean};active:boolean};
+export type ReceptionOffering={offering:{id:string;name:string;active:boolean;specialtyCode?:string|null};active:boolean};
 const catalog=import.meta.env.VITE_CATALOG_URL??'/s1/catalog';
 export const offerings=(s:Scope)=>get<ReceptionOffering[]>(catalog,path(s)+'/offerings',s.token);
 export const offeringPrice=(s:Scope,id:string)=>get<{amountVnd:number;priceVersionId:string}>(catalog,path(s)+`/offerings/${id}/price-snapshot`,s.token);
 
 export const readVisit=(s:Scope,id:string)=>get<Visit>(bases.encounter,path(s)+`/visits/${id}`,s.token);
+
+export async function workload(s:Scope,date:string){
+ const rows:ArrivalRecovery[]=[];let after:string|null=null;
+ do{const page: {items:ArrivalRecovery[];nextAfter:string|null}=await get(bases.encounter,path(s)+'/reception/workload?'+new URLSearchParams({date,...(after?{after}:{})}),s.token);rows.push(...page.items);after=page.nextAfter;}while(after);
+ return rows;
+}
+export type ReceptionRequest={id:string;visitId:string|null;patientId:string|null;type:string;reason:string;state:string;actorUserId:string;createdAt:string};
+export type RequestInput={visitId?:string|null;patientId?:string|null;type:string;reason:string};
+export const openExceptions=(s:Scope)=>get<Exception[]>(bases.encounter,path(s)+'/reception/exceptions',s.token);
+export const requests=(s:Scope)=>get<ReceptionRequest[]>(bases.encounter,path(s)+'/reception/requests',s.token);
+export const createRequest=(s:Scope,body:RequestInput,key:string)=>post<ReceptionRequest>(bases.encounter,path(s)+'/reception/requests',s,body,key);
+export const resolveRequest=(s:Scope,id:string,reason:string)=>post<ReceptionRequest>(bases.encounter,path(s)+`/reception/requests/${id}/resolve`,s,{expectedVersion:0,reason});
+const appointmentBase=import.meta.env.VITE_APPOINTMENT_URL??'/s1/appointment';
+export type AppointmentDetail=Appointment&{clinicId:string;branchId:string;offeringId:string;doctorId:string;price:{amountVnd:number};version:number};
+export const appointmentDetail=(s:Scope,id:string)=>get<AppointmentDetail>(appointmentBase,path(s)+`/reception/appointments/${id}`,s.token);
+export const changeHold=(s:Scope,id:string,body:{patientId:string;offeringId:string;doctorId:string;slotId:string;expectedVersion:number},key:string)=>post<import('./booking').Hold>(appointmentBase,path(s)+`/reception/appointments/${id}/holds`,s,body,key);
+export const changeAppointment=(s:Scope,id:string,body:{patientId:string;newHoldId:string;expectedVersion:number;reason:string})=>post<AppointmentDetail>(appointmentBase,path(s)+`/reception/appointments/${id}/change`,s,body);

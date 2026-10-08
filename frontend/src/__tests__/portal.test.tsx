@@ -28,5 +28,5 @@ it('clears prior balances on a denied reload and permits a read-only retry',asyn
  vi.mocked(ownBills).mockResolvedValueOnce([bill]).mockRejectedValueOnce(new Error('Synthetic patient link revoked')).mockResolvedValueOnce([]);
  const user=userEvent.setup();render(<PatientFeesPanel {...props}/>);await screen.findByText('Đã thu một phần');
  await user.click(screen.getByRole('button',{name:'Tải khoản phải thu của tôi'}));await screen.findByRole('alert');expect(screen.queryByText('Synthetic performed service')).toBeNull();
- await user.click(screen.getByRole('button',{name:'Tải khoản phải thu của tôi'}));await screen.findByText('Chưa có phiếu thu cho hồ sơ của bạn tại địa điểm này.');
+ await user.click(screen.getByRole('button',{name:'Tải khoản phải thu của tôi'}));await screen.findByText('Bạn chưa có hóa đơn.');
 });

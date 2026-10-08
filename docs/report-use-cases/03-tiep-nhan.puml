@@ -1,0 +1,47 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #F5F9FF
+skinparam usecaseBorderColor #334155
+skinparam actorBorderColor #334155
+skinparam ArrowColor #475569
+title Use case chi tiết — Tiếp nhận và hàng đợi
+actor "Nhân viên\n(lễ tân / thu ngân)" as Staff
+rectangle "TIẾP NHẬN BỆNH NHÂN" {
+ usecase "Tra cứu / xác minh\nhồ sơ bệnh nhân" as Find
+ usecase "Tạo hồ sơ bệnh nhân\nđến trực tiếp" as NewPatient
+ usecase "Xem danh sách lịch hẹn" as List
+ usecase "Tiếp nhận bệnh nhân\ncó lịch hẹn" as CheckIn
+ usecase "Tiếp nhận bệnh nhân\nđến trực tiếp" as WalkIn
+ usecase "Tạo lượt khám\nvà số thứ tự" as Visit
+ usecase "Quản lý hàng đợi" as Queue
+ usecase "Gọi / gọi lại / bỏ qua /\nghi vắng / xếp lại / chuyển điểm" as Actions
+ usecase "Đổi lịch hẹn tại quầy" as Change
+ usecase "Ghi nhận / xử lý\nngoại lệ lịch hẹn" as Exception
+ usecase "Ghi nhận / giải quyết\nyêu cầu tiếp nhận" as Requests
+}
+Staff -- Find
+Staff -- NewPatient
+Staff -- List
+Staff -- CheckIn
+Staff -- WalkIn
+Staff -- Queue
+Staff -- Actions
+Staff -- Change
+Staff -- Exception
+Staff -- Requests
+CheckIn ..> Visit : <<include>>
+WalkIn ..> Visit : <<include>>
+note bottom of NewPatient
+ Bệnh nhân đến trực tiếp có thể chưa có tài khoản web.
+ Tạo hồ sơ mới là lựa chọn khi chưa có hồ sơ phù hợp.
+end note
+note bottom of Queue
+ Các thao tác cụ thể phụ thuộc trạng thái vé.
+ Không phải lần tiếp nhận nào cũng chuyển hàng đợi.
+end note
+@enduml
+

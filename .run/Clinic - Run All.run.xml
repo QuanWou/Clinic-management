@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Clinic - Run All" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="" />
+    <option name="SCRIPT_PATH" value="$PROJECT_DIR$/scripts/run-intellij.ps1" />
+    <option name="SCRIPT_OPTIONS" value="-Action Start" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INTERPRETER_PATH" value="$USER_HOME$/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe" />
+    <option name="INTERPRETER_OPTIONS" value="-NoProfile -ExecutionPolicy Bypass -File" />
+    <option name="EXECUTE_IN_TERMINAL" value="false" />
+    <option name="EXECUTE_SCRIPT_FILE" value="true" />
+    <envs><env name="JAVA_HOME" value="C:/Program Files/Zulu/zulu-21" /></envs>
+    <method v="2" />
+  </configuration>
+</component>
